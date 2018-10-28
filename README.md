@@ -1,9 +1,9 @@
 # node-microservices
 
-This is an project (since September 2016) that encompasses a set of small Node
-microservices that work together to deliver private and public features. It was
-originally (and still is) run on a Raspberry Pi running Raspbian, though 
-nowadays it also runs in the cloud.
+This is an ongoing project (since September 2016) that encompasses a set of 
+small Node microservices that work together to deliver private and public 
+features. It was originally (and still is) run on a Raspberry Pi running 
+Raspbian, though nowadays it also runs in the cloud.
 
 
 ## History
@@ -55,5 +55,10 @@ easy reuse.
 
 
 ## Configuration
+
+TODO
+
+
+## Communication
 
 TODO
