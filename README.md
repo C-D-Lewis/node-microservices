@@ -48,6 +48,12 @@ interesting things, including a novel system of communication for them all.
 
 ## Common
 
-The `node-common` project contains a set of modules that are commonly used 
-across all of these apps for purposes such as API requests, data storage,
-configuration behavior, etc. It is published as an `npm` module for easy reuse.
+The [`node-common`](node-common) project contains a set of modules that are 
+commonly used across all of these apps for purposes such as API requests, data 
+storage, configuration behavior, etc. It is published as an `npm` module for 
+easy reuse.
+
+
+## Configuration
+
+TODO
