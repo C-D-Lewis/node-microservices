@@ -1,0 +1,15 @@
+{
+  "name": "service-dashboard-react",
+  "version": "1.0.0",
+  "scripts": {
+    "clean": "rm -rf dist .cache",
+    "build": "npm run clean && ./node_modules/.bin/parcel build ./index.html ./assets/*",
+    "serve": "npm run clean && ./node_modules/.bin/parcel serve ./index.html ./assets/*"
+  },
+  "author": "Chris Lewis",
+  "dependencies": {
+    "parcel": "^1.9.7",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2"
+  }
+}

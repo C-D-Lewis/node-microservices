@@ -1,0 +1,22 @@
+{
+  "name": "led-server",
+  "version": "1.0.0",
+  "description": "Node.js server to drive PC Build backlight",
+  "author": "Chris Lewis",
+  "scripts": {
+    "start": "node src/main.js",
+    "kill": "sudo kill $(cat pid)",
+    "test": "mocha tests/tests.js"
+  },
+  "dependencies": {
+    "@chris-lewis/node-common": "^1.1.1",
+    "async": "^2.5.0",
+    "body-parser": "^1.18.2",
+    "express": "^4.14.0",
+    "request": "^2.83.0"
+  },
+  "devDependencies": {
+    "mocha": "^5.0.1",
+    "chai": "^4.1.2"
+  }
+}

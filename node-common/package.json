@@ -1,0 +1,14 @@
+{
+  "name": "@chris-lewis/node-common",
+  "version": "1.1.1",
+  "description": "Single repo for all the 'common' modules my Node apps use.",
+  "author": "Chris Lewis",
+  "main": "src/main.js",
+  "dependencies": {
+    "async": "^2.6.0",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "jsonschema": "^1.2.0",
+    "request": "^2.83.0"
+  }
+}

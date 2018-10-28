@@ -1,0 +1,20 @@
+{
+  "name": "plug-server",
+  "version": "1.0.0",
+  "description": "API for TP-Link smart plugs",
+  "scripts": {
+    "start": "node src/main.js",
+    "kill": "sudo kill $(cat pid)",
+    "test": "mocha tests/tests.js"
+  },
+  "author": "Chris Lewis",
+  "dependencies": {
+    "@chris-lewis/node-common": "^1.1.1",
+    "express": "^4.16.2",
+    "tplink-smarthome-api": "^0.20.1"
+  },
+  "devDependencies": {
+    "mocha": "^5.0.1",
+    "chai": "^4.1.2"
+  }
+}
