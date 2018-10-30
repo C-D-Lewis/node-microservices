@@ -25,7 +25,7 @@ const TAGS = {
 
 const getTimeString = () => {
   const str = new Date().toISOString();
-  return str.substring(0, str.indexOf('.')).replace('T', ' ');
+  return str.substring(str.indexOf('T') + 1, str.indexOf('.'));
 };
 
 const writePid = () => fs.writeFileSync(`${config.getInstallPath()}/pid`, process.pid, 'utf8');
@@ -49,8 +49,7 @@ const log = (level, msg) => {
   if(typeof msg === 'object') msg = (msg instanceof Error) ? msg.message : JSON.stringify(msg);
   if(config.LOG.TO_FILE) writeToFile(msg);
 
-  msg = `[${TAGS[level]}] [${getTimeString()}] [${config.LOG.APP_NAME} ${process.pid}] ${msg}`;
-  console.log(msg);
+  console.log(`[${TAGS[level]} ${getTimeString()} ${process.pid} ${config.LOG.APP_NAME}] ${msg}`);
 
   if(level === 'fatal') process.exit(1);
 };
