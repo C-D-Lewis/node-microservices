@@ -8,7 +8,7 @@
     "test": "mocha tests/tests.js"
   },
   "dependencies": {
-    "@chris-lewis/node-common": "^1.1.1",
+    "@chris-lewis/node-common": "^1.2.0",
     "async": "^2.5.0",
     "body-parser": "^1.15.2",
     "mocha": "^5.0.1",
