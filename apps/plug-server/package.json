@@ -9,7 +9,7 @@
   },
   "author": "Chris Lewis",
   "dependencies": {
-    "@chris-lewis/node-common": "^1.2.0",
+    "@chris-lewis/node-common": "^1.2.1",
     "express": "^4.16.2",
     "tplink-smarthome-api": "^0.20.1"
   },

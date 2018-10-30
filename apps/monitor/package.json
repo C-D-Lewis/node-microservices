@@ -9,7 +9,7 @@
     "test": "mocha tests/tests.js"
   },
   "dependencies": {
-    "@chris-lewis/node-common": "^1.2.0",
+    "@chris-lewis/node-common": "^1.2.1",
     "async": "^2.4.1",
     "express": "^4.15.0",
     "mocha": "^5.0.1",

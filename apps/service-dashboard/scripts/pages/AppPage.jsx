@@ -11,19 +11,19 @@ const sendConduitMessage = (ip, message) =>
   }).then(res => res.json());
 
 class BacklightServerOptions extends React.Component {
-  
+
   constructor(props) {
     super(props);
-    
+
     this.state = {
       inputs: {
       },
     };
-    
+
     this.onInputChanged = this.onInputChanged.bind(this);
     this.send = this.send.bind(this);
   }
-  
+
   render() {
     return (
       <FlexColumn>
@@ -36,7 +36,7 @@ class BacklightServerOptions extends React.Component {
       </FlexColumn>
     );
   }
-  
+
   send(topic) {
     sendConduitMessage(this.props.ip, {
       to: 'BacklightServer',
@@ -44,7 +44,7 @@ class BacklightServerOptions extends React.Component {
       message: {},
     }).then(res => this.props.onResponse(JSON.stringify(res, null, 2)));
   }
-  
+
   onInputChanged(key, value) {
     const oldState = this.state;
     oldState.inputs[key] = value;
@@ -54,10 +54,10 @@ class BacklightServerOptions extends React.Component {
 }
 
 class AtticOptions extends React.Component {
-  
+
   constructor(props) {
     super(props);
-    
+
     this.state = {
       inputs: {
         app: '',
@@ -65,11 +65,11 @@ class AtticOptions extends React.Component {
         value: '',
       },
     };
-    
+
     this.onInputChanged = this.onInputChanged.bind(this);
     this.send = this.send.bind(this);
   }
-  
+
   render() {
     return (
       <FlexColumn>
@@ -101,7 +101,7 @@ class AtticOptions extends React.Component {
       </FlexColumn>
     );
   }
-  
+
   send(topic) {
     sendConduitMessage(this.props.ip, {
       to: 'Attic',
@@ -113,7 +113,7 @@ class AtticOptions extends React.Component {
       },
     }).then(res => this.props.onResponse(JSON.stringify(res, null, 2)));
   }
-  
+
   onInputChanged(key, value) {
     const oldState = this.state;
     oldState.inputs[key] = value;
@@ -123,10 +123,10 @@ class AtticOptions extends React.Component {
 }
 
 class ConduitOptions extends React.Component {
-  
+
   constructor(props) {
     super(props);
-    
+
     this.state = {
       inputs: {
         app: '',
@@ -134,11 +134,11 @@ class ConduitOptions extends React.Component {
         message: '{}',
       },
     };
-    
+
     this.onInputChanged = this.onInputChanged.bind(this);
     this.send = this.send.bind(this);
   }
-  
+
   render() {
     return (
       <FlexColumn>
@@ -169,13 +169,13 @@ class ConduitOptions extends React.Component {
       </FlexColumn>
     );
   }
-  
+
   onInputChanged(key, value) {
     const oldState = this.state;
     oldState.inputs[key] = value;
     this.setState(oldState);
   }
-  
+
   send() {
     sendConduitMessage(this.props.ip, {
       to: this.state.inputs.app,
@@ -183,21 +183,21 @@ class ConduitOptions extends React.Component {
       message: JSON.parse(this.state.inputs.message),
     }).then(res => this.props.onResponse(JSON.stringify(res, null, 2)));
   }
-  
+
 }
 
 class AppPage extends React.Component {
-  
+
   constructor(props) {
     super(props);
-    
+
     this.state = {
       response: 'None yet',
     };
-    
+
     this.onResponse = this.onResponse.bind(this);
   }
-  
+
   render() {
     const { currentApp: data } = this.props.appState;
     return (
@@ -209,11 +209,11 @@ class AppPage extends React.Component {
         <FlexRow>
           <span>Status: {data.status}</span>
         </FlexRow>
-        
+
         { data.app === 'Conduit' && <FlexRow>
           <ConduitOptions ip={this.props.appState.currentIp} onResponse={this.onResponse}/>
         </FlexRow> }
-        
+
         { data.app === 'Attic' && <FlexRow>
           <AtticOptions ip={this.props.appState.currentIp} onResponse={this.onResponse}/>
         </FlexRow> }
@@ -221,7 +221,7 @@ class AppPage extends React.Component {
         { data.app === 'BacklightServer' && <FlexRow>
           <BacklightServerOptions ip={this.props.appState.currentIp} onResponse={this.onResponse}/>
         </FlexRow> }
-        
+
         <FlexRow>
           <div className="app-page-subheading">Last Response</div>
         </FlexRow>
@@ -229,11 +229,11 @@ class AppPage extends React.Component {
       </FlexColumn>
     );
   }
-  
+
   onResponse(response) {
     this.setState({ response });
   }
-  
+
 }
 
 export default AppPage;
