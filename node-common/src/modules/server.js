@@ -18,14 +18,14 @@ config.requireKeys('server.js', {
 
 let app;
 
-const respond = (res, code, body) => {
-  res.status(code);
-  res.send(body);
-};
+const respond = (res, code, body) => res.status(code).send(body);
+
+const respondWithPid = res => res.status(200).json({ pid: process.pid });
 
 const start = () => {
   app = express();
   app.get('/status', (req, res) => module.exports.respondOk(res));
+  app.get('/pid', (req, res) => respondWithPid(res));
   app.listen(config.SERVER.PORT, () => log.info(`Express server up on ${config.SERVER.PORT}`));
 };
 

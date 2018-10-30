@@ -34,7 +34,7 @@ const writeToFile = (msg) => {
   const filePath = `${config.getInstallPath()}/${config.LOG.APP_NAME.split(' ').join('-')}.log`;
   let stream;
   if(!fs.existsSync(filePath)) {
-    stream = fs.createWriteStream(filePath, { flags: 'w' });  
+    stream = fs.createWriteStream(filePath, { flags: 'w' });
     stream.end(`[${getTimeString()}] New log file!\n`);
   }
 
@@ -49,7 +49,7 @@ const log = (level, msg) => {
   if(typeof msg === 'object') msg = (msg instanceof Error) ? msg.message : JSON.stringify(msg);
   if(config.LOG.TO_FILE) writeToFile(msg);
 
-  msg = `[${TAGS[level]}] [${getTimeString()}] [${config.LOG.APP_NAME}] ${msg}`;
+  msg = `[${TAGS[level]}] [${getTimeString()}] [${config.LOG.APP_NAME} ${process.pid}] ${msg}`;
   console.log(msg);
 
   if(level === 'fatal') process.exit(1);

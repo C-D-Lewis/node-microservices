@@ -1,6 +1,6 @@
 {
   "name": "@chris-lewis/node-common",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Single repo for all the 'common' modules my Node apps use.",
   "author": "Chris Lewis",
   "main": "src/main.js",
