@@ -14,14 +14,14 @@ let config = {};
 (() => {
   if(!fs.existsSync(CONFIG_PATH)) {
     if (!fs.existsSync(DEFAULT_PATH)) {
-	  fs.writeFileSync(CONFIG_PATH, JSON.stringify(config), 'utf8');
-	  console.log('No config-default.json available, set up empty config.json');
-	  return;
-	}
+      fs.writeFileSync(CONFIG_PATH, JSON.stringify(config), 'utf8');
+      console.log('No config-default.json available, set up empty config.json');
+      return;
+    }
 
     const defaultConfig = JSON.parse(fs.readFileSync(DEFAULT_PATH, 'utf8'));
     fs.writeFileSync(CONFIG_PATH, JSON.stringify(defaultConfig, null, 2), 'utf8');
-    console.log('Set up config.json from config-default.json');	
+    console.log('Set up config.json from config-default.json');
   }
 
   config = require(CONFIG_PATH);
