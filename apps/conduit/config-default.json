@@ -1,0 +1,14 @@
+{
+  "OPTIONS": {
+    "RECORD_STATS": false
+  },
+  "SERVER": {
+    "PORT": 5959
+  },
+  "LOG": {
+    "APP_NAME": "Conduit",
+    "LEVEL": "info",
+    "TO_FILE": false
+  }
+}
+
