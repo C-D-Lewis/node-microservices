@@ -1,0 +1,15 @@
+{
+  "LOG": {
+    "APP_NAME": "Webhooks",
+    "LEVEL": "info",
+    "TO_FILE": false
+  },
+  "CONDUIT": {
+    "HOST": "localhost",
+    "PORT": 5959,
+    "APP": "Webhooks"
+  },
+  "SERVER": {
+    "PORT": 4665
+  }
+}
