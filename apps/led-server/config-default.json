@@ -1,0 +1,18 @@
+{
+  "LOG": {
+    "TO_FILE": false,
+    "APP_NAME": "LED Server",
+    "LEVEL": "info"
+  },
+  "LEDS": {
+    "ATTENUATION_FACTOR": 0.1,
+    "BRIGHTNESS": 0.1,
+    "USE_HARDWARE": false,
+    "HARDWARE_TYPE": "blinkt"
+  },
+  "CONDUIT": {
+    "HOST": "localhost",
+    "PORT": 5959,
+    "APP": "LedServer"
+  }
+}
