@@ -1,0 +1,46 @@
+{
+  "PLUGINS": [
+    { "ENABLED": true, "FILE_NAME": "delays.js", "EVERY": 15,
+      "ARGS": {
+        "LED": 5
+      }
+    },
+    { "ENABLED": false, "FILE_NAME": "weather.js", "EVERY": 10,
+      "ARGS": {
+        "DARKSKY_KEY": "",
+        "LATITUDE": "",
+        "LONGITUDE": "",
+        "TEMP_HOT": 21,
+        "TEMP_COLD": 8,
+        "LED": 6
+      }
+    }
+  ],
+  "SLEEP": false,
+  "BOOT": {
+    "URL": ""
+  },
+  "LOG": {
+    "TO_FILE": false,
+    "APP_NAME": "Monitor",
+    "LEVEL": "info"
+  },
+  "STATUS_LED": true,
+  "LED_STATES": {
+    "OK": [0, 255, 0],
+    "OFF": [0, 0, 0],
+    "DOWN": [255, 0, 0],
+    "STATUS": [128, 128, 0],
+    "RAIN": [0, 0, 255],
+    "COLD": [135, 206, 250],
+    "HOT": [255, 165, 0]
+  },
+  "FCM": {
+    "API_KEY": ""
+  },
+  "CONDUIT": {
+    "HOST": "localhost",
+    "PORT": 5959,
+    "APP": "Monitor"
+  }
+}
