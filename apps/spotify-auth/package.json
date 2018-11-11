@@ -9,10 +9,10 @@
   },
   "author": "Chris Lewis",
   "dependencies": {
-    "@chris-lewis/node-common": "^1.2.1",
+    "@chris-lewis/node-common": "^1.2.2",
     "express": "^4.15.3",
-    "node-vibrant": "^3.0.0-alpha.2",
-    "spotify-web-api-node": "^2.4.0"
+    "node-vibrant": "^3.0.0",
+    "spotify-web-api-node": "^4.0.0"
   },
   "devDependencies": {
     "mocha": "^5.0.1",
