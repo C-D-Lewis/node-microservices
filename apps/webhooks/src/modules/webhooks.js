@@ -7,18 +7,18 @@ const {
 const ATTIC_KEY_WEBHOOKS = 'webhooks';
 const WEBHOOK_SCHEMA = {
   additionalProperties: false,
-  required: [ 'url', 'packet' ],
+  required: ['url', 'packet'],
   type: 'object', properties: {
     url: { type: 'string' },
     packet: {
       additionalProperties: false,
-      required: [ 'to', 'topic' ],
+      required: ['to', 'topic'],
       type: 'object', properties: {
         to: { type: 'string' },
-        topic: { type: 'string' }
-      }
-    }
-  }
+        topic: { type: 'string' },
+      },
+    },
+  },
 };
 
 let app;
@@ -27,23 +27,21 @@ let app;
 const registerForWebhooks = async () => {
   app.use(async (req, res) => {
     const webhooks = await attic.get(ATTIC_KEY_WEBHOOKS);
-    if(!webhooks.length) {
-      res.status(404);
-      res.send('Not Found');
+    if (!webhooks.length) {
+      res.status(404).json({ error: 'Not Found' });
       return;
     }
 
     const urlRequested = req.path;
     const found = webhooks.find(item => item.url === urlRequested)
-    if(!found) {
+    if (!found) {
       log.error(`Webhook does not exist for URL ${urlRequested}`);
-      res.status(404);
-      res.send('Not Found');
+      res.status(404).json({ error: 'Not Found' });
       return;
     }
 
     // Add some extra metadata
-    if(!found.packet.message) found.packet.message = {};
+    if (!found.packet.message) found.packet.message = {};
     found.packet.message.webhookQuery = req.query;
 
     log.info(`Forwarding webhook to ${found.packet.to}`);
@@ -57,9 +55,12 @@ const setup = async () => {
 
   try {
     const webhooks = await attic.get(ATTIC_KEY_WEBHOOKS);
-    log.info('Known webhooks:');
-    webhooks.forEach(hook => log.info(`POST ${hook.url}`));
+    if (webhooks.length) {
+      log.info('Known webhooks:');
+      webhooks.forEach(hook => log.info(`  POST ${hook.url}`));
+    }
   } catch (e) {
+    log.info('Initialising empty list of webhooks.');
     webhooks = [];
     await attic.set(ATTIC_KEY_WEBHOOKS, webhooks);
   }

@@ -5,7 +5,7 @@ const {
 const api = require('./modules/api');
 const webhooks = require('./modules/webhooks');
 
-(async () => {
+const main = async () => {
   log.begin();
 
   try {
@@ -17,4 +17,6 @@ const webhooks = require('./modules/webhooks');
 
   webhooks.setup();
   api.setup();
-})();
+};
+
+main();
