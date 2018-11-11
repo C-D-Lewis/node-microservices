@@ -1,0 +1,16 @@
+{
+  "LOG": {
+    "APP_NAME": "Backlight Server",
+    "TO_FILE": false,
+    "LEVEL": "info"
+  },
+  "SPOTIFY_AUTH": {
+    "URL": "http://",
+    "PORT": 5005
+  },
+  "CONDUIT": {
+    "HOST": "localhost",
+    "PORT": 5959,
+    "APP": "BacklightServer"
+  }
+}
