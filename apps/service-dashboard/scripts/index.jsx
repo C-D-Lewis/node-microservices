@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import AppMenuItem from './components/AppMenuItem';
 import AppPage from './pages/AppPage';
 import BlankPage from './pages/BlankPage';
+import BottomBar from './components/BottomBar';
 import IconButton from './components/IconButton';
 import IPTextBox from './components/IPTextBox';
 import LeftColumn from './components/LeftColumn';
@@ -11,7 +12,7 @@ import Page from './components/Page';
 import RightColumn from './components/RightColumn';
 
 class Application extends React.Component {
-  
+
   constructor(props) {
     super(props);
 
@@ -20,8 +21,9 @@ class Application extends React.Component {
       currentIp: '',
       currentPage: BlankPage,
       currentApp: '',
+      lastResponse: 'Ready',
     };
-    
+
     this.onIpChange = this.onIpChange.bind(this);
     this.reload = this.reload.bind(this);
   }
@@ -43,40 +45,40 @@ class Application extends React.Component {
             ))}
           </LeftColumn>
           <RightColumn>
-            <CurrentPage appState={this.state}/>
+            <CurrentPage state={this.state}/>
           </RightColumn>
         </Page>
+        <BottomBar state={this.state}/>
       </div>
     );
   }
-  
+
   componentDidMount() {
     setTimeout(this.reload, 200);
   }
-  
+
   onIpChange(ip) {
     this.setState({ currentIp: ip });
   }
-  
+
   reload() {
     this.setState({ currentPage: BlankPage });
-    
+
     const _self = this;
     fetch(`http://${this.state.currentIp}:5959/apps`)
       .then(res => res.json())
-      .then((apps) => {
-        _self.setState({ apps: apps.sort((a, b) => a.app < b.app ? -1 : 1) });
-      })
+      .then(apps => apps.sort((a, b) => a.app < b.app ? -1 : 1))
+      .then(apps => _self.setState({ apps}))
       .catch(console.error);
   }
-  
+
   onAppMenuItemClicked(appData) {
     this.setState({
       currentPage: AppPage,
       currentApp: appData,
     });
   }
-  
+
 }
 
 ReactDOM.render(<Application/>, document.getElementById('app'));

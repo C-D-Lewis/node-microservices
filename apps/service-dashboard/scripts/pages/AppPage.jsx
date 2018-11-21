@@ -221,11 +221,6 @@ class AppPage extends React.Component {
         { data.app === 'BacklightServer' && <FlexRow>
           <BacklightServerOptions ip={this.props.appState.currentIp} onResponse={this.onResponse}/>
         </FlexRow> }
-
-        <FlexRow>
-          <div className="app-page-subheading">Last Response</div>
-        </FlexRow>
-        <pre className="response-view">{this.state.response}</pre>
       </FlexColumn>
     );
   }

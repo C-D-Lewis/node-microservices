@@ -180,3 +180,16 @@ tr {
 .response-view {
   font-family: Monospace;
 }
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 30px;
+  padding: 5px;
+  background-color: #333;
+  color: white;
+  vertical-align: middle;
+}
