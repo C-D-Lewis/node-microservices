@@ -1,0 +1,12 @@
+{
+  "LOG": {
+    "TO_FILE": false,
+    "APP_NAME": "DSN",
+    "LEVEL": "info"
+  },
+  "CONDUIT": {
+    "HOST": "localhost",
+    "PORT": 5959,
+    "APP": "DSN"
+  }
+}
