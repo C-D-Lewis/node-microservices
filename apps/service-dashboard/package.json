@@ -4,7 +4,8 @@
   "scripts": {
     "clean": "rm -rf dist .cache",
     "build": "npm run clean && ./node_modules/.bin/parcel build ./index.html ./assets/*",
-    "serve": "npm run clean && ./node_modules/.bin/parcel serve ./index.html ./assets/*"
+    "serve": "npm run clean && ./node_modules/.bin/parcel serve ./index.html ./assets/*",
+    "start": "npm run serve"
   },
   "author": "Chris Lewis",
   "dependencies": {
