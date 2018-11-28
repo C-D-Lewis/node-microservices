@@ -20,6 +20,13 @@ const get = async (key) => {
   return response.message.value;
 };
 
-const exists = async key => module.exports.get(key);
+const exists = async (key) => {
+  try {
+    await module.exports.get(key);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
 
 module.exports = { set, get, exists, setHost };
