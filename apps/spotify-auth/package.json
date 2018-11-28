@@ -9,7 +9,7 @@
   },
   "author": "Chris Lewis",
   "dependencies": {
-    "@chris-lewis/node-common": "^1.2.2",
+    "@chris-lewis/node-common": "^1.2.3",
     "express": "^4.15.3",
     "node-vibrant": "^3.0.0",
     "spotify-web-api-node": "^4.0.0"
