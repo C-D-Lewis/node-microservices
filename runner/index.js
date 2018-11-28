@@ -1,6 +1,5 @@
 const { spawn } = require('child_process');
 const fs = require('fs');
-const config = require('./config.json');
 
 const INTERVAL_MS = 5000;
 
@@ -18,13 +17,10 @@ const queue = async (items) => {
 };
 
 const main = () => {
-  const promises = Object.keys(config).map(app => async () => {
+  const appList = process.argv.slice(2);
+  const promises = appList.map(app => async () => {
     if (!fs.existsSync(`${__dirname}/../apps/${app}`)) {
       throw new Error(`App does not exist: ${app}`);
-    }
-
-    if (!config[app]) {
-      return;
     }
 
     console.log(`Spawning process for ${app}`);
