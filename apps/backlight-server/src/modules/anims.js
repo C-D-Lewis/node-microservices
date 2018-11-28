@@ -98,11 +98,10 @@ const getColor = async () => {
   const url = `${config.SPOTIFY_AUTH.URL}:${config.SPOTIFY_AUTH.PORT}/color`;
   const { response, body } = await requestAsync(url);
   if(response.statusCode !== 200) {
-    throw new Error(`getColor() failed: ${JSON.stringify(body)}`);
+    throw new Error(`getColor() failed: ${body}`);
   }
 
-  const arr = JSON.parse(body);
-  return arr.map(Math.round);
+  return JSON.parse(body).map(Math.round);
 };
 
 const spotify = async (packet, res) => {
