@@ -83,8 +83,11 @@ const testCredentials = async (spotifyApi) => {
 
 const authenticate = async () => {
   const spotifyApi = new Spotify(buildCredentials());
+  log.debug(spotifyApi);
   const accessTokenExists = await attic.exists(DB_KEYS.ACCESS_TOKEN);
+  log.debug('accessTokenExists', accessTokenExists);
   const refreshTokenExists = await attic.exists(DB_KEYS.REFRESH_TOKEN);
+  log.debug('refreshTokenExists', refreshTokenExists);
 
   if(accessTokenExists && refreshTokenExists) {
     log.debug('Using existing credentials');

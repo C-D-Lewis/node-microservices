@@ -112,15 +112,9 @@ const spotify = async (packet, res) => {
     spotifyHandle = setInterval(colorUpdate, SPOTIFY_INTERVAL_S * 1000);
     fadeTo(rgbArr);
 
-    conduit.respond(res, {
-      status: 200,
-      message: { content: rgbArr }
-    });
+    conduit.respond(res, { status: 200, message: { content: rgbArr } });
   } catch (e) {
-    conduit.respond(res, {
-      status: 500,
-      error: e.message
-    });
+    conduit.respond(res, { status: 500, error: e.message });
   }
 };
 
