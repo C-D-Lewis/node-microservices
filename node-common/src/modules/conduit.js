@@ -36,13 +36,13 @@ let server;
 const routes = []; // { topic, callback, schema }
 
 // Client should modify input packet
-const respond = async (res, packet) => {
-  if(!schema(RESPONSE_MESSAGE_SCHEMA, packet)) {
-    log.error(`conduit: respond() packet had schema errors`);
+const respond = async (res, status, message) => {
+  if(!schema(RESPONSE_MESSAGE_SCHEMA, message)) {
+    log.error(`conduit: respond() message had schema errors`);
   }
 
-  res.status(packet.status);
-  res.send(packet);
+  res.status(status);
+  res.send(message);
 };
 
 // { to, from, topic, message }
@@ -53,11 +53,11 @@ const send = async (json) => {
   json.from = config.CONDUIT.APP;
   log.debug(`conduit: >> ${JSON.stringify(json)}`);
   const url = `http://${config.CONDUIT.HOST}:${config.CONDUIT.PORT}/conduit`;
-  const data = await requestAsync({ 
+  const data = await requestAsync({
     url, json,
     method: 'post'
   });
-  
+
   log.debug(`conduit: << ${JSON.stringify(data.body)}`);
   return data.body;
 };
@@ -66,30 +66,19 @@ const onMessage = (req, res) => {
   const { topic, message } = req.body;
   const route = routes.find(item => item.topic === topic);
   if(!route) {
-    respond(res, {
-      status: 404,
-      error: 'Topic not found'
-    });
+    respond(res, 404, { error: 'Topic not found' });
     return;
   }
 
   if(!schema(message, route.schema)) {
-    respond(res, {
-      status: 400,
-      error: 'Bad Request'
-    });
+    respond(res, 400, { error: 'Bad Request' });
     return;
   }
 
   route.callback(req.body, res);
 };
 
-const onStatus = (packet, res) => {
-  respond(res, {
-    status: 200,
-    message: { content: 'OK' }
-  });
-};
+const onStatus = (packet, res) => respond(res, 200, { content: 'OK' });
 
 const register = async () => {
   if(server) return;
@@ -106,7 +95,7 @@ const register = async () => {
   return new Promise((resolve) => {
     server.listen(body.port, () => {
       log.debug(`conduit: Registered with Conduit on ${body.port}`);
-      on('status', onStatus, STATUS_MESSAGE_SCHEMA);  
+      on('status', onStatus, STATUS_MESSAGE_SCHEMA);
       resolve();
     });
   });
@@ -118,7 +107,7 @@ const on = (topic, callback, schema) => {
   routes.push({ topic, callback, schema });
 };
 
-module.exports = { 
+module.exports = {
   on, register, send, respond,
   isRegistered: () => server
 };
