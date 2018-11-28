@@ -3,3 +3,4 @@ config.json
 *.DS_Store
 pid
 db.json
+apps.txt
