@@ -11,6 +11,7 @@ const LED_COLORS = {
   none: [0, 0, 0],
   down: [0, 0, 100],
   up: [153, 204, 255],
+  duplex: [255, 0, 255],
 };
 const INTERVAL_MS = 5000;
 
@@ -35,11 +36,17 @@ const digest = (json) => {
 };
 
 const getLinkStates = feed => feed.dishes.reduce((res, item) => {
-  if (item.downSignals.some(p => p.signalType !== 'none')) {
+  const downloading = item.downSignals.some(p => p.signalType !== 'none');
+  const uploading = item.upSignals.some(p => p.signalType !== 'none');
+  if (downloading && uploading) {
+    return res.concat('duplex');
+  }
+
+  if (downloading) {
     return res.concat('down');
   }
 
-  if (item.upSignals.some(p => p.signalType !== 'none')) {
+  if (uploading) {
     return res.concat('up');
   }
 
@@ -53,7 +60,7 @@ const update = async () => {
 
   const ledStates = getLinkStates(feed);
   log.info(ledStates);
-  
+
   const promises = ledStates
     .map(item => LED_COLORS[item])
     .map((rgb, i) => {
