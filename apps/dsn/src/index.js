@@ -15,7 +15,7 @@ const LED_COLORS = {
 };
 const INTERVAL_MS = 5000;
 
-const getNonce = () => Math.floor(new Date().getTime() / 5000);
+const getParam = () => Math.floor(new Date().getTime() / 5000);
 
 /**
  * Unpick the XML-ness of the data
@@ -54,7 +54,7 @@ const getLinkStates = feed => feed.dishes.reduce((res, item) => {
 }, []);
 
 const update = async () => {
-  const { body } = await requestAsync(`${DSN_FEED_URL}?r=${getNonce()}`);
+  const { body } = await requestAsync(`${DSN_FEED_URL}?r=${getParam()}`);
   const json = await parseStringAsync(body);
   const feed = digest(json);
 
