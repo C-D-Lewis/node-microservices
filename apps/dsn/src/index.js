@@ -11,7 +11,7 @@ const LED_COLORS = {
   none: [0, 0, 0],
   down: [0, 0, 100],
   up: [153, 204, 255],
-  duplex: [255, 0, 255],
+  duplex: [148, 0, 211],
 };
 const INTERVAL_MS = 5000;
 
