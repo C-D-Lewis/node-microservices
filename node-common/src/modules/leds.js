@@ -25,12 +25,12 @@ log.assert(SUPPORTED_BOARDS.includes(config.LEDS.HARDWARE_TYPE), 'Valid hardware
 const BLINK_TIME_MS = 100;
 const NUM_LEDS = {
   mote: 16,
-  blinkt: 8
+  blinkt: 8,
 }[config.LEDS.HARDWARE_TYPE];
 
 let blinkt = {};
 let mote = {};
-const motePixels = [];
+const pixelState = [];
 let initd;
 let blinkHandle = null;
 
@@ -41,25 +41,22 @@ const allChecks = () => {
   return true;
 };
 
-const update = () => {
-  if(config.LEDS.HARDWARE_TYPE === 'blinkt') {
-    blinkt.sendUpdate();
-    blinkt.sendUpdate();
-  } else if(config.LEDS.HARDWARE_TYPE === 'mote') {
-    // Update is built into python script
-  }
+const updateBlinkt = () => {
+  blinkt.sendUpdate();
+  blinkt.sendUpdate();
 };
- 
+
 const init = () => {
+  for(let i = 0; i < NUM_LEDS; i++) pixelState.push([0,0,0]);
+
   if(config.LEDS.HARDWARE_TYPE === 'blinkt') {
     const NodeBlinkt = require('node-blinkt');
     blinkt = new NodeBlinkt();
     blinkt.setup();
     blinkt.setAllPixels(0, 0, 0, 1.0);
-    update();
+    updateBlinkt();
   } else if(config.LEDS.HARDWARE_TYPE === 'mote') {
     mote = require('./motePhat');
-    for(let i = 0; i < NUM_LEDS; i++) motePixels.push([0,0,0]);
     mote.setAll([0, 0, 0]);
   }
 
@@ -67,6 +64,7 @@ const init = () => {
 };
 
 const setAll = (rgbArr) => {
+  for(let i = 0; i < NUM_LEDS; i++) pixelState[i] = rgbArr;
   if(!allChecks()) return;
 
   if(config.LEDS.HARDWARE_TYPE === 'blinkt') {
@@ -77,8 +75,9 @@ const setAll = (rgbArr) => {
 };
 
 const blink = (index, rgbArr) => {
+  pixelState[index] = rgbArr;
   if(!allChecks()) return;
-  
+
   set(index, rgbArr);
 
   if(blinkHandle !== null) return;
@@ -87,24 +86,25 @@ const blink = (index, rgbArr) => {
     set(index, [0, 0, 0]);
   }, BLINK_TIME_MS);
 };
- 
+
 const set = (index, rgbArr) => {
+  pixelState[index] = rgbArr;
   if(!allChecks()) return;
 
   if(config.LEDS.HARDWARE_TYPE === 'blinkt') {
-    blinkt.setPixel(index, 
-                    rgbArr[0] * config.LEDS.ATTENUATION_FACTOR, 
-                    rgbArr[1] * config.LEDS.ATTENUATION_FACTOR, 
-                    rgbArr[2] * config.LEDS.ATTENUATION_FACTOR, 
+    blinkt.setPixel(index,
+                    rgbArr[0] * config.LEDS.ATTENUATION_FACTOR,
+                    rgbArr[1] * config.LEDS.ATTENUATION_FACTOR,
+                    rgbArr[2] * config.LEDS.ATTENUATION_FACTOR,
                     config.LEDS.BRIGHTNESS);
-    update();
+    updateBlinkt();
   } else if(config.LEDS.HARDWARE_TYPE === 'mote') {
-    motePixels[index] = rgbArr;
-    mote.setPixels(motePixels);
+    mote.setPixels(pixelState);
   }
 };
 
-module.exports = { 
-  set, setAll, blink, 
-  getNumLEDs: () => NUM_LEDS 
+module.exports = {
+  set, setAll, blink,
+  getState: () => pixelState,
+  getNumLEDs: () => NUM_LEDS
 };

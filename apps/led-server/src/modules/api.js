@@ -17,12 +17,15 @@ const INDEXED_MESSAGE_SCHEMA = {
   }
 };
 
+const EMPTY_MESSAGE_SCHEMA = { type: 'object' };
+
 const setup = async () => {
   await conduit.register();
 
   conduit.on('setAll', require('../api/setAll'), SET_ALL_MESSAGE_SCHEMA);
   conduit.on('setPixel', require('../api/setPixel'), INDEXED_MESSAGE_SCHEMA);
   conduit.on('blink', require('../api/blink'), INDEXED_MESSAGE_SCHEMA);
+  conduit.on('state', require('../api/state'), EMPTY_MESSAGE_SCHEMA);
 };
 
 module.exports = { setup };
