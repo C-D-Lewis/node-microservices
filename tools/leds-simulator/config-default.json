@@ -1,0 +1,12 @@
+{
+  "LOG": {
+    "TO_FILE": false,
+    "APP_NAME": "LEDs Simulator",
+    "LEVEL": "info"
+  },
+  "CONDUIT": {
+    "HOST": "localhost",
+    "PORT": 5959,
+    "APP": "LedsSimulator"
+  }
+}
