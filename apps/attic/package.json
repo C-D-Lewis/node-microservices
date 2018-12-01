@@ -9,7 +9,7 @@
   },
   "author": "Chris Lewis",
   "dependencies": {
-    "@chris-lewis/node-common": "^1.2.2",
+    "@chris-lewis/node-common": "^1.2.7",
     "async": "^2.5.0",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
