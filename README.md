@@ -3,19 +3,35 @@
 This is an ongoing project (since September 2016) that encompasses a set of
 small Node microservices that work together to deliver private and public
 features. It was originally (and still is) run on a Raspberry Pi running
-Raspbian, though nowadays it also runs in the cloud.
+Raspbian, though nowadays it also runs in the cloud. The aim is to build a
+reuable, extensible, and configurable architecture built 'from scratch' as
+possible. Therefore elements like common modules, logging, configuration,
+inter-app communication are of an original design.
 
 
-## History
+## Installation
 
-What began as a Python script that used the Pebble timeline API to warn me of
-train delays and adverse weather conditions, then encompassed the Pebble
-timeline pin-pushing apps for News Headlines and Tube Status, before becoming a
-personal project to assemble a collection of apps that worked together to do
-interesting things, including a novel system of communication for them all.
+* `git clone https://github.com/c-d-lewis/node-microservices`
+
+* `cd node-microservices/apps`
+
+For each app required:
+
+* `npm i && npm start`
+
+* Finish setting up `config.json`
 
 
-## Apps
+## Launching Apps
+
+Use `runner.js` to launch a full set of apps:
+
+```bash
+node runner.js conduit attic led-server monitor
+```
+
+
+## App List
 
 * [`attic`](apps/attic) - Data storage service that allows outside apps to
   POST/GET app-specific data items, stored locally in a variety of formats
@@ -60,7 +76,23 @@ Each app has a `config-default.json` that is created if no `config.json` exists,
 and in most cases the app will function normally. However, apps that require
 special keys (Spotify, DarkSky weather etc.) will not. Each module uses
 `config.requireKeys()` to declare a schema that must exist in the app's config
-file, or else it will not start.
+file, or else it will not start. For example:
+
+```js
+config.requireKeys('log.js', {
+  required: ['LOG'],
+  type: 'object', properties: {
+    LOG: {
+      required: ['APP_NAME', 'LEVEL', 'TO_FILE'],
+      type: 'object', properties: {
+        APP_NAME: { type: 'string' },
+        LEVEL: { type: 'string' },
+        TO_FILE: { type: 'boolean' }
+      }
+    }
+  }
+});
+```
 
 
 ## Communication
@@ -81,3 +113,26 @@ conduit.on('setAll', require('../api/setAll'), SET_ALL_MESSAGE_SCHEMA);
 conduit.on('setPixel', require('../api/setPixel'), INDEXED_MESSAGE_SCHEMA);
 conduit.on('blink', require('../api/blink'), INDEXED_MESSAGE_SCHEMA);
 ```
+
+Then, message can be replied to within the handler:
+
+```js
+// For the 'setAll' topic
+module.exports = (packet, res) => {
+  leds.setAll(packet.message.all);
+
+  conduit.respond(res, {
+    status: 200,
+    message: { content: 'OK' }
+  });
+};
+```
+
+
+## History
+
+What began as a Python script that used the Pebble timeline API to warn me of
+train delays and adverse weather conditions, then encompassed the Pebble
+timeline pin-pushing apps for News Headlines and Tube Status, before becoming a
+personal project to assemble a collection of apps that worked together to do
+interesting things, including a novel system of communication for them all.

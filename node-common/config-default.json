@@ -5,6 +5,6 @@
     "TO_FILE": false
   },
   "DB": {
-  	"FILE": "./db.json"
+    "FILE": "./db.json"
   }
 }

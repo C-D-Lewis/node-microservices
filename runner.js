@@ -19,12 +19,12 @@ const queue = async (items) => {
 const main = () => {
   const appList = process.argv.slice(2);
   const promises = appList.map(app => async () => {
-    if (!fs.existsSync(`${__dirname}/../apps/${app}`)) {
+    if (!fs.existsSync(`./apps/${app}`)) {
       throw new Error(`App does not exist: ${app}`);
     }
 
     console.log(`Spawning process for ${app}`);
-    children[app] = spawn(`cd ../apps/${app} && npm start`, { stdio: 'inherit', shell: true });
+    children[app] = spawn(`cd ./apps/${app} && npm start`, { stdio: 'inherit', shell: true });
 
     return waitAsync(INTERVAL_MS);
   });
