@@ -52,6 +52,18 @@ const set = async (key, value) => {
   return res;
 };
 
+const exists = async (key) => {
+  try {
+    await get(key);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
 module.exports = {
-  init, get, set, exists: get
+  init,
+  get,
+  set,
+  exists,
 };

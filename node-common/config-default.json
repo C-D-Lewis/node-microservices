@@ -11,5 +11,9 @@
     "HOST": "localhost",
     "APP": "NodeCommon",
     "PORT": 5959
+  },
+  "EVTDB": {
+    "THNG_ID": "",
+    "DEVICE_API_KEY": ""
   }
 }
