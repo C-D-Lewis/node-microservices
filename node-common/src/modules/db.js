@@ -1,18 +1,17 @@
 const fs = require('fs');
-
 const config = require('./config');
 const log = require('./log');
 
 config.requireKeys('db.js', {
-  required: [ 'DB' ],
-  type: 'object', properties: {
+  required: ['DB'],
+  properties: {
     DB: {
-      required: [ 'FILE' ],
-      type: 'object', properties: {
-        FILE: { type: 'string' }
-      }
-    }
-  }
+      required: ['FILE'],
+      properties: {
+        FILE: { type: 'string' },
+      },
+    },
+  },
 });
 
 const DB_PATH = `${config.getInstallPath()}/${config.DB.FILE}`;
@@ -20,8 +19,11 @@ const DB_PATH = `${config.getInstallPath()}/${config.DB.FILE}`;
 let table;
 
 const loadTable = () => {
-  if(table) return;
-  if(!fs.existsSync(DB_PATH)) {
+  if (table) {
+    return;
+  }
+
+  if (!fs.existsSync(DB_PATH)) {
     table = {};
     saveTable();
   }
@@ -53,4 +55,10 @@ const _delete = (key) => {
   saveTable();
 };
 
-module.exports = { get, set, exists: get, getTable, delete: _delete };
+module.exports = {
+  get,
+  set,
+  getTable,
+  exists: key => get(key) !== undefined,
+  delete: _delete,
+};
