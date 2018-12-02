@@ -4,3 +4,6 @@ require('./config.spec.js');
 require('./db.spec.js');
 require('./eventBus.spec.js');
 require('./evtdb.spec.js');
+require('./extract.spec.js');
+require('./fcm.spec.js');
+require('./gistSync.spec.js');

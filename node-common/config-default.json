@@ -15,5 +15,13 @@
   "EVTDB": {
     "THNG_ID": "",
     "DEVICE_API_KEY": ""
+  },
+  "FCM": {
+    "API_KEY": ""
+  },
+  "GIST_SYNC": {
+    "URL": "",
+    "DIR": "",
+    "SYNC_INTERVAL_M": 5
   }
 }
