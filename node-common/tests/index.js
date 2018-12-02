@@ -7,3 +7,5 @@ require('./evtdb.spec.js');
 require('./extract.spec.js');
 require('./fcm.spec.js');
 require('./gistSync.spec.js');
+require('./ip.spec.js');
+require('./leds.spec.js');
