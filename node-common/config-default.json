@@ -6,5 +6,10 @@
   },
   "DB": {
     "FILE": "./db.json"
+  },
+  "CONDUIT": {
+    "HOST": "localhost",
+    "APP": "NodeCommon",
+    "PORT": 5959
   }
 }

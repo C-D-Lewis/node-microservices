@@ -3,21 +3,37 @@ const config = require('./config');
 
 let host = 'localhost';
 
-const setHost = url => host = url;
+const setHost = (url) => {
+  host = url;
+};
 
 const set = async (key, value) => conduit.send({
-  host, to: 'Attic', topic: 'set',
-  message: { app: config.CONDUIT.APP, key, value }
+  host,
+  to: 'Attic',
+  topic: 'set',
+  message: {
+    key,
+    value,
+    app: config.CONDUIT.APP,
+  },
 });
 
 const get = async (key) => {
-  const response = await conduit.send({
-    host, to: 'Attic', topic: 'get',
-    message: { app: config.CONDUIT.APP, key }
+  const res = await conduit.send({
+    host,
+    to: 'Attic',
+    topic: 'get',
+    message: {
+      key,
+      app: config.CONDUIT.APP,
+    },
   });
 
-  if(response.error) throw new Error(response.error);
-  return response.message.value;
+  if(res.error) {
+    throw new Error(res.error);
+  }
+
+  return res.message.value;
 };
 
 const exists = async (key) => {
