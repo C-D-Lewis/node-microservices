@@ -8,7 +8,7 @@ const updateDisplay = (ledArr) => {
   process.stdout.cursorTo(0);
   ledArr.forEach((led) => {
     const [r, g, b] = led;
-    process.stdout.write(chalk.rgb(r, g, b)('\u25FC '));
+    process.stdout.write(chalk.rgb(r, g, b)('\u25C9 '));
   });
 };
 
