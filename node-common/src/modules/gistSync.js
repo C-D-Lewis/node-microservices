@@ -43,7 +43,9 @@ const init = () => {
     return;
   }
 
-  if (config.GIST_SYNC.SYNC_INTERVAL_M) setInterval(sync, 1000 * 60 * config.GIST_SYNC.SYNC_INTERVAL_M);
+  if (config.GIST_SYNC.SYNC_INTERVAL_M) {
+    setInterval(sync, 1000 * 60 * config.GIST_SYNC.SYNC_INTERVAL_M);
+  }
 
   execSync(`rm -rf "${GIST_DIR}"`);
   execSync(`git clone ${config.GIST_SYNC.URL} "${GIST_DIR}"`);
@@ -73,4 +75,8 @@ const getFile = (name) => {
   return jsonFiles.find(item => item.name === name).content;
 };
 
-module.exports = { init, sync, getFile };
+module.exports = {
+  init,
+  sync,
+  getFile,
+};
