@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const conduit = require('../src/modules/conduit.js');
+const conduit = require('../src/modules/conduit');
 
 describe('conduit.js', () => {
   it('should connect to Conduit service', async () => {

@@ -5,15 +5,15 @@ const schema = require('./schema');
 const log = require('./log');
 
 config.requireKeys('server.js', {
-  required: [ 'SERVER' ],
-  type: 'object', properties: {
+  required: ['SERVER'],
+  properties: {
     SERVER: {
-      required: [ 'PORT' ],
-      type: 'object', properties: {
-        PORT: { type: 'number' }
-      }
-    }
-  }
+      required: ['PORT'],
+      properties: {
+        PORT: { type: 'number' },
+      },
+    },
+  },
 });
 
 let app;
@@ -22,12 +22,15 @@ const respond = (res, code, body) => res.status(code).send(body);
 
 const respondWithPid = res => res.status(200).json({ pid: process.pid });
 
-const start = () => {
+const start = () => new Promise((resolve) => {
   app = express();
   app.get('/status', (req, res) => module.exports.respondOk(res));
   app.get('/pid', (req, res) => respondWithPid(res));
-  app.listen(config.SERVER.PORT, () => log.info(`Express server up on ${config.SERVER.PORT}`));
-};
+  app.listen(config.SERVER.PORT, () => {
+    log.info(`Express server up on ${config.SERVER.PORT}`);
+    resolve();
+  });
+});
 
 module.exports = {
   start,

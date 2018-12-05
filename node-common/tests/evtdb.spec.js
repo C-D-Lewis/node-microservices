@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const evtdb = require('../src/modules/evtdb.js');
+const evtdb = require('../src/modules/evtdb');
 
 describe('evtdb.js', () => {
   it('should use valid config values', async () => {

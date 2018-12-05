@@ -3,19 +3,20 @@ const { execSync } = require('child_process');
 const config = require('./config');
 const log = require('./log');
 
-const setAll = (rgbArr) => {
-  log.assert(Array.isArray(rgbArr), `rgbArr is an array. Was ${rgbArr}`);
+const setAll = (rgb) => {
+  log.assert(Array.isArray(rgb), `rgb is an array. Was ${rgb}`);
 
-  const path = `${__dirname}/../lib/mote-phat-all.py`;
-  execSync(`python ${path} ${rgbArr[0]} ${rgbArr[1]} ${rgbArr[2]}`);
+  execSync(`python ${`${__dirname}/../lib/mote-phat-all.py`} ${rgb[0]} ${rgb[1]} ${rgb[2]}`);
 };
 
-const setPixels = (ledArr) => {
-  log.assert(Array.isArray(ledArr), `ledArr is an array. Was ${ledArr}`);
-  ledArr.forEach(rgbArr => log.assert(Array.isArray(rgbArr), `Each element is an array. Was ${rgbArr}`));
+const setPixels = (leds) => {
+  log.assert(Array.isArray(leds), `leds is an array. Was ${leds}`);
+  leds.forEach(rgb => log.assert(Array.isArray(rgb), `rgb is an array. Was ${rgb}`));
 
-  const path = `${__dirname}/../lib/mote-phat-pixels.py`;
-  execSync(`python ${path} ${JSON.stringify(ledArr)}`);
+  execSync(`python ${`${__dirname}/../lib/mote-phat-pixels.py`} ${JSON.stringify(leds)}`);
 };
 
-module.exports = { setAll, setPixels };
+module.exports = {
+  setAll,
+  setPixels,
+};

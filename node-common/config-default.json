@@ -29,5 +29,8 @@
     "BRIGHTNESS": 0.1,
     "USE_HARDWARE": false,
     "HARDWARE_TYPE": "blinkt"
+  },
+  "SERVER": {
+    "PORT": 8989
   }
 }

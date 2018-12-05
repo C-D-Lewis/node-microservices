@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const gistSync = require('../src/modules/gistSync.js');
+const gistSync = require('../src/modules/gistSync');
 
 describe('gistSync.js', () => {
   it('should init the gist repository', () => {

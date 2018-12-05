@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const leds = require('../src/modules/leds.js');
+const leds = require('../src/modules/leds');
 
 
 // Does not test physical hardware unless configured to use it

@@ -9,7 +9,7 @@ import sys
 json_arr = json.loads(sys.argv[1])
 if platform.machine() != 'armv7l':
   print('{}'.format(json_arr))
-  return
+  raise SystemExit
 
 NUM_CHANNELS = 2
 NUM_PIXELS = 16

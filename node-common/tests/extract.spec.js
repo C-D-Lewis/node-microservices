@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const extract = require('../src/modules/extract.js');
+const extract = require('../src/modules/extract');
 
 describe('extract.js', () => {
   it('should extract using multiple start points', () => {

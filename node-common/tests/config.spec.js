@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const config = require('../src/modules/config.js');
+const config = require('../src/modules/config');
 
 describe('config.js', () => {
   it('should load the config file', () => {

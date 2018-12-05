@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const db = require('../src/modules/db.js');
+const db = require('../src/modules/db');
 
 describe('db.js', () => {
   it('should set a value', () => {

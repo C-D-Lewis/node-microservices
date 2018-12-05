@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const attic = require('../src/modules/attic.js');
+const attic = require('../src/modules/attic');
 
 describe('attic.js', () => {
   it('should set host', () => {

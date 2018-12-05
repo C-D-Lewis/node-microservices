@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const fcm = require('../src/modules/fcm.js');
+const fcm = require('../src/modules/fcm');
 
 describe('fcm.js', () => {
   it('should post a message to FCM', async () => {

@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const eventBus = require('../src/modules/eventBus.js');
+const eventBus = require('../src/modules/eventBus');
 
 describe('eventBus.js', () => {
   const handler = params => {};

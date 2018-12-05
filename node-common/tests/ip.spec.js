@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const ip = require('../src/modules/ip.js');
+const ip = require('../src/modules/ip');
 
 describe('ip.js', () => {
   it('should return local device\'s IP address', async () => {
