@@ -18,7 +18,7 @@ class Application extends React.Component {
 
     this.state = {
       apps: [],
-      currentIp: '',
+      ip: '',
       currentPage: BlankPage,
       currentApp: '',
       lastResponse: 'Ready',
@@ -45,7 +45,7 @@ class Application extends React.Component {
             ))}
           </LeftColumn>
           <RightColumn>
-            <CurrentPage state={this.state}/>
+            <CurrentPage appState={this.state}/>
           </RightColumn>
         </Page>
         <BottomBar state={this.state}/>
@@ -58,14 +58,14 @@ class Application extends React.Component {
   }
 
   onIpChange(ip) {
-    this.setState({ currentIp: ip });
+    this.setState({ ip });
   }
 
   reload() {
     this.setState({ currentPage: BlankPage });
 
     const _self = this;
-    fetch(`http://${this.state.currentIp}:5959/apps`)
+    fetch(`http://${this.state.ip}:5959/apps`)
       .then(res => res.json())
       .then(apps => apps.sort((a, b) => a.app < b.app ? -1 : 1))
       .then(apps => _self.setState({ apps}))
@@ -73,10 +73,7 @@ class Application extends React.Component {
   }
 
   onAppMenuItemClicked(appData) {
-    this.setState({
-      currentPage: AppPage,
-      currentApp: appData,
-    });
+    this.setState({ currentPage: AppPage, currentApp: appData });
   }
 
 }

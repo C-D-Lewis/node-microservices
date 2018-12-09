@@ -211,15 +211,15 @@ class AppPage extends React.Component {
         </FlexRow>
 
         { data.app === 'Conduit' && <FlexRow>
-          <ConduitOptions ip={this.props.appState.currentIp} onResponse={this.onResponse}/>
+          <ConduitOptions ip={this.props.appState.ip} onResponse={this.onResponse}/>
         </FlexRow> }
 
         { data.app === 'Attic' && <FlexRow>
-          <AtticOptions ip={this.props.appState.currentIp} onResponse={this.onResponse}/>
+          <AtticOptions ip={this.props.appState.ip} onResponse={this.onResponse}/>
         </FlexRow> }
 
         { data.app === 'BacklightServer' && <FlexRow>
-          <BacklightServerOptions ip={this.props.appState.currentIp} onResponse={this.onResponse}/>
+          <BacklightServerOptions ip={this.props.appState.ip} onResponse={this.onResponse}/>
         </FlexRow> }
       </FlexColumn>
     );
