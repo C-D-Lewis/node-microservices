@@ -128,6 +128,32 @@ module.exports = (packet, res) => {
 };
 ```
 
+The `tools/conduit.sh` script can be used to easily send such a message to an
+app. For example:
+
+```
+./conduit.sh localhost BacklightServer fade '{"all": [0, 0, 0]}'
+```
+
+is equivalent to:
+
+```
+curl -X POST localhost:5959/conduit -H Content-Type:application/json -d '{
+  "to": "BacklightServer",
+  "topic": "status",
+  "message": {
+    "all": [0, 0, 0]
+  }
+}'
+```
+
+The last parameter (message) is optional for packets that don't require it,
+such as status checks:
+
+```
+./conduit.sh localhost Attic status
+```
+
 
 ## History
 

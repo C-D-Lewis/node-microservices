@@ -1,10 +1,8 @@
 #!/bin/bash
 
-HOST=$1
-APP=$2
-TOPIC=$3
 PORT=5959
-PACKET="{\"to\":\"$APP\",\"topic\":\"$TOPIC\"}"
+MESSAGE=${4:-"{}"}
+PACKET="{\"to\":\"$2\",\"topic\":\"$3\",\"message\":$MESSAGE}"
 
-curl -X POST $HOST:$PORT/conduit -H Content-Type:application/json -d "$PACKET"
+curl -X POST $1:$PORT/conduit -H Content-Type:application/json -d "$PACKET"
 echo ''
