@@ -15,11 +15,11 @@ inter-app communication are of an original design.
 
 * `cd node-microservices/apps`
 
-For each app required:
+For each app required, install dependencies and perform initial startup:
 
 * `npm i && npm start`
 
-* Finish setting up `config.json`
+* Finish setting up `config.json` that is generated.
 
 
 ## Launching Apps
@@ -67,7 +67,8 @@ node runner.js conduit attic led-server monitor
 The [`node-common`](node-common) project contains a set of modules that are
 commonly used across all of these apps for purposes such as API requests, data
 storage, configuration behavior, etc. It is published as an `npm` module for
-easy reuse.
+easy reuse. It also includes a full set of tests, with minimal configuration
+required.
 
 
 ## Configuration
@@ -81,16 +82,16 @@ file, or else it will not start. For example:
 ```js
 config.requireKeys('log.js', {
   required: ['LOG'],
-  type: 'object', properties: {
+  properties: {
     LOG: {
       required: ['APP_NAME', 'LEVEL', 'TO_FILE'],
-      type: 'object', properties: {
+      properties: {
         APP_NAME: { type: 'string' },
         LEVEL: { type: 'string' },
-        TO_FILE: { type: 'boolean' }
-      }
-    }
-  }
+        TO_FILE: { type: 'boolean' },
+      },
+    },
+  },
 });
 ```
 
@@ -123,7 +124,7 @@ module.exports = (packet, res) => {
 
   conduit.respond(res, {
     status: 200,
-    message: { content: 'OK' }
+    message: { content: 'OK' },
   });
 };
 ```
