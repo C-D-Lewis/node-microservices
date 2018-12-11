@@ -141,7 +141,7 @@ is equivalent to:
 ```
 curl -X POST localhost:5959/conduit -H Content-Type:application/json -d '{
   "to": "BacklightServer",
-  "topic": "status",
+  "topic": "fade",
   "message": {
     "all": [0, 0, 0]
   }
