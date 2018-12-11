@@ -39,6 +39,7 @@ tr {
   height: 60px;
   background-color: var(--theme-color);
   align-items: center;
+  border-bottom: solid 3px #0004;
 }
 
 .navbar-icon {
@@ -84,7 +85,7 @@ tr {
   border-bottom: 2px solid #FFF8;
   background-color: #0003;
   margin-left: 50px;
-  margin-right: 5px;
+  margin-right: 10px;
   color: white;
   font-size: 1.1rem;
   padding-left: 5px;
@@ -114,7 +115,7 @@ tr {
 
 .app-menu-item-selected {
   font-weight: bold;
-  border-left: 7px solid var(--theme-color);
+  background-color: var(--theme-color);
 }
 
 .status-led {
@@ -145,8 +146,8 @@ tr {
 }
 
 .icon-button {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   /*border: 2px solid #0000;*/
   background-color: #0003;
   padding: 3px;
