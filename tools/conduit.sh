@@ -7,3 +7,4 @@ PORT=5959
 PACKET="{\"to\":\"$APP\",\"topic\":\"$TOPIC\"}"
 
 curl -X POST $HOST:$PORT/conduit -H Content-Type:application/json -d "$PACKET"
+echo ''
