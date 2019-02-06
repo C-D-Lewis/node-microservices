@@ -1,21 +1,22 @@
 import React from 'react';
 
-export class FlexColumn extends React.Component {
-  
-  render() {
-    return (
-      <div className="flex-column">{this.props.children}</div>
-    );
-  }
-  
-}
+export const FlexColumn = ({ children }) => {
+  const style = {
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 0,
+  };
 
-export class FlexRow extends React.Component {
-  
-  render() {
-    return (
-      <div className="flex-row">{this.props.children}</div>
-    );
-  }
-  
-}
+  return <div style={style}>{children}</div>;
+};
+
+
+export const FlexRow = ({ chilren }) => {
+  const style = {
+    display: 'flex',
+    flexDirection: 'row',
+    padding: '10px initial 0px',
+  };
+
+  return <div style={style}>{children}</div>;
+};

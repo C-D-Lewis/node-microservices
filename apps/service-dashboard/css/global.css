@@ -2,93 +2,12 @@
   font-family: sans-serif;
 }
 
-:root {
-  --theme-color: #007bff;
-  --theme-light-grey: #eee;
-  --theme-dark-grey: #bbb;
-  --status-ok: #43D047;
-  --status-down: #DD6E40;
-}
-
 body {
   margin: 0;
 }
 
 tr {
   margin-top: 10px;
-}
-
-.flex-container {
-  width: 100%;
-}
-
-.flex-column {
-  flex-direction: column;
-  flex-grow: 0;
-}
-
-.flex-row {
-  flex-direction: row;
-  padding-top: 10px;
-}
-
-.navbar {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 60px;
-  background-color: var(--theme-color);
-  align-items: center;
-  border-bottom: solid 3px #0004;
-}
-
-.navbar-icon {
-  width: 40px;
-  height: auto;
-  margin-left: 10px;
-}
-
-.navbar-title {
-  color: white;
-  font-size: 1.5rem;
-  margin-left: 10px;
-  font-weight: bold;
-}
-
-.page {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
-  background-color: var(--theme-light-grey);
-}
-
-.left-column {
-  min-width: 280px;
-  flex-direction: column;
-  background-color: var(--theme-light-grey);
-  height: 600px;
-}
-
-.right-column {
-  width: 100%;
-  background-color: white;
-  padding-left: 15px;
-  padding-top: 15px;
-  padding-bottom: 20px;
-}
-
-.ip-text-box {
-  width: 200px;
-  height: 30px;
-  border: 0;
-  border-bottom: 2px solid #FFF8;
-  background-color: #0003;
-  margin-left: 50px;
-  margin-right: 10px;
-  color: white;
-  font-size: 1.1rem;
-  padding-left: 5px;
 }
 
 .ip-text-box:focus {

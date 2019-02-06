@@ -1,13 +1,16 @@
 import React from 'react';
+import { Colors } from '../util';
 
-class Page extends React.Component {
-  
-  render() {
-    return (
-      <div className="page">{this.props.children}</div>
-    );
-  }
-  
-}
+const Page = ({ children }) => {
+  const style = {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    height: '100%',
+    backgroundColor: Colors.lightGrey,
+  };
 
+  return <div style={style}>{children}</div>;
+};
+  
 export default Page;

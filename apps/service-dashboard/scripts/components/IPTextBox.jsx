@@ -1,5 +1,7 @@
 import React from 'react';
 
+// TODO modify app state through props.setState
+
 class IPTextBox extends React.Component {
   
   constructor(props) {
@@ -15,8 +17,21 @@ class IPTextBox extends React.Component {
   }
 
   render() {
+    const style = {
+      width: '200px',
+      height: '30px',
+      border: 0,
+      borderBottom: '2px solid #FFF8',
+      backgroundColor: '#0003',
+      marginLeft: '50px',
+      marginRight: '10px',
+      color: 'white',
+      fontSize: '1.1rem',
+      paddingLeft: '5px',
+    };
+
     return (
-      <input type="text" className="ip-text-box" value={this.state.value} onChange={this.onChange}/>
+      <input style={style} type="text" value={this.state.value} onChange={this.onChange}/>
     );
   }
   
