@@ -8,7 +8,6 @@ class IPTextBox extends React.Component {
     super(props);
 
     this.state = { value: window.location.hostname };
-    this.onChange = this.onChange.bind(this);
   }
 
   componentDidMount() {
@@ -31,14 +30,15 @@ class IPTextBox extends React.Component {
     };
 
     return (
-      <input style={style} type="text" value={this.state.value} onChange={this.onChange}/>
+      <input id="ip-text-box" style={style} type="text" value={this.state.value} onChange={this.onChange}/>
     );
   }
   
   onChange(event) {
     const { value } = event.target;
     this.setState({ value });
-    this.props.onIpChange(value);
+
+    this.props.setState({ ip: value });
   }
   
 }

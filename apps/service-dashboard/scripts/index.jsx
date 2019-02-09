@@ -1,15 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AppMenuItem from './components/AppMenuItem';
-import AppPage from './pages/AppPage';
-import BlankPage from './pages/BlankPage';
 import BottomBar from './components/BottomBar';
 import IconButton from './components/IconButton';
 import IPTextBox from './components/IPTextBox';
-import LeftColumn from './components/LeftColumn';
 import Navbar from './components/Navbar';
 import Page from './components/Page';
-import RightColumn from './components/RightColumn';
+
+const CONDUIT_PORT = 5959;
 
 class Application extends React.Component {
 
@@ -19,13 +16,14 @@ class Application extends React.Component {
     this.state = {
       apps: [],
       ip: '',
-      currentPage: BlankPage,
-      currentApp: '',
       lastResponse: 'Ready',
     };
 
-    this.onIpChange = this.onIpChange.bind(this);
-    this.reload = this.reload.bind(this);
+    this.loadApps = this.loadApps.bind(this);
+  }
+
+  componentDidMount() {
+    setTimeout(this.loadApps, 200);
   }
 
   render() {
@@ -34,46 +32,24 @@ class Application extends React.Component {
     return (
       <div>
         <Navbar title="Service Dashboard" icon="../assets/raspberrypi.png">
-          <IPTextBox onIpChange={this.onIpChange}/>
-          <IconButton iconSrc="../assets/reload.png" borderColor="white" onClick={this.reload}/>
+          <IPTextBox setState={this.setState.bind(this)}/>
+          <IconButton iconSrc="../assets/reload.png" onClick={this.loadApps}/>
         </Navbar>
         <Page>
-          <LeftColumn>
-            {this.state.apps.map((item) => (
-              <AppMenuItem key={item.app} data={item} selected={this.state.currentApp === item}
-                onClick={() => this.onAppMenuItemClicked(item)}/>
-            ))}
-          </LeftColumn>
-          <RightColumn>
-            <CurrentPage appState={this.state}/>
-          </RightColumn>
+          
         </Page>
         <BottomBar state={this.state}/>
       </div>
     );
   }
 
-  componentDidMount() {
-    setTimeout(this.reload, 200);
-  }
-
-  onIpChange(ip) {
-    this.setState({ ip });
-  }
-
-  reload() {
-    this.setState({ currentPage: BlankPage });
-
+  loadApps() {
     const _self = this;
-    fetch(`http://${this.state.ip}:5959/apps`)
+    fetch(`http://${this.state.ip}:${CONDUIT_PORT}/apps`)
       .then(res => res.json())
       .then(apps => apps.sort((a, b) => a.app < b.app ? -1 : 1))
-      .then(apps => _self.setState({ apps}))
+      .then(apps => _self.setState({ apps }))
       .catch(console.error);
-  }
-
-  onAppMenuItemClicked(appData) {
-    this.setState({ currentPage: AppPage, currentApp: appData });
   }
 
 }

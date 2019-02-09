@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "scripts": {
     "clean": "rm -rf dist .cache",
-    "build": "npm run clean && ./node_modules/.bin/parcel build ./index.html ./assets/*",
-    "serve": "npm run clean && ./node_modules/.bin/parcel serve ./index.html ./assets/*",
+    "build": "parcel build ./index.html ./assets/*",
+    "serve": "parcel serve ./index.html ./assets/*",
     "start": "npm run serve"
   },
   "author": "Chris Lewis",
   "dependencies": {
-    "parcel": "^1.9.7",
-    "react": "^16.4.2",
-    "react-dom": "^16.4.2"
+    "parcel": "^1.11.0",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1"
   }
 }

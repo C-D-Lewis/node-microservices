@@ -1,25 +1,17 @@
 import React from 'react';
 
-class IconButton extends React.Component {
-  
-  constructor(props) {
-    super(props);
-    
-    this.onClick = this.onClick.bind(this);
-  }
+const IconButton = ({ iconSrc, onClick }) => {
+  const style = {
+    width: '28px',
+    height: '28px',
+    backgroundColor: '#0003',
+    padding: '3px',
+    borderRadius: '3px',
+    marginRight: '5px',
+    cursor: 'pointer',
+  };
 
-  render() {
-    const { borderColor } = this.props;
-    return (
-      <img className="icon-button" src={this.props.iconSrc} style={{ borderColor }}
-        onClick={this.onClick}/>
-    );
-  }
-  
-  onClick() {
-    this.props.onClick();
-  }
-  
-}
+  return  <img style={style} src={iconSrc} onClick={onClick}/>;
+};
 
 export default IconButton;

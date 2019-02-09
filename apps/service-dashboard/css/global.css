@@ -10,31 +10,9 @@ tr {
   margin-top: 10px;
 }
 
-.ip-text-box:focus {
+#ip-text-box:focus {
   outline: none;
   border-bottom: 2px solid #FFF;
-}
-
-.app-menu-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  color: black;
-  font-size: 1.1rem;
-  padding-top: 10px;
-  padding-left: 10px;
-  padding-bottom: 10px;
-  padding-right: 10px;
-}
-
-.app-menu-item:hover {
-  background-color: var(--theme-dark-grey);
-  cursor: pointer;
-}
-
-.app-menu-item-selected {
-  font-weight: bold;
-  background-color: var(--theme-color);
 }
 
 .status-led {
@@ -65,19 +43,7 @@ tr {
 }
 
 .icon-button {
-  width: 28px;
-  height: 28px;
-  /*border: 2px solid #0000;*/
-  background-color: #0003;
-  padding: 3px;
-  border-radius: 3px;
-  margin-right: 5px;
-}
-
-.icon-button:hover {
-  border-radius: 3px;
-  border-color: white;
-  cursor: pointer;
+  
 }
 
 .text-box {
@@ -95,10 +61,6 @@ tr {
 .text-box:focus {
   outline: none;
   border-bottom: 2px solid #000;
-}
-
-.response-view {
-  font-family: Monospace;
 }
 
 .bottom-bar {

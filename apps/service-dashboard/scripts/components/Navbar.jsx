@@ -28,15 +28,16 @@ const NavBar  = ({ children, icon, title }) => {
     flexDirection: 'row',
     width: '100%',
     height: '60px',
-    backgroundColor: Colors.main,
+    backgroundColor: Colors.primary,
     alignItems: 'center',
-    borderBottom: 'solid 3px #0004',
+    boxShadow: '0px 2px 3px 1px #8887',
   };
 
   return (
     <div style={style}>
       <Icon src={icon}/>
       <Title>{title}</Title>
+      {children}
     </div>
   );
 };
