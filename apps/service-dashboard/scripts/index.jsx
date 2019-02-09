@@ -1,13 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BOTTOM_BAR_HEIGHT } from './util';
 import AppCard from './components/AppCard';
 import BottomBar from './components/BottomBar';
 import IconButton from './components/IconButton';
 import IPTextBox from './components/IPTextBox';
 import Navbar from './components/Navbar';
-import Page from './components/Page';
 
 const CONDUIT_PORT = 5959;
+
+const Page = ({ children }) => {
+  const style = {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
+    paddingTop: '10px',
+    paddingBottom: BOTTOM_BAR_HEIGHT,
+  };
+
+  return <div style={style}>{children}</div>;
+};
 
 class Application extends React.Component {
 
@@ -39,7 +52,7 @@ class Application extends React.Component {
         <Page>
           {this.state.apps.map(p => <AppCard key={p.app} data={p}/>)}
         </Page>
-        <BottomBar state={this.state}/>
+        <BottomBar>{this.state.lastResponse}</BottomBar>
       </div>
     );
   }

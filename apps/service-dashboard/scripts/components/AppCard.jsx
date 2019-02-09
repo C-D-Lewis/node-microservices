@@ -6,10 +6,10 @@ const Container = ({ children }) => {
   const style = {
     display: 'flex',
     flexDirection: 'column',
-    minWidth: '300px',
+    minWidth: '340px',
     height: '100px',
     padding: '15px',
-    margin: '20px',
+    margin: '10px 20px',
     backgroundColor: 'white',
     borderRadius: '3px',
     boxShadow: '1px 2px 3px 1px #8884',

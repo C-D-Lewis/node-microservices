@@ -16,6 +16,7 @@ const Title = ({ children }) => {
     color: 'white',
     fontSize: '1.5rem',
     marginLeft: '10px',
+    marginRight: '30px',
     fontWeight: 'bold',
   };
 
@@ -26,8 +27,9 @@ const NavBar  = ({ children, icon, title }) => {
   const style = {
     display: 'flex',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     width: '100%',
-    height: '60px',
+    minHeight: '60px',
     backgroundColor: Colors.primary,
     alignItems: 'center',
     boxShadow: '0px 2px 3px 1px #5557',
