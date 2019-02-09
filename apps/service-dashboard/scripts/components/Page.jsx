@@ -7,7 +7,6 @@ const Page = ({ children }) => {
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: '100%',
-    height: '100%',
     paddingBottom: BOTTOM_BAR_HEIGHT,
     backgroundColor: Colors.lightGrey,
   };

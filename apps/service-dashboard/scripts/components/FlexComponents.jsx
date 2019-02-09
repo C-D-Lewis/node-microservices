@@ -11,7 +11,7 @@ export const FlexColumn = ({ children }) => {
 };
 
 
-export const FlexRow = ({ chilren }) => {
+export const FlexRow = ({ children }) => {
   const style = {
     display: 'flex',
     flexDirection: 'row',

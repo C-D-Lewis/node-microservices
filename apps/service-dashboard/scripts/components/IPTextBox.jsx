@@ -30,7 +30,8 @@ class IPTextBox extends React.Component {
     };
 
     return (
-      <input id="ip-text-box" style={style} type="text" value={this.state.value} onChange={this.onChange}/>
+      <input id="ip-text-box" style={style} type="text" value={this.state.value} 
+        onChange={this.onChange.bind(this)}/>
     );
   }
   

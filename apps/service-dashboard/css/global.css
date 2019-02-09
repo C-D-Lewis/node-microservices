@@ -6,6 +6,7 @@ html, body, #app, .root-container {
   margin: 0;
   width: 100%;
   height: 100%;
+  background-color: #EEE;
 }
 
 tr {
@@ -17,22 +18,6 @@ tr {
   border-bottom: 2px solid #FFF;
 }
 
-.status-led {
-  width: 18px;
-  height: 18px;
-  border-radius: 9px;
-  background-color: black;
-  margin-right: 10px;
-}
-
-.status-led-ok {
-  background-color: var(--status-ok);
-}
-
-.status-led-down {
-  background-color: var(--status-down);
-}
-
 .app-page-heading {
   font-weight: bold;
   font-size: 1.4rem;
@@ -42,10 +27,6 @@ tr {
   font-weight: bold;
   font-size: 1.2rem;
   margin-top: 15px;
-}
-
-.icon-button {
-  
 }
 
 .text-box {
