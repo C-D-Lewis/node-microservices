@@ -8,7 +8,6 @@ const Page = ({ children }) => {
     flexWrap: 'wrap',
     width: '100%',
     paddingBottom: BOTTOM_BAR_HEIGHT,
-    backgroundColor: Colors.lightGrey,
   };
 
   return <div style={style}>{children}</div>;

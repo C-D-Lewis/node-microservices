@@ -1,7 +1,5 @@
 import React from 'react';
 
-// TODO modify app state through props.setState
-
 class IPTextBox extends React.Component {
   
   constructor(props) {
@@ -20,7 +18,6 @@ class IPTextBox extends React.Component {
       width: '200px',
       height: '30px',
       border: 0,
-      borderBottom: '2px solid #FFF8',
       backgroundColor: '#0003',
       marginLeft: '50px',
       marginRight: '10px',

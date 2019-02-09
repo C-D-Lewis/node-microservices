@@ -8,7 +8,7 @@ const Container = ({ children }) => {
     flexDirection: 'column',
     minWidth: '300px',
     height: '100px',
-    padding: '20px',
+    padding: '15px',
     margin: '20px',
     backgroundColor: 'white',
     borderRadius: '3px',
@@ -25,34 +25,48 @@ const Title = ({ children }) => {
 };
 
 const Subtitle = ({ children }) => {
-  const style = { color: Colors.darkGrey };
+  const style = { fontSize: '0.9rem', color: Colors.darkGrey };
 
   return <span style={style}>{children}</span>;
 };
 
 const LED = ({ status }) => {
   const style = {
-    width: '18px',
-    height: '18px',
+    backgroundColor: Colors.statusDown,
+    width: '14px',
+    height: '14px',
     borderRadius: '9px',
-    backgroundColor: status.includes('OK') ? Colors.statusOK : Colors.statusDown,
-    marginRight: '10px',
+    marginRight: '5px',
   };
+
+  if (status.includes('OK')) {
+    style.backgroundColor = Colors.statusOk;
+  }
 
   return <div style={style}/>;
 };
 
-const Status = ({ status }) => (
-  <FlexRow>
-    <LED status={status}/>
-    <Subtitle>{status}</Subtitle>
-  </FlexRow>
+const Row = ({ children }) => {
+  const style = {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  };
+
+  return <div style={style}>{children}</div>;
+};
+
+const Status = ({ data }) => (
+  <Row>
+    <LED status={data.status}/>
+    <Subtitle>{data.status} ({data.port})</Subtitle>
+  </Row>
 );
 
 const AppCard = ({ data }) => (
   <Container>
     <Title>{data.app}</Title>
-    <Status status={data.status}/>
+    <Status data={data}/>
   </Container>
 );
 

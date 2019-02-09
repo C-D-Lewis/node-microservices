@@ -2,8 +2,8 @@ import React from 'react';
 
 const IconButton = ({ iconSrc, onClick }) => {
   const style = {
-    width: '28px',
-    height: '28px',
+    width: '26px',
+    height: '26px',
     backgroundColor: '#0003',
     padding: '3px',
     borderRadius: '3px',

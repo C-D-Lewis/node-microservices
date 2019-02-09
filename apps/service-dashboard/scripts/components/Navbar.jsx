@@ -30,7 +30,7 @@ const NavBar  = ({ children, icon, title }) => {
     height: '60px',
     backgroundColor: Colors.primary,
     alignItems: 'center',
-    boxShadow: '0px 2px 3px 1px #8887',
+    boxShadow: '0px 2px 3px 1px #5557',
   };
 
   return (
