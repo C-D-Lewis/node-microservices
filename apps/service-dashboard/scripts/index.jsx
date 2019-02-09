@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import AppCard from './components/AppCard';
 import BottomBar from './components/BottomBar';
 import IconButton from './components/IconButton';
 import IPTextBox from './components/IPTextBox';
@@ -30,13 +31,13 @@ class Application extends React.Component {
     const CurrentPage = this.state.currentPage;
 
     return (
-      <div>
+      <div className="root-container">
         <Navbar title="Service Dashboard" icon="../assets/raspberrypi.png">
           <IPTextBox setState={this.setState.bind(this)}/>
           <IconButton iconSrc="../assets/reload.png" onClick={this.loadApps}/>
         </Navbar>
         <Page>
-          
+          {this.state.apps.map(p => <AppCard key={p.app} data={p}/>)}
         </Page>
         <BottomBar state={this.state}/>
       </div>
