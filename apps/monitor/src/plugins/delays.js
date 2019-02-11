@@ -87,9 +87,10 @@ module.exports = async (args) => {
 
   ledIndex = args.LED;
   try {
-    const gaOk = await checkDelays(GREATER_ANGLIA);
+    // TODO: Configurable service lines
+    // const gaOk = await checkDelays(GREATER_ANGLIA);
     const tflOk = await checkDelays(TFL_RAIL);
-    setLedState((gaOk && tflOk) ? config.LED_STATES.OK : config.LED_STATES.DOWN);
+    setLedState((/*gaOk && */tflOk) ? config.LED_STATES.OK : config.LED_STATES.DOWN);
   } catch(e) {
     log.error(e);
     fcm.post('Monitor', 'monitor', `Error checking delays: ${e.message}`);
