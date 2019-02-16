@@ -28,6 +28,7 @@ def main():
   for c in range(NUM_CHANNELS):
     mote.configure_channel(c + 1, NUM_PIXELS, True)
   set_all()
+  GPIO.cleanup()
 
 if '__main__' in __name__:
   main()
