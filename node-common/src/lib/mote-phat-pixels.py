@@ -18,7 +18,7 @@ import motephat as mote
 
 def set_all():
   for c in range(NUM_CHANNELS):
-    for p in range(NUM_PIXELS):
+    for p in range(0, len(json_arr)):
       pixel_arr = json_arr[p]
       mote.set_pixel(c + 1, p, int(pixel_arr[0]), int(pixel_arr[1]), int(pixel_arr[2]))
   mote.show()
@@ -28,7 +28,6 @@ def main():
   for c in range(NUM_CHANNELS):
     mote.configure_channel(c + 1, NUM_PIXELS, True)
   set_all()
-  GPIO.cleanup()
 
 if '__main__' in __name__:
   main()
