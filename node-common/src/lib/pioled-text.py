@@ -60,6 +60,8 @@ draw.rectangle((0, 0, width, height), outline=0, fill=0)
 font = ImageFont.load_default()
 
 # Draw something
+x = 0
+top = 0
 cmd = "hostname -I | cut -d\' \' -f1"
 IP = subprocess.check_output(cmd, shell = True)
 cmd = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)}'"
