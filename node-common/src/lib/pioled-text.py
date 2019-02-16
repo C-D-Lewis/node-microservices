@@ -52,4 +52,21 @@ image = Image.new('1', (width, height))
 draw = ImageDraw.Draw(image)
  
 # Draw a black filled box to clear the image.
-draw.rectangle((0,0,width,height), outline=0, fill=0)
+# TODO: Parameterise this to allow multiple clients
+# TODO: Parameterise which of 4 lines to use
+draw.rectangle((0, 0, width, height), outline=0, fill=0)
+
+# Load default font.
+font = ImageFont.load_default()
+
+# Draw something
+cmd = "hostname -I | cut -d\' \' -f1"
+IP = subprocess.check_output(cmd, shell = True)
+cmd = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)}'"
+CPU = subprocess.check_output(cmd, shell = True)
+draw.text((x, top), "IP: " + str(IP),  font=font, fill=255)
+draw.text((x, top + 8), str(CPU), font=font, fill=255)
+
+# Display image.
+disp.image(image)
+disp.display()
