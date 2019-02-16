@@ -17,19 +17,21 @@ test: sudo python examples/stats.py
 # TODO: Parameterise this to allow multiple clients
 # TODO: Parameterise clear at start
 
+import sys
 import time
+import subprocess
+
 import Adafruit_GPIO.SPI as SPI
 import Adafruit_SSD1306
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-import subprocess
 
 # Parameters
 # python pioled-text.py "Hello, world!" 0 false
-text = int(sys.argv[1])
+text = sys.argv[1]
 line_number = int(sys.argv[2])
-clear_all = int(sys.argv[3])
+clear_all = sys.argv[3] == 'True' || sys.argv[3] == 'true'
 
 # 128x32 display with hardware I2C:
 RST = None
