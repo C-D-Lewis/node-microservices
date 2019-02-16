@@ -1,5 +1,7 @@
 require('./conduit.spec');
 require('./attic.spec');
+
+// Sorted
 require('./config.spec');
 require('./db.spec');
 require('./eventBus.spec');
@@ -14,3 +16,4 @@ require('./motePhat.spec');
 require('./requestAsync.spec');
 require('./schema.spec');
 require('./server.spec');
+require('./textDisplay.spec');

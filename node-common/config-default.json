@@ -32,5 +32,9 @@
   },
   "SERVER": {
     "PORT": 8989
+  },
+  "TEXT_DISPLAY": {
+    "USE_HARDWARE": false,
+    "HARDWARE_TYPE": "pioled"
   }
 }
