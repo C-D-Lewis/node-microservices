@@ -24,7 +24,7 @@ import platform
 
 # Parameters
 # python pioled-text.py "Hello, world!" "Another line"
-lines = sys.argv[1:3]
+lines = sys.argv[1:4]
 
 # Handle non Pi for testing
 if platform.machine() != 'armv7l':
