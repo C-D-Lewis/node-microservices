@@ -23,7 +23,7 @@ import subprocess
 import platform
 
 # Parameters
-# python pioled-text.py "Hello, world!" "Another line"
+# python pioled-text.py "Hello, world!" "Another line" "line 3" "line 4"
 lines = sys.argv[1:5]
 
 # Handle non Pi for testing
@@ -53,10 +53,10 @@ font = ImageFont.load_default()
 # Draw something
 draw.rectangle((0, 0, width, height), outline=0, fill=0)
 x = 0
-y = 0
+y = -2
 for line in lines:
   draw.text((x, y), str(line), font=font, fill=255)
-  y += 7
+  y += 8
 
 # Display image.
 disp.image(image)
