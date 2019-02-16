@@ -31,7 +31,7 @@ from PIL import ImageFont
 # python pioled-text.py "Hello, world!" 0 false
 text = sys.argv[1]
 line_number = int(sys.argv[2])
-clear_all = sys.argv[3] == 'True' || sys.argv[3] == 'true'
+clear_all = sys.argv[3] == 'True' or sys.argv[3] == 'true'
 
 # 128x32 display with hardware I2C:
 RST = None
