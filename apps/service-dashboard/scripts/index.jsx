@@ -30,7 +30,7 @@ class Application extends React.Component {
     this.state = {
       apps: [],
       ip: '',
-      lastResponse: 'Ready',
+      bottomBarText: 'Ready',
     };
 
     this.loadApps = this.loadApps.bind(this);
@@ -38,6 +38,26 @@ class Application extends React.Component {
 
   componentDidMount() {
     setTimeout(this.loadApps, 200);
+  }
+
+  loadApps() {
+    this.setState({ apps: [] });
+
+    const _self = this;
+    fetch(`http://${this.state.ip}:${CONDUIT_PORT}/apps`)
+      .then(res => res.json())
+      .then(apps => apps.sort((a, b) => a.app < b.app ? -1 : 1))
+      .then(apps => _self.setState({ apps, bottomBarText: `Read ${apps.length} apps` }))
+      .catch(console.error);
+  }
+
+  conduitSend(message) {
+    const opts = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(message),
+    };
+    return fetch(`http://${this.state.ip}:5959/conduit`, opts).then(res => res.json());
   }
 
   render() {
@@ -50,20 +70,15 @@ class Application extends React.Component {
           <IconButton iconSrc="../assets/reload.png" onClick={this.loadApps}/>
         </Navbar>
         <Page>
-          {this.state.apps.map(p => <AppCard key={p.app} data={p}/>)}
+          {this.state.apps.map(p => (
+            <AppCard key={p.app} state={this.state} setState={this.setState.bind(this)} 
+              data={p}
+              conduitSend={this.conduitSend.bind(this)}/>
+          ))}
         </Page>
-        <BottomBar>{this.state.lastResponse}</BottomBar>
+        <BottomBar>{this.state.bottomBarText}</BottomBar>
       </div>
     );
-  }
-
-  loadApps() {
-    const _self = this;
-    fetch(`http://${this.state.ip}:${CONDUIT_PORT}/apps`)
-      .then(res => res.json())
-      .then(apps => apps.sort((a, b) => a.app < b.app ? -1 : 1))
-      .then(apps => _self.setState({ apps }))
-      .catch(console.error);
   }
 
 }

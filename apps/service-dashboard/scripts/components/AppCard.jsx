@@ -1,6 +1,7 @@
 import React from 'react';
 import { Colors } from '../util';
 import { FlexRow } from './FlexComponents';
+import AppControls from './AppControls';
 
 const Container = ({ children }) => {
   const style = {
@@ -19,7 +20,7 @@ const Container = ({ children }) => {
 };
 
 const Title = ({ children }) => {
-  const style = { fontSize: '1.3rem' };
+  const style = { fontSize: '1.3rem', flex: 1 };
 
   return <span style={style}>{children}</span>;
 };
@@ -46,6 +47,23 @@ const LED = ({ status }) => {
   return <div style={style}/>;
 };
 
+const Status = ({ data }) => {
+  const ledRowStyle = {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    flex: 2,
+  };
+
+  return (
+    <div style={ledRowStyle}>
+      <LED status={data.status}/>
+      <Subtitle>{data.status} ({data.port})</Subtitle>
+    </div>
+  );
+};
+
 const Row = ({ children }) => {
   const style = {
     display: 'flex',
@@ -56,17 +74,15 @@ const Row = ({ children }) => {
   return <div style={style}>{children}</div>;
 };
 
-const Status = ({ data }) => (
-  <Row>
-    <LED status={data.status}/>
-    <Subtitle>{data.status} ({data.port})</Subtitle>
-  </Row>
-);
-
-const AppCard = ({ data }) => (
+const AppCard = ({ state, setState, data, conduitSend }) => (
   <Container>
-    <Title>{data.app}</Title>
-    <Status data={data}/>
+    <Row>
+      <Title>{data.app}</Title>
+      <Status data={data}/>
+    </Row>
+    <AppControls state={state} setState={setState}
+      data={data}
+      conduitSend={conduitSend}/>
   </Container>
 );
 
