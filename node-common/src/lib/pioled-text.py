@@ -20,18 +20,22 @@ test: sudo python examples/stats.py
 import sys
 import time
 import subprocess
+import platform
+
+# Parameters
+# python pioled-text.py "Hello, world!" "Another line"
+lines = sys.argv[1:3]
+
+# Handle non Pi for testing
+if platform.machine() != 'armv7l':
+  print lines
+  sys.exit(0)
 
 import Adafruit_GPIO.SPI as SPI
 import Adafruit_SSD1306
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-
-# Parameters
-# python pioled-text.py "Hello, world!" 0 false
-text = sys.argv[1]
-line_number = int(sys.argv[2])
-clear_all = sys.argv[3] == 'True' or sys.argv[3] == 'true'
 
 # 128x32 display with hardware I2C:
 RST = None
@@ -49,8 +53,10 @@ font = ImageFont.load_default()
 # Draw something
 draw.rectangle((0, 0, width, height), outline=0, fill=0)
 x = 0
-top = 0
-draw.text((x, top + (7 * line_number)), str(text), font=font, fill=255)
+y = 0
+for line in lines:
+  draw.text((x, y), str(line), font=font, fill=255)
+  y += 7
 
 # Display image.
 disp.image(image)
