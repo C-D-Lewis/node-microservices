@@ -50,7 +50,7 @@ font = ImageFont.load_default()
 draw.rectangle((0, 0, width, height), outline=0, fill=0)
 x = 0
 top = 0
-draw.text((x, top + (8 * line_number)), str(text), font=font, fill=255)
+draw.text((x, top + (7 * line_number)), str(text), font=font, fill=255)
 
 # Display image.
 disp.image(image)
