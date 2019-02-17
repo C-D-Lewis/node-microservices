@@ -5,22 +5,22 @@ const {
 const sleep = require('../modules/sleep');
 
 config.requireKeys('services.js', {
-  required: [ 'LED_STATES', 'CONDUIT' ],
-  type: 'object', properties: {
+  required: ['LED_STATES', 'CONDUIT'],
+  properties: {
     LED_STATES: {
-      required: [ 'OK', 'DOWN' ],
-      type: 'object', properties: {
+      required: ['OK', 'DOWN'],
+      properties: {
         OK: { type: 'array', items: { type: 'number' } },
-        DOWN: { type: 'array', items: { type: 'number' } }
-      }
+        DOWN: { type: 'array', items: { type: 'number' } },
+      },
     },
     CONDUIT: {
-      required: [ 'PORT' ],
-      type: 'object', properties: {
-        PORT: { type: 'number' }
-      }
-    }
-  }
+      required: ['PORT'],
+      properties: {
+        PORT: { type: 'number' },
+      },
+    },
+  },
 });
 
 let savedState = true;
