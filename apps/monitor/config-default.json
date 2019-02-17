@@ -20,6 +20,14 @@
         "TEMP_COLD": 8,
         "LED": 6
       }
+    },
+    {
+      "ENABLED": false,
+      "FILE_NAME": "services.js",
+      "EVERY": 10,
+      "ARGS": {
+        "LED": 0
+      }
     }
   ],
   "SLEEP": false,
