@@ -1,11 +1,17 @@
 {
   "PLUGINS": [
-    { "ENABLED": true, "FILE_NAME": "delays.js", "EVERY": 15,
+    {
+      "ENABLED": true,
+      "FILE_NAME": "delays.js",
+      "EVERY": 15,
       "ARGS": {
         "LED": 5
       }
     },
-    { "ENABLED": false, "FILE_NAME": "weather.js", "EVERY": 10,
+    {
+      "ENABLED": false,
+      "FILE_NAME": "weather.js",
+      "EVERY": 10,
       "ARGS": {
         "DARKSKY_KEY": "",
         "LATITUDE": "",
@@ -42,5 +48,10 @@
     "HOST": "localhost",
     "PORT": 5959,
     "APP": "Monitor"
+  },
+  "GIST_SYNC": {
+    "URL": "",
+    "DIR": "gist",
+    "SYNC_INTERVAL_M": 15
   }
 }
