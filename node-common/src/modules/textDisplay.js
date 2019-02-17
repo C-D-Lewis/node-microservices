@@ -61,7 +61,7 @@ const setLine = (index, message) => {
   if (config.TEXT_DISPLAY.HARDWARE_TYPE === 'pioled') {
     let cmd = `python ${LIB_PATH}`;
     linesState.forEach((p) => {
-      cmd += ` ${p}`;
+      cmd += ` "${p}"`;
     });
     execSync(cmd);
   }
