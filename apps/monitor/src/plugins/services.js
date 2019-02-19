@@ -1,7 +1,7 @@
 const {
-  config, conduit, fcm, log, requestAsync
-} = require('@chris-lewis/node-common')(['config', 'conduit', 'fcm', 'log', 'requestAsync']);
-
+  config, fcm, log, requestAsync
+} = require('@chris-lewis/node-common')(['config', 'fcm', 'log', 'requestAsync']);
+const display = require('../modules/display');
 const sleep = require('../modules/sleep');
 
 config.requireKeys('services.js', {
@@ -34,22 +34,20 @@ module.exports = async (args) => {
   log.debug(`services host=${host}`);
 
   const { body } = await requestAsync(`http://${host}:${config.CONDUIT.PORT}/apps`);
-  const downApps = JSON.parse(body)
-    .reduce((result, item) => {
-      log.debug(`Service ${item.app} returned ${item.status}`);
-      if (item.status !== 'OK') {
-        result.push(item.app);
-      }
+  const json = JSON.parse(body);
+  const downApps = json.reduce((result, item) => {
+    log.debug(`Service ${item.app} returned ${item.status}`);
+    if (item.status !== 'OK') {
+      result.push(item.app);
+    }
 
-      return result;
-    }, []);
+    return result;
+  }, []);
 
   const stateNow = downApps.length === 0;
-  log.info(`Services up: ${stateNow}`);
-  await conduit.send({
-    to: 'LedServer', topic: 'setPixel',
-    message: { [args.LED]: stateNow ? config.LED_STATES.OK : config.LED_STATES.DOWN }
-  });
+  const serviceList = json.reduce((res, p) => `${res}${p.app},`, '');
+  log.info(`Services up: ${stateNow} (${serviceList})`);
+  display.setLed(args.LED, stateNow ? config.LED_STATES.OK : config.LED_STATES.DOWN);
 
   // Was OK, not anymore
   if (savedState && !stateNow) {

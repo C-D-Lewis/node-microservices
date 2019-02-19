@@ -1,23 +1,27 @@
 const {
-  config, conduit, fcm, log
+  config, conduit, fcm, log,
 } = require('@chris-lewis/node-common')(['config', 'conduit', 'fcm', 'log']);
 
 const plugins = require('./modules/plugins');
 const statusLed = require('./modules/status-led');
 
 config.requireKeys('main.js', {
-  required: [ 'LED_STATES' ],
-  type: 'object', properties: {
+  required: ['LED_STATES'],
+  properties: {
     LED_STATES: {
-      required: [ 'OFF' ],
-      type: 'object', properties: {
-        OFF: { type: 'array', items: { type: 'number' } }
-      }
-    }
-  }
+      required: ['OFF'],
+      properties: {
+        OFF: { type: 'array', items: { type: 'number' } },
+      },
+    },
+    DISPLAY_DRIVER: {
+      type: 'string',
+      enum: ['textDisplay', 'leds'],  // Name of corresponding node-common module
+    },
+  },
 });
 
-(async () => {
+const main = async () => {
   log.begin();
 
   await conduit.register();
@@ -27,4 +31,6 @@ config.requireKeys('main.js', {
   plugins.loadAll();
 
   fcm.post('Monitor', 'monitor', 'Monitor started successfully');
-})();
+};
+
+main();
