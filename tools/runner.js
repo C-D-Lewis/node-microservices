@@ -18,7 +18,7 @@ const queue = async (items) => {
 
 const main = () => {
   const appList = process.argv.slice(2);
-  const promises = appList.map(app => async () => {
+  const tasks = appList.map(app => async () => {
     if (!fs.existsSync(`../apps/${app}`)) {
       throw new Error(`App does not exist: ${app}`);
     }
@@ -29,7 +29,7 @@ const main = () => {
     return waitAsync(INTERVAL_MS);
   });
 
-  queue(promises);
+  queue(tasks);
 };
 
 main();
