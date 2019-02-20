@@ -57,7 +57,12 @@ class Application extends React.Component {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(message),
     };
-    return fetch(`http://${this.state.ip}:5959/conduit`, opts).then(res => res.json());
+    return fetch(`http://${this.state.ip}:5959/conduit`, opts)
+      .then(res => res.json())
+      .then((json) => {
+        this.setState({ bottomBarText: JSON.stringify(json) });
+        return json;
+      });
   }
 
   render() {
@@ -71,7 +76,7 @@ class Application extends React.Component {
         </Navbar>
         <Page>
           {this.state.apps.map(p => (
-            <AppCard key={p.app} state={this.state} setState={this.setState.bind(this)} 
+            <AppCard key={p.app} state={this.state} setState={this.setState.bind(this)}
               data={p}
               conduitSend={this.conduitSend.bind(this)}/>
           ))}
