@@ -10,7 +10,8 @@
       "RAIN": [0, 0, 255],
       "COLD": [135, 206, 250],
       "HOT": [255, 165, 0]
-    }
+    },
+    "DISPLAY_DRIVER": "leds"
   },
   "PLUGINS": [
     {
@@ -43,7 +44,6 @@
       }
     }
   ],
-  "DISPLAY_DRIVER": "textDisplay",
   "LOG": {
     "TO_FILE": false,
     "APP_NAME": "Monitor",

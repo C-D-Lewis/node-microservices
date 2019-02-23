@@ -9,7 +9,7 @@ config.requireKeys('main.js', {
   required: ['OPTIONS'],
   properties: {
     OPTIONS: {
-      required: ['LED_STATES'],
+      required: ['LED_STATES', 'DISPLAY_DRIVER'],
       properties: {
         LED_STATES: {
           required: ['OFF'],
@@ -17,11 +17,11 @@ config.requireKeys('main.js', {
             OFF: { type: 'array', items: { type: 'number' } },
           },
         },
+        DISPLAY_DRIVER: {
+          type: 'string',
+          enum: ['textDisplay', 'leds'],  // Name of corresponding node-common module
+        },
       },
-    },
-    DISPLAY_DRIVER: {
-      type: 'string',
-      enum: ['textDisplay', 'leds'],  // Name of corresponding node-common module
     },
   },
 });
