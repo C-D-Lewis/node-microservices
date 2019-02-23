@@ -1,14 +1,14 @@
 const { expect } = require('chai');
 
 const {
-  config, testBed
-} = require('@chris-lewis/node-common')(['config', 'testBed']);
+  config, requestAsync,
+} = require('@chris-lewis/node-common')(['config', 'requestAsync']);
 
 describe('API', () => {
   describe('/status', () => {
     it('should return 200 / \'OK\'', async () => {
       const url = `http://localhost:${config.SERVER.PORT}/status`;
-      const data = await testBed.requestPromise({ url });
+      const data = await requestAsync({ url });
 
       expect(data.response.statusCode).to.equal(200);
       expect(data.body).to.contain('OK');
@@ -18,7 +18,7 @@ describe('API', () => {
   describe('/port', () => {
     it(`should return 200 / { port }`, async () => {
       const url = `http://localhost:${config.SERVER.PORT}/port`;
-      const data = await testBed.requestPromise({ 
+      const data = await requestAsync({
         url,
         json: { app: 'Attic' }
       });
@@ -30,7 +30,7 @@ describe('API', () => {
 
   describe('/apps', () => {
     it('should return 200 / [{ app, port, status }]', async () => {
-      const data = await testBed.requestPromise({
+      const data = await requestAsync({
         url: `http://localhost:${config.SERVER.PORT}/apps`
       });
 
