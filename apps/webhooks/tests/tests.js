@@ -1,18 +1,18 @@
 const { expect } = require('chai');
 
 const {
-  config, testBed
-} = require('@chris-lewis/node-common')(['config', 'testBed']);
+  config, testing, requestAsync,
+} = require('@chris-lewis/node-common')(['config', 'testing', 'requestAsync']);
 
 const TEST_WEBHOOK = {
   url: `/testWebhook${Date.now()}`,
-  packet: { to: 'Attic', topic: 'webhookReceived' }
+  packet: { to: 'Attic', topic: 'webhookReceived' },
 };
 
 describe('API', () => {
   describe('Conduit topic: status', () => {
     it('should return 200 / OK', async () => {
-      const result = await testBed.sendConduitPacket({ to: 'Webhooks', topic: 'status' });
+      const result = await testing.sendConduitPacket({ to: 'Webhooks', topic: 'status' });
 
       expect(result.status).to.equal(200);
       expect(result.message.content).to.equal('OK');
@@ -22,7 +22,7 @@ describe('API', () => {
   describe('/status', () => {
     it('should return 200 / OK', async () => {
       const url = `http://localhost:${config.SERVER.PORT}/status`;
-      const data = await testBed.requestPromise({ url });
+      const data = await requestAsync({ url });
 
       expect(data.response.statusCode).to.equal(200);
       expect(data.body).to.contain('OK');
@@ -31,7 +31,7 @@ describe('API', () => {
 
   describe('Conduit topic: add', () => {
     it('should return 200 / OK', async () => {
-      const response = await testBed.sendConduitPacket({
+      const response = await testing.sendConduitPacket({
         to: 'Webhooks', topic: 'add',
         message: TEST_WEBHOOK
       });
@@ -44,7 +44,7 @@ describe('API', () => {
   describe('Hit TEST_WEBHOOK', () => {
     it('should return 200 / OK', async () => {
       const url = `http://localhost:${config.SERVER.PORT}${TEST_WEBHOOK.url}`;
-      const data = await testBed.requestPromise({ url, method: 'POST' });
+      const data = await requestAsync({ url, method: 'POST' });
 
       expect(data.response.statusCode).to.equal(200);
       expect(data.body).to.contain('OK');
@@ -53,7 +53,7 @@ describe('API', () => {
 
   describe('Conduit topic: remove', () => {
     it('should return 200 / OK', async () => {
-      const response = await testBed.sendConduitPacket({
+      const response = await testing.sendConduitPacket({
         to: 'Webhooks', topic: 'remove',
         message: TEST_WEBHOOK
       });
@@ -65,7 +65,7 @@ describe('API', () => {
 
   describe('Webhook is actually removed', () => {
     it('should return 404 / Not Found', async () => {
-      const response = await testBed.sendConduitPacket({
+      const response = await testing.sendConduitPacket({
         to: 'Webhooks', topic: 'remove',
         message: TEST_WEBHOOK
       });
@@ -78,7 +78,7 @@ describe('API', () => {
   describe('Miss TEST_WEBHOOK', () => {
     it('should return 404 / Not Found', async () => {
       const url = `http://localhost:${config.SERVER.PORT}${TEST_WEBHOOK.url}`;
-      const data = await testBed.requestPromise({ url, method: 'POST' });
+      const data = await requestAsync({ url, method: 'POST' });
 
       expect(data.response.statusCode).to.equal(404);
       expect(data.body).to.contain('Not Found');

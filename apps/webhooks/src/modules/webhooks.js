@@ -1,19 +1,19 @@
 const bodyParser = require('body-parser');
 
 const {
-  attic, conduit, config, log, server
+  attic, conduit, config, log, server,
 } = require('@chris-lewis/node-common')(['attic', 'conduit', 'config', 'log', 'server']);
 
 const ATTIC_KEY_WEBHOOKS = 'webhooks';
 const WEBHOOK_SCHEMA = {
   additionalProperties: false,
   required: ['url', 'packet'],
-  type: 'object', properties: {
+  properties: {
     url: { type: 'string' },
     packet: {
       additionalProperties: false,
       required: ['to', 'topic'],
-      type: 'object', properties: {
+      properties: {
         to: { type: 'string' },
         topic: { type: 'string' },
       },
@@ -21,19 +21,20 @@ const WEBHOOK_SCHEMA = {
   },
 };
 
-let app;
-
 // Model - always query DB for latest list, since Express doesn't support route removal
 const registerForWebhooks = async () => {
+  const app = server.getExpressApp();
+
+  // When any request comes in...
   app.use(async (req, res) => {
-    const webhooks = await attic.get(ATTIC_KEY_WEBHOOKS);
-    if (!webhooks.length) {
+    const hooks = await attic.get(ATTIC_KEY_WEBHOOKS);
+    if (!hooks.length) {
       res.status(404).json({ error: 'Not Found' });
       return;
     }
 
     const urlRequested = req.path;
-    const found = webhooks.find(item => item.url === urlRequested)
+    const found = hooks.find(p => p.url === urlRequested)
     if (!found) {
       log.error(`Webhook does not exist for URL ${urlRequested}`);
       res.status(404).json({ error: 'Not Found' });
@@ -41,9 +42,10 @@ const registerForWebhooks = async () => {
     }
 
     // Add some extra metadata
-    if (!found.packet.message) found.packet.message = {};
+    found.packet.message = found.packet.message || {};
     found.packet.message.webhookQuery = req.query;
 
+    // Store data
     log.info(`Forwarding webhook to ${found.packet.to}`);
     await conduit.send(found.packet);
     server.respondOk(res);
@@ -54,18 +56,17 @@ const setup = async () => {
   server.start();
 
   try {
-    const webhooks = await attic.get(ATTIC_KEY_WEBHOOKS);
-    if (webhooks.length) {
+    const hooks = await attic.get(ATTIC_KEY_WEBHOOKS);
+    if (hooks.length) {
       log.info('Known webhooks:');
-      webhooks.forEach(hook => log.info(`  POST ${hook.url}`));
+      hooks.forEach(p => log.info(`  POST ${p.url}`));
     }
   } catch (e) {
-    log.info('Initialising empty list of webhooks.');
-    webhooks = [];
-    await attic.set(ATTIC_KEY_WEBHOOKS, webhooks);
+    log.info('Initialising empty list of webhooks');
+    hooks = [];
+    await attic.set(ATTIC_KEY_WEBHOOKS, hooks);
   }
 
-  app = server.getExpressApp();
   registerForWebhooks();
 };
 
