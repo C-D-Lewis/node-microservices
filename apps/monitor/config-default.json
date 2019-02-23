@@ -1,4 +1,7 @@
 {
+  "OPTIONS": {
+    "SLEEP": false
+  },
   "PLUGINS": [
     {
       "ENABLED": true,
@@ -31,7 +34,6 @@
     }
   ],
   "DISPLAY_DRIVER": "textDisplay",
-  "SLEEP": false,
   "BOOT": {
     "URL": ""
   },

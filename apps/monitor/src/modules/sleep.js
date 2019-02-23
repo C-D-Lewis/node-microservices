@@ -4,9 +4,14 @@ const {
 const display = require('./display');
 
 config.requireKeys('sleep.js', {
-  required: ['SLEEP', 'LED_STATES'],
+  required: ['OPTIONS', 'LED_STATES'],
   properties: {
-    SLEEP: { type: 'boolean' },
+    OPTIONS: {
+      required: ['SLEEP'],
+      properties: {
+        SLEEP: { type: 'boolean' },
+      },
+    },
     LED_STATES: {
       required: ['OFF'],
       properties: {
@@ -22,7 +27,7 @@ const SLEEP_END_HOUR = 6;
 let isSleeping = false;
 
 const sleeping = () => {
-  if (!config.SLEEP) {
+  if (!config.OPTIONS.SLEEP) {
     return false;
   }
 
