@@ -1,8 +1,8 @@
 const { expect } = require('chai');
 
 const {
-  config, testBed
-} = require('@chris-lewis/node-common')(['config', 'testBed']);
+  config, testing,
+} = require('@chris-lewis/node-common')(['config', 'testing']);
 
 const TEST_APP = 'TestApp';
 const TEST_KEY = 'TestKey';
@@ -11,7 +11,7 @@ const TEST_VALUE = Math.round(Math.random() * 100);
 describe('API', () => {
   describe('Conduit topic: status', () => {
     it('should return 200 / OK', async () => {
-      const response = await testBed.sendConduitPacket({ to: 'Attic', topic: 'status' });
+      const response = await testing.sendConduitPacket({ to: 'Attic', topic: 'status' });
 
       expect(response.status).to.equal(200);
       expect(response.message.content).to.equal('OK');
@@ -20,7 +20,7 @@ describe('API', () => {
 
   describe('Conduit topic: set', () => {
     it('should return 200 / OK', async () => {
-      const response = await testBed.sendConduitPacket({
+      const response = await testing.sendConduitPacket({
         to: 'Attic',
         topic: 'set',
         message: {
@@ -37,7 +37,7 @@ describe('API', () => {
 
   describe('Conduit topic: get', () => {
     it('should return 200 / TEST_VALUE', async () => {
-      const response = await testBed.sendConduitPacket({
+      const response = await testing.sendConduitPacket({
         to: 'Attic',
         topic: 'get',
         message: {
@@ -56,7 +56,7 @@ describe('API', () => {
 
   describe('Conduit topic: increment', () => {
     it('should return 200 / OK, then return 200 / TEST_VALUE + 1', async () => {
-      let response = await testBed.sendConduitPacket({
+      let response = await testing.sendConduitPacket({
         to: 'Attic',
         topic: 'increment',
         message: {
@@ -69,7 +69,7 @@ describe('API', () => {
       expect(response.status).to.equal(200);
       expect(response.message.content).to.equal('OK');
 
-      response = await testBed.sendConduitPacket({
+      response = await testing.sendConduitPacket({
         to: 'Attic',
         topic: 'get',
         message: {
