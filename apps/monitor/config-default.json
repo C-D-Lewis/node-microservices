@@ -1,7 +1,16 @@
 {
   "OPTIONS": {
     "SLEEP": false,
-    "STATUS_LED": true
+    "STATUS_LED": true,
+    "LED_STATES": {
+      "OK": [0, 255, 0],
+      "OFF": [0, 0, 0],
+      "DOWN": [255, 0, 0],
+      "STATUS": [128, 128, 0],
+      "RAIN": [0, 0, 255],
+      "COLD": [135, 206, 250],
+      "HOT": [255, 165, 0]
+    }
   },
   "PLUGINS": [
     {
@@ -39,15 +48,6 @@
     "TO_FILE": false,
     "APP_NAME": "Monitor",
     "LEVEL": "info"
-  },
-  "LED_STATES": {
-    "OK": [0, 255, 0],
-    "OFF": [0, 0, 0],
-    "DOWN": [255, 0, 0],
-    "STATUS": [128, 128, 0],
-    "RAIN": [0, 0, 255],
-    "COLD": [135, 206, 250],
-    "HOT": [255, 165, 0]
   },
   "FCM": {
     "API_KEY": ""

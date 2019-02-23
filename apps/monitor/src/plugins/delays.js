@@ -7,13 +7,18 @@ const display = require('../modules/display');
 const sleep = require('../modules/sleep');
 
 config.requireKeys('delays.js', {
-  required: ['LED_STATES'],
+  required: ['OPTIONS'],
   properties: {
-    LED_STATES: {
-      required: ['DOWN', 'OFF'],
+    OPTIONS: {
+      required: ['LED_STATES'],
       properties: {
-        DOWN: { type: 'array', items: { type: 'number' } },
-        OK: { type: 'array', items: { type: 'number' } },
+        LED_STATES: {
+          required: ['DOWN', 'OFF'],
+          properties: {
+            DOWN: { type: 'array', items: { type: 'number' } },
+            OK: { type: 'array', items: { type: 'number' } },
+          },
+        },
       },
     },
   },
@@ -85,10 +90,13 @@ module.exports = async (args) => {
     // TODO: Configurable service lines in ARGS
     // const gaOk = await checkDelays(GREATER_ANGLIA);
     const tflOk = await checkDelays(TFL_RAIL);
-    display.setLed(args.LED, (/*gaOk && */tflOk) ? config.LED_STATES.OK : config.LED_STATES.DOWN);
+    display.setLed(
+      args.LED,
+      (/*gaOk && */tflOk) ? config.OPTIONS.LED_STATES.OK : config.OPTIONS.LED_STATES.DOWN
+    );
   } catch(e) {
     log.error(e);
     fcm.post('Monitor', 'monitor', `Error checking delays: ${e.message}`);
-    display.setLed(args.LED, config.LED_STATES.DOWN);
+    display.setLed(args.LED, config.OPTIONS.LED_STATES.DOWN);
   }
 };
