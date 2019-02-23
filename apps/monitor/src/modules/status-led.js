@@ -6,8 +6,14 @@ const display = require('./display');
 const sleep = require('./sleep');
 
 config.requireKeys('main.js', {
-  required: ['LED_STATES', 'STATUS_LED'],
+  required: ['LED_STATES', 'OPTIONS'],
   properties: {
+    OPTIONS: {
+      required: ['STATUS_LED'],
+      properties: {
+        STATUS_LED: { type: 'boolean' },
+      },
+    },
     LED_STATES: {
       required: ['OFF', 'STATUS'],
       properties: {
@@ -15,7 +21,6 @@ config.requireKeys('main.js', {
         STATUS: { type: 'array', items: { type: 'number' } },
       },
     },
-    STATUS_LED: { type: 'boolean' },
   },
 });
 
@@ -23,7 +28,7 @@ const TOGGLE_INTERVAL_MS = 2000;
 const LED_INDEX = 7;
 
 const start = () => {
-  if (!config.STATUS_LED) {
+  if (!config.OPTIONS.STATUS_LED) {
     return;
   }
 

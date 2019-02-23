@@ -1,6 +1,7 @@
 {
   "OPTIONS": {
-    "SLEEP": false
+    "SLEEP": false,
+    "STATUS_LED": true
   },
   "PLUGINS": [
     {
@@ -34,15 +35,11 @@
     }
   ],
   "DISPLAY_DRIVER": "textDisplay",
-  "BOOT": {
-    "URL": ""
-  },
   "LOG": {
     "TO_FILE": false,
     "APP_NAME": "Monitor",
     "LEVEL": "info"
   },
-  "STATUS_LED": true,
   "LED_STATES": {
     "OK": [0, 255, 0],
     "OFF": [0, 0, 0],
