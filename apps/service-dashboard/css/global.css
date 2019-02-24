@@ -17,14 +17,3 @@ tr {
   outline: none;
   border-bottom: 2px solid #FFF;
 }
-
-.app-page-heading {
-  font-weight: bold;
-  font-size: 1.4rem;
-}
-
-.app-page-subheading {
-  font-weight: bold;
-  font-size: 1.2rem;
-  margin-top: 15px;
-}

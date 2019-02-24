@@ -31,9 +31,14 @@ class Application extends React.Component {
       apps: [],
       ip: '',
       bottomBarText: 'Ready',
+      atticControls: {
+        app: '',
+        key: '',
+        value: '',
+      },
       conduitControls: {
         app: '',
-        topic: '',
+        topic: 'status',
         message: '{}',
       },
     };

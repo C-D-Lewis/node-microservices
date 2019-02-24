@@ -1,7 +1,7 @@
 import React from 'react';
 
-const TextButton = ({ label, onClick }) => {
-  const style = {
+const TextButton = ({ label, restyle, onClick }) => {
+  const style = Object.assign({
     display: 'flex',
     flexDirection: 'column',
     minWidth: '100px',
@@ -14,7 +14,8 @@ const TextButton = ({ label, onClick }) => {
     fontSize: '1.1rem',
     textAlign: 'center',
     justifyContent: 'center',
-  };
+    marginRight: '10px',
+  }, restyle);
 
   return  <div style={style} onClick={onClick}>{label}</div>;
 };
