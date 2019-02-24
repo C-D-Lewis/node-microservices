@@ -4,15 +4,7 @@ import IconButton from './IconButton';
 import TextBox from './TextBox';
 import TextButton from './TextButton';
 
-const NoControls = () => {
-  const style = {
-    fontFamily: Fonts.body,
-    color: Colors.darkGrey,
-    paddingTop: '5px',
-  }
-
-  return <div style={style}></div>;;
-};
+const NoControls = () => <div/>;
 
 const Bar = ({ children, align }) => {
   const style = {
@@ -45,6 +37,7 @@ const AtticControls = ({ state, setState, conduitSend }) => {
   const sendButtonRestyle = {
     backgroundColor: Colors.primary,
     color: 'white',
+    width: '50%',
   };
 
   return (
@@ -67,7 +60,8 @@ const AtticControls = ({ state, setState, conduitSend }) => {
           onClick={() => {
             const { app, key } = state.atticControls;
             const message = { app, key };
-            conduitSend({ to: 'Attic', topic: 'get', message });
+            conduitSend({ to: 'Attic', topic: 'get', message })
+              .then(res => setAtticControlsProp('value', res.message.value));
           }}/>
         <TextButton label="Set" restyle={sendButtonRestyle}
           onClick={() => {
@@ -119,16 +113,24 @@ const ConduitControls = ({ state, setState, conduitSend }) => {
   );
 };
 
-const BacklightServerControls = ({ conduitSend }) => (
-  <Column>
-    <Bar>
-      <IconButton iconSrc="../../assets/off.png"
-        onClick={() => conduitSend({ to: 'BacklightServer', topic: 'off' })}/>
-      <IconButton iconSrc="../../assets/spotify.png"
-        onClick={() => conduitSend({ to: 'BacklightServer', topic: 'spotify' })}/>
-    </Bar>
-  </Column>
-);
+const BacklightServerControls = ({ conduitSend }) => {
+  const sendButtonRestyle = {
+    backgroundColor: Colors.primary,
+    color: 'white',
+    width: '50%',
+  };
+
+  return (
+    <Column>
+      <Bar>
+        <TextButton label="Off" restyle={sendButtonRestyle}
+          onClick={() => conduitSend({ to: 'BacklightServer', topic: 'off' })}/>
+        <TextButton label="Spotify" restyle={sendButtonRestyle}
+          onClick={() => conduitSend({ to: 'BacklightServer', topic: 'spotify' })}/>
+      </Bar>
+    </Column>
+  );
+};
 
 const AppControls = ({ state, setState, data, conduitSend }) => {
   const controlsMap = {
