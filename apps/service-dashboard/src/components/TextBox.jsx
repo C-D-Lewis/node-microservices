@@ -1,41 +1,21 @@
 import React from 'react';
 
-class TextBox extends React.Component {
+const TextBox  = ({ value, onChange, placeholder = '', restyle }) => {
+  const style = Object.assign({
+    minWidth: '80px',
+    height: '30px',
+    border: '0',
+    borderBottom: '2px solid #0005',
+    color: 'black',
+    fontSize: '1.1rem',
+    paddingLeft: '5px',
+    margin: '0px 10px 10px 0px',
+  }, restyle);
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      value: this.props.default || '',
-    };
-
-    this.onChange = this.onChange.bind(this);
-  }
-
-  onChange(event) {
-    const { value } = event.target;
-    this.setState({ value });
-    this.props.onChange(value);
-  }
-
-  render() {
-    const style = {
-      width: '200px',
-      height: '30px',
-      border: '0',
-      borderBottom: '2px solid #0005',
-      backgroundColor: '#0001',
-      marginLeft: '10px',
-      color: 'black',
-      fontSize: '1.1rem',
-      paddingLeft: '5px',
-    };
-
-    return (
-      <input type="text" style={style} value={this.state.value} onChange={this.onChange}/>
-    );
-  }
-
-}
+  return (
+    <input type="text" style={style} value={value} placeholder={placeholder}
+      onChange={el => onChange(el.target.value)}/>
+  );
+};
 
 export default TextBox;

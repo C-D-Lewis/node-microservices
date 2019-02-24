@@ -8,7 +8,6 @@ const Container = ({ children }) => {
     display: 'flex',
     flexDirection: 'column',
     minWidth: '340px',
-    minHeight: '20px',
     padding: '15px',
     margin: '10px 0px 10px 20px',
     backgroundColor: 'white',

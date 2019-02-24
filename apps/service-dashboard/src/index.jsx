@@ -31,6 +31,11 @@ class Application extends React.Component {
       apps: [],
       ip: '',
       bottomBarText: 'Ready',
+      conduitControls: {
+        app: '',
+        topic: '',
+        message: '{}',
+      },
     };
 
     this.loadApps = this.loadApps.bind(this);
@@ -50,11 +55,11 @@ class Application extends React.Component {
       .catch(console.error);
   }
 
-  conduitSend(message) {
+  conduitSend(packet) {
     const opts = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(message),
+      body: JSON.stringify(packet),
     };
     return fetch(`http://${this.state.ip}:5959/conduit`, opts)
       .then(res => res.json())
