@@ -43,11 +43,10 @@ class Application extends React.Component {
   loadApps() {
     this.setState({ apps: [] });
 
-    const _self = this;
     fetch(`http://${this.state.ip}:${CONDUIT_PORT}/apps`)
       .then(res => res.json())
       .then(apps => apps.sort((a, b) => a.app < b.app ? -1 : 1))
-      .then(apps => _self.setState({ apps, bottomBarText: `Read ${apps.length} apps` }))
+      .then(apps => this.setState({ apps, bottomBarText: `Read ${apps.length} apps` }))
       .catch(console.error);
   }
 
@@ -69,7 +68,7 @@ class Application extends React.Component {
     const CurrentPage = this.state.currentPage;
 
     return (
-      <div className="root-container">
+      <div>
         <Navbar title="Service Dashboard" icon="../assets/raspberrypi.png">
           <IPTextBox setState={this.setState.bind(this)}/>
           <IconButton iconSrc="../assets/reload.png" onClick={this.loadApps}/>

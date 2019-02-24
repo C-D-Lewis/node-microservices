@@ -9,10 +9,8 @@ const NoControls = () => {
     paddingTop: '5px',
   }
 
-  return <div style={style}>No controls</div>;;
+  return <div style={style}></div>;;
 };
-
-const ConduitControls = () => <div>Conduit!</div>;
 
 const ButtonBar = ({ children }) => {
   const style = {
@@ -21,18 +19,22 @@ const ButtonBar = ({ children }) => {
     width: '100%',
     marginTop: '10px',
   };
-  
+
   return <div style={style}>{children}</div>;
 };
 
+const ConduitControls = ({ conduitSend }) => (
+  <div>
+
+  </div>
+);
+
 const BacklightServerControls = ({ conduitSend }) => (
   <ButtonBar>
-    <IconButton iconSrc="../../assets/off.png" onClick={() => {
-      return conduitSend({ to: 'BacklightServer', topic: 'off' });
-    }}/>
-    <IconButton iconSrc="../../assets/spotify.png" onClick={() => {
-      return conduitSend({ to: 'BacklightServer', topic: 'spotify' });
-    }}/>
+    <IconButton iconSrc="../../assets/off.png"
+      onClick={() => conduitSend({ to: 'BacklightServer', topic: 'off' })}/>
+    <IconButton iconSrc="../../assets/spotify.png"
+      onClick={() => conduitSend({ to: 'BacklightServer', topic: 'spotify' })}/>
   </ButtonBar>
 );
 
