@@ -1,4 +1,5 @@
 import React from 'react';
+import { Colors } from '../util';
 
 const TextButton = ({ label, restyle, onClick }) => {
   const style = Object.assign({
@@ -6,15 +7,16 @@ const TextButton = ({ label, restyle, onClick }) => {
     flexDirection: 'column',
     minWidth: '100px',
     height: '30px',
-    color: 'black',
-    backgroundColor: '#DDD',
+    backgroundColor: Colors.primary,
+    color: 'white',
     padding: '5px',
     borderRadius: '3px',
     cursor: 'pointer',
     fontSize: '1.1rem',
     textAlign: 'center',
     justifyContent: 'center',
-    marginRight: '10px',
+    margin: '0px 2px',
+    // boxShadow: `0px 4px 0px 0px ${Colors.primaryDark}`
   }, restyle);
 
   return  <div style={style} onClick={onClick}>{label}</div>;

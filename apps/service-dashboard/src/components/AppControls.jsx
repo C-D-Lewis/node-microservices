@@ -10,6 +10,7 @@ const Bar = ({ children, align }) => {
   const style = {
     display: 'flex',
     flexDirection: 'row',
+    marginTop: '10px',
     justifyContent: align === 'right' ? 'flex-end' : 'initial',
   };
 
@@ -20,7 +21,6 @@ const Column = ({ children }) => {
   const style = {
     display: 'flex',
     flexDirection: 'column',
-    marginTop: '10px',
     width: '100%',
   };
 
@@ -33,12 +33,7 @@ const AtticControls = ({ state, setState, conduitSend }) => {
     atticControls[key] = value;
     setState({ atticControls });
   };
-
-  const sendButtonRestyle = {
-    backgroundColor: Colors.primary,
-    color: 'white',
-    width: '50%',
-  };
+  const sendButtonRestyle = { width: '50%' };
 
   return (
     <Column>
@@ -81,12 +76,6 @@ const ConduitControls = ({ state, setState, conduitSend }) => {
     setState({ conduitControls });
   };
 
-  const sendButtonRestyle = {
-    backgroundColor: Colors.primary,
-    color: 'white',
-    width: '100%',
-  };
-
   return (
     <Column>
       <Bar>
@@ -103,30 +92,62 @@ const ConduitControls = ({ state, setState, conduitSend }) => {
           onChange={value => setConduitControlsProp('message', value)}/>
       </Bar>
       <Bar>
-        <TextButton label="Send" restyle={sendButtonRestyle}
-          onClick={() => {
-            const { app: to, topic, message } = state.conduitControls;
-            conduitSend({ to, topic, message: JSON.parse(message) });
-          }}/>
+        <TextButton label="Send" onClick={() => {
+          const { app: to, topic, message } = state.conduitControls;
+          conduitSend({ to, topic, message: JSON.parse(message) });
+        }}/>
       </Bar>
     </Column>
   );
 };
 
-const BacklightServerControls = ({ conduitSend }) => {
-  const sendButtonRestyle = {
-    backgroundColor: Colors.primary,
-    color: 'white',
-    width: '50%',
+const BacklightServerControls = ({ state, setState, conduitSend }) => {
+  const setBacklightServerControlsProp = (key, value) => {
+    const { backlightServerControls } = state;
+    backlightServerControls[key] = value;
+    setState({ backlightServerControls });
   };
 
   return (
     <Column>
       <Bar>
-        <TextButton label="Off" restyle={sendButtonRestyle}
+        <TextBox value={state.backlightServerControls.red} placeholder="red"
+          restyle={{ width: "99px" }}
+          onChange={value => setBacklightServerControlsProp('red', value)}/>
+        <TextBox value={state.backlightServerControls.green} placeholder="green"
+          restyle={{ width: "99px" }}
+          onChange={value => setBacklightServerControlsProp('green', value)}/>
+        <TextBox value={state.backlightServerControls.blue} placeholder="blue"
+          restyle={{ width: "99px" }}
+          onChange={value => setBacklightServerControlsProp('blue', value)}/>
+      </Bar>
+      <Bar>
+        <TextButton label="Off" restyle={{ width: '33%' }}
           onClick={() => conduitSend({ to: 'BacklightServer', topic: 'off' })}/>
-        <TextButton label="Spotify" restyle={sendButtonRestyle}
+        <TextButton label="Spotify" restyle={{ width: '33%' }}
           onClick={() => conduitSend({ to: 'BacklightServer', topic: 'spotify' })}/>
+        <TextButton label="Demo" restyle={{ width: '33%' }}
+          onClick={() => conduitSend({ to: 'BacklightServer', topic: 'demo' })}/>
+      </Bar>
+      <Bar>
+        <TextButton label="Set" restyle={{ width: '50%' }}
+          onClick={() => {
+            const { red, green, blue } = state.backlightServerControls;
+            conduitSend({ 
+              to: 'BacklightServer',
+              topic: 'set',
+              message: { all: [red, green, blue] },
+            });
+          }}/>
+        <TextButton label="Fade" restyle={{ width: '50%' }}
+          onClick={() => {
+            const { red, green, blue } = state.backlightServerControls;
+            conduitSend({ 
+              to: 'BacklightServer',
+              topic: 'fade',
+              message: { all: [parseInt(red), parseInt(green), parseInt(blue)] },
+            });
+          }}/>
       </Bar>
     </Column>
   );

@@ -16,7 +16,8 @@ const Page = ({ children }) => {
     flexWrap: 'wrap',
     width: '100%',
     paddingTop: '10px',
-    paddingBottom: BOTTOM_BAR_HEIGHT,
+    paddingBottom: 2 * BOTTOM_BAR_HEIGHT,
+    alignItems: 'flex-start',
   };
 
   return <div style={style}>{children}</div>;
@@ -40,6 +41,11 @@ class Application extends React.Component {
         app: '',
         topic: 'status',
         message: '{}',
+      },
+      backlightServerControls: {
+        red: 128,
+        green: 128,
+        blue: 128,
       },
     };
 
