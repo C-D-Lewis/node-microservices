@@ -5,7 +5,8 @@
       "FILE_NAME": "delays.js",
       "EVERY": 15,
       "ARGS": {
-        "LED": 5
+        "LED": 5,
+        "DISPLAY_LINE": 0
       }
     },
     {
@@ -18,7 +19,8 @@
         "LONGITUDE": "",
         "TEMP_HOT": 21,
         "TEMP_COLD": 8,
-        "LED": 6
+        "LED": 6,
+        "DISPLAY_LINE": 1
       }
     },
     {
@@ -26,7 +28,8 @@
       "FILE_NAME": "services.js",
       "EVERY": 10,
       "ARGS": {
-        "LED": 0
+        "LED": 0,
+        "DISPLAY_LINE": 2
       }
     }
   ],
