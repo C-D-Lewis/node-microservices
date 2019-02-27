@@ -1,7 +1,7 @@
 const { spawn } = require('child_process');
 const fs = require('fs');
 
-const INTERVAL_MS = 5000;
+const INTERVAL_MS = 10000;
 
 const children = {};
 
@@ -16,7 +16,7 @@ const queue = async (items) => {
   return next().then(() => queue(items));
 };
 
-const main = () => {
+const main = async () => {
   const appList = process.argv.slice(2);
   const tasks = appList.map(app => async () => {
     if (!fs.existsSync(`../apps/${app}`)) {
@@ -29,7 +29,8 @@ const main = () => {
     return waitAsync(INTERVAL_MS);
   });
 
-  queue(tasks);
+  await queue(tasks);
+  console.log(`\nRunning ${appList.join(', ')}`);
 };
 
 main();

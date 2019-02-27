@@ -6,16 +6,21 @@ const display = require('./display');
 const sleep = require('./sleep');
 
 config.requireKeys('main.js', {
-  required: ['LED_STATES', 'STATUS_LED'],
+  required: ['OPTIONS'],
   properties: {
-    LED_STATES: {
-      required: ['OFF', 'STATUS'],
+    OPTIONS: {
+      required: ['STATUS_LED'],
       properties: {
-        OFF: { type: 'array', items: { type: 'number' } },
-        STATUS: { type: 'array', items: { type: 'number' } },
+        STATUS_LED: { type: 'boolean' },
+        LED_STATES: {
+          required: ['OFF', 'STATUS'],
+          properties: {
+            OFF: { type: 'array', items: { type: 'number' } },
+            STATUS: { type: 'array', items: { type: 'number' } },
+          },
+        },
       },
     },
-    STATUS_LED: { type: 'boolean' },
   },
 });
 
@@ -23,7 +28,7 @@ const TOGGLE_INTERVAL_MS = 2000;
 const LED_INDEX = 7;
 
 const start = () => {
-  if (!config.STATUS_LED) {
+  if (!config.OPTIONS.STATUS_LED) {
     return;
   }
 
@@ -33,7 +38,9 @@ const start = () => {
       return;
     }
 
-    const rgb = state ? config.LED_STATES.OFF : config.LED_STATES.STATUS;
+    const rgb = state
+      ? config.OPTIONS.LED_STATES.OFF
+      : config.OPTIONS.LED_STATES.STATUS;
     state = !state;
 
     display.setLed(LED_INDEX, rgb);

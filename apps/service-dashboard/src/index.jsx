@@ -31,6 +31,16 @@ class Application extends React.Component {
       apps: [],
       ip: '',
       bottomBarText: 'Ready',
+      atticControls: {
+        app: '',
+        key: '',
+        value: '',
+      },
+      conduitControls: {
+        app: '',
+        topic: 'status',
+        message: '{}',
+      },
     };
 
     this.loadApps = this.loadApps.bind(this);
@@ -43,35 +53,39 @@ class Application extends React.Component {
   loadApps() {
     this.setState({ apps: [] });
 
-    const _self = this;
     fetch(`http://${this.state.ip}:${CONDUIT_PORT}/apps`)
       .then(res => res.json())
       .then(apps => apps.sort((a, b) => a.app < b.app ? -1 : 1))
-      .then(apps => _self.setState({ apps, bottomBarText: `Read ${apps.length} apps` }))
+      .then(apps => this.setState({ apps, bottomBarText: `Read ${apps.length} apps` }))
       .catch(console.error);
   }
 
-  conduitSend(message) {
+  conduitSend(packet) {
     const opts = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(message),
+      body: JSON.stringify(packet),
     };
-    return fetch(`http://${this.state.ip}:5959/conduit`, opts).then(res => res.json());
+    return fetch(`http://${this.state.ip}:5959/conduit`, opts)
+      .then(res => res.json())
+      .then((json) => {
+        this.setState({ bottomBarText: JSON.stringify(json) });
+        return json;
+      });
   }
 
   render() {
     const CurrentPage = this.state.currentPage;
 
     return (
-      <div className="root-container">
+      <div>
         <Navbar title="Service Dashboard" icon="../assets/raspberrypi.png">
           <IPTextBox setState={this.setState.bind(this)}/>
           <IconButton iconSrc="../assets/reload.png" onClick={this.loadApps}/>
         </Navbar>
         <Page>
           {this.state.apps.map(p => (
-            <AppCard key={p.app} state={this.state} setState={this.setState.bind(this)} 
+            <AppCard key={p.app} state={this.state} setState={this.setState.bind(this)}
               data={p}
               conduitSend={this.conduitSend.bind(this)}/>
           ))}

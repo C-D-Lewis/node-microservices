@@ -4,13 +4,18 @@ const {
 const display = require('./display');
 
 config.requireKeys('sleep.js', {
-  required: ['SLEEP', 'LED_STATES'],
+  required: ['OPTIONS'],
   properties: {
-    SLEEP: { type: 'boolean' },
-    LED_STATES: {
-      required: ['OFF'],
+    OPTIONS: {
+      required: ['SLEEP', 'LED_STATES'],
       properties: {
-        OFF: { type: 'array', items: { type: 'number' } },
+        SLEEP: { type: 'boolean' },
+        LED_STATES: {
+          required: ['OFF'],
+          properties: {
+            OFF: { type: 'array', items: { type: 'number' } },
+          },
+        },
       },
     },
   },
@@ -22,7 +27,7 @@ const SLEEP_END_HOUR = 6;
 let isSleeping = false;
 
 const sleeping = () => {
-  if (!config.SLEEP) {
+  if (!config.OPTIONS.SLEEP) {
     return false;
   }
 
@@ -32,7 +37,7 @@ const sleeping = () => {
     if (!isSleeping) {
       isSleeping = true;
 
-      display.setAllLeds(config.LED_STATES.OFF);
+      display.setAllLeds(config.OPTIONS.LED_STATES.OFF);
     }
 
     return true;

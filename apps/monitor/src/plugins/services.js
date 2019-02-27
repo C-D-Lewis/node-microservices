@@ -5,13 +5,18 @@ const display = require('../modules/display');
 const sleep = require('../modules/sleep');
 
 config.requireKeys('services.js', {
-  required: ['LED_STATES', 'CONDUIT'],
+  required: ['OPTIONS', 'CONDUIT'],
   properties: {
-    LED_STATES: {
-      required: ['OK', 'DOWN'],
+    OPTIONS: {
+      required: ['LED_STATES'],
       properties: {
-        OK: { type: 'array', items: { type: 'number' } },
-        DOWN: { type: 'array', items: { type: 'number' } },
+        LED_STATES: {
+          required: ['OK', 'DOWN'],
+          properties: {
+            OK: { type: 'array', items: { type: 'number' } },
+            DOWN: { type: 'array', items: { type: 'number' } },
+          },
+        },
       },
     },
     CONDUIT: {
@@ -47,7 +52,10 @@ module.exports = async (args) => {
   const stateNow = downApps.length === 0;
   const serviceList = json.reduce((res, p) => `${res}${p.app},`, '');
   log.info(`Services up: ${stateNow} (${serviceList})`);
-  display.setLed(args.LED, stateNow ? config.LED_STATES.OK : config.LED_STATES.DOWN);
+  display.setLed(
+    args.LED,
+    stateNow ? config.OPTIONS.LED_STATES.OK : config.OPTIONS.LED_STATES.DOWN
+  );
 
   // Was OK, not anymore
   if (savedState && !stateNow) {

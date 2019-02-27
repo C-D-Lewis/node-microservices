@@ -5,16 +5,21 @@ const display = require('../modules/display');
 const sleep = require('../modules/sleep');
 
 config.requireKeys('weather.js', {
-  required: ['LED_STATES'],
+  required: ['OPTIONS'],
   properties: {
-    LED_STATES: {
-      required: ['DOWN', 'RAIN', 'COLD', 'HOT', 'OK'],
+    OPTIONS: {
+      required: ['LED_STATES'],
       properties: {
-        DOWN: { type: 'array', items: { type: 'number ' } },
-        RAIN: { type: 'array', items: { type: 'number ' } },
-        COLD: { type: 'array', items: { type: 'number ' } },
-        HOT: { type: 'array', items: { type: 'number ' } },
-        OK: { type: 'array', items: { type: 'number ' } },
+        LED_STATES: {
+          required: ['DOWN', 'RAIN', 'COLD', 'HOT', 'OK'],
+          properties: {
+            DOWN: { type: 'array', items: { type: 'number' } },
+            RAIN: { type: 'array', items: { type: 'number' } },
+            COLD: { type: 'array', items: { type: 'number' } },
+            HOT: { type: 'array', items: { type: 'number' } },
+            OK: { type: 'array', items: { type: 'number' } },
+          },
+        },
       },
     },
   },
@@ -33,13 +38,13 @@ const checkWeather = async (args) => {
   log.info(`It's ${temperature}C, and ${isRaining ? 'is' : 'not'} raining`);
 
   // Order of uncomfortableness
-  let state = config.LED_STATES.OK;
+  let state = config.OPTIONS.LED_STATES.OK;
   if (isRaining) {
-    state = config.LED_STATES.RAIN;
+    state = config.OPTIONS.LED_STATES.RAIN;
   } else if (temperature < args.TEMP_COLD) {
-    state = config.LED_STATES.COLD;
+    state = config.OPTIONS.LED_STATES.COLD;
   } else if (temperature > args.TEMP_HOT) {
-    state = config.LED_STATES.HOT;
+    state = config.OPTIONS.LED_STATES.HOT;
   }
 
   return state;
@@ -57,6 +62,6 @@ module.exports = async (args) => {
     log.error(e);
 
     fcm.post('Monitor', 'monitor', `Error checking weather: ${e.message}`);
-    display.setLed(args.LED, config.LED_STATES.DOWN);
+    display.setLed(args.LED, config.OPTIONS.LED_STATES.DOWN);
   }
 };
