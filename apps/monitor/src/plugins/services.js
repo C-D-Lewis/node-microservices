@@ -50,7 +50,7 @@ module.exports = async (args) => {
   }, []);
 
   const stateNow = downApps.length === 0;
-  const serviceList = json.reduce((res, p) => `${res}${p.app},`, '');
+  const serviceList = json.map(p => p.app).join(', ');
   log.info(`Services up: ${stateNow} (${serviceList})`);
   display.setLed(
     args.LED,

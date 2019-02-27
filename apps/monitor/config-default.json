@@ -43,7 +43,8 @@
       "EVERY": 10,
       "ARGS": {
         "LED": 0,
-        "DISPLAY_LINE": 2
+        "DISPLAY_LINE": 2,
+        "HOST": "localhost"
       }
     }
   ],
