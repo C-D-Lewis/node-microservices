@@ -3,9 +3,8 @@ import { Colors } from '../util';
 
 const Icon = ({ src }) => {
   const style = {
-    width: '40px',
+    width: 50,
     height: 'auto',
-    marginLeft: '10px',
   };
 
   return <img style={style} src={src}/>;
@@ -15,9 +14,21 @@ const Title = ({ children }) => {
   const style = {
     color: 'white',
     fontSize: '1.5rem',
-    marginLeft: '10px',
-    marginRight: '30px',
+    marginLeft: 15,
     fontWeight: 'bold',
+  };
+
+  return <div style={style}>{children}</div>;
+};
+
+const Content = ({ children }) => {
+  const style = {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    flex: 1,
+    paddingRight: 35,
   };
 
   return <div style={style}>{children}</div>;
@@ -29,19 +40,20 @@ const NavBar  = ({ children, icon, title }) => {
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: '100%',
-    minHeight: '60px',
+    minHeight: 65,
     backgroundColor: Colors.primary,
     alignItems: 'center',
     boxShadow: '0px 2px 3px 1px #5557',
+    paddingLeft: 20,
   };
 
   return (
     <div style={style}>
       <Icon src={icon}/>
       <Title>{title}</Title>
-      {children}
+      <Content>{children}</Content>
     </div>
   );
 };
-  
+
 export default NavBar;

@@ -133,7 +133,7 @@ const BacklightServerControls = ({ state, setState, conduitSend }) => {
         <TextButton label="Set" restyle={{ width: '50%' }}
           onClick={() => {
             const { red, green, blue } = state.backlightServerControls;
-            conduitSend({ 
+            conduitSend({
               to: 'BacklightServer',
               topic: 'set',
               message: { all: [red, green, blue] },
@@ -142,7 +142,7 @@ const BacklightServerControls = ({ state, setState, conduitSend }) => {
         <TextButton label="Fade" restyle={{ width: '50%' }}
           onClick={() => {
             const { red, green, blue } = state.backlightServerControls;
-            conduitSend({ 
+            conduitSend({
               to: 'BacklightServer',
               topic: 'fade',
               message: { all: [parseInt(red), parseInt(green), parseInt(blue)] },
@@ -153,6 +153,14 @@ const BacklightServerControls = ({ state, setState, conduitSend }) => {
   );
 };
 
+const Container = ({ children }) => {
+  const style = {
+    padding: '0px 10px',
+  };
+
+  return <div style={style}>{children}</div>;
+}
+
 const AppControls = ({ state, setState, data, conduitSend }) => {
   const controlsMap = {
     Attic: AtticControls,
@@ -162,8 +170,10 @@ const AppControls = ({ state, setState, data, conduitSend }) => {
 
   const Controls = controlsMap[data.app] || NoControls;
   return (
-    <Controls data={data} state={state} setState={setState}
-      conduitSend={conduitSend}/>
+    <Container>
+      <Controls data={data} state={state} setState={setState}
+        conduitSend={conduitSend}/>
+    </Container>
   );
 };
 

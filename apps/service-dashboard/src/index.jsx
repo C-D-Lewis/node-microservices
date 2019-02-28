@@ -67,6 +67,8 @@ class Application extends React.Component {
   }
 
   conduitSend(packet) {
+    this.setState({ bottomBarText: '' });
+    
     const opts = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
