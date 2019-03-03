@@ -42,7 +42,7 @@ const AtticControls = ({ state, setState, conduitSend }) => {
           restyle={{ width: '130px' }}
           onChange={value => setAtticControlsProp('app', value)}/>
         <TextBox value={state.atticControls.key} placeholder="Key"
-          restyle={{ width: '177px' }}
+          restyle={{ width: '188px' }}
           onChange={value => setAtticControlsProp('key', value)}/>
       </Bar>
       <Bar>
@@ -83,7 +83,7 @@ const ConduitControls = ({ state, setState, conduitSend }) => {
           restyle={{ width: '130px' }}
           onChange={value => setConduitControlsProp('app', value)}/>
         <TextBox value={state.conduitControls.topic} placeholder="Topic"
-          restyle={{ width: '177px' }}
+          restyle={{ width: '188px' }}
           onChange={value => setConduitControlsProp('topic', value)}/>
       </Bar>
       <Bar>
@@ -112,13 +112,13 @@ const BacklightServerControls = ({ state, setState, conduitSend }) => {
     <Column>
       <Bar>
         <TextBox value={state.backlightServerControls.red} placeholder="red"
-          restyle={{ width: "99px" }}
+          restyle={{ width: "33%" }}
           onChange={value => setBacklightServerControlsProp('red', value)}/>
         <TextBox value={state.backlightServerControls.green} placeholder="green"
-          restyle={{ width: "99px" }}
+          restyle={{ width: "33%" }}
           onChange={value => setBacklightServerControlsProp('green', value)}/>
         <TextBox value={state.backlightServerControls.blue} placeholder="blue"
-          restyle={{ width: "99px" }}
+          restyle={{ width: "33%" }}
           onChange={value => setBacklightServerControlsProp('blue', value)}/>
       </Bar>
       <Bar>

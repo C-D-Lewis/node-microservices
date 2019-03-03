@@ -7,7 +7,7 @@ const Container = ({ children, visible }) => {
   const style = {
     display: 'flex',
     flexDirection: 'column',
-    width: '340px',
+    width: '375px',
     padding: '0px 0px 15px 0px',
     margin: '10px 0px 10px 20px',
     backgroundColor: 'white',

@@ -27,8 +27,8 @@ const Content = ({ children }) => {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    flex: 1,
-    paddingRight: 35,
+    // flex: 1,
+    paddingLeft: 35,
   };
 
   return <div style={style}>{children}</div>;
