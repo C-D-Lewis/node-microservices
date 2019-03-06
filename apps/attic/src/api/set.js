@@ -1,6 +1,4 @@
-const {
-  log, conduit
-} = require('@chris-lewis/node-common')(['log', 'conduit']);
+const { log, conduit } = require('../node-common')(['log', 'conduit']);
 
 const storage = require('../modules/storage');
 

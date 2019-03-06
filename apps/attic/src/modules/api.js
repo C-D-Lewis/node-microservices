@@ -1,4 +1,4 @@
-const { conduit } = require('@chris-lewis/node-common')(['conduit']);
+const { conduit } = require('../node-common')(['conduit']);
 
 const GET_MESSAGE_SCHEMA = {
   required: [ 'app', 'key' ],

@@ -1,6 +1,4 @@
-const {
-  config, db, gistSync, log
-} = require('@chris-lewis/node-common')(['config', 'db', 'gistSync', 'log']);
+const { config, db, gistSync, log } = require('../node-common')(['config', 'db', 'gistSync', 'log']);
 
 config.requireKeys('storage.js', {
   required: [ 'STORAGE_MODE' ],
