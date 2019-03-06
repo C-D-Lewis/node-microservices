@@ -1,6 +1,5 @@
 const { expect } = require('chai');
-
-const { testing } = require('@chris-lewis/node-common')(['testing']);
+const { testing } = require('../src/node-common')(['testing']);
 
 describe('API', () => {
   describe('Conduit topic: status', () => {
@@ -17,8 +16,8 @@ describe('API', () => {
       const response = await testing.sendConduitPacket({
         to: 'LedServer', topic: 'setPixel',
         message: {
-          '0': [ 10, 20, 30],
-          '1': [30, 50, 60]
+          '0': [10, 20, 30],
+          '1': [30, 50, 60],
         }
       });
 
@@ -31,7 +30,7 @@ describe('API', () => {
     it('should return 200 / OK', async () => {
       const response = await testing.sendConduitPacket({
         to: 'LedServer', topic: 'setAll',
-        message: { all: [64,64,64] }
+        message: { all: [64,64,64] },
       });
 
       expect(response.status).to.equal(200);
@@ -44,8 +43,8 @@ describe('API', () => {
       const response = await testing.sendConduitPacket({
         to: 'LedServer', topic: 'blink',
         message: {
-          '0': [ 10, 20, 30],
-          '1': [30, 50, 60]
+          '0': [10, 20, 30],
+          '1': [30, 50, 60],
         }
       });
 

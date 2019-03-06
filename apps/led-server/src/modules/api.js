@@ -1,6 +1,4 @@
-const {
-  conduit, schema
-} = require('@chris-lewis/node-common')(['conduit', 'schema']);
+const { conduit, schema } = require('../node-common')(['conduit', 'schema']);
 
 const SET_ALL_MESSAGE_SCHEMA = {
   additionalProperties: false,

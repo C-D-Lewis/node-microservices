@@ -1,6 +1,4 @@
-const {
-  textDisplay, log, conduit
-} = require('@chris-lewis/node-common')(['textDisplay', 'log', 'conduit']);
+const { textDisplay, log, conduit } = require('../node-common')(['textDisplay', 'log', 'conduit']);
 
 module.exports = (packet, res) => {
   log.debug(`<< setText: ${JSON.stringify(packet.message)}`);
