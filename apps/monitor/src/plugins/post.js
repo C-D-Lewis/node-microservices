@@ -1,6 +1,4 @@
-const {
-  requestAsync, log
-} = require('@chris-lewis/node-common')(['requestAsync', 'log']);
+const { requestAsync, log } = require('../node-common')(['requestAsync', 'log']);
 
 module.exports = async (args) => {
   log.assert(args.URL && args.JSON, 'post.js requires URL and ARGS specified', true);

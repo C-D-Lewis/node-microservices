@@ -1,9 +1,6 @@
 // Detect wifi stealers!
 const { execSync } = require('child_process');
-
-const {
-  config, fcm, log
-} = require('@chris-lewis/node-common')(['config', 'fcm', 'log']);
+const { config, fcm, log } = require('../node-common')(['config', 'fcm', 'log']);
 
 const sleep = require('../modules/sleep');
 

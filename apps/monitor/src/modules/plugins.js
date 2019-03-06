@@ -1,12 +1,10 @@
-const {
-  config, log
-} = require('@chris-lewis/node-common')(['config', 'log']);
+const { config, log } = require('../node-common')(['config', 'log']);
 
 config.requireKeys('plugins.js', {
-  required: [ 'PLUGINS' ],
-  type: 'object', properties: {
-    PLUGINS: { type: 'array', items: { type: 'object' } }
-  }
+  required: ['PLUGINS'],
+  properties: {
+    PLUGINS: { type: 'array', items: { type: 'object' } },
+  },
 });
 
 const handleAt = (pluginName, when, updateCb) => {

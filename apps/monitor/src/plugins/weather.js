@@ -1,6 +1,4 @@
-const {
-  requestAsync, config, fcm, log
-} = require('@chris-lewis/node-common')(['requestAsync', 'config', 'fcm', 'log']);
+const { requestAsync, config, fcm, log } = require('../node-common')(['requestAsync', 'config', 'fcm', 'log']);
 const display = require('../modules/display');
 const sleep = require('../modules/sleep');
 

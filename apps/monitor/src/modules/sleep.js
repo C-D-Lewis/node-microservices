@@ -1,6 +1,4 @@
-const {
-  config
-} = require('@chris-lewis/node-common')(['config']);
+const { config } = require('../node-common')(['config']);
 const display = require('./display');
 
 config.requireKeys('sleep.js', {

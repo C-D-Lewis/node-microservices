@@ -1,6 +1,4 @@
-const {
-  gistSync, ip
-} = require('@chris-lewis/node-common')(['gistSync', 'ip']);
+const { gistSync, ip } = require('../node-common')(['gistSync', 'ip']);
 
 let initd = false;
 

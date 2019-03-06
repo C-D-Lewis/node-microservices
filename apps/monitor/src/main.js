@@ -1,7 +1,4 @@
-const {
-  config, conduit, fcm, log,
-} = require('@chris-lewis/node-common')(['config', 'conduit', 'fcm', 'log']);
-
+const { config, conduit, fcm, log } = require('./node-common')(['config', 'conduit', 'fcm', 'log']);
 const plugins = require('./modules/plugins');
 const statusLed = require('./modules/status-led');
 
@@ -19,7 +16,8 @@ config.requireKeys('main.js', {
         },
         DISPLAY_DRIVER: {
           type: 'string',
-          enum: ['textDisplay', 'leds'],  // Name of corresponding node-common module
+          description: 'Name of corresponding node-common module',
+          enum: ['textDisplay', 'leds'],
         },
       },
     },
