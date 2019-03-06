@@ -2,7 +2,7 @@ const { expect } = require('chai');
 
 const {
   config, testing, requestAsync,
-} = require('@chris-lewis/node-common')(['config', 'testing', 'requestAsync']);
+} = require('../src/node-common')(['config', 'testing', 'requestAsync']);
 
 const TEST_WEBHOOK = {
   url: `/testWebhook${Date.now()}`,

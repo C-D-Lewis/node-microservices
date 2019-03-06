@@ -1,7 +1,4 @@
-const {
-  attic, conduit, log, schema,
-} = require('@chris-lewis/node-common')(['attic', 'conduit', 'log', 'schema']);
-
+const { attic, conduit, log, schema } = require('../node-common')(['attic', 'conduit', 'log', 'schema']);
 const { ATTIC_KEY_WEBHOOKS, WEBHOOK_SCHEMA } = require('../modules/webhooks');
 
 const handleMessage = (hooks, message) => {

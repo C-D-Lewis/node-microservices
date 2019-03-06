@@ -1,7 +1,4 @@
-const {
-  conduit, schema
-} = require('@chris-lewis/node-common')(['conduit', 'schema']);
-
+const { conduit, schema } = require('../node-common')(['conduit', 'schema']);
 const { WEBHOOK_SCHEMA } = require('./webhooks');
 
 const setup = () => {

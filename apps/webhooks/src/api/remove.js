@@ -1,7 +1,4 @@
-const {
-  attic, conduit, log
-} = require('@chris-lewis/node-common')(['attic', 'conduit', 'log']);
-
+const { attic, conduit, log } = require('../node-common')(['attic', 'conduit', 'log']);
 const { ATTIC_KEY_WEBHOOKS } = require('../modules/webhooks');
 
 module.exports = async (packet, res) => {

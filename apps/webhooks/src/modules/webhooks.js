@@ -2,7 +2,7 @@ const bodyParser = require('body-parser');
 
 const {
   attic, conduit, config, log, server,
-} = require('@chris-lewis/node-common')(['attic', 'conduit', 'config', 'log', 'server']);
+} = require('../node-common')(['attic', 'conduit', 'config', 'log', 'server']);
 
 const ATTIC_KEY_WEBHOOKS = 'webhooks';
 const WEBHOOK_SCHEMA = {
