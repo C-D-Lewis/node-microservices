@@ -1,6 +1,6 @@
 const { parseString } = require('xml2js');
 const { promisify } = require('util');
-const { conduit, log } = require('@chris-lewis/node-common')(['conduit', 'log']);
+const { conduit, log } = require('./node-common')(['conduit', 'log']);
 const request = require('request');
 
 const parseStringAsync = promisify(parseString);
