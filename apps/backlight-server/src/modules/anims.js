@@ -1,20 +1,17 @@
 const request = require('request');
-
-const {
-  requestAsync, config, conduit, log
-} = require('@chris-lewis/node-common')(['requestAsync', 'config', 'conduit', 'log']);
+const { requestAsync, config, conduit, log } = require('../node-common')(['requestAsync', 'config', 'conduit', 'log']);
 
 config.requireKeys('anims.js', {
-  required: [ 'SPOTIFY_AUTH' ],
-  type: 'object', properties: {
+  required: ['SPOTIFY_AUTH'],
+  properties: {
     SPOTIFY_AUTH: {
-      required: [ 'URL', 'PORT' ],
-      type: 'object', properties: {
+      required: ['URL', 'PORT'],
+      properties: {
         URL: { type: 'string' },
-        PORT: { type: 'number' }
-      }
-    }
-  }
+        PORT: { type: 'number' },
+      },
+    },
+  },
 });
 
 const FADE_INTERVAL_MS = 10;

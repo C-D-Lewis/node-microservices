@@ -1,8 +1,5 @@
+const { config, log, conduit } = require('../node-common')(['config', 'log', 'conduit']);
 const anims = require('../modules/anims');
-
-const {
-  config, log, conduit
-} = require('@chris-lewis/node-common')(['config', 'log', 'conduit']);
 
 module.exports = async (packet, res) => {
   log.debug('<< /off');

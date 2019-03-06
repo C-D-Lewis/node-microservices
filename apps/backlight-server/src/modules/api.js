@@ -1,11 +1,11 @@
-const { conduit } = require('@chris-lewis/node-common')(['conduit']);
+const { conduit } = require('../node-common')(['conduit']);
 
 const _TO_MESSAGE_SCHEMA  = {
   additionalProperties: false,
-  required: [ 'all' ],
-  type: 'object', properties: {
-    all: { type: 'array', items: { type: 'integer' } }
-  }
+  required: ['all'],
+  properties: {
+    all: { type: 'array', items: { type: 'integer' } },
+  },
 };
 
 const _NO_MESSAGE_SCHEMA = { type: 'object' };
