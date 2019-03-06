@@ -8,31 +8,29 @@
 */
 
 const { promisify } = require('util');
-
 const Spotify = require('spotify-web-api-node');
-
 const {
-  attic, config, conduit, log
-} = require('@chris-lewis/node-common')(['attic', 'config', 'conduit', 'log']);
+  attic, config, conduit, log,
+} = require('../node-common')(['attic', 'config', 'conduit', 'log']);
 
 config.requireKeys('auth.js', {
-  required: [ 'SPOTIFY', 'SERVER' ],
-  type: 'object', properties: {
+  required: ['SPOTIFY', 'SERVER'],
+  properties: {
     SPOTIFY: {
-      required: [ 'CLIENT_ID', 'CLIENT_SECRET', 'SERVER_IP' ],
-      type: 'object', properties: {
+      required: ['CLIENT_ID', 'CLIENT_SECRET', 'SERVER_IP'],
+      properties: {
         CLIENT_ID: { type: 'string' },
         CLIENT_SECRET: { type: 'string' },
-        SERVER_IP: { type: 'string' }
-      }
+        SERVER_IP: { type: 'string' },
+      },
     },
     SERVER: {
-      required: [ 'PORT' ],
-      type: 'object', properties: {
-        PORT: { type: 'number' }
-      }
-    }
-  }
+      required: ['PORT'],
+      properties: {
+        PORT: { type: 'number' },
+      },
+    },
+  },
 });
 
 const DB_KEYS = {

@@ -1,9 +1,6 @@
 const { promisify } = require('util');
-
 const Vibrant = require('node-vibrant');
-
-const { log } = require('@chris-lewis/node-common')(['log']);
-
+const { log } = require('../node-common')(['log']);
 const auth = require('./auth');
 
 const getLargestImageUrl = async (spotifyApi, res) => {

@@ -1,6 +1,4 @@
-const {
-  server
-} = require('@chris-lewis/node-common')(['server']);
+const { server } = require('../node-common')(['server']);
 
 const auth = require('./auth');
 const color = require('./color');

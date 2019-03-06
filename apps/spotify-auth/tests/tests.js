@@ -1,8 +1,7 @@
 const { expect } = require('chai');
-
 const {
   config, testing, requestAsync,
-} = require('@chris-lewis/node-common')(['config', 'testing', 'requestAsync']);
+} = require('../src/node-common')(['config', 'testing', 'requestAsync']);
 
 const AUTH_CODE = 'some_example_code';
 

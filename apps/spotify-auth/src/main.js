@@ -1,7 +1,4 @@
-const {
-  conduit, log
-} = require('@chris-lewis/node-common')(['conduit', 'log']);
-
+const { conduit, log } = require('./node-common')(['conduit', 'log']);
 const api = require('./modules/api');
 const auth = require('./modules/auth');
 
@@ -14,11 +11,13 @@ const testCredentials = async () => {
   }
 };
 
-(async () => {
+const main = async () => {
   log.begin();
 
   await conduit.register();
   api.setup();
 
   testCredentials();
-})();
+};
+
+main();
