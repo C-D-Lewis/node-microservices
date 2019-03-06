@@ -1,4 +1,4 @@
-const { conduit } = require('@chris-lewis/node-common')(['conduit']);
+const { conduit } = require('./node-common')(['conduit']);
 const chalk = require('chalk');
 
 const INTERVAL_MS = 500;

@@ -4,12 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js"
   },
-  "author": "",
+  "author": "Chris Lewis",
   "license": "ISC",
   "dependencies": {
-    "@chris-lewis/node-common": "^1.2.8",
     "chalk": "^2.4.1"
   }
 }
