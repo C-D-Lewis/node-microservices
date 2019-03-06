@@ -1,7 +1,4 @@
-const {
-  log, conduit
-} = require('@chris-lewis/node-common')(['log', 'conduit']);
-
+const { log, conduit } = require('../node-common')(['log', 'conduit']);
 const devices = require('../modules/devices');
 
 module.exports = (packet, res) => {
@@ -11,6 +8,6 @@ module.exports = (packet, res) => {
 
   conduit.respond(res, {
     status: 202,
-    message: { content: 'Rediscovery started' }
+    message: { content: 'Rediscovery started' },
   });
 };

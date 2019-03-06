@@ -1,7 +1,4 @@
-const {
-  log, conduit
-} = require('@chris-lewis/node-common')(['log', 'conduit']);
-
+const { log, conduit } = require('../node-common')(['log', 'conduit']);
 const devices = require('../modules/devices');
 
 module.exports = (packet, res) => {
@@ -12,7 +9,7 @@ module.exports = (packet, res) => {
     devices.setPlugState(alias, state);
     conduit.respond(res, {
       status: 202,
-      message: { content: 'Accepted' }
+      message: { content: 'Accepted' },
     });
   } catch (e) {
     log.error(`Error updating plug ${alias} to state ${state}`);

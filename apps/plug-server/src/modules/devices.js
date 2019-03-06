@@ -1,6 +1,5 @@
 const { Client } = require('tplink-smarthome-api');
-
-const { log } = require('@chris-lewis/node-common')(['log']);
+const { log } = require('../node-common')(['log']);
 
 const DISCOVERY_TIME_MS = 10000;
 

@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 
-const { testing } = require('@chris-lewis/node-common')(['testing']);
+const { testing } = require('../src/node-common')(['testing']);
 
 describe('API', () => {
   describe('Conduit topic: status', () => {
