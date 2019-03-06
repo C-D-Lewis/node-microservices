@@ -1,21 +1,16 @@
-const request = require('request');
-
-const {
-  config, log, requestAsync
-} = require('@chris-lewis/node-common')(['config', 'log', 'requestAsync']);
-
+const { config, log, requestAsync } = require('../node-common')(['config', 'log', 'requestAsync']);
 const allocator = require('./allocator');
 
 config.requireKeys('stats.js', {
-  required: [ 'OPTIONS' ],
-  type: 'object', properties: {
+  required: ['OPTIONS'],
+  properties: {
     OPTIONS: {
-      required: [ 'RECORD_STATS' ],
-      type: 'object', properties: {
-        RECORD_STATS: { type: 'boolean' }
-      }
-    }
-  }
+      required: ['RECORD_STATS'],
+      properties: {
+        RECORD_STATS: { type: 'boolean' },
+      },
+    },
+  },
 });
 
 // Can't use conduit.js - not a Conduit app!

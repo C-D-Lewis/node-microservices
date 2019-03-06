@@ -1,7 +1,5 @@
 const bodyParser = require('body-parser');
-
-const { server } = require('@chris-lewis/node-common')(['server']);
-
+const { server } = require('../node-common')(['server']);
 const allocator = require('./allocator');
 
 module.exports.setup = () => {

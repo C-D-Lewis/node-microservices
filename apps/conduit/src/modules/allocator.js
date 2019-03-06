@@ -1,6 +1,4 @@
-const {
-  log, schema
-} = require('@chris-lewis/node-common')(['log', 'schema']);
+const { log, schema } = require('../node-common')(['log', 'schema']);
 
 const MIN = 6000;
 const MAX = 9000;
@@ -21,7 +19,10 @@ const rollPortNumber = () => Math.round(Math.random() * (MAX - MIN)) + MIN;
 // Don't allocate the same one twice
 const makePortNumber = () => {
   let port = rollPortNumber();
-  while(findByPort(port)) port = rollPortNumber();
+  while(findByPort(port)) {
+    port = rollPortNumber();
+  }
+
   return port;
 };
 

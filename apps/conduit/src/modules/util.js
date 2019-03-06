@@ -1,8 +1,4 @@
-const request = require('request');
-
-const {
-  config, log, requestAsync
-} = require('@chris-lewis/node-common')(['config', 'log', 'requestAsync']);
+const { config, log, requestAsync } = require('../node-common')(['config', 'log', 'requestAsync']);
 
 const badRequest = (res) => {
   log.error('Bad Request');

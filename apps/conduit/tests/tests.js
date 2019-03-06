@@ -1,8 +1,5 @@
 const { expect } = require('chai');
-
-const {
-  config, requestAsync,
-} = require('@chris-lewis/node-common')(['config', 'requestAsync']);
+const { config, requestAsync } = require('../src/node-common')(['config', 'requestAsync']);
 
 describe('API', () => {
   describe('/status', () => {

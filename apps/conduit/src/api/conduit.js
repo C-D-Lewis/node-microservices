@@ -1,25 +1,21 @@
 const request = require('request');
-
-const {
-  config, log, requestAsync, schema
-} = require('@chris-lewis/node-common')(['config', 'log', 'requestAsync', 'schema']);
-
+const { config, log, requestAsync, schema } = require('../node-common')(['config', 'log', 'requestAsync', 'schema']);
 const allocator = require('../modules/allocator');
 const stats = require('../modules/stats');
 const util = require('../modules/util');
 
 const LOCALHOST = 'localhost';
 const MESSAGE_SCHEMA = {
-  required: [ 'to', 'topic' ],
-  type: 'object', properties: {
+  required: ['to', 'topic'],
+  properties: {
     status: { type: 'integer', description: 'Response status' },
     error: { type: 'string', description: 'Any response error' },
     to: { type: 'string', description: 'Recipient Conduit client' },
     from: { type: 'string', description: 'Sending Conduit client' },
     topic: { type: 'string', description: 'The message topic (i.e: channel)' },
     message: { type: 'object', description: 'The message object to send' },
-    host: { type: 'string', description: 'Which Conduit server to send to' }
-  }
+    host: { type: 'string', description: 'Which Conduit server to send to' },
+  },
 };
 
 module.exports = async (req, res) => {
