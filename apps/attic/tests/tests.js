@@ -1,8 +1,6 @@
 const { expect } = require('chai');
 
-const {
-  config, testing,
-} = require('@chris-lewis/node-common')(['config', 'testing']);
+const { config, testing } = require('../src/node-common')(['config', 'testing']);
 
 const TEST_APP = 'TestApp';
 const TEST_KEY = 'TestKey';
