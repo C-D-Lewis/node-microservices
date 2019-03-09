@@ -54,7 +54,7 @@ const fadeIteration = async () => {
   }
 
   await conduit.send({
-    to: 'LedServer', topic: 'setAll', message: { all: current }
+    to: 'visuals', topic: 'setAll', message: { all: current }
   });
 
   fadeIteration();

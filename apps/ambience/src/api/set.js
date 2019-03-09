@@ -4,7 +4,7 @@ module.exports = async (packet, res) => {
   log.debug(`<< /set: ${JSON.stringify(packet.message)}`);
 
   await conduit.send({
-    to: 'LedServer', topic: 'setAll', message: { all: packet.message.all },
+    to: 'visuals', topic: 'setAll', message: { all: packet.message.all },
   });
 
   conduit.respond(res, {

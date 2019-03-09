@@ -6,7 +6,7 @@ module.exports = async (packet, res) => {
 
   anims.clearAll();
   await conduit.send({
-    to: 'LedServer', topic: 'setAll', message: { all: [0, 0, 0] }
+    to: 'visuals', topic: 'setAll', message: { all: [0, 0, 0] }
   });
 
   conduit.respond(res, {
