@@ -1,5 +1,5 @@
 {
-  "name": "backlight-server",
+  "name": "ambience",
   "version": "1.0.0",
   "description": "Node.js server to drive backlights",
   "scripts": {

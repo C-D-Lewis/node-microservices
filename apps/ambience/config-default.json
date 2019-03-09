@@ -1,6 +1,6 @@
 {
   "LOG": {
-    "APP_NAME": "Backlight Server",
+    "APP_NAME": "ambience",
     "TO_FILE": false,
     "LEVEL": "info"
   },
@@ -11,6 +11,6 @@
   "CONDUIT": {
     "HOST": "localhost",
     "PORT": 5959,
-    "APP": "BacklightServer"
+    "APP": "ambience"
   }
 }
