@@ -4,7 +4,7 @@ const { testing } = require('../src/node-common')(['testing']);
 describe('API', () => {
   describe('Conduit topic: status', () => {
     it('should return 200 / OK', async () => {
-      const result = await testing.sendConduitPacket({ to: 'LedServer', topic: 'status' });
+      const result = await testing.sendConduitPacket({ to: 'visuals', topic: 'status' });
 
       expect(result.status).to.equal(200);
       expect(result.message.content).to.equal('OK');
@@ -14,7 +14,7 @@ describe('API', () => {
   describe('Conduit topic: setPixel', () => {
     it('should return 200 / OK', async () => {
       const response = await testing.sendConduitPacket({
-        to: 'LedServer', topic: 'setPixel',
+        to: 'visuals', topic: 'setPixel',
         message: {
           '0': [10, 20, 30],
           '1': [30, 50, 60],
@@ -29,7 +29,7 @@ describe('API', () => {
   describe('Conduit topic: setAll', () => {
     it('should return 200 / OK', async () => {
       const response = await testing.sendConduitPacket({
-        to: 'LedServer', topic: 'setAll',
+        to: 'visuals', topic: 'setAll',
         message: { all: [64,64,64] },
       });
 
@@ -41,7 +41,7 @@ describe('API', () => {
   describe('Conduit topic: blink', () => {
     it('should return 200 / OK', async () => {
       const response = await testing.sendConduitPacket({
-        to: 'LedServer', topic: 'blink',
+        to: 'visuals', topic: 'blink',
         message: {
           '0': [10, 20, 30],
           '1': [30, 50, 60],

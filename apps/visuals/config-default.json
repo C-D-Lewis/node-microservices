@@ -1,7 +1,7 @@
 {
   "LOG": {
     "TO_FILE": false,
-    "APP_NAME": "LED Server",
+    "APP_NAME": "visuals",
     "LEVEL": "info"
   },
   "LEDS": {
@@ -13,7 +13,7 @@
   "CONDUIT": {
     "HOST": "localhost",
     "PORT": 5959,
-    "APP": "LedServer"
+    "APP": "visuals"
   },
   "TEXT_DISPLAY": {
     "HARDWARE_TYPE": "pioled",

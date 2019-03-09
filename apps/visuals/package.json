@@ -1,7 +1,7 @@
 {
-  "name": "led-server",
+  "name": "visuals",
   "version": "1.0.0",
-  "description": "Node.js server to drive PC Build backlight",
+  "description": "Node.js server to drive connected LEDs or other displays.",
   "author": "Chris Lewis",
   "scripts": {
     "start": "node src/main.js",
