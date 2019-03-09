@@ -28,7 +28,7 @@ const main = async () => {
   log.begin();
 
   await conduit.register();
-  await conduit.send({ to: 'LedServer', topic: 'setAll',
+  await conduit.send({ to: 'visuals', topic: 'setAll',
     message: { all: config.OPTIONS.LED_STATES.OFF },
   });
   statusLed.start();

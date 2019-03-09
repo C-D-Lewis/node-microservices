@@ -64,7 +64,7 @@ const update = async () => {
   const promises = ledStates
     .map(item => LED_COLORS[item])
     .map((rgb, i) => {
-      const packet = { to: 'LedServer', topic: 'setPixel', message: { [i]: rgb } };
+      const packet = { to: 'visuals', topic: 'setPixel', message: { [i]: rgb } };
       return conduit.send(packet);
     });
   await Promise.all(promises);
