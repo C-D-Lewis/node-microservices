@@ -1,5 +1,5 @@
 {
-  "name": "webhooks",
+  "name": "concierge",
   "version": "1.0.0",
   "description": "Service to set up and receive webhooks",
   "author": "Chris Lewis",

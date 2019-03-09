@@ -12,7 +12,7 @@ const TEST_WEBHOOK = {
 describe('API', () => {
   describe('Conduit topic: status', () => {
     it('should return 200 / OK', async () => {
-      const result = await testing.sendConduitPacket({ to: 'Webhooks', topic: 'status' });
+      const result = await testing.sendConduitPacket({ to: 'concierge', topic: 'status' });
 
       expect(result.status).to.equal(200);
       expect(result.message.content).to.equal('OK');
@@ -32,7 +32,7 @@ describe('API', () => {
   describe('Conduit topic: add', () => {
     it('should return 200 / OK', async () => {
       const response = await testing.sendConduitPacket({
-        to: 'Webhooks', topic: 'add',
+        to: 'concierge', topic: 'add',
         message: TEST_WEBHOOK
       });
 
@@ -54,7 +54,7 @@ describe('API', () => {
   describe('Conduit topic: remove', () => {
     it('should return 200 / OK', async () => {
       const response = await testing.sendConduitPacket({
-        to: 'Webhooks', topic: 'remove',
+        to: 'concierge', topic: 'remove',
         message: TEST_WEBHOOK
       });
 
@@ -66,7 +66,7 @@ describe('API', () => {
   describe('Webhook is actually removed', () => {
     it('should return 404 / Not Found', async () => {
       const response = await testing.sendConduitPacket({
-        to: 'Webhooks', topic: 'remove',
+        to: 'concierge', topic: 'remove',
         message: TEST_WEBHOOK
       });
 

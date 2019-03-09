@@ -1,13 +1,13 @@
 {
   "LOG": {
-    "APP_NAME": "Webhooks",
+    "APP_NAME": "concierge",
     "LEVEL": "info",
     "TO_FILE": false
   },
   "CONDUIT": {
     "HOST": "localhost",
     "PORT": 5959,
-    "APP": "Webhooks"
+    "APP": "concierge"
   },
   "SERVER": {
     "PORT": 4665
