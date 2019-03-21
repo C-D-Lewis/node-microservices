@@ -38,17 +38,20 @@ const loadAll = () => {
     // Start plugin
     log.info(`Loaded plugin ${JSON.stringify(plugin)}`);
     const args = plugin.ARGS;
-    if(plugin.EVERY) { 
+    if(plugin.EVERY) {
       setInterval(() => {
         log.info(`Running ${pluginName}`);
         callback(args);
-      }, plugin.EVERY * 60 * 1000); 
+      }, plugin.EVERY * 60 * 1000);
       callback(args);
       return;
-    } 
+    }
 
     if(plugin.AT) {
-      handleAt(pluginName, plugin.AT, () => callback(args));
+      handleAt(pluginName, plugin.AT, () => {
+        log.info(`Running ${pluginName}`);
+        callback(args);
+      });
       return;
     }
 
