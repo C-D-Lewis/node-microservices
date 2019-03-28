@@ -101,25 +101,25 @@ const ConduitControls = ({ state, setState, conduitSend }) => {
   );
 };
 
-const BacklightServerControls = ({ state, setState, conduitSend }) => {
-  const setBacklightServerControlsProp = (key, value) => {
-    const { backlightServerControls } = state;
-    backlightServerControls[key] = value;
-    setState({ backlightServerControls });
+const AmbienceControls = ({ state, setState, conduitSend }) => {
+  const setAmbienceControlsProp = (key, value) => {
+    const { ambienceControls } = state;
+    ambienceControls[key] = value;
+    setState({ ambienceControls });
   };
 
   return (
     <Column>
       <Bar>
-        <TextBox value={state.backlightServerControls.red} placeholder="red"
+        <TextBox value={state.ambienceControls.red} placeholder="red"
           restyle={{ width: "33%" }}
-          onChange={value => setBacklightServerControlsProp('red', value)}/>
-        <TextBox value={state.backlightServerControls.green} placeholder="green"
+          onChange={value => setAmbienceControlsProp('red', value)}/>
+        <TextBox value={state.ambienceControls.green} placeholder="green"
           restyle={{ width: "33%" }}
-          onChange={value => setBacklightServerControlsProp('green', value)}/>
-        <TextBox value={state.backlightServerControls.blue} placeholder="blue"
+          onChange={value => setAmbienceControlsProp('green', value)}/>
+        <TextBox value={state.ambienceControls.blue} placeholder="blue"
           restyle={{ width: "33%" }}
-          onChange={value => setBacklightServerControlsProp('blue', value)}/>
+          onChange={value => setAmbienceControlsProp('blue', value)}/>
       </Bar>
       <Bar>
         <TextButton label="Off" restyle={{ width: '33%' }}
@@ -132,7 +132,7 @@ const BacklightServerControls = ({ state, setState, conduitSend }) => {
       <Bar>
         <TextButton label="Set" restyle={{ width: '50%' }}
           onClick={() => {
-            const { red, green, blue } = state.backlightServerControls;
+            const { red, green, blue } = state.ambienceControls;
             conduitSend({
               to: 'ambience',
               topic: 'set',
@@ -141,7 +141,7 @@ const BacklightServerControls = ({ state, setState, conduitSend }) => {
           }}/>
         <TextButton label="Fade" restyle={{ width: '50%' }}
           onClick={() => {
-            const { red, green, blue } = state.backlightServerControls;
+            const { red, green, blue } = state.ambienceControls;
             conduitSend({
               to: 'ambience',
               topic: 'fade',
@@ -163,9 +163,9 @@ const Container = ({ children }) => {
 
 const AppControls = ({ state, setState, data, conduitSend }) => {
   const controlsMap = {
-    Attic: AtticControls,
-    Conduit: ConduitControls,
-    BacklightServer: BacklightServerControls,
+    attic: AtticControls,
+    conduit: ConduitControls,
+    ambience: AmbienceControls,
   };
 
   const Controls = controlsMap[data.app] || NoControls;

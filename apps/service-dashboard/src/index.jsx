@@ -42,7 +42,7 @@ class Application extends React.Component {
         topic: 'status',
         message: '{}',
       },
-      backlightServerControls: {
+      ambienceControls: {
         red: 128,
         green: 128,
         blue: 128,
