@@ -9,7 +9,7 @@ const setHost = (url) => {
 
 const set = async (key, value) => conduit.send({
   host,
-  to: 'Attic',
+  to: 'attic',
   topic: 'set',
   message: {
     key,
@@ -21,7 +21,7 @@ const set = async (key, value) => conduit.send({
 const get = async (key) => {
   const res = await conduit.send({
     host,
-    to: 'Attic',
+    to: 'attic',
     topic: 'get',
     message: {
       key,

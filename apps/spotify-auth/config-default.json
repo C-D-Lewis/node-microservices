@@ -9,13 +9,13 @@
     "PORT": 5005
   },
   "LOG": {
-    "APP_NAME": "Spotify Auth",
+    "APP_NAME": "spotify-auth",
     "TO_FILE": false,
     "LEVEL": "info"
   },
   "CONDUIT": {
     "HOST": "localhost",
     "PORT": 5959,
-    "APP": "SpotifyAuth"
+    "APP": "spotify-auth"
   }
 }

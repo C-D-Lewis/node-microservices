@@ -5,7 +5,7 @@ const { testing } = require('../src/node-common')(['testing']);
 describe('API', () => {
   describe('Conduit topic: status', () => {
     it('should return 200 / OK', async () => {
-      const response = await testing.sendConduitPacket({ to: 'PlugServer', topic: 'status' });
+      const response = await testing.sendConduitPacket({ to: 'plug-server', topic: 'status' });
 
       expect(response.status).to.equal(200);
       expect(response.message.content).to.equal('OK');
@@ -14,7 +14,7 @@ describe('API', () => {
 
   describe('Conduit topic: rediscover', () => {
     it('should return 202 / Rediscovery started', async () => {
-      const response = await testing.sendConduitPacket({ to: 'PlugServer', topic: 'rediscover' });
+      const response = await testing.sendConduitPacket({ to: 'plug-server', topic: 'rediscover' });
 
       expect(response.status).to.equal(202);
       expect(response.message.content).to.equal('Rediscovery started');
@@ -23,7 +23,7 @@ describe('API', () => {
 
   describe('Conduit topic: getPlugs', () => {
     it('should return 200 / List of plugs', async () => {
-      const response = await testing.sendConduitPacket({ to: 'PlugServer', topic: 'getPlugs' });
+      const response = await testing.sendConduitPacket({ to: 'plug-server', topic: 'getPlugs' });
 
       expect(response.status).to.equal(200);
       expect(response.message.plugs).to.be.an('array');
@@ -32,7 +32,7 @@ describe('API', () => {
 
   describe('Conduit topic: setPlugState', () => {
     it('should return 202 / Accepted', async () => {
-      let plugs = await testing.sendConduitPacket({ to: 'PlugServer', topic: 'getPlugs' });
+      let plugs = await testing.sendConduitPacket({ to: 'plug-server', topic: 'getPlugs' });
       if(!plugs.message.plugs.length) {
         console.log('No plugs available for test!');
         return;
@@ -41,7 +41,7 @@ describe('API', () => {
       const testDevice = plugs.message.plugs[0];
       console.log(`Test device: ${JSON.stringify(testDevice)}`);
       const response = await testing.sendConduitPacket({
-        to: 'PlugServer', topic: 'setPlugState',
+        to: 'plug-server', topic: 'setPlugState',
         message: { alias: testDevice.alias, state: !testDevice.state }
       });
 

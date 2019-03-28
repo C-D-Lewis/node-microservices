@@ -1,9 +1,10 @@
 {
   "LOG": {
-    "APP_NAME": "Attic",
+    "APP_NAME": "attic",
     "LEVEL": "info",
     "TO_FILE": false
   },
+  "STORAGE_MODE": "db",
   "GIST_SYNC": {
     "URL": "",
     "DIR": "gist",
@@ -12,7 +13,6 @@
   "DB": {
     "FILE":  "./db.json"
   },
-  "STORAGE_MODE": "db",
   "EVT_DB": {
     "THNG_ID": "",
     "DEVICE_API_KEY": ""
@@ -20,6 +20,6 @@
   "CONDUIT": {
     "HOST": "localhost",
     "PORT": 5959,
-    "APP": "Attic"
+    "APP": "attic"
   }
 }

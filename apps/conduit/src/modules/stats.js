@@ -15,7 +15,7 @@ config.requireKeys('stats.js', {
 
 // Can't use conduit.js - not a Conduit app!
 const sendToAttic = async (json) => {
-  const appConfig = allocator.findByApp('Attic');
+  const appConfig = allocator.findByApp('attic');
   const data = await requestAsync({
     url: `http://localhost:${appConfig.port}/conduit`,
     method: 'post',
@@ -29,7 +29,7 @@ const recordPacket = async ({ to, topic, from }) => {
   if(!config.OPTIONS.RECORD_STATS) return;
 
   let response = await sendToAttic({
-    to: 'Attic', topic: 'get', message: { app: 'Conduit', key: 'stats' }
+    to: 'attic', topic: 'get', message: { app: 'conduit', key: 'stats' }
   });
 
   // No stats yet
@@ -51,8 +51,8 @@ const recordPacket = async ({ to, topic, from }) => {
   update.all++;
 
   await sendToAttic({
-    to: 'Attic', topic: 'set', 
-    message: { app: 'Conduit', key: 'stats', value: update }
+    to: 'attic', topic: 'set', 
+    message: { app: 'conduit', key: 'stats', value: update }
   });
 };
 

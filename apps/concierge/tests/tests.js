@@ -6,7 +6,7 @@ const {
 
 const TEST_WEBHOOK = {
   url: `/testWebhook${Date.now()}`,
-  packet: { to: 'Attic', topic: 'webhookReceived' },
+  packet: { to: 'attic', topic: 'webhookReceived' },
 };
 
 describe('API', () => {

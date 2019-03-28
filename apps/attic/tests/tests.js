@@ -9,7 +9,7 @@ const TEST_VALUE = Math.round(Math.random() * 100);
 describe('API', () => {
   describe('Conduit topic: status', () => {
     it('should return 200 / OK', async () => {
-      const response = await testing.sendConduitPacket({ to: 'Attic', topic: 'status' });
+      const response = await testing.sendConduitPacket({ to: 'attic', topic: 'status' });
 
       expect(response.status).to.equal(200);
       expect(response.message.content).to.equal('OK');
@@ -19,7 +19,7 @@ describe('API', () => {
   describe('Conduit topic: set', () => {
     it('should return 200 / OK', async () => {
       const response = await testing.sendConduitPacket({
-        to: 'Attic',
+        to: 'attic',
         topic: 'set',
         message: {
           app: TEST_APP,
@@ -36,7 +36,7 @@ describe('API', () => {
   describe('Conduit topic: get', () => {
     it('should return 200 / TEST_VALUE', async () => {
       const response = await testing.sendConduitPacket({
-        to: 'Attic',
+        to: 'attic',
         topic: 'get',
         message: {
           app: 'TestApp',
@@ -55,7 +55,7 @@ describe('API', () => {
   describe('Conduit topic: increment', () => {
     it('should return 200 / OK, then return 200 / TEST_VALUE + 1', async () => {
       let response = await testing.sendConduitPacket({
-        to: 'Attic',
+        to: 'attic',
         topic: 'increment',
         message: {
           app: TEST_APP,
@@ -68,7 +68,7 @@ describe('API', () => {
       expect(response.message.content).to.equal('OK');
 
       response = await testing.sendConduitPacket({
-        to: 'Attic',
+        to: 'attic',
         topic: 'get',
         message: {
           app: TEST_APP,

@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
     response.push(app);
   }));
 
-  response.push({ app: 'Conduit', port: config.SERVER.PORT, status: 'OK' });
+  response.push({ app: 'conduit', port: config.SERVER.PORT, status: 'OK' });
 
   res.status(200);
   res.set('Access-Control-Allow-Origin', '*');

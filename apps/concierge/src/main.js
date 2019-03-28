@@ -8,9 +8,9 @@ const main = async () => {
 
   try {
     await conduit.register();
-    await conduit.send({ to: 'Attic', topic: 'status' });
+    await conduit.send({ to: 'attic', topic: 'status' });
   } catch(e) {
-    log.fatal('Unable to reach Attic!');
+    log.fatal('Unable to reach attic!');
   }
 
   webhooks.setup();

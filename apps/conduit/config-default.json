@@ -6,7 +6,7 @@
     "PORT": 5959
   },
   "LOG": {
-    "APP_NAME": "Conduit",
+    "APP_NAME": "conduit",
     "LEVEL": "info",
     "TO_FILE": false
   }

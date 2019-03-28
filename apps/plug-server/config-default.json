@@ -1,12 +1,12 @@
 {
   "LOG": {
-    "APP_NAME": "Plug Server",
+    "APP_NAME": "plug-server",
     "LEVEL": "info",
     "TO_FILE": false
   },
   "CONDUIT": {
     "HOST": "localhost",
     "PORT": 5959,
-    "APP": "PlugServer"
+    "APP": "plug-server"
   }
 }

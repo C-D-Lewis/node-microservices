@@ -16,7 +16,7 @@
     "APP": "visuals"
   },
   "TEXT_DISPLAY": {
-    "HARDWARE_TYPE": "pioled",
-    "USE_HARDWARE": false
+    "USE_HARDWARE": false,
+    "HARDWARE_TYPE": "pioled"
   }
 }

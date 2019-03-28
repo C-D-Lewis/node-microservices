@@ -17,7 +17,7 @@ describe('API', () => {
       const url = `http://localhost:${config.SERVER.PORT}/port`;
       const data = await requestAsync({
         url,
-        json: { app: 'Attic' }
+        json: { app: 'attic' }
       });
 
       expect(data.response.statusCode).to.equal(200);

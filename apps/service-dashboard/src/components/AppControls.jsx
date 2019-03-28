@@ -55,14 +55,14 @@ const AtticControls = ({ state, setState, conduitSend }) => {
           onClick={() => {
             const { app, key } = state.atticControls;
             const message = { app, key };
-            conduitSend({ to: 'Attic', topic: 'get', message })
+            conduitSend({ to: 'attic', topic: 'get', message })
               .then(res => setAtticControlsProp('value', res.message.value));
           }}/>
         <TextButton label="Set" restyle={sendButtonRestyle}
           onClick={() => {
             const { app, key, value } = state.atticControls;
             const message = { app, key, value };
-            conduitSend({ to: 'Attic', topic: 'set', message });
+            conduitSend({ to: 'attic', topic: 'set', message });
           }}/>
       </Bar>
     </Column>
@@ -123,18 +123,18 @@ const BacklightServerControls = ({ state, setState, conduitSend }) => {
       </Bar>
       <Bar>
         <TextButton label="Off" restyle={{ width: '33%' }}
-          onClick={() => conduitSend({ to: 'BacklightServer', topic: 'off' })}/>
+          onClick={() => conduitSend({ to: 'ambience', topic: 'off' })}/>
         <TextButton label="Spotify" restyle={{ width: '33%' }}
-          onClick={() => conduitSend({ to: 'BacklightServer', topic: 'spotify' })}/>
+          onClick={() => conduitSend({ to: 'ambience', topic: 'spotify' })}/>
         <TextButton label="Demo" restyle={{ width: '33%' }}
-          onClick={() => conduitSend({ to: 'BacklightServer', topic: 'demo' })}/>
+          onClick={() => conduitSend({ to: 'ambience', topic: 'demo' })}/>
       </Bar>
       <Bar>
         <TextButton label="Set" restyle={{ width: '50%' }}
           onClick={() => {
             const { red, green, blue } = state.backlightServerControls;
             conduitSend({
-              to: 'BacklightServer',
+              to: 'ambience',
               topic: 'set',
               message: { all: [red, green, blue] },
             });
@@ -143,7 +143,7 @@ const BacklightServerControls = ({ state, setState, conduitSend }) => {
           onClick={() => {
             const { red, green, blue } = state.backlightServerControls;
             conduitSend({
-              to: 'BacklightServer',
+              to: 'ambience',
               topic: 'fade',
               message: { all: [parseInt(red), parseInt(green), parseInt(blue)] },
             });
