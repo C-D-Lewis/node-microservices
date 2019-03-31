@@ -8,7 +8,6 @@ const Container = ({ children, visible }) => {
     display: 'flex',
     flexDirection: 'column',
     width: '375px',
-    padding: '0px 0px 15px 0px',
     margin: '10px 0px 10px 20px',
     backgroundColor: 'white',
     borderRadius: '3px',
@@ -32,7 +31,11 @@ const Title = ({ children }) => {
 };
 
 const Subtitle = ({ children }) => {
-  const style = { fontSize: '0.9rem', color: Colors.lightGrey };
+  const style = {
+    fontSize: '1.0rem',
+    color: Colors.lightGrey,
+    paddingTop: 1,
+  };
 
   return <span style={style}>{children}</span>;
 };
@@ -40,8 +43,8 @@ const Subtitle = ({ children }) => {
 const LED = ({ status }) => {
   const style = {
     backgroundColor: Colors.statusDown,
-    width: '14px',
-    height: '14px',
+    width: '15px',
+    height: '15px',
     borderRadius: '9px',
     marginRight: '5px',
   };

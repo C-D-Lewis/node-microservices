@@ -10,13 +10,10 @@ const TextButton = ({ label, restyle, onClick }) => {
     backgroundColor: Colors.primary,
     color: 'white',
     padding: '5px',
-    borderRadius: '3px',
     cursor: 'pointer',
     fontSize: '1.1rem',
     textAlign: 'center',
     justifyContent: 'center',
-    margin: '0px 2px',
-    // boxShadow: `0px 4px 0px 0px ${Colors.primaryDark}`
   }, restyle);
 
   return  <div style={style} onClick={onClick}>{label}</div>;

@@ -12,6 +12,18 @@ const Bar = ({ children, align }) => {
     flexDirection: 'row',
     marginTop: '10px',
     justifyContent: align === 'right' ? 'flex-end' : 'initial',
+    padding: '0px 10px',
+  };
+
+  return <div style={style}>{children}</div>;
+};
+
+const ButtonBar = ({ children, align }) => {
+  const style = {
+    display: 'flex',
+    flexDirection: 'row',
+    marginTop: '10px',
+    justifyContent: align === 'right' ? 'flex-end' : 'initial',
   };
 
   return <div style={style}>{children}</div>;
@@ -28,49 +40,50 @@ const Column = ({ children }) => {
 };
 
 const AtticControls = ({ state, setState, conduitSend }) => {
-  const setAtticControlsProp = (key, value) => {
+  const setProp = (key, value) => {
     const { atticControls } = state;
     atticControls[key] = value;
     setState({ atticControls });
   };
-  const sendButtonRestyle = { width: '50%' };
+  const getButtonRestyle = { width: '50%', borderBottomLeftRadius: 3 };
+  const setButtonRestyle = { width: '50%', borderBottomRightRadius: 3 };
 
   return (
     <Column>
       <Bar>
         <TextBox value={state.atticControls.app} placeholder="App name"
-          restyle={{ width: '130px' }}
-          onChange={value => setAtticControlsProp('app', value)}/>
+          restyle={{ width: '40%' }}
+          onChange={value => setProp('app', value)}/>
         <TextBox value={state.atticControls.key} placeholder="Key"
-          restyle={{ width: '188px' }}
-          onChange={value => setAtticControlsProp('key', value)}/>
+          restyle={{ width: '60%' }}
+          onChange={value => setProp('key', value)}/>
       </Bar>
       <Bar>
         <TextBox value={state.atticControls.value} placeholder="{}"
           restyle={{ width: "100%" }}
-          onChange={value => setAtticControlsProp('value', value)}/>
+          onChange={value => setProp('value', value)}/>
       </Bar>
-      <Bar>
-        <TextButton label="Get" restyle={sendButtonRestyle}
+      <ButtonBar>
+        <TextButton label="Get" restyle={getButtonRestyle}
           onClick={() => {
             const { app, key } = state.atticControls;
             const message = { app, key };
             conduitSend({ to: 'attic', topic: 'get', message })
-              .then(res => setAtticControlsProp('value', res.message.value));
+              .then(res => setProp('value', res.message.value));
           }}/>
-        <TextButton label="Set" restyle={sendButtonRestyle}
+        <TextButton label="Set" restyle={setButtonRestyle}
           onClick={() => {
             const { app, key, value } = state.atticControls;
             const message = { app, key, value };
             conduitSend({ to: 'attic', topic: 'set', message });
           }}/>
-      </Bar>
+      </ButtonBar>
     </Column>
   );
 };
 
 const ConduitControls = ({ state, setState, conduitSend }) => {
-  const setConduitControlsProp = (key, value) => {
+  const setProp = (key, value) => {
     const { conduitControls } = state;
     conduitControls[key] = value;
     setState({ conduitControls });
@@ -80,57 +93,58 @@ const ConduitControls = ({ state, setState, conduitSend }) => {
     <Column>
       <Bar>
         <TextBox value={state.conduitControls.app} placeholder="App name"
-          restyle={{ width: '130px' }}
-          onChange={value => setConduitControlsProp('app', value)}/>
+          restyle={{ width: '40%' }}
+          onChange={value => setProp('app', value)}/>
         <TextBox value={state.conduitControls.topic} placeholder="Topic"
-          restyle={{ width: '188px' }}
-          onChange={value => setConduitControlsProp('topic', value)}/>
+          restyle={{ width: '60%' }}
+          onChange={value => setProp('topic', value)}/>
       </Bar>
       <Bar>
         <TextBox value={state.conduitControls.message} placeholder="{}"
           restyle={{ width: "100%" }}
-          onChange={value => setConduitControlsProp('message', value)}/>
+          onChange={value => setProp('message', value)}/>
       </Bar>
-      <Bar>
-        <TextButton label="Send" onClick={() => {
-          const { app: to, topic, message } = state.conduitControls;
-          conduitSend({ to, topic, message: JSON.parse(message) });
-        }}/>
-      </Bar>
+      <ButtonBar>
+        <TextButton label="Send" 
+          restyle={{ width: '100%', borderRadius: '0px 0px 3px 3px' }}
+          onClick={() => {
+            const { app: to, topic, message } = state.conduitControls;
+            conduitSend({ to, topic, message: JSON.parse(message) });
+          }}/>
+      </ButtonBar>
     </Column>
   );
 };
 
 const AmbienceControls = ({ state, setState, conduitSend }) => {
-  const setAmbienceControlsProp = (key, value) => {
+  const setProp = (key, value) => {
     const { ambienceControls } = state;
     ambienceControls[key] = value;
     setState({ ambienceControls });
   };
+  const buttonRestyle = { width: '20%' };
 
   return (
     <Column>
       <Bar>
         <TextBox value={state.ambienceControls.red} placeholder="red"
           restyle={{ width: "33%" }}
-          onChange={value => setAmbienceControlsProp('red', value)}/>
+          onChange={value => setProp('red', value)}/>
         <TextBox value={state.ambienceControls.green} placeholder="green"
           restyle={{ width: "33%" }}
-          onChange={value => setAmbienceControlsProp('green', value)}/>
+          onChange={value => setProp('green', value)}/>
         <TextBox value={state.ambienceControls.blue} placeholder="blue"
           restyle={{ width: "33%" }}
-          onChange={value => setAmbienceControlsProp('blue', value)}/>
+          onChange={value => setProp('blue', value)}/>
       </Bar>
-      <Bar>
-        <TextButton label="Off" restyle={{ width: '33%' }}
+      <ButtonBar>
+        <TextButton label="Off" restyle={{ width: '20%', borderBottomLeftRadius: 3 }}
           onClick={() => conduitSend({ to: 'ambience', topic: 'off' })}/>
-        <TextButton label="Spotify" restyle={{ width: '33%' }}
+        <TextButton label="Spotify" restyle={buttonRestyle}
           onClick={() => conduitSend({ to: 'ambience', topic: 'spotify' })}/>
-        <TextButton label="Demo" restyle={{ width: '33%' }}
+        <TextButton label="Demo" restyle={buttonRestyle}
           onClick={() => conduitSend({ to: 'ambience', topic: 'demo' })}/>
-      </Bar>
-      <Bar>
-        <TextButton label="Set" restyle={{ width: '50%' }}
+        <TextButton label="Set" restyle={buttonRestyle}
           onClick={() => {
             const { red, green, blue } = state.ambienceControls;
             conduitSend({
@@ -139,7 +153,7 @@ const AmbienceControls = ({ state, setState, conduitSend }) => {
               message: { all: [red, green, blue] },
             });
           }}/>
-        <TextButton label="Fade" restyle={{ width: '50%' }}
+        <TextButton label="Fade" restyle={{ width: '20%', borderBottomRightRadius: 3 }}
           onClick={() => {
             const { red, green, blue } = state.ambienceControls;
             conduitSend({
@@ -148,15 +162,13 @@ const AmbienceControls = ({ state, setState, conduitSend }) => {
               message: { all: [parseInt(red), parseInt(green), parseInt(blue)] },
             });
           }}/>
-      </Bar>
+      </ButtonBar>
     </Column>
   );
 };
 
 const Container = ({ children }) => {
-  const style = {
-    padding: '0px 10px',
-  };
+  const style = {};
 
   return <div style={style}>{children}</div>;
 }
