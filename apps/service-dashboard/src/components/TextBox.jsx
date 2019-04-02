@@ -2,7 +2,6 @@ import React from 'react';
 
 const TextBox  = ({ value, onChange, placeholder = '', restyle }) => {
   const style = Object.assign({
-    minWidth: '80px',
     height: '30px',
     border: '0',
     borderBottom: '2px solid #0005',

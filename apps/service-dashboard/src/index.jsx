@@ -47,6 +47,13 @@ class Application extends React.Component {
         green: 128,
         blue: 128,
       },
+      visualsControls: {
+        index: 0,
+        red: 128,
+        green: 128,
+        blue: 128,
+        text: '',
+      },
     };
 
     this.loadApps = this.loadApps.bind(this);

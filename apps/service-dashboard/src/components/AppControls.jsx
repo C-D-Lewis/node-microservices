@@ -167,6 +167,86 @@ const AmbienceControls = ({ state, setState, conduitSend }) => {
   );
 };
 
+const VisualsControls = ({ state, setState, conduitSend }) => {
+  const setProp = (key, value) => {
+    const { visualsControls } = state;
+    visualsControls[key] = value;
+    setState({ visualsControls });
+  };
+  const buttonRestyle = { width: '20%' };
+
+  return (
+    <Column>
+      <Bar>
+        <TextBox value={state.visualsControls.index} placeholder="index"
+          restyle={{ width: "10%" }}
+          onChange={value => setProp('index', value)}/>
+        <TextBox value={state.visualsControls.red} placeholder="red"
+          restyle={{ width: "30%" }}
+          onChange={value => setProp('red', value)}/>
+        <TextBox value={state.visualsControls.green} placeholder="green"
+          restyle={{ width: "30%" }}
+          onChange={value => setProp('green', value)}/>
+        <TextBox value={state.visualsControls.blue} placeholder="blue"
+          restyle={{ width: "30%" }}
+          onChange={value => setProp('blue', value)}/>
+      </Bar>
+      <Bar>
+        <TextBox value={state.visualsControls.text} placeholder="text"
+          restyle={{ width: "100%" }}
+          onChange={value => setProp('text', value)}/>
+      </Bar>
+      <ButtonBar>
+        <TextButton label="All" restyle={{ width: '20%', borderBottomLeftRadius: 3 }}
+          onClick={() => {
+            const { red, green, blue } = state.visualsControls;
+            conduitSend({
+              to: 'visuals',
+              topic: 'setAll',
+              message: { all: [red, green, blue] },
+            });
+          }}/>
+        <TextButton label="Pixel" restyle={buttonRestyle}
+          onClick={() => {
+            const { index, red, green, blue } = state.visualsControls;
+            conduitSend({
+              to: 'visuals',
+              topic: 'setPixel',
+              message: { [index]: [red, green, blue] },
+            });
+          }}/>
+        <TextButton label="Blink" restyle={buttonRestyle}
+          onClick={() => {
+            const { index, red, green, blue } = state.visualsControls;
+            conduitSend({
+              to: 'visuals',
+              topic: 'blink',
+              message: { [index]: [red, green, blue] },
+            });
+          }}/>
+        <TextButton label="Text" restyle={buttonRestyle}
+          onClick={() => {
+            const { text } = state.visualsControls;
+            conduitSend({
+              to: 'visuals',
+              topic: 'setText',
+              message: { lines: [text] },
+            });
+          }}/>
+        <TextButton label="State" restyle={{ width: '20%', borderBottomRightRadius: 3 }}
+          onClick={() => {
+            conduitSend({
+              to: 'visuals',
+              topic: 'state',
+              message: {},
+            });
+          }}/>
+      </ButtonBar>
+    </Column>
+  );
+};
+
+
 const Container = ({ children }) => {
   const style = {};
 
@@ -178,6 +258,7 @@ const AppControls = ({ state, setState, data, conduitSend }) => {
     attic: AtticControls,
     conduit: ConduitControls,
     ambience: AmbienceControls,
+    visuals: VisualsControls,
   };
 
   const Controls = controlsMap[data.app] || NoControls;

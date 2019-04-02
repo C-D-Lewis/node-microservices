@@ -5,7 +5,6 @@ const TextButton = ({ label, restyle, onClick }) => {
   const style = Object.assign({
     display: 'flex',
     flexDirection: 'column',
-    minWidth: '50px',
     height: '30px',
     backgroundColor: Colors.primary,
     color: 'white',
@@ -14,6 +13,8 @@ const TextButton = ({ label, restyle, onClick }) => {
     fontSize: '1.1rem',
     textAlign: 'center',
     justifyContent: 'center',
+    borderLeft: '1px solid #FFF4',
+    borderRight: '1px solid #FFF4',
   }, restyle);
 
   return  <div style={style} onClick={onClick}>{label}</div>;
