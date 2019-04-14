@@ -2,15 +2,21 @@
   "name": "service-dashboard-react",
   "version": "1.0.0",
   "scripts": {
-    "clean": "rm -rf dist .cache",
-    "build": "parcel build ./index.html ./assets/*",
-    "serve": "parcel serve ./index.html ./assets/*",
-    "start": "npm run serve"
+    "build": "webpack --config webpack.config.js --mode production",
+    "copy": "cp -r index.html css dist",
+    "build-dev": "webpack --config webpack.config.js --mode development",
+    "start": "npm run build && npm run copy && webpack-dev-server"
   },
   "author": "Chris Lewis",
-  "dependencies": {
-    "parcel": "^1.11.0",
-    "react": "^16.8.1",
-    "react-dom": "^16.8.1"
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1"
   }
 }
