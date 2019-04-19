@@ -1,19 +1,24 @@
-const { config, db, gistSync, log } = require('../node-common')(['config', 'db', 'gistSync', 'log']);
+const {
+  config, db, gistSync, log,
+} = require('../node-common')(['config', 'db', 'gistSync', 'log']);
 
 config.requireKeys('storage.js', {
-  required: [ 'STORAGE_MODE' ],
-  type: 'object', properties: {
-    STORAGE_MODE: { type: 'string', enum: [ 'db', 'gistSync' ] }
-  }
+  required: ['STORAGE_MODE'],
+  properties: {
+    STORAGE_MODE: {
+      type: 'string',
+      enum: ['db', 'gistSync'],
+    },
+  },
 });
 
-const MODE = config.STORAGE_MODE;
+const { STORAGE_MODE } = config;
 
 const loadGistSyncFile = () => {
   const data = gistSync.getFile('attic-db.json');
-  if(!data) {
+  if (!data) {
     log.error('Could get load gistSync file!');
-    return null;
+    return;
   }
 
   return data;
@@ -24,36 +29,32 @@ const MODE_HANDLERS = {
     get: db.get,
     set: db.set,
     exists: db.exists,
-    init: () => {}
+    init: () => {},
   },
   gistSync: {
     get: (key) => {
       const data = loadGistSyncFile();
-      if(!data) return;
-
       return data[key];
     },
     set: (key, value) => {
       const data = loadGistSyncFile();
-      if(!data) return;
+      if (!data) {
+        return;
+      }
 
       data[key] = value;
     },
     exists: (key) => {
       const data = loadGistSyncFile();
-      if(!data) return;
-
-      return data[key] != null;
+      return data[key] !== null;
     },
-    init: () => {
-      gistSync.init();
-    }
-  }
+    init: gistSync.init,
+  },
 };
 
-module.exports = { 
-  get: key => MODE_HANDLERS[MODE].get(key),
-  set: (key, value) => MODE_HANDLERS[MODE].set(key, value),
-  exists: key => MODE_HANDLERS[MODE].exists(key),
-  init: () => MODE_HANDLERS[MODE].init()
+module.exports = {
+  get: key => MODE_HANDLERS[STORAGE_MODE].get(key),
+  set: (key, value) => MODE_HANDLERS[STORAGE_MODE].set(key, value),
+  exists: key => MODE_HANDLERS[STORAGE_MODE].exists(key),
+  init: () => MODE_HANDLERS[STORAGE_MODE].init(),
 };
