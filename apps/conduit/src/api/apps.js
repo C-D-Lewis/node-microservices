@@ -3,7 +3,7 @@ const allocator = require('../modules/allocator');
 const util = require('../modules/util');
 
 module.exports = async (req, res) => {
-  const response = [];
+  const result = [];
   const apps = allocator.getAll();
 
   await Promise.all(apps.map(async (item) => {
@@ -14,12 +14,13 @@ module.exports = async (req, res) => {
       ? packet.message.content
       : JSON.stringify(packet);
 
-    response.push(app);
+    result.push(app);
   }));
 
-  response.push({ app: 'conduit', port: config.SERVER.PORT, status: 'OK' });
+  // Report conduit itself for completeness
+  result.push({ app: 'conduit', port: config.SERVER.PORT, status: 'OK' });
 
   res.status(200);
   res.set('Access-Control-Allow-Origin', '*');
-  res.send(JSON.stringify(response, null, 2));
+  res.send(JSON.stringify(result, null, 2));
 };

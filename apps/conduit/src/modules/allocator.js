@@ -7,42 +7,36 @@ const configs = []; // { app, port }
 
 const findByApp = app => configs.find(item => item.app === app);
 
-const findByPort = port => configs.find(item => item.port === port);
+const sendConfig = (res, config) => res.status(200).send(config);
 
-const sendConfig = (res, config) => {
-  res.status(200);
-  res.send(config);
-};
+const roll = () => Math.round(Math.random() * (MAX - MIN)) + MIN;
 
-const rollPortNumber = () => Math.round(Math.random() * (MAX - MIN)) + MIN;
-
-// Don't allocate the same one twice
-const makePortNumber = () => {
-  let port = rollPortNumber();
-  while(findByPort(port)) {
-    port = rollPortNumber();
+const generatePortNumber = () => {
+  let port = roll();
+  while(configs.find(item => item.port === port)) {
+    port = roll();
   }
 
   return port;
 };
 
-const getPort = (req, res) => {
+const sendPort = (req, res) => {
   const { app } = req.body;
   const existingConfig = findByApp(app);
-  if(existingConfig) {
+  if (existingConfig) {
     sendConfig(res, existingConfig);
     log.info(`Re-sent ${existingConfig.port} to ${app}`);
     return;
   }
 
-  const newConfig = { app, port: makePortNumber() };
-  log.info(`Allocated ${newConfig.port} to ${app}`);
+  const newConfig = { app, port: generatePortNumber() };
   configs.push(newConfig);
   sendConfig(res, newConfig);
+  log.info(`Allocated ${newConfig.port} to ${app}`);
 };
 
 module.exports = {
   findByApp,
-  getPort,
+  sendPort,
   getAll: () => configs
 };

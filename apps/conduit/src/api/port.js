@@ -10,10 +10,10 @@ const PORT_MESSAGE_SCHEMA = {
 };
 
 module.exports = async (req, res) => {
-  if(!schema(req.body, PORT_MESSAGE_SCHEMA)) {
+  if (!schema(req.body, PORT_MESSAGE_SCHEMA)) {
     util.badRequest(res);
     return;
   }
 
-  allocator.getPort(req, res);
+  allocator.sendPort(req, res);
 };

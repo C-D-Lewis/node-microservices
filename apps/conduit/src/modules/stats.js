@@ -14,46 +14,53 @@ config.requireKeys('stats.js', {
 });
 
 // Can't use conduit.js - not a Conduit app!
-const sendToAttic = async (json) => {
-  const appConfig = allocator.findByApp('attic');
-  const data = await requestAsync({
-    url: `http://localhost:${appConfig.port}/conduit`,
+const atticSend = async (json) => {
+  const { body } = await requestAsync({
+    url: `http://localhost:${allocator.findByApp('attic').port}/conduit`,
     method: 'post',
-    json
+    json,
   });
 
-  return data.body;
+  return body;
 };
 
 const recordPacket = async ({ to, topic, from }) => {
-  if(!config.OPTIONS.RECORD_STATS) return;
+  if (!config.OPTIONS.RECORD_STATS) {
+    return;
+  }
 
-  let response = await sendToAttic({
-    to: 'attic', topic: 'get', message: { app: 'conduit', key: 'stats' }
+  let response = await atticSend({
+    to: 'attic', topic: 'get', message: { app: 'conduit', key: 'stats' },
   });
 
   // No stats yet
-  if(response.error && response.status === 404) {
-    const value = { to: {}, from: {}, topic: {}, all: 0 };
-    response = { message: { value } };
+  if (response.error && response.status === 404) {
+    const initialState = { to: {}, from: {}, topic: {}, all: 0 };
+    response = {
+      message: { value: initialState },
+    };
   }
 
+  // Compile the data update for Attic (can be initial state)
   const update = Object.assign({}, response.message.value);
+  update.to[to] = update.to[to] || 0;
+  update.from[from] = update.from[from] || 0;
+  update.topic[topic] = update.topic[topic] || 0;
+  update.all = update.all || 0;
 
-  if(!update.to[to]) update.to[to] = 0;
-  if(!update.from[from]) update.from[from] = 0; 
-  if(!update.topic[topic]) update.topic[topic] = 0;
-  if(!update.all) update.all = 0;
-
+  // Update the state
   update.topic[topic]++;
   update.from[from]++;
   update.to[to]++;
   update.all++;
 
-  await sendToAttic({
-    to: 'attic', topic: 'set', 
-    message: { app: 'conduit', key: 'stats', value: update }
+  await atticSend({
+    to: 'attic',
+    topic: 'set',
+    message: { app: 'conduit', key: 'stats', value: update },
   });
 };
 
-module.exports = { recordPacket };
+module.exports = {
+  recordPacket,
+};
