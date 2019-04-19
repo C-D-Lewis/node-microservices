@@ -1,5 +1,4 @@
 const bodyParser = require('body-parser');
-
 const {
   attic, conduit, config, log, server,
 } = require('../node-common')(['attic', 'conduit', 'config', 'log', 'server']);
@@ -21,37 +20,38 @@ const WEBHOOK_SCHEMA = {
   },
 };
 
-// Model - always query DB for latest list, since Express doesn't support route removal
-const registerForWebhooks = async () => {
-  const app = server.getExpressApp();
+/**
+ * Handle any request at all and compare against known hooks.
+ *
+ * @param {object} req - Request object.
+ * @param {object} res - Response object.
+ */
+const handleRequest = async (req, res) => {
+  const hooks = await attic.get(ATTIC_KEY_WEBHOOKS);
+  if (!hooks.length) {
+    res.status(404).json({ error: 'Not Found' });
+    return;
+  }
 
-  // When any request comes in...
-  app.use(async (req, res) => {
-    const hooks = await attic.get(ATTIC_KEY_WEBHOOKS);
-    if (!hooks.length) {
-      res.status(404).json({ error: 'Not Found' });
-      return;
-    }
+  const { path } = req;
+  const found = hooks.find(p => p.url === path)
+  if (!found) {
+    log.error(`Webhook does not exist for URL ${path}`);
+    res.status(404).json({ error: 'Not Found' });
+    return;
+  }
 
-    const urlRequested = req.path;
-    const found = hooks.find(p => p.url === urlRequested)
-    if (!found) {
-      log.error(`Webhook does not exist for URL ${urlRequested}`);
-      res.status(404).json({ error: 'Not Found' });
-      return;
-    }
+  found.packet.message = found.packet.message || {};
+  found.packet.message.webhookQuery = req.query;
 
-    // Add some extra metadata
-    found.packet.message = found.packet.message || {};
-    found.packet.message.webhookQuery = req.query;
-
-    // Store data
-    log.info(`Forwarding webhook to ${found.packet.to}`);
-    await conduit.send(found.packet);
-    server.respondOk(res);
-  });
+  log.info(`Forwarding webhook to ${found.packet.to}`);
+  await conduit.send(found.packet);
+  server.respondOk(res);
 };
 
+/**
+ * Set up routes for hooks read from DB.
+ */
 const setup = async () => {
   server.start();
 
@@ -67,7 +67,11 @@ const setup = async () => {
     await attic.set(ATTIC_KEY_WEBHOOKS, hooks);
   }
 
-  registerForWebhooks();
+  server.getExpressApp().use(handleRequest);
 };
 
-module.exports = { setup, ATTIC_KEY_WEBHOOKS, WEBHOOK_SCHEMA };
+module.exports = {
+  ATTIC_KEY_WEBHOOKS,
+  WEBHOOK_SCHEMA,
+  setup,
+};

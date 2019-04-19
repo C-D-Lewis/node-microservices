@@ -2,9 +2,6 @@ const { attic, conduit, log } = require('../node-common')(['attic', 'conduit', '
 const { ATTIC_KEY_WEBHOOKS } = require('../modules/webhooks');
 
 module.exports = async (packet, res) => {
-  log.debug(`<< remove: ${JSON.stringify(packet.message)}`);
-
-  // Already exists?
   const hooks = await attic.get(ATTIC_KEY_WEBHOOKS);
   const found = hooks.find(item => item.url === packet.message.url);
   if (!found) {
@@ -12,7 +9,6 @@ module.exports = async (packet, res) => {
     return;
   }
 
-  // Update app and DB
   hooks.splice(hooks.indexOf(found), 1);
   await attic.set(ATTIC_KEY_WEBHOOKS, hooks);
   conduit.respond(res, { status: 200, message: { content: 'OK' } });

@@ -1,4 +1,4 @@
-const { conduit, schema } = require('../node-common')(['conduit', 'schema']);
+const { conduit } = require('../node-common')(['conduit']);
 const { WEBHOOK_SCHEMA } = require('./webhooks');
 
 const setup = () => {
@@ -6,4 +6,6 @@ const setup = () => {
   conduit.on('remove', require('../api/remove'), WEBHOOK_SCHEMA);
 };
 
-module.exports = { setup };
+module.exports = {
+  setup,
+};
