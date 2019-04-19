@@ -29,30 +29,30 @@ const recordPacket = async ({ to, topic, from }) => {
     return;
   }
 
-  let response = await atticSend({
+  let current = await atticSend({
     to: 'attic', topic: 'get', message: { app: 'conduit', key: 'stats' },
   });
 
   // No stats yet
-  if (response.error && response.status === 404) {
-    const initialState = { to: {}, from: {}, topic: {}, all: 0 };
-    response = {
+  if (current.error && current.status === 404) {
+    const initialState = { recipients: {}, senders: {}, topics: {}, total: 0 };
+    current = {
       message: { value: initialState },
     };
   }
 
   // Compile the data update for Attic (can be initial state)
-  const update = Object.assign({}, response.message.value);
-  update.to[to] = update.to[to] || 0;
-  update.from[from] = update.from[from] || 0;
-  update.topic[topic] = update.topic[topic] || 0;
-  update.all = update.all || 0;
+  const update = Object.assign({}, current.message.value);
+  update.recipients[to] = update.recipients[to] || 0;
+  update.senders[from] = update.senders[from] || 0;
+  update.topics[topic] = update.topics[topic] || 0;
+  update.total = update.total || 0;
 
   // Update the state
-  update.topic[topic]++;
-  update.from[from]++;
-  update.to[to]++;
-  update.all++;
+  update.recipients[to]++;
+  update.senders[from]++;
+  update.topics[topic]++;
+  update.total++;
 
   await atticSend({
     to: 'attic',
