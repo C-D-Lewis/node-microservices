@@ -1,5 +1,4 @@
 const { conduit, log } = require('./node-common')(['conduit', 'log']);
-
 const api = require('./modules/api');
 const webhooks = require('./modules/webhooks');
 
