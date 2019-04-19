@@ -1,4 +1,4 @@
-const { conduit, schema } = require('../node-common')(['conduit', 'schema']);
+const { conduit } = require('../node-common')(['conduit']);
 
 const SET_ALL_MESSAGE_SCHEMA = {
   additionalProperties: false,
@@ -10,7 +10,7 @@ const SET_ALL_MESSAGE_SCHEMA = {
 
 const INDEXED_MESSAGE_SCHEMA = {
   additionalProperties: false,
-  type: 'object', patternProperties: {
+  patternProperties: {
     '[0-9]{1}': { type: 'array', items: { type: 'integer' } },
   },
 };
@@ -35,4 +35,6 @@ const setup = async () => {
   conduit.on('state', require('../api/state'), EMPTY_MESSAGE_SCHEMA);
 };
 
-module.exports = { setup };
+module.exports = {
+  setup,
+};

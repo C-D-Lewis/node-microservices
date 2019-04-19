@@ -1,12 +1,7 @@
-const { textDisplay, log, conduit } = require('../node-common')(['textDisplay', 'log', 'conduit']);
+const { textDisplay, conduit } = require('../node-common')(['textDisplay', 'conduit']);
 
-module.exports = (packet, res) => {
-  log.debug(`<< setText: ${JSON.stringify(packet.message)}`);
+module.exports = ({ message }, res) => {
+  textDisplay.setLines(message.lines);
 
-  textDisplay.setLines(packet.message.lines);
-
-  conduit.respond(res, {
-    status: 200,
-    message: { content: 'OK' }
-  });
+  conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };

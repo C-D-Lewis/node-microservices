@@ -1,12 +1,7 @@
-const { leds, log, conduit } = require('../node-common')(['leds', 'log', 'conduit']);
+const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
 
-module.exports = (packet, res) => {
-  log.debug(`<< setAll: ${JSON.stringify(packet.message)}`);
+module.exports = ({ message }, res) => {
+  leds.setAll(message.all);
 
-  leds.setAll(packet.message.all);
-
-  conduit.respond(res, {
-    status: 200,
-    message: { content: 'OK' }
-  });
+  conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };

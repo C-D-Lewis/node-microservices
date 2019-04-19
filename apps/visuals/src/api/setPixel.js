@@ -1,15 +1,11 @@
-const { leds, log, conduit } = require('../node-common')(['leds', 'log', 'conduit']);
+const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
 
-module.exports = (packet, res) => {
-  log.debug(`<< setPixel: ${JSON.stringify(packet.message)}`);
-
-  const numLeds = leds.getNumLEDs();
-  for(var i = 0; i < numLeds; i++) {
-    if(packet.message[i]) leds.set(i, packet.message[i]);
+module.exports = ({ message }, res) => {
+  for (var i = 0; i < leds.getNumLEDs(); i += 1) {
+    if (message[i]) {
+      leds.set(i, message[i]);
+    }
   }
 
-  conduit.respond(res, {
-    status: 200,
-    message: { content: 'OK' }
-  });
+  conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };
