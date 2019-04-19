@@ -66,6 +66,8 @@ const send = async (packet) => {
 
 const onMessage = (req, res) => {
   const { topic, message } = req.body;
+  log.debug(`<< ${topic} ${JSON.stringify(message)}`);
+
   const route = routes.find(item => item.topic === topic);
   if (!route) {
     respond(res, { status: 404, error: 'Topic not found' });
