@@ -26,16 +26,15 @@ const loadGistSyncFile = () => {
 
 const MODE_HANDLERS = {
   db: {
+    init: () => {},
+    exists: db.exists,
     get: db.get,
     set: db.set,
-    exists: db.exists,
-    init: () => {},
   },
   gistSync: {
-    get: (key) => {
-      const data = loadGistSyncFile();
-      return data[key];
-    },
+    init: gistSync.init,
+    exists: key => loadGistSyncFile()[key] !== null,
+    get: key => loadGistSyncFile()[key],
     set: (key, value) => {
       const data = loadGistSyncFile();
       if (!data) {
@@ -44,11 +43,6 @@ const MODE_HANDLERS = {
 
       data[key] = value;
     },
-    exists: (key) => {
-      const data = loadGistSyncFile();
-      return data[key] !== null;
-    },
-    init: gistSync.init,
   },
 };
 
