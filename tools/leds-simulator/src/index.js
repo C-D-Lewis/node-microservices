@@ -13,8 +13,12 @@ const main = async () => {
   await conduit.register();
 
   setInterval(async () => {
-    const state = await conduit.send({ to: 'visuals', topic: 'state' });
-    updateDisplay(state.message.leds);
+    try {
+      const state = await conduit.send({ to: 'visuals', topic: 'state' });
+      updateDisplay(state.message.leds);
+    } catch (e) {
+      console.log('Disconnected');
+    }
   }, INTERVAL_MS);
 };
 
