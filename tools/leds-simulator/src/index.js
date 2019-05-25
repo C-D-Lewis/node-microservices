@@ -13,7 +13,7 @@ const main = async () => {
   await conduit.register();
 
   setInterval(async () => {
-    const state = await conduit.send({ to: 'LedServer', topic: 'state', message: {}});
+    const state = await conduit.send({ to: 'visuals', topic: 'state' });
     updateDisplay(state.message.leds);
   }, INTERVAL_MS);
 };

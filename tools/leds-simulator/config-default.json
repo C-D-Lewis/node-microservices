@@ -7,6 +7,6 @@
   "CONDUIT": {
     "HOST": "localhost",
     "PORT": 5959,
-    "APP": "LedsSimulator"
+    "APP": "led-simulator"
   }
 }
