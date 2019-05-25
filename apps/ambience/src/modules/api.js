@@ -20,4 +20,6 @@ const setup = async () => {
   conduit.on('off', require('../api/off'), _NO_MESSAGE_SCHEMA);
 };
 
-module.exports = { setup };
+module.exports = {
+  setup,
+};
