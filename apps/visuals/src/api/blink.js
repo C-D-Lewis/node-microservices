@@ -1,9 +1,9 @@
 const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
 
-module.exports = (packet, res) => {
+module.exports = ({ message }, res) => {
   for (let i = 0; i < leds.getNumLEDs(); i += 1) {
-    if (packet.message[i]) {
-      leds.blink(i, packet.message[i]);
+    if (message[i]) {
+      leds.blink(i, message[i]);
     }
   }
 
