@@ -10,7 +10,7 @@ config.requireKeys('gist-sync.js', {
   required: ['GIST_SYNC'],
   properties: {
     GIST_SYNC: {
-      required: ['URL', 'DIR', 'SYNC_INTERVAL_M'],
+      required: ['URL', 'DIR'],
       properties: {
         URL: { type: 'string' },
         DIR: { type: 'string' },
@@ -24,19 +24,16 @@ const GIST_DIR = `${config.getInstallPath()}/${config.GIST_SYNC.DIR}`;
 const GIT_CONTEXT = { cwd: GIST_DIR };
 
 let jsonFiles;  // { name, content (JSON) }
-let pushEveryHandle;
 
-const loadFiles = () => {
-  jsonFiles = fs.readdirSync(GIST_DIR)
-    .filter(p => !p.startsWith('.'))
-    .map(name => ({ name, content: require(`${GIST_DIR}/${name}`) }));
-};
+// Assumes all files are JSON data files
+const loadFiles = () => jsonFiles = fs.readdirSync(GIST_DIR)
+  .filter(p => !p.startsWith('.'))
+  .map(name => ({ name, content: require(`${GIST_DIR}/${name}`) }));
 
-const saveFiles = () => {
-  jsonFiles.forEach((jsonFile) => {
-    fs.writeFileSync(`${GIST_DIR}/${jsonFile.name}`, JSON.stringify(jsonFile.content, null, 2), 'utf8');
-  });
-};
+const saveFiles = () => jsonFiles.forEach((jsonFile) => {
+  const str = JSON.stringify(jsonFile.content, null, 2);
+  fs.writeFileSync(`${GIST_DIR}/${jsonFile.name}`, str, 'utf8');
+});
 
 const init = () => {
   if (jsonFiles) {
@@ -44,6 +41,7 @@ const init = () => {
   }
 
   if (config.GIST_SYNC.SYNC_INTERVAL_M) {
+    log.info(`Setting gistSync to sync every ${config.GIST_SYNC.SYNC_INTERVAL_M} minutesa.`);
     setInterval(sync, 1000 * 60 * config.GIST_SYNC.SYNC_INTERVAL_M);
   }
 
@@ -62,6 +60,7 @@ const sync = () => {
   try {
     execSync('git commit -m "Automated gist update"', GIT_CONTEXT);
   } catch (e) {
+    // git commit throws for some reason
     if (!e.message.includes('git commit')) {
       throw e;
     }
@@ -72,7 +71,7 @@ const sync = () => {
 
 const getFile = (name) => {
   log.assert(jsonFiles !== null, 'gist-sync.js init() must be called first', true);
-  return jsonFiles.find(item => item.name === name).content;
+  return jsonFiles.find(p => p.name === name).content;
 };
 
 module.exports = {

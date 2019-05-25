@@ -1,5 +1,4 @@
 const fs = require('fs');
-
 const config = require('./config');
 
 config.requireKeys('log.js', {
@@ -33,8 +32,8 @@ const writePid = () => fs.writeFileSync(`${config.getInstallPath()}/pid`, proces
 
 const writeToFile = (msg) => {
   const filePath = `${config.getInstallPath()}/${config.LOG.APP_NAME.split(' ').join('-')}.log`;
-  let stream;
 
+  let stream;
   if (!fs.existsSync(filePath)) {
     stream = fs.createWriteStream(filePath, { flags: 'w' });
     stream.end(`[${getTimeString()}] New log file!\n`);
@@ -50,12 +49,12 @@ const log = (level, msg) => {
     return;
   }
 
-  if (!assert(msg, `log msg must not be undefined`, false)) {
-    throw new Error('log msg was undefined');
+  if (!assert(msg, `log 'msg' must not be undefined`, false)) {
+    throw new Error('log \'msg\' was undefined');
   }
 
   if (typeof msg === 'object') {
-    msg = (msg instanceof Error) ? msg.message : JSON.stringify(msg);
+    msg = msg.message || JSON.stringify(msg);
   }
 
   if (config.LOG.TO_FILE) {
@@ -65,6 +64,7 @@ const log = (level, msg) => {
   console.log(`[${TAGS[level]} ${getTimeString()} ${process.pid} ${config.LOG.APP_NAME}] ${msg}`);
 
   if (level === 'fatal') {
+    // Oof
     process.exit(1);
   }
 };
@@ -79,7 +79,7 @@ const assert = (condition, msg, strict) => {
   return condition;
 };
 
-const writeStartLine = () => {
+const writeDecor = () => {
   const msg = ` ${config.LOG.APP_NAME} `;
   const decorLength = Math.floor((DECOR_WIDTH - msg.length) / 2);
   process.stdout.write('='.repeat(decorLength));
@@ -89,7 +89,7 @@ const writeStartLine = () => {
 };
 
 const begin = () => {
-  writeStartLine();
+  writeDecor();
   writePid();
 
   process.on('uncaughtException', (err) => {

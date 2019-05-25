@@ -1,14 +1,7 @@
 const conduit = require('./conduit');
 const config = require('./config');
 
-let host = 'localhost';
-
-const setHost = (url) => {
-  host = url;
-};
-
 const set = async (key, value) => conduit.send({
-  host,
   to: 'attic',
   topic: 'set',
   message: {
@@ -20,7 +13,6 @@ const set = async (key, value) => conduit.send({
 
 const get = async (key) => {
   const res = await conduit.send({
-    host,
     to: 'attic',
     topic: 'get',
     message: {
@@ -38,11 +30,15 @@ const get = async (key) => {
 
 const exists = async (key) => {
   try {
-    await module.exports.get(key);
+    await get(key);
     return true;
   } catch (e) {
     return false;
   }
 };
 
-module.exports = { set, get, exists, setHost };
+module.exports = {
+  set,
+  get,
+  exists,
+};

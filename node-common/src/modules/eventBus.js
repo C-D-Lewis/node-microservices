@@ -1,27 +1,27 @@
-const bus = {};
+const topics = {};
 
 const subscribe = (name, cb) => {
-  if (!bus[name]) {
-    bus[name] = [];
+  if (!topics[name]) {
+    topics[name] = [];
   }
 
-  bus[name].push(cb);
+  topics[name].push(cb);
 };
 
 const unsubscribe = (name, cb) => {
-  if (!bus[name]) {
+  if (!topics[name]) {
     return;
   }
 
-  bus[name].splice(bus[name].indexOf(cb), 1);
+  topics[name].splice(topics[name].indexOf(cb), 1);
 };
 
 const broadcast = (name, params) => {
-  if (!bus[name]) {
+  if (!topics[name]) {
     return;
   }
 
-  bus[name].forEach(cb => cb(params));
+  topics[name].forEach(cb => cb(params));
 };
 
 module.exports = {

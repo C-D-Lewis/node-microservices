@@ -1,6 +1,5 @@
 const fs = require('fs');
 const config = require('./config');
-const log = require('./log');
 
 config.requireKeys('db.js', {
   required: ['DB'],
@@ -16,42 +15,42 @@ config.requireKeys('db.js', {
 
 const DB_PATH = `${config.getInstallPath()}/${config.DB.FILE}`;
 
-let table;
+let dbData;
 
-const loadTable = () => {
-  if (table) {
+const loadDbData = () => {
+  if (dbData) {
     return;
   }
 
   if (!fs.existsSync(DB_PATH)) {
-    table = {};
+    dbData = {};
     saveTable();
   }
 
-  table = require(DB_PATH);
+  dbData = require(DB_PATH);
 };
 
-const saveTable = () => fs.writeFileSync(DB_PATH, JSON.stringify(table, null, 2), 'utf8');
+const saveTable = () => fs.writeFileSync(DB_PATH, JSON.stringify(dbData, null, 2), 'utf8');
 
 const get = (key) => {
-  loadTable();
-  return table[key];
+  loadDbData();
+  return dbData[key];
 };
 
 const set = (key, value) => {
-  loadTable();
-  table[key] = value;
+  loadDbData();
+  dbData[key] = value;
   saveTable();
 };
 
 const getTable = () => {
-  loadTable();
-  return table;
+  loadDbData();
+  return dbData;
 };
 
 const _delete = (key) => {
-  loadTable();
-  delete table[key];
+  loadDbData();
+  delete dbData[key];
   saveTable();
 };
 

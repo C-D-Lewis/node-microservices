@@ -1,7 +1,5 @@
 const express = require('express');
-
 const config = require('./config');
-const schema = require('./schema');
 const log = require('./log');
 
 config.requireKeys('server.js', {
@@ -24,8 +22,11 @@ const respondWithPid = res => res.status(200).json({ pid: process.pid });
 
 const start = () => new Promise((resolve) => {
   app = express();
+
+  // Default routes for all apps
   app.get('/status', (req, res) => module.exports.respondOk(res));
   app.get('/pid', (req, res) => respondWithPid(res));
+
   app.listen(config.SERVER.PORT, () => {
     log.info(`Express server up on ${config.SERVER.PORT}`);
     resolve();

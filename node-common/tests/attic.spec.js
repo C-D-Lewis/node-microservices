@@ -2,10 +2,6 @@ const { expect } = require('chai');
 const attic = require('../src/modules/attic');
 
 describe('attic.js', () => {
-  it('should set host', () => {
-    attic.setHost('localhost');
-  });
-
   it('should set a value in Attic service', async () => {
     const res = await attic.set('foo', 'bar');
 

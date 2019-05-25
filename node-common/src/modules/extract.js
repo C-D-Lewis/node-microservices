@@ -1,5 +1,3 @@
-const log = require('./log');
-
 module.exports = (text, befores, after) => {
   let copy = `${text}`;
 

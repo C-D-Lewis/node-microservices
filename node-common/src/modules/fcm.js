@@ -29,7 +29,7 @@ const post = async (title, topic, body) => {
     method: 'post',
     headers: {
       Authorization: `key=${config.FCM.API_KEY}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(payload),
   });

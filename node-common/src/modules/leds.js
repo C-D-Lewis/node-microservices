@@ -27,10 +27,10 @@ const NUM_LEDS = {
   blinkt: 8,
 }[config.LEDS.HARDWARE_TYPE];
 
-const pixelState = [];
+const pixelsState = [];
 let blinkt = {};
 let mote = {};
-let initd;
+let initialised;
 let blinkHandle = null;
 
 const hardwareAvailable = () => {
@@ -38,7 +38,7 @@ const hardwareAvailable = () => {
     return false;
   }
 
-  if (!initd) {
+  if (!initialised) {
     init();
   }
 
@@ -52,7 +52,7 @@ const updateBlinkt = () => {
 
 const init = () => {
   for (let i = 0; i < NUM_LEDS; i++) {
-    pixelState.push([0, 0, 0]);
+    pixelsState.push([0, 0, 0]);
   }
 
   if (config.LEDS.HARDWARE_TYPE === 'blinkt') {
@@ -66,12 +66,12 @@ const init = () => {
     mote.setAll([0, 0, 0]);
   }
 
-  initd = true;
+  initialised = true;
 };
 
-const setAll = (rgbArr) => {
+const setAll = (nextRgb) => {
   for (let i = 0; i < NUM_LEDS; i++) {
-    pixelState[i] = rgbArr;
+    pixelsState[i] = nextRgb;
   }
 
   if (!hardwareAvailable()) {
@@ -80,51 +80,52 @@ const setAll = (rgbArr) => {
 
   if (config.LEDS.HARDWARE_TYPE === 'blinkt') {
     for (let i = 0; i < NUM_LEDS; i++) {
-      set(i, rgbArr);
+      set(i, nextRgb);
     }
   } else if (config.LEDS.HARDWARE_TYPE === 'mote') {
-    mote.setAll(rgbArr);
+    mote.setAll(nextRgb);
   }
 };
 
-const blink = (index, rgbArr) => {
-  pixelState[index] = rgbArr;
-  if (!hardwareAvailable()) {
-    return;
-  }
+const set = (index, nextRgb) => {
+  pixelsState[index] = nextRgb;
 
-  set(index, rgbArr);
-
-  if (blinkHandle) {
-    return;
-  }
-
-  blinkHandle = setTimeout(() => {
-    blinkHandle = null;
-
-    set(index, [0, 0, 0]);
-  }, BLINK_TIME_MS);
-};
-
-const set = (index, rgbArr) => {
-  pixelState[index] = rgbArr;
   if (!hardwareAvailable()) {
     return;
   }
 
   if (config.LEDS.HARDWARE_TYPE === 'blinkt') {
-    const rgb = rgbArr.map(p => p * config.LEDS.ATTENUATION_FACTOR);
+    const rgb = nextRgb.map(p => p * config.LEDS.ATTENUATION_FACTOR);
     blinkt.setPixel(index, ...rgb, config.LEDS.BRIGHTNESS);
     updateBlinkt();
   } else if (config.LEDS.HARDWARE_TYPE === 'mote') {
-    mote.setPixels(pixelState);
+    mote.setPixels(pixelsState);
   }
+};
+
+const blink = (index, nextRgb) => {
+  pixelsState[index] = nextRgb;
+
+  if (!hardwareAvailable()) {
+    return;
+  }
+
+  // Allow rapid requests to persist the blink, but not cancel it
+  set(index, nextRgb);
+  if (blinkHandle) {
+    return;
+  }
+
+  blinkHandle = setTimeout(() => {
+    set(index, [0, 0, 0]);
+    blinkHandle = null;
+  }, BLINK_TIME_MS);
 };
 
 module.exports = {
   set,
   setAll,
   blink,
-  getState: () => pixelState,
+  getState: () => pixelsState,
   getNumLEDs: () => NUM_LEDS,
 };

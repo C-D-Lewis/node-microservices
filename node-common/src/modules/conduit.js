@@ -1,6 +1,5 @@
 const bodyParser = require('body-parser');
 const express = require('express');
-const request = require('request');
 const config = require('./config');
 const log = require('./log');
 const requestAsync = require('./requestAsync');
@@ -35,14 +34,12 @@ const RESPONSE_MESSAGE_SCHEMA = {
 const routes = [];
 let server;
 
-// Client should modify input packet
 const respond = async (res, packet) => {
   if (!schema(RESPONSE_MESSAGE_SCHEMA, packet)) {
-    log.error(`conduit: respond() packet had schema errors`);
+    log.error(`conduit: respond() packet from ${config.CONDUIT.APP} had schema errors`);
   }
 
-  res.status(packet.status);
-  res.send(packet);
+  res.status(packet.status).send(packet);
 };
 
 // { to, from, topic, message }
@@ -51,13 +48,12 @@ const send = async (packet) => {
     throw new Error('conduit: Not yet registered');
   }
 
-  log.debug(`conduit: >> ${JSON.stringify(packet)}`);
   packet.from = config.CONDUIT.APP;
-  const url = `http://${config.CONDUIT.HOST}:${config.CONDUIT.PORT}/conduit`;
+  log.debug(`conduit: >> ${JSON.stringify(packet)}`);
   const { body } = await requestAsync({
-    url,
-    json: packet,
+    url: `http://${config.CONDUIT.HOST}:${config.CONDUIT.PORT}/conduit`,
     method: 'post',
+    json: packet,
   });
 
   log.debug(`conduit: << ${JSON.stringify(body)}`);
@@ -70,7 +66,7 @@ const onMessage = (req, res) => {
 
   const route = routes.find(item => item.topic === topic);
   if (!route) {
-    respond(res, { status: 404, error: 'Topic not found' });
+    respond(res, { status: 404, error: `Topic '${topic}' not found` });
     return;
   }
 
@@ -82,9 +78,7 @@ const onMessage = (req, res) => {
   route.callback(req.body, res);
 };
 
-const onStatus = (packet, res) => {
-  respond(res, { status: 200, message: { content: 'OK' } });
-};
+const onStatus = (packet, res) => respond(res, { status: 200, message: { content: 'OK' } });
 
 const register = async () => {
   if (server) {
@@ -111,7 +105,7 @@ const register = async () => {
 
 const on = (topic, callback, schema) => {
   if (routes.find(item => item.topic === topic)) {
-    return;
+    throw new Error(`Topic '${topic}' already registered!`);
   }
 
   routes.push({ topic, callback, schema });

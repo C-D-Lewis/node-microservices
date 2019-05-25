@@ -1,5 +1,4 @@
 const request = require('request');
-
 const config = require('./config');
 const log = require('./log');
 const requestAsync = require('./requestAsync');
@@ -10,7 +9,6 @@ config.requireKeys('conduit.js', {
     EVT_DB: {
       required: ['THNG_ID', 'DEVICE_API_KEY'],
       properties: {
-        THNG_ID: { type: 'string' },
         DEVICE_API_KEY: { type: 'string' },
       },
     },
@@ -18,6 +16,8 @@ config.requireKeys('conduit.js', {
 });
 
 const API_URL = 'https://api.evrythng.com';
+
+let thngId = '';
 
 const evtRequest = async (method, path, body) => {
   const data = await requestAsync({
@@ -38,10 +38,12 @@ const init = async () => {
   if (res.errors) {
     throw new Error('EVT_DB DEVICE_API_KEY is invalid!');
   }
+
+  thngId = res.actor.id;
 };
 
 const get = async (key) => {
-  const path = `/thngs/${config.EVT_DB.THNG_ID}/properties/${key.toLowerCase()}`;
+  const path = `/thngs/${thngId}/properties/${key.toLowerCase()}`;
   const res = await evtRequest('GET', path);
   if (!res.length) {
     throw new Error(`Property ${key} does not exist`);
@@ -51,7 +53,7 @@ const get = async (key) => {
 };
 
 const set = async (key, value) => {
-  const path = `/thngs/${config.EVT_DB.THNG_ID}/properties/${key.toLowerCase()}`;
+  const path = `/thngs/${thngId}/properties/${key.toLowerCase()}`;
   const res = await evtRequest('PUT', path, [{ value }]);
   if (res.errors) {
     throw new Error(res.errors[0]);

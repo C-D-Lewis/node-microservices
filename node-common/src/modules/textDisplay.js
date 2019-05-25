@@ -4,7 +4,7 @@ const config = require('./config');
 const log = require('./log');
 
 const SUPPORTED_BOARDS = ['pioled'];
-const LIB_PATH = `${__dirname}/../lib/pioled-text.py`;
+const PIOLED_LIB_PATH = `${__dirname}/../lib/pioled-text.py`;
 
 config.requireKeys('textDisplay.js', {
   required: ['TEXT_DISPLAY'],
@@ -26,7 +26,7 @@ const NUM_LINES = {
 }[config.TEXT_DISPLAY.HARDWARE_TYPE];
 
 const linesState = [];
-let initd;
+let initialised;
 
 const init = () => {
   for (let i = 0; i < NUM_LINES; i++) {
@@ -34,10 +34,10 @@ const init = () => {
   }
 
   if (config.TEXT_DISPLAY.HARDWARE_TYPE === 'pioled') {
-    // No initialisation necessary, only Python script runs
+    // No initialisation necessary
   }
 
-  initd = true;
+  initialised = true;
 };
 
 const hardwareAvailable = () => {
@@ -45,7 +45,7 @@ const hardwareAvailable = () => {
     return false;
   }
 
-  if (!initd) {
+  if (!initialised) {
     init();
   }
 
@@ -59,20 +59,19 @@ const setLine = (index, message) => {
   }
 
   if (config.TEXT_DISPLAY.HARDWARE_TYPE === 'pioled') {
-    let cmd = `python ${LIB_PATH}`;
+    let cmd = `python ${PIOLED_LIB_PATH}`;
     linesState.forEach((p) => {
       cmd += ` "${p}"`;
     });
+
     execSync(cmd);
   }
 };
 
-const setLines = (lines) => {
-  lines.forEach((p, i) => setLine(i, p));
-};
+const setLines = (lines) => lines.forEach((p, i) => setLine(i, p));
 
 const clearLines = () => {
-  let cmd = `python ${LIB_PATH}`;
+  let cmd = `python ${PIOLED_LIB_PATH}`;
   for (let i = 0; i < NUM_LINES; i += 1) {
     cmd += ` ""`;
   }
