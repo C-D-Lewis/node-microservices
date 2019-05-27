@@ -131,6 +131,9 @@ const blink = (index, nextRgb) => {
   }, BLINK_TIME_MS);
 };
 
+// Prepare
+init();
+
 module.exports = {
   set,
   setAll,
