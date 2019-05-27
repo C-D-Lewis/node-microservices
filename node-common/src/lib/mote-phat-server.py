@@ -45,6 +45,7 @@ def set_all():
 
 def main():
   mote_init()
+  app.run(host='0.0.0.0', port=35275)
 
 if '__main__' in __name__:
   main()
