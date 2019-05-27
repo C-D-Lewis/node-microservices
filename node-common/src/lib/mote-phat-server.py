@@ -41,11 +41,13 @@ def set_all():
 
   rgb = data['all']
   mote_update(rgb[0], rgb[1], rgb[2])
+  print('flask app mote_update: {}', rgb)
   return respond(200, { 'content': 'OK' })
 
 def main():
   mote_init()
   app.run(host='0.0.0.0', port=35275)
+  print('flask app running')
 
 if '__main__' in __name__:
   main()
