@@ -6,8 +6,8 @@ const main = () => {
   log.begin();
   api.setup();
 
-  setTimeout(() => anims.fadeTo([128, 128, 128]), 1000);
-  setTimeout(() => anims.fadeTo([0, 0, 0]), 5000);
+  setTimeout(() => anims.fadeTo([0, 128, 0]), 500);
+  setTimeout(() => anims.fadeTo([0, 0, 0]), 15000);
 };
 
 main();
