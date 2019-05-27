@@ -19,7 +19,6 @@ const setPixels = (leds) => {
 
 const startServer = async () => {
   const cmdPath = `${__dirname}/../lib/run-mote-phat-server.sh`;
-  log.info(`Starting mote phat server; ${cmdPath}`);
   exec(`sh ${cmdPath}`);
   log.info('Started mote phat server');
 };
@@ -29,7 +28,7 @@ const setAllServer = async (rgb) => {
 
   try {
     return requestAsync({
-      url: `localhost:${MOTE_PHAT_SERVER_POST}/setall`,
+      url: `http://localhost:${MOTE_PHAT_SERVER_POST}/setall`,
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ all: rgb }),
