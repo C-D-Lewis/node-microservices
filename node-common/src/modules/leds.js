@@ -64,12 +64,6 @@ const init = () => {
   } else if (config.LEDS.HARDWARE_TYPE === 'mote') {
     mote = require('./motePhat');
     mote.startServer();
-
-    // FIXME: Detect flask start?
-    setTimeout(() => {
-      mote.setAll([0, 0, 0]);
-    }, 10000);
-
   }
 
   initialised = true;

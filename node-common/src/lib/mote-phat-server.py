@@ -25,7 +25,7 @@ def mote_init():
   for c in range(NUM_CHANNELS):
     mote.configure_channel(c + 1, NUM_PIXELS, True)
 
-def _moteupdate(r, g, b):
+def mote_update(r, g, b):
   mote.set_all(r, g, b)
   mote.show()
 
@@ -40,7 +40,7 @@ def set_all():
     return respond(400, { 'content': 'Bad Request' })
 
   rgb = data['all']
-  _moteupdate(rgb[0], rgb[1], rgb[2])
+  mote_update(rgb[0], rgb[1], rgb[2])
   return respond(200, { 'content': 'OK' })
 
 def main():
