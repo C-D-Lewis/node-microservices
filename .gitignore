@@ -4,3 +4,4 @@ config.json
 pid
 db.json
 apps.txt
+*.pyc

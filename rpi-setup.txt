@@ -1,12 +1,42 @@
+# Image
+sudo dd if=2019-04-08-raspbian-stretch-lite.img of=/dev/DISK_NAME bs=1m
+
+# VBox mount and enable ssh/wifi
+sudo VBoxManage internalcommands createrawvmdk -filename ./sd-card.vmdk -rawdisk /dev/disk2
+sudo chmod 777 /dev/disk2
+sudo chmod 777 ./sd-card.vmdk
+<enter vbox>
+touch /boot/ssh
+nano /rootfs/etc/wpa_supplicant/wpa_supplicant.conf
+
+# Distro
 sudo apt-get update
 sudo apt-get dist-upgrade
 
+# git
 sudo apt install git
 git clone https://github.com/c-d-lewis/node-microservice
 
+# node & npm
 wget https://nodejs.org/dist/v8.9.0/node-v8.9.0-linux-armv6l.tar.gz
 tar -xzf node-v8.9.0-linux-armv6l.tar.gz
 cd node-v6.11.1-linux-armv6l/
 sudo cp -R * /usr/local/
 node -v
 npm -v
+
+# Apps
+<install node-common and apps/* dependencies>
+<setup config.json for apps/*>
+
+# Blinkt?
+cd node-common && npm i node-blinkt
+
+# Mote?
+curl https://get.pimoroni.com/motephat | bash
+
+# Startup
+sudo crontab -l
+> @reboot /home/pi/node-microservices/tools/boot.sh
+
+echo 'conduit attic visuals' etc... > /home/pi/apps.txt
