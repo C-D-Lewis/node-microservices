@@ -1,4 +1,4 @@
-const { execSync } = require('child_process');
+const { execSync, exec } = require('child_process');
 const requestAsync = require('./requestAsync');
 const log = require('./log');
 
@@ -19,8 +19,9 @@ const setPixels = (leds) => {
 
 const startServer = async () => {
   const cmdPath = `${__dirname}/../lib/run-mote-phat-server.sh`;
-  execSync(`sh ${cmdPath} &`);
-  log.info(`Started mote phat server; ${cmdPath}`);
+  log.info(`Starting mote phat server; ${cmdPath}`);
+  exec(`sh ${cmdPath}`);
+  log.info('Started mote phat server');
 };
 
 const setAllServer = async (rgb) => {
