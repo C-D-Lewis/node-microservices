@@ -8,7 +8,7 @@ import sys
 r = int(sys.argv[1])
 g = int(sys.argv[2])
 b = int(sys.argv[3])
-if platform.machine() != 'armv7l':
+if 'arm' not in platform.machine():
   print('{} {} {}'.format(r, g, b))
   sys.exit(0)
 

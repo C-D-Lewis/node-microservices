@@ -27,7 +27,7 @@ import platform
 lines = sys.argv[1:5]
 
 # Handle non Pi for testing
-if platform.machine() != 'armv7l':
+if 'arm' not in platform.machine():
   print lines
   sys.exit(0)
 

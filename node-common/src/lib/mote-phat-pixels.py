@@ -7,7 +7,7 @@ import sys
 
 # Handle not running on Pi
 json_arr = json.loads(sys.argv[1])
-if platform.machine() != 'armv7l':
+if 'arm' not in platform.machine():
   print('{}'.format(json_arr))
   raise SystemExit
 
