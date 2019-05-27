@@ -43,5 +43,6 @@ const setAllServer = async (rgb) => {
 module.exports = {
   setAll,
   setAllServer,
+  startServer,
   setPixels,
 };
