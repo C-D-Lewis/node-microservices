@@ -20,9 +20,9 @@ const setPixels = (leds) => {
 const startServer = async () => {
   const cmdPath = `${__dirname}/../lib/mote-phat-server.py`;
   const proc = spawn('python', [cmdPath]);
-  proc.stdout.on('data', data => console.log(`phat server stdout: ${data.toString()}`));
-  proc.stderr.on('data', data => console.log(`phat server stderr: ${data.toString()}`));
-  proc.on('exit', code => console.log(`phat server exited with code ${code.toString()}`));
+  proc.stdout.on('data', data => log.info(`phat server stdout: ${data.toString()}`));
+  proc.stderr.on('data', data => log.error(`phat server stderr: ${data.toString()}`));
+  proc.on('exit', code => log.error(`phat server exited with code ${code.toString()}`));
 
   log.info('Started mote phat server');
 };
