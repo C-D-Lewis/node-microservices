@@ -2,7 +2,7 @@ import platform
 import sys
 
 if 'arm' not in platform.machine():
-  print('{} {} {}'.format(r, g, b))
+  print('Please run on arm')
   sys.exit(0)
 
 from flask import Flask, request, json

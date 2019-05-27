@@ -83,7 +83,10 @@ const setAll = (nextRgb) => {
       set(i, nextRgb);
     }
   } else if (config.LEDS.HARDWARE_TYPE === 'mote') {
-    mote.setAll(nextRgb);
+    // mote.setAll(nextRgb);
+
+    // Server implementation is faster
+    mote.setAllServer(nextRgb);
   }
 };
 

@@ -17,6 +17,12 @@ const setPixels = (leds) => {
   execSync(`python ${`${__dirname}/../lib/mote-phat-pixels.py`} ${JSON.stringify(leds)}`);
 };
 
+const startServer = async () => {
+  const cmdPath = `${__dirname}/../lib/run-mote-phat-server.sh`;
+  execSync(`sh ${cmdPath}`);
+  log.info(`Started mote phat server; ${cmdPath}`);
+};
+
 const setAllServer = async (rgb) => {
   log.assert(Array.isArray(rgb), `rgb must be an array. Was ${rgb}`);
 
