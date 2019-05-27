@@ -18,8 +18,8 @@ const setPixels = (leds) => {
 };
 
 const startServer = async () => {
-  const cmdPath = `${__dirname}/../lib/run-mote-phat-server.sh`;
-  exec(`sh ${cmdPath}`);
+  const cmdPath = `${__dirname}/../lib/mote-phat-server.py`;
+  exec(`python ${cmdPath} &`);
   log.info('Started mote phat server');
 };
 
