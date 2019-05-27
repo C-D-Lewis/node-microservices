@@ -69,7 +69,7 @@ const init = () => {
   initialised = true;
 };
 
-const setAll = (nextRgb) => {
+const setAll = async (nextRgb) => {
   for (let i = 0; i < NUM_LEDS; i++) {
     pixelsState[i] = nextRgb;
   }
@@ -86,7 +86,7 @@ const setAll = (nextRgb) => {
     // mote.setAll(nextRgb);
 
     // Server implementation is faster
-    mote.setAllServer(nextRgb);
+    await mote.setAllServer(nextRgb);
   }
 };
 

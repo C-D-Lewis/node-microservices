@@ -31,7 +31,7 @@ const setAllServer = async (rgb) => {
   log.assert(Array.isArray(rgb), `rgb must be an array. Was ${rgb}`);
 
   try {
-    return requestAsync({
+    await requestAsync({
       url: `http://localhost:${MOTE_PHAT_SERVER_POST}/setall`,
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
