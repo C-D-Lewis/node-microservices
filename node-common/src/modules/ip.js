@@ -28,14 +28,9 @@ const getInterfaceAddress = (ifName) => {
 };
 
 const getLocal = () => {
-  let address = getInterfaceAddress('wlan0');
-  if (!address) {
-    address = getInterfaceAddress('eth0');
-  }
-
-  if (!address) {
-    address = getInterfaceAddress('en0');
-  }
+  const address = getInterfaceAddress('wlan0') ||
+    getInterfaceAddress('eth0') ||
+    getInterfaceAddress('en0');
 
   if (!address) {
     throw new Error('No interface available for ip.getLocal()');
