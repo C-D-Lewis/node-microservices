@@ -6,7 +6,8 @@ const main = async () => {
   log.begin();
   api.setup();
 
-  await fleet.checkIn();
+  // Register once attic is up
+  setTimeout(async () => fleet.checkIn(), 20000);
 };
 
 main();

@@ -1,31 +1,43 @@
-const conduit = require('./conduit');
 const config = require('./config');
+const requestAsync = require('./requestAsync');
 
-const DEFAULT_HOST = 'localhost';
+const CONDUIT_PORT = 5959;
 
-let host = DEFAULT_HOST;
+let host = 'localhost';
+let appName = config.CONDUIT ? config.CONDUIT.APP : 'Unknown';
+
+// Even conduit shouldn't have to register with conduit
+const conduitSend = async packet => requestAsync({
+  url: `http://${host}:${CONDUIT_PORT}/conduit`,
+  method: 'post',
+  json: packet,
+}).then(res => res.body);
 
 const setHost = (newHost) => {
   host = newHost;
 };
 
-const set = async (key, value) => conduit.send({
+const setAppName = (newAppName) => {
+  appName = newAppName;
+};
+
+const set = async (key, value) => conduitSend({
   to: 'attic',
   topic: 'set',
   message: {
     key,
     value,
-    app: config.CONDUIT.APP,
+    app: appName,
   },
 });
 
 const get = async (key) => {
-  const res = await conduit.send({
+  const res = await conduitSend({
     to: 'attic',
     topic: 'get',
     message: {
+      app: appName,
       key,
-      app: config.CONDUIT.APP,
     },
   });
 
@@ -50,4 +62,5 @@ module.exports = {
   get,
   exists,
   setHost,
+  setAppName,
 };

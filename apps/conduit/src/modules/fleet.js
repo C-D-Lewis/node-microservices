@@ -9,10 +9,10 @@ config.requireKeys('fleet.js', {
       required: ['FLEET'],
       properties: {
         FLEET: {
-          required: ['DEVICE_NAME', 'CENTRAL_URL', 'PORT'],
+          required: ['DEVICE_NAME', 'HOST', 'PORT'],
           properties: {
             DEVICE_NAME: { type: 'string' },
-            CENTRAL_URL: { type: 'string' },
+            HOST: { type: 'string' },
             PORT: { type: 'number' },
           },
         },
@@ -21,7 +21,7 @@ config.requireKeys('fleet.js', {
   },
 });
 
-const FLEET_LIST_KEY = 'conduit:fleet:list';
+const FLEET_LIST_KEY = 'fleetList';
 
 const checkIn = async () => {
   const { FLEET } = config.OPTIONS;
@@ -33,13 +33,15 @@ const checkIn = async () => {
   const fleet = await attic.get(FLEET_LIST_KEY);
   fleet[FLEET.DEVICE_NAME] = {
     lastCheckIn: Date.now(),
-    localIp: await ip.get(),
+    publicIp: await ip.getPublic(),
+    localIp: await ip.getLocal(),
   };
   await attic.set(FLEET_LIST_KEY, fleet);
 };
 
 const init = () => {
-  attic.setHost(config.OPTIONS.FLEET.DEVICE_NAME);
+  attic.setAppName('conduit');
+  attic.setHost(config.OPTIONS.FLEET.HOST);
 };
 
 init();

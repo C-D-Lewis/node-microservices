@@ -3,7 +3,7 @@
     "RECORD_STATS": false,
     "FLEET": {
       "DEVICE_NAME": "",
-      "CENTRAL_URL": "http://",
+      "HOST": "",
       "PORT": 5959
     }
   },
