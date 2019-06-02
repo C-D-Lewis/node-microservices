@@ -22,26 +22,35 @@ config.requireKeys('fleet.js', {
 });
 
 const FLEET_LIST_KEY = 'fleetList';
-
-const checkIn = async () => {
-  const { FLEET } = config.OPTIONS;
-
-  if (!await attic.exists(FLEET_LIST_KEY)) {
-    await attic.set(FLEET_LIST_KEY, {});
-  };
-
-  const fleet = await attic.get(FLEET_LIST_KEY);
-  fleet[FLEET.DEVICE_NAME] = {
-    lastCheckIn: Date.now(),
-    publicIp: await ip.getPublic(),
-    localIp: await ip.getLocal(),
-  };
-  await attic.set(FLEET_LIST_KEY, fleet);
-};
+const { FLEET } = config.OPTIONS;
 
 const init = () => {
   attic.setAppName('conduit');
-  attic.setHost(config.OPTIONS.FLEET.HOST);
+  attic.setHost(FLEET.HOST);
+};
+
+const checkIn = async () => {
+  if (!await attic.exists(FLEET_LIST_KEY)) {
+    await attic.set(FLEET_LIST_KEY, []);
+  };
+
+  const now = new Date();
+  const update = {
+    deviceName: FLEET.DEVICE_NAME,
+    lastCheckIn: now.getTime(),
+    lastCheckInDate: now.toISOString(),
+    publicIp: await ip.getPublic(),
+    localIp: await ip.getLocal(),
+  };
+
+  const fleet = await attic.get(FLEET_LIST_KEY);
+  const found = fleet.find(p => p.deviceName === FLEET.DEVICE_NAME);
+  if (!found) {
+    fleet.push(update);
+  } else {
+    Object.assign(found, update);
+  }
+  await attic.set(FLEET_LIST_KEY, fleet);
 };
 
 init();
