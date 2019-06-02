@@ -1,5 +1,6 @@
 const os = require('os');
 const requestAsync = require('./requestAsync');
+const log = require('./log');
 
 const getPublic = async () => {
   const { body } = await requestAsync('http://www.canyouseeme.org');
@@ -10,28 +11,37 @@ const getPublic = async () => {
 };
 
 const getInterfaceAddress = (ifName) => {
-  const iface = os.networkInterfaces()[ifName];
+  const interfaces = os.networkInterfaces();
+  const iface = interfaces[ifName];
+  if (!iface) {
+    log.debug(`Interface ${ifName} not available`);
+    return;
+  }
 
   const v4 = iface.find(p => p.family === 'IPv4');
   if (!v4) {
-    throw new Error(`No IPv4 for ${ifName}`);
+    log.debug(`No IPv4 for ${ifName}`);
+    return;
   }
 
   return v4.address;
 };
 
 const getLocal = () => {
-  try {
-    return getInterfaceAddress('wlan0');
-  } catch (e) {
-    console.log(e.message);
-    try {
-      return getInterfaceAddress('eth0');
-    } catch (e2) {
-      console.log(e2.message);
-      throw new Error('No interface available for ip.getLocal()');
-    }
+  let address = getInterfaceAddress('wlan0');
+  if (!address) {
+    address = getInterfaceAddress('eth0');
   }
+
+  if (!address) {
+    address = getInterfaceAddress('en0');
+  }
+
+  if (!address) {
+    throw new Error('No interface available for ip.getLocal()');
+  }
+
+  return address;
 };
 
 module.exports = {
