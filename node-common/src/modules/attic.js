@@ -1,6 +1,14 @@
 const conduit = require('./conduit');
 const config = require('./config');
 
+const DEFAULT_HOST = 'localhost';
+
+let host = DEFAULT_HOST;
+
+const setHost = (newHost) => {
+  host = newHost;
+};
+
 const set = async (key, value) => conduit.send({
   to: 'attic',
   topic: 'set',
@@ -41,4 +49,5 @@ module.exports = {
   set,
   get,
   exists,
+  setHost,
 };

@@ -1,6 +1,11 @@
 {
   "OPTIONS": {
-    "RECORD_STATS": false
+    "RECORD_STATS": false,
+    "FLEET": {
+      "DEVICE_NAME": "",
+      "CENTRAL_URL": "http://",
+      "PORT": 5959
+    }
   },
   "SERVER": {
     "PORT": 5959

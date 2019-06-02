@@ -15,7 +15,7 @@ const enablePreflight = (req, res, next) => {
   next();
 };
 
-module.exports.setup = () => {
+const setup = () => {
   server.start();
 
   const app = server.getExpressApp();
@@ -23,4 +23,8 @@ module.exports.setup = () => {
   app.get('/apps', require('../api/apps'));
   app.post('/conduit', bodyParser.json(), require('../api/conduit'));
   app.get('/port', bodyParser.json(), require('../api/port'));
+};
+
+module.exports = {
+  setup,
 };
