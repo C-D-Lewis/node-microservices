@@ -1,6 +1,6 @@
 const {
-  config, attic, ip,
-} = require('../node-common')(['config', 'attic', 'ip']);
+  config, attic, ip, log,
+} = require('../node-common')(['config', 'attic', 'ip', 'log']);
 
 config.requireKeys('fleet.js', {
   required: ['OPTIONS'],
@@ -53,6 +53,7 @@ const checkIn = async () => {
     Object.assign(found, update);
   }
   await attic.set(FLEET_LIST_KEY, fleet.sort(sortByLastCheckIn));
+  log.info(`Fleet list updated: ${JSON.stringify(update)}`);
 };
 
 init();

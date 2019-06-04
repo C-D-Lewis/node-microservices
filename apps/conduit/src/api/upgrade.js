@@ -11,6 +11,8 @@ module.exports = async (req, res) => {
   // Delayed reboot
   setTimeout(() => execSync('sudo reboot'), DELAY_MS);
 
+  
+
   res.status(200);
   res.set('Access-Control-Allow-Origin', '*');
   res.json({ content: 'Restarting in 10 seconds' });
