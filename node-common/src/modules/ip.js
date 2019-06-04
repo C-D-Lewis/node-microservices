@@ -28,9 +28,10 @@ const getInterfaceAddress = (ifName) => {
 };
 
 const getLocal = () => {
-  const address = getInterfaceAddress('wlan0') ||
-    getInterfaceAddress('eth0') ||
-    getInterfaceAddress('en0');
+  const address = getInterfaceAddress('wlan0') ||  // WLAN
+    getInterfaceAddress('eth0') ||                 // Ethernet
+    getInterfaceAddress('en0') ||                  // Mac OS WLAN
+    getInterfaceAddress('enp0s3');                 // Ubuntu VM Wired
 
   if (!address) {
     throw new Error('No interface available for ip.getLocal()');

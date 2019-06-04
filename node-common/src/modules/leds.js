@@ -125,6 +125,13 @@ const blink = (index, nextRgb) => {
   }, BLINK_TIME_MS);
 };
 
+// OK to init mote straight away - Non-pi dev should specify 'blinkt' HARDWARE_TYPE
+(() => {
+  if (config.LEDS.HARDWARE_TYPE === 'mote') {
+    init();
+  }
+})();
+
 module.exports = {
   set,
   setAll,
