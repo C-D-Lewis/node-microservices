@@ -29,6 +29,8 @@ const init = () => {
   attic.setHost(FLEET.HOST);
 };
 
+const sortByLastCheckIn = (a, b) => a.lastCheckIn > b.lastCheckIn ? -1 : 1;
+
 const checkIn = async () => {
   if (!await attic.exists(FLEET_LIST_KEY)) {
     await attic.set(FLEET_LIST_KEY, []);
@@ -50,7 +52,7 @@ const checkIn = async () => {
   } else {
     Object.assign(found, update);
   }
-  await attic.set(FLEET_LIST_KEY, fleet);
+  await attic.set(FLEET_LIST_KEY, fleet.sort(sortByLastCheckIn));
 };
 
 init();
