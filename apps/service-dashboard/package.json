@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "build": "webpack --config webpack.config.js --mode production",
-    "copy": "cp -r index.html css dist",
-    "build-dev": "webpack --config webpack.config.js --mode development",
-    "start": "npm run build && npm run copy && webpack-dev-server"
+    "serve": "python -m SimpleHTTPServer",
+    "start": "npm run build && npm run serve"
   },
   "author": "Chris Lewis",
   "dependencies": {},
@@ -16,7 +15,6 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.0",
-    "webpack-dev-server": "^3.2.1"
+    "webpack-cli": "^3.3.0"
   }
 }
