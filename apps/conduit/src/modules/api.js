@@ -23,6 +23,7 @@ const setup = () => {
   app.get('/apps', require('../api/apps'));
   app.post('/conduit', bodyParser.json(), require('../api/conduit'));
   app.get('/port', bodyParser.json(), require('../api/port'));
+  app.post('/upgrade', require('../api/upgrade'));
 };
 
 module.exports = {
