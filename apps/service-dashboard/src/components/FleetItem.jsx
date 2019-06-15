@@ -18,7 +18,7 @@ const IP = ({ children, onClick, reachable }) => {
     fontSize: '1.1rem',
     paddingLeft: '25px',
     fontFamily: 'monospace',
-    margin: '5px 0px 5px 0px',
+    margin: '3px 0px 3px 0px',
     cursor: 'pointer',
   };
 
@@ -30,7 +30,7 @@ const Container = ({ children }) => {
     display: 'flex',
     flexDirection: 'column',
     border: '0',
-    margin: '10px 0px 10px 0px',
+    margin: '7px 0px 7px 0px',
   };
 
   return <div style={style}>{children}</div>;
