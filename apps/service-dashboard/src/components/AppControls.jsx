@@ -69,7 +69,7 @@ const AtticControls = ({ state, setState, conduitSend }) => {
             const { app, key } = state.atticControls;
             const message = { app, key };
             conduitSend({ to: 'attic', topic: 'get', message })
-              .then(res => setProp('value', res.message.value));
+              .then(res => setProp('value', JSON.stringify(res.message.value)));
           }}/>
         <TextButton label="Set" restyle={setButtonRestyle}
           onClick={() => {
@@ -105,7 +105,7 @@ const ConduitControls = ({ state, setState, conduitSend }) => {
           onChange={value => setProp('message', value)}/>
       </Bar>
       <ButtonBar>
-        <TextButton label="Send" 
+        <TextButton label="Send"
           restyle={{ width: '100%', borderRadius: '0px 0px 3px 3px' }}
           onClick={() => {
             const { app: to, topic, message } = state.conduitControls;

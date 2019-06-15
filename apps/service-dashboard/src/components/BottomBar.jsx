@@ -11,7 +11,7 @@ const BottomBar = ({ children }) => {
     left: 0,
     right: 0,
     width: '100%',
-    height: BOTTOM_BAR_HEIGHT,
+    minHeight: BOTTOM_BAR_HEIGHT,
     padding: '5px',
     backgroundColor: '#333',
     color: 'white',

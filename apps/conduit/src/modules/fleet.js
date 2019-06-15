@@ -52,6 +52,7 @@ const checkIn = async () => {
   } else {
     Object.assign(found, update);
   }
+
   await attic.set(FLEET_LIST_KEY, fleet.sort(sortByLastCheckIn));
   log.info(`Fleet list updated: ${JSON.stringify(update)}`);
 };
