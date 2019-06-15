@@ -32,22 +32,22 @@ class Application extends React.Component {
       apps: [],
       ip: '',
       bottomBarText: 'Ready',
-      atticControls: {
+      atticData: {
         app: '',
         key: '',
         value: '',
       },
-      conduitControls: {
+      conduitData: {
         app: '',
         topic: 'status',
         message: '{}',
       },
-      ambienceControls: {
+      ambienceData: {
         red: 128,
         green: 128,
         blue: 128,
       },
-      visualsControls: {
+      visualsData: {
         index: 0,
         red: 128,
         green: 128,
