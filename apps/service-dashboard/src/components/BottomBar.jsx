@@ -8,8 +8,6 @@ const BottomBar = ({ children }) => {
     fontFamily: 'monospace',
     position: 'fixed',
     bottom: 0,
-    left: 0,
-    right: 0,
     width: '100%',
     minHeight: BOTTOM_BAR_HEIGHT,
     padding: '5px',

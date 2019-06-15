@@ -27,7 +27,6 @@ const Content = ({ children }) => {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    // flex: 1,
     paddingLeft: 35,
   };
 
@@ -45,6 +44,7 @@ const NavBar  = ({ children, icon, title }) => {
     alignItems: 'center',
     boxShadow: '0px 2px 3px 1px #5557',
     paddingLeft: 20,
+    zIndex: 999,
   };
 
   return (

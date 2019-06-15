@@ -2,17 +2,6 @@ import React from 'react';
 
 class IPTextBox extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = { value: window.location.hostname };
-  }
-
-  componentDidMount() {
-    const target = { value: this.state.value };
-    this.onChange({ target });
-  }
-
   render() {
     const style = {
       width: '200px',
@@ -26,16 +15,9 @@ class IPTextBox extends React.Component {
     };
 
     return (
-      <input id="ip-text-box" style={style} type="text" value={this.state.value}
-        onChange={this.onChange.bind(this)}/>
+      <input id="ip-text-box" style={style} type="text" value={this.props.ip}
+        onChange={el => this.props.onChange(el.target.value)}/>
     );
-  }
-
-  onChange(event) {
-    const { value } = event.target;
-    this.setState({ value });
-
-    this.props.setState({ ip: value });
   }
 
 }
