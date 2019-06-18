@@ -123,21 +123,14 @@ const getColor = async () => {
   return JSON.parse(body).map(Math.round);
 };
 
-// TODO Decouple API response from running the animation
-const spotify = async (packet, res) => {
+const spotify = async () => {
   clearAll();
 
+  const rgbArr = await getColor();
+  fadeTo(rgbArr);
   spotifyHandle = setInterval(colorUpdate, SPOTIFY_INTERVAL_S * 1000);
 
-  try {
-    const rgbArr = await getColor();
-    fadeTo(rgbArr);
-
-    conduit.respond(res, { status: 200, message: { content: rgbArr } });
-  } catch (e) {
-    log.error(e);
-    conduit.respond(res, { status: 500, error: e.message });
-  }
+  return rgbArr;
 };
 
 const clearAll = () => {

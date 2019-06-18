@@ -9,9 +9,7 @@ module.exports = async (req, res) => {
   execSync('git pull origin master');
 
   // Delayed reboot
-  setTimeout(() => execSync('sudo reboot'), DELAY_MS);
-
-  
+  setTimeout(() => execSync('sudo reboot'), DELAY_MS);  
 
   res.status(200);
   res.set('Access-Control-Allow-Origin', '*');
