@@ -16,6 +16,6 @@ module.exports = async (req, res) => {
     res.json({ content: 'Restarting in 10 seconds' });
   } catch (e) {
     log.error(e);
-    res.status(500).
+    res.status(500);
   }
 };
