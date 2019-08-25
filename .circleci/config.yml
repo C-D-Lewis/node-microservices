@@ -9,12 +9,17 @@ jobs:
           name: 'Install dependencies'
           command: |
             cd node-common && npm ci
-            pwd
             cd ../apps/conduit && npm ci
-            cd ../apps/attic && npm ci
-            cd ../apps/visuals && npm ci
+            cd ../attic && npm ci
+            cd ../visuals && npm ci
+            cd ../ambience && npm ci
+            cd ../concierge && npm ci
+            cd ../spotify-auth && npm ci
+            cd ../monitor && npm ci
       - run:
           name: 'Start core services'
           command: |
+            pwd
             cd apps/conduit && npm start &
+            pwd
             cd apps/attic && npm start &
