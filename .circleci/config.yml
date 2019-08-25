@@ -6,6 +6,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: 'Install dependencies (node-common)'
-          command: 'cd node-common && npm ci'
-      
+          name: 'Install dependencies'
+          run: |
+            'cd node-common && npm ci'
+            'cd apps/conduit && npm ci'
+            'cd apps/attic && npm ci'
+            'cd apps/visuals && npm ci'
+      - run:
+          name: 'Start core services'
+          run: |
+            'cd apps/conduit && npm start &'
+            'cd apps/attic && npm start &'
