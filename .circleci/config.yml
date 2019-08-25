@@ -9,6 +9,7 @@ jobs:
           name: 'Install dependencies'
           command: |
             cd node-common && npm ci
+            pwd
             cd ../apps/conduit && npm ci
             cd ../apps/attic && npm ci
             cd ../apps/visuals && npm ci
