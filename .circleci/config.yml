@@ -19,7 +19,7 @@ jobs:
       - run:
           name: 'Start core services'
           command: |
-            pwd
-            cd apps/conduit && npm start &
-            pwd
-            cd apps/attic && npm start &
+            cd tools && node runner.js conduit attic visuals
+      - run:
+          name: 'npm test (conduit)'
+          command: cd apps/conduit && npm test
