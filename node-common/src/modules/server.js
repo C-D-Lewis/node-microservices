@@ -27,6 +27,12 @@ const start = () => new Promise((resolve) => {
   app.get('/status', (req, res) => module.exports.respondOk(res));
   app.get('/pid', (req, res) => respondWithPid(res));
 
+  // CORS for browsers
+  app.use((req, res, next) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    next();
+  });
+
   app.listen(config.SERVER.PORT, () => {
     log.info(`Express server up on ${config.SERVER.PORT}`);
     resolve();

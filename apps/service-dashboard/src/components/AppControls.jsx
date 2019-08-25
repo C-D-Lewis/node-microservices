@@ -150,7 +150,7 @@ const AmbienceControls = ({ state, setState, conduitSend }) => {
             conduitSend({
               to: 'ambience',
               topic: 'set',
-              message: { all: [red, green, blue] },
+              message: { all: [parseInt(red), parseInt(green), parseInt(blue)] },
             });
           }}/>
         <TextButton label="Fade" restyle={{ width: '20%', borderBottomRightRadius: 3 }}

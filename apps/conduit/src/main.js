@@ -6,7 +6,8 @@ const main = async () => {
   log.begin();
   api.setup();
 
-  await fleet.checkIn();
+  // Wait for Attic to come up
+  setTimeout(async () => await fleet.checkIn(), 30000);
 };
 
 main();

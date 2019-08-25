@@ -8,12 +8,13 @@ config.requireKeys('leds.js', {
   required: ['LEDS'],
   properties: {
     LEDS: {
-      required: ['ATTENUATION_FACTOR', 'BRIGHTNESS', 'USE_HARDWARE', 'HARDWARE_TYPE'],
+      required: ['ATTENUATION_FACTOR', 'BRIGHTNESS', 'USE_HARDWARE', 'HARDWARE_TYPE', 'USE_SERVER'],
       properties: {
         ATTENUATION_FACTOR: { type: 'number', maximum: 1.0 },
         BRIGHTNESS: { type: 'number', maximum: 1.0 },
         USE_HARDWARE: { type: 'boolean' },
         HARDWARE_TYPE: { type: 'string', enum: SUPPORTED_BOARDS },
+        USE_SERVER: { type: 'boolean' },
       },
     },
   },
@@ -63,7 +64,13 @@ const init = () => {
     updateBlinkt();
   } else if (config.LEDS.HARDWARE_TYPE === 'mote') {
     mote = require('./motePhat');
-    mote.startServer();
+
+    if (config.LEDS.USE_SERVER) {
+      // Use faster Python server to quicken fade intervals
+      // For some reason on both soldered boards this triggers a single LED
+      // When set to all black (0,0,0)
+      mote.startServer();
+    }
   }
 
   initialised = true;
@@ -83,10 +90,14 @@ const setAll = async (nextRgb) => {
       set(i, nextRgb);
     }
   } else if (config.LEDS.HARDWARE_TYPE === 'mote') {
-    // mote.setAll(nextRgb);
+    mote.setAll(nextRgb);
 
-    // Server implementation is faster
-    await mote.setAllServer(nextRgb);
+    if (config.LEDS.USE_SERVER) {
+      // Server implementation is faster, but has problems (see above)
+      await mote.setAllServer(nextRgb);
+    } else {
+      mote.setAll(nextRgb);
+    }
   }
 };
 
