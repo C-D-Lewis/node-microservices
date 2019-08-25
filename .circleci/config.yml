@@ -1,0 +1,11 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/node:chakracore-10.13.0
+    steps:
+      - checkout
+      - run:
+          name: 'Install dependencies (node-common)'
+          command: 'cd node-common && npm ci'
+      
