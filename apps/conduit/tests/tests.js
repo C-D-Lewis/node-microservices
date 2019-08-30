@@ -17,7 +17,7 @@ describe('API', () => {
       const url = `http://localhost:${config.SERVER.PORT}/port`;
       const data = await requestAsync({
         url,
-        json: { app: 'attic' }
+        json: { app: 'attic' },  // Next test depends on response from attic
       });
 
       expect(data.response.statusCode).to.equal(200);
@@ -36,7 +36,7 @@ describe('API', () => {
       expect(json).to.be.an('array');
       expect(json).to.have.length.gte(1);
 
-      const item = json[0];
+      const [item] = json;
       expect(item.app).to.be.a('string');
       expect(item.port).to.be.a('number');
       expect(item.status).to.be.a('string');

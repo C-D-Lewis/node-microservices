@@ -5,21 +5,42 @@ jobs:
       - image: circleci/node:chakracore-10.13.0
     steps:
       - checkout
+
       - run:
-          name: 'Install dependencies'
-          command: |
-            cd node-common && npm ci
-            cd ../apps/conduit && npm ci
-            cd ../attic && npm ci
-            cd ../visuals && npm ci
-            cd ../ambience && npm ci
-            cd ../concierge && npm ci
-            cd ../spotify-auth && npm ci
-            cd ../monitor && npm ci
+          name: 'Install dependencies (node-common)'
+          command: cd node-common && npm ci
       - run:
-          name: 'Start core services'
-          command: |
-            cd tools && node runner.js conduit attic visuals
+          name: 'Install dependencies (conduit)'
+          command: cd apps/conduit && npm ci
+      - run:
+          name: 'Install dependencies (attic)'
+          command: cd apps/attic && npm ci
+      - run:
+          name: 'Install dependencies (visuals)'
+          command: cd apps/visuals && npm ci
+      - run:
+          name: 'Install dependencies (ambience)'
+          command: cd apps/ambience && npm ci
+      - run:
+          name: 'Install dependencies (concierge)'
+          command: cd apps/concierge && npm ci
+      - run:
+          name: 'Install dependencies (spotify)'
+          command: cd apps/spotify-auth && npm ci
+      - run:
+          name: 'Install dependencies (monitor)'
+          command: cd apps/monitor && npm ci
+
+      - run:
+          name: 'Start service (conduit)'
+          command: cd tools && node runner.js conduit
+      - run:
+          name: 'Start service (attic)'
+          command: cd tools && node runner.js conduit
+
       - run:
           name: 'npm test (conduit)'
           command: cd apps/conduit && npm test
+      - run:
+          name: 'npm test (attic)'
+          command: cd apps/attic && npm test
