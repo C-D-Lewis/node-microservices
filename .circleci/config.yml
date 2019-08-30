@@ -5,6 +5,7 @@ jobs:
       - image: circleci/node:chakracore-10.13.0
     steps:
       - checkout
+
       - run:
           name: 'Install dependencies (node-common)'
           command: cd node-common && npm ci
@@ -24,7 +25,7 @@ jobs:
           name: 'Install dependencies (concierge)'
           command: cd apps/concierge && npm ci
       - run:
-          name: 'Install dependencies (spotify)'
+          name: 'Install dependencies (spotify-auth)'
           command: cd apps/spotify-auth && npm ci
       - run:
           name: 'Install dependencies (monitor)'
@@ -34,7 +35,7 @@ jobs:
           command: cd tools && node runner.js conduit
       - run:
           name: 'Start service (attic)'
-          command: cd tools && node runner.js conduit
+          command: cd tools && node runner.js attic
 
       - run:
           name: 'npm test (conduit)'
