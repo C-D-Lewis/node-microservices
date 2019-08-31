@@ -12,6 +12,7 @@
     "async": "^2.5.0",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
+    "mongodb": "^3.3.2",
     "request": "^2.88.0"
   },
   "devDependencies": {

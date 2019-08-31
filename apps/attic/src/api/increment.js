@@ -1,9 +1,9 @@
 const { log, conduit } = require('../node-common')(['log', 'conduit']);
 const storage = require('../modules/storage');
 
-module.exports = ({ message }, res) => {
+module.exports = async ({ message }, res) => {
   const { app, key } = message;
-  const appData = storage.get(app);
+  const appData = await storage.get(app);
   if(!appData || !appData[key]) {
     conduit.respond(res, { status: 404, error: `app ${app} or key ${key} not found` });
     return;
@@ -16,6 +16,6 @@ module.exports = ({ message }, res) => {
   }
 
   appData[key] = { timestamp: Date.now(), value: value + 1 };
-  storage.set(app, appData);
+  await storage.set(app, appData);
   conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };

@@ -1,13 +1,14 @@
 const {
   config, db, gistSync, log,
 } = require('../node-common')(['config', 'db', 'gistSync', 'log']);
+const mongo = require('./mongo');
 
 config.requireKeys('storage.js', {
   required: ['STORAGE_MODE'],
   properties: {
     STORAGE_MODE: {
       type: 'string',
-      enum: ['db', 'gistSync'],
+      enum: ['db', 'gistSync', 'mongo'],
     },
   },
 });
@@ -44,6 +45,7 @@ const MODE_HANDLERS = {
       data[key] = value;
     },
   },
+  mongo,
 };
 
 module.exports = {
