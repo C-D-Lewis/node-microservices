@@ -30,16 +30,18 @@ jobs:
       - run:
           name: 'Install dependencies (monitor)'
           command: cd apps/monitor && npm ci
-      - run:
-          name: 'Start service (conduit)'
-          command: cd tools && node runner.js conduit
-      - run:
-          name: 'Start service (attic)'
-          command: cd tools && node runner.js attic
 
-      - run:
-          name: 'npm test (conduit)'
-          command: cd apps/conduit && npm test
-      - run:
-          name: 'npm test (attic)'
-          command: cd apps/attic && npm test
+      - run: cd tools && node runner.js conduit attic && cd ../apps/conduit && npm test
+      # - run:
+      #     name: 'Start service (conduit)'
+      #     command: cd tools && node runner.js conduit
+      # - run:
+      #     name: 'Start service (attic)'
+      #     command: cd tools && node runner.js attic
+
+      # - run:
+      #     name: 'npm test (conduit)'
+      #     command: cd apps/conduit && npm test
+      # - run:
+      #     name: 'npm test (attic)'
+      #     command: cd apps/attic && npm test
