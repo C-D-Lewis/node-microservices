@@ -7,6 +7,7 @@ const testCredentials = async () => {
     await auth.authenticate();
     log.info('Credentials are valid');
   } catch (e) {
+    log.error(e);
     log.error('Credentials are invalid!');
   }
 };
