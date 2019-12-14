@@ -5,6 +5,8 @@ sudo dd if=2019-04-08-raspbian-stretch-lite.img of=/dev/DISK_NAME bs=1m
 sudo VBoxManage internalcommands createrawvmdk -filename ./sd-card.vmdk -rawdisk /dev/disk2
 sudo chmod 777 /dev/disk2
 sudo chmod 777 ./sd-card.vmdk
+Make sure name doesn't match one VB already knows about
+Make sure listed but NOT mounted in Diskutils app
 <enter vbox>
 touch /boot/ssh
 nano /rootfs/etc/wpa_supplicant/wpa_supplicant.conf
@@ -21,7 +23,7 @@ git clone https://github.com/c-d-lewis/node-microservice
 wget https://nodejs.org/dist/v8.9.0/node-v8.9.0-linux-armv6l.tar.gz
 tar -xzf node-v8.9.0-linux-armv6l.tar.gz
 cd node-v6.11.1-linux-armv6l/
-sudo cp -R * /usr/local/
+sudo cp -R ./* /usr/local/
 node -v
 npm -v
 
@@ -34,6 +36,11 @@ cd node-common && npm i node-blinkt
 
 # Mote?
 curl https://get.pimoroni.com/motephat | bash
+
+# Inky?
+sudo apt install python-pip
+sudo pip install --upgrade pip
+sudo pip install inky
 
 # Startup
 sudo crontab -l
