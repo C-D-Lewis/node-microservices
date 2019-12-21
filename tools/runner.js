@@ -14,6 +14,7 @@ const main = async () => {
 
     const options = { stdio: 'ignore', shell: true, detatched: true };
     spawn(`cd ../apps/${app} && npm start`, options).unref();
+    console.log(`Started ${app} in the background`);
     await waitAsync(INTERVAL_S * 1000);
   }
 
