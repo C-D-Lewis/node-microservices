@@ -7,51 +7,74 @@ config.requireKeys('plugins.js', {
   },
 });
 
-const handleAt = (pluginName, when, updateCb) => {
+/** Interval between checks for handleAt() */
+const HANDLE_AT_INTERVAL_MS = 1000;
+
+/**
+ * Handle a plugin specifying an AT time scheme.
+ *
+ * @param {string} pluginName - Name of the plugin.
+ * @param {Object} plugin - The plugin object.
+ * @param {Function} pluginFunc - Function to call to call the plugin's code.
+ */
+const handleAt = (pluginName, plugin, pluginFunc) => {
   setInterval(() => {
     const now = new Date();
-    if(now.getHours() !== parseInt(when.substring(0, 2))) return;
-    if(now.getMinutes() !== parseInt(when.substring(3, 5))) return;
-    if(now.getSeconds() !== 0) return;
+    const [whenHours, whenMins] = plugin.AT.split(':');
+    if (
+      now.getHours() !== parseInt(whenHours) ||
+      now.getMinutes() !== parseInt(whenMins) ||
+      now.getSeconds() !== 0
+      ) {
+      return;
+    }
 
     log.info(`Running ${pluginName}`);
-    updateCb();
-  }, 1000);
+    pluginFunc(plugin.ARGS);
+  }, HANDLE_AT_INTERVAL_MS);
+  log.info(`Plugin ${pluginName} is waiting until ${plugin.AT}`);
 };
 
+/**
+ * Handle a plugin specifying an EVERY time scheme.
+ *
+ * @param {string} pluginName - Name of the plugin.
+ * @param {Object} plugin - The plugin object.
+ * @param {Function} pluginFunc - Function to call to call the plugin's code.
+ */
+const handleEvery = (pluginName, plugin, pluginFunc) => {
+  setInterval(() => {
+    log.info(`Running ${pluginName}`);
+    pluginFunc(plugin.ARGS);
+  }, plugin.EVERY * 60 * 1000);
+  log.info(`Plugin ${pluginName} runs every ${plugin.EVERY} minute(s)`);
+};
+
+/**
+ * Load all plugins in config.
+ */
 const loadAll = () => {
   config.PLUGINS.forEach((plugin) => {
     // Verify plugin config
     log.assert(!(plugin.EVERY && plugin.AT), 'Plugin must have only EVERY or AT, not both', true);
     log.assert(!(plugin.FILE_NAME && plugin.USE), 'Plugin must have only FILE_NAME or USE, not both', true);
-    if(!plugin.ENABLED) return;
-
-    // Load plugin
-    let callback;
-    const pluginName = plugin.FILE_NAME ? plugin.FILE_NAME : plugin.USE;
-    if(plugin.FILE_NAME) callback = require(`../plugins/${plugin.FILE_NAME}`);
-    if(plugin.USE) {
-      log.assert(plugin.ARGS, 'USE plugin must specify ARGS to act on', true);
-      callback = require(`../plugins/${plugin.USE}`);
-    }
-
-    // Start plugin
-    log.info(`Loaded plugin ${JSON.stringify(plugin)}`);
-    const args = plugin.ARGS;
-    if(plugin.EVERY) {
-      setInterval(() => {
-        log.info(`Running ${pluginName}`);
-        callback(args);
-      }, plugin.EVERY * 60 * 1000);
-      callback(args);
+    if (!plugin.ENABLED) {
       return;
     }
 
-    if(plugin.AT) {
-      handleAt(pluginName, plugin.AT, () => {
-        log.info(`Running ${pluginName}`);
-        callback(args);
-      });
+    // Load plugins and register timers
+    const pluginFunc = (plugin.FILE_NAME)
+      ? require(`../plugins/${plugin.FILE_NAME}`)
+      : require(`../plugins/${plugin.USE}`);
+    const pluginName = plugin.FILE_NAME ? plugin.FILE_NAME : plugin.USE;
+
+    if (plugin.EVERY) {
+      handleEvery(pluginName, plugin, pluginFunc);
+      return;
+    }
+
+    if (plugin.AT) {
+      handleAt(pluginName, plugin, pluginFunc);
       return;
     }
 
