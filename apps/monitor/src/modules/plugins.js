@@ -18,7 +18,7 @@ const HANDLE_AT_INTERVAL_MS = 1000;
  * @param {Function} pluginFunc - Function to call to call the plugin's code.
  */
 const handleAt = (pluginName, plugin, pluginFunc) => {
-  setInterval(() => {
+  setInterval(async () => {
     const now = new Date();
     const [whenHours, whenMins] = plugin.AT.split(':');
     if (
@@ -30,9 +30,14 @@ const handleAt = (pluginName, plugin, pluginFunc) => {
     }
 
     log.info(`Running ${pluginName}`);
-    pluginFunc(plugin.ARGS);
+    try {
+      await pluginFunc(plugin.ARGS);
+    } catch (e) {
+      log.error(`Failed to run plugin function: ${pluginName}`);
+      log.error(e);
+    }
   }, HANDLE_AT_INTERVAL_MS);
-  log.info(`Plugin ${pluginName} is waiting until ${plugin.AT}`);
+  log.info(`AT ${plugin.AT}: ${JSON.stringify(plugin)}`);
 };
 
 /**
@@ -43,11 +48,16 @@ const handleAt = (pluginName, plugin, pluginFunc) => {
  * @param {Function} pluginFunc - Function to call to call the plugin's code.
  */
 const handleEvery = (pluginName, plugin, pluginFunc) => {
-  setInterval(() => {
+  setInterval(async () => {
     log.info(`Running ${pluginName}`);
-    pluginFunc(plugin.ARGS);
+    try {
+      await pluginFunc(plugin.ARGS);
+    } catch (e) {
+      log.error(`Failed to run plugin function: ${pluginName}`);
+      log.error(e);
+    }
   }, plugin.EVERY * 60 * 1000);
-  log.info(`Plugin ${pluginName} runs every ${plugin.EVERY} minute(s)`);
+  log.info(`EVERY ${plugin.EVERY}: ${JSON.stringify(plugin)}`);
 };
 
 /**
