@@ -1,11 +1,21 @@
-const { log, conduit } = require('../node-common')(['log', 'conduit']);
-const storage = require('../modules/storage');
+const { conduit } = require('../node-common')(['conduit']);
+const { get, set } = require('../modules/storage');
 
-module.exports = async ({ message }, res) => {
-  const { app, key, value } = message;
-  const appData = await storage.get(app) || {};
+const { respond } = conduit;
 
-  appData[key] = { value, timestamp: new Date().getTime() };
-  await storage.set(app, appData);
-  conduit.respond(res, { status: 200, message: { content: 'OK' } });
+/**
+ * Handle a 'set' topic packet.
+ *
+ * @param {Object} packet - The conduit packet request.
+ * @param {Object} res - Express response object.
+ */
+const handleSetRequest = async (packet, res) => {
+  const { app, key, value } = packet.message;
+  const appData = (await get(app)) || {};
+
+  appData[key] = { value, timestamp: Date.now() };
+  await set(app, appData);
+  respond(res, { status: 200, message: { content: 'OK' } });
 };
+
+module.exports = handleSetRequest;
