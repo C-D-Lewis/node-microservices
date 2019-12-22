@@ -1,65 +1,85 @@
-const request = require('request');
 const {
   config, log, requestAsync, schema,
 } = require('../node-common')(['config', 'log', 'requestAsync', 'schema']);
-const allocator = require('../modules/allocator');
-const stats = require('../modules/stats');
-const util = require('../modules/util');
+const { findByApp } = require('../modules/allocator');
+const { badRequest, notFound } = require('../modules/util');
 
-const LOCALHOST = 'localhost';
-const MESSAGE_SCHEMA = {
+config.requireKeys('conduit.js', {
+  required: ['SERVER'],
+  properties: {
+    SERVER: {
+      required: ['PORT'],
+      properties: {
+        PORT: { type: 'integer' },
+      },
+    },
+  },
+});
+
+/** Default destination host (same machine) */
+const DEFAULT_HOST = 'localhost';
+/** Schema for all conduit message packets. */
+const PACKET_SCHEMA = {
   required: ['to', 'topic'],
   properties: {
-    status: { type: 'integer', description: 'Response status' },
-    to: { type: 'string', description: 'Recipient Conduit client' },
-    topic: { type: 'string', description: 'The message topic (i.e: channel)' },
-    message: { type: 'object', description: 'The message object to send' },
-    error: { type: 'string', description: 'Any response error' },
-    from: { type: 'string', description: 'Sending Conduit client' },
-    host: { type: 'string', description: 'Which Conduit server to send to' },
+    status: { type: 'integer' },  // Response status
+    to: { type: 'string' },       // Recipient Conduit client
+    topic: { type: 'string' },    // The message topic (i.e: channel)
+    message: { type: 'object' },  // The message object to send
+    error: { type: 'string' },    // Any response error
+    from: { type: 'string' },     // Sending Conduit client
+    host: { type: 'string' },     // Which other Conduit server to send to
   },
 };
 
-module.exports = async (req, res) => {
-  // Set some defaults
-  req.body.from = req.body.from || 'Unknown';
-  req.body.host = req.body.host || LOCALHOST;
-  log.debug(`<< (REQ) ${JSON.stringify(req.body)}`);
+/**
+ * Handle a packet request by forwarding to the intended recipient and returning
+ * the recipient's response.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+const handlePacketRequest = async (req, res) => {
+  const { body: packet } = req;
+  log.debug(`<< (REQ) ${JSON.stringify(packet)}`);
 
-  if (!schema(req.body, MESSAGE_SCHEMA)) {
-    util.badRequest(res);
+  // Validate packet shape
+  if (!schema(packet, PACKET_SCHEMA)) {
+    badRequest(res);
     return;
   }
 
   // Extract data and forward to recipient
-  const { to, from, host } = req.body;
-  const appConfig = allocator.findByApp(to);
-  if ((host === LOCALHOST) && !appConfig) {
+  const { to, host = DEFAULT_HOST } = packet;
+  const appConfig = findByApp(to);
+  if ((host === DEFAULT_HOST) && !appConfig) {
     log.error(`No app registered with name ${to}`);
-    util.notFound(res);
+    notFound(res);
     return;
   }
 
-  // Record app communication statistics
-  await stats.recordPacket(req.body);
-
   try {
-    log.debug(`>> (FWD) ${JSON.stringify(req.body)}`);
-    const port = host === LOCALHOST ? appConfig.port : config.SERVER.PORT;  // All Conduit servers use 5959
-    const { body } = await requestAsync({
+    // In case that the host is not this one, forward (all Conduit servers use 5959 currently)
+    const port = (host === DEFAULT_HOST) ? appConfig.port : config.SERVER.PORT;
+
+    // Deliver the packet to the recipient
+    log.debug(`>> (FWD) ${JSON.stringify(packet)}`);
+    const { body: response } = await requestAsync({
       url: `http://${host}:${port}/conduit`,
       method: 'post',
-      json: req.body,
+      json: packet,
     });
 
-    // Send response to requester
-    delete body.from;
-    delete body.to;
-    log.debug(`<< (RES) ${JSON.stringify(body)}`);
-    res.status(body.status || 200).send(body);
-  } catch(err) {
-    log.error('Error forwarding packet!');
-    log.error(err);
-    res.status(500) .send({ status: 500, error: 'Error forwarding packet to recipient!' });
+    // Send response from 'to' app to message sender
+    delete response.from;
+    delete response.to;
+    log.debug(`<< (RES) ${JSON.stringify(response)}`);
+    res.status(response.status || 200).send(response);
+  } catch (e) {
+    const error = `Error forwarding packet: ${e.stack}`;
+    log.error(error);
+    res.status(500).send({ status: 500, error });
   }
 };
+
+module.exports = handlePacketRequest;
