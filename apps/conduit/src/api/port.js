@@ -1,19 +1,29 @@
 const { schema } = require('../node-common')(['schema']);
-const allocator = require('../modules/allocator');
-const util = require('../modules/util');
+const { sendPort } = require('../modules/allocator');
+const { badRequest } = require('../modules/util');
 
+/** Schema for a port request request. */
 const PORT_MESSAGE_SCHEMA = {
   required: ['app'],
   properties: {
-    app: { type: 'string', description: 'Name of the app requesting a port' },
+    app: { type: 'string' },  // Name of the app requesting a port allocation
   },
 };
 
-module.exports = async (req, res) => {
+/**
+ * Handle a request for a port allocation for a service.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+const handlePortRequest = async (req, res) => {
+  // Check it's a valid request
   if (!schema(req.body, PORT_MESSAGE_SCHEMA)) {
-    util.badRequest(res);
+    badRequest(res);
     return;
   }
 
-  allocator.sendPort(req, res);
+  sendPort(req, res);
 };
+
+module.exports = handlePortRequest;
