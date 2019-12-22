@@ -1,6 +1,6 @@
 const { schema } = require('../node-common')(['schema']);
 const { sendPort } = require('../modules/allocator');
-const { badRequest } = require('../modules/util');
+const { sendBadRequest } = require('../modules/util');
 
 /** Schema for a port request request. */
 const PORT_MESSAGE_SCHEMA = {
@@ -19,7 +19,7 @@ const PORT_MESSAGE_SCHEMA = {
 const handlePortRequest = async (req, res) => {
   // Check it's a valid request
   if (!schema(req.body, PORT_MESSAGE_SCHEMA)) {
-    badRequest(res);
+    sendBadRequest(res);
     return;
   }
 

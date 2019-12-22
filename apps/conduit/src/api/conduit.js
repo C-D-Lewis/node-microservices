@@ -2,7 +2,7 @@ const {
   config, log, requestAsync, schema,
 } = require('../node-common')(['config', 'log', 'requestAsync', 'schema']);
 const { findByApp } = require('../modules/allocator');
-const { badRequest, notFound } = require('../modules/util');
+const { sendBadRequest, sendNotFound } = require('../modules/util');
 
 config.requireKeys('conduit.js', {
   required: ['SERVER'],
@@ -45,7 +45,7 @@ const handlePacketRequest = async (req, res) => {
 
   // Validate packet shape
   if (!schema(packet, PACKET_SCHEMA)) {
-    badRequest(res);
+    sendBadRequest(res);
     return;
   }
 
@@ -54,7 +54,7 @@ const handlePacketRequest = async (req, res) => {
   const appConfig = findByApp(to);
   if ((host === DEFAULT_HOST) && !appConfig) {
     log.error(`No app registered with name ${to}`);
-    notFound(res);
+    sendNotFound(res);
     return;
   }
 
