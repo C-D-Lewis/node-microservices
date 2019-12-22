@@ -21,23 +21,42 @@ config.requireKeys('fleet.js', {
   },
 });
 
+/** Attic key for fleet list data */
 const FLEET_LIST_KEY = 'fleetList';
-const { FLEET } = config.OPTIONS;
 
-const init = () => {
+const {
+  /** Fleet config data */
+  FLEET,
+} = config.OPTIONS;
+
+/**
+ * Init the attic module
+ */
+const initAtticModule = () => {
   attic.setAppName('conduit');
   attic.setHost(FLEET.HOST);
 };
 
+/**
+ * Sort item by lastCheckIn timestamp.
+ *
+ * @param {number} a - First item.
+ * @param {number} b - Second item.
+ * @returns {number} -1 to sort above, 1 to sort below.
+ */
 const sortByLastCheckIn = (a, b) => a.lastCheckIn > b.lastCheckIn ? -1 : 1;
 
+/**
+ * Send the data to remote Attic to perform the checkin.
+ */
 const checkIn = async () => {
-  if (!await attic.exists(FLEET_LIST_KEY)) {
+  // Create the remote list if it doesn't already exist
+  if (!(await attic.exists(FLEET_LIST_KEY))) {
     await attic.set(FLEET_LIST_KEY, []);
   };
 
   const now = new Date();
-  const update = {
+  const updatePayload = {
     deviceName: FLEET.DEVICE_NAME,
     lastCheckIn: now.getTime(),
     lastCheckInDate: now.toISOString(),
@@ -45,19 +64,21 @@ const checkIn = async () => {
     localIp: await ip.getLocal(),
   };
 
-  const fleet = await attic.get(FLEET_LIST_KEY);
-  const found = fleet.find(p => p.deviceName === FLEET.DEVICE_NAME);
+  const fleetList = await attic.get(FLEET_LIST_KEY);
+  const found = fleetList.find(p => p.deviceName === FLEET.DEVICE_NAME);
   if (!found) {
-    fleet.push(update);
+    // Add a new entry
+    fleetList.push(updatePayload);
   } else {
-    Object.assign(found, update);
+    // Update found extry in place (TODO: avoid the 'else')
+    Object.assign(found, updatePayload);
   }
 
-  await attic.set(FLEET_LIST_KEY, fleet.sort(sortByLastCheckIn));
-  log.info(`Fleet list updated: ${JSON.stringify(update)}`);
+  await attic.set(FLEET_LIST_KEY, fleetList.sort(sortByLastCheckIn));
+  log.info(`Fleet list updated: ${JSON.stringify(updatePayload)}`);
 };
 
-init();
+initAtticModule();
 
 module.exports = {
   checkIn,
