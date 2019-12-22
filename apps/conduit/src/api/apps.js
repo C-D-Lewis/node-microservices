@@ -29,7 +29,6 @@ const respondWithApps = async (req, res) => {
   // Report conduit itself for completeness
   result.push({ app: 'conduit', port: config.SERVER.PORT, status: 'OK' });
 
-  res.set('Access-Control-Allow-Origin', '*');
   res.status(200).send(JSON.stringify(result, null, 2));
 };
 
