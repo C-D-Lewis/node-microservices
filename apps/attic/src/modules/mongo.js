@@ -2,21 +2,21 @@ const { log } = require('../node-common')(['log']);
 const { MongoClient } = require('mongodb');
 
 /** mongod URL **/
-const MONGO_DB_URL = 'mongodb://localhost:27017';
+const DB_URL = 'mongodb://localhost:27017';
 /** MongoDB name **/
-const MONGO_DB_NAME = 'AtticAppData';
+const DB_NAME = 'AtticAppData';
 /** MongoDB collection name **/
-const MONGO_DB_COLLECTION_NAME = 'AppDataDocument';
+const COLLECTION_NAME = 'AppDataDocument';
 
-let client = new MongoClient(MONGO_DB_URL);
+const client = new MongoClient(DB_URL);
 let db;
 
 /**
- * Initialise
+ * Initialise MongoDB connection
  */
 const init = async () => {
   await client.connect();
-  db = client.db(MONGO_DB_NAME);
+  db = client.db(DB_NAME);
 
   log.debug('Connected to mongodb');
 };
@@ -28,8 +28,8 @@ const init = async () => {
  * @returns {*} The value.
  */
  const get = async (key) => {
-  const res = await db.collection(MONGO_DB_COLLECTION_NAME).findOne({ key });
-  log.debug({ res });
+  const res = await db.collection(COLLECTION_NAME).findOne({ key });
+  log.debug(`mongodb get ${JSON.stringify(res)}`);
 
   return res ? res.value : res;
 };
@@ -43,18 +43,18 @@ const init = async () => {
 const exists = async key => get(key) !== null;
 
 /**
- * Set a value with key and value.
+ * Set a value with key and value. Created if does not exist.
  *
  * @param {string} key - The key.
  * @param {string} value - The value.
  */
 const set = async (key, value) => {
-  const res = await db.collection(MONGO_DB_COLLECTION_NAME).findOneAndUpdate(
+  const res = await db.collection(COLLECTION_NAME).findOneAndUpdate(
     { key },
     { $set: { value } },
     { upsert: true },
   );
-  log.debug({ res });
+  log.debug(`mongodb set ${JSON.stringify(res)}`);
 };
 
 module.exports = {

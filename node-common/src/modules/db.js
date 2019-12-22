@@ -55,6 +55,7 @@ const _delete = (key) => {
 };
 
 module.exports = {
+  init: () => {},  // Allows simplification in Attic storage.js, but no other apps implement it
   get,
   set,
   getTable,

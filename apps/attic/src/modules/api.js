@@ -1,5 +1,6 @@
 const { conduit } = require('../node-common')(['conduit']);
 
+/** Schema for messages with no value */
 const NO_VALUE_MESSAGE_SCHEMA = {
   required: ['app', 'key'],
   properties: {
@@ -8,6 +9,7 @@ const NO_VALUE_MESSAGE_SCHEMA = {
   },
 };
 
+/** Schema for messages setting a value */
 const SET_MESSAGE_SCHEMA = {
   required: ['app', 'key', 'value'],
   properties: {
@@ -17,6 +19,9 @@ const SET_MESSAGE_SCHEMA = {
   }
 };
 
+/**
+ * Setup Conduit topic handlers.
+ */
 const setup = async () => {
   await conduit.register();
 

@@ -1,8 +1,6 @@
 const { conduit } = require('../node-common')(['conduit']);
 const { get, set } = require('../modules/storage');
 
-const { respond } = conduit;
-
 /**
  * Handle a 'set' topic packet.
  *
@@ -15,7 +13,7 @@ const handleSetRequest = async (packet, res) => {
 
   appData[key] = { value, timestamp: Date.now() };
   await set(app, appData);
-  respond(res, { status: 200, message: { content: 'OK' } });
+  conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };
 
 module.exports = handleSetRequest;

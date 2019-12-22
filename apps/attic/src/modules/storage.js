@@ -13,8 +13,14 @@ config.requireKeys('storage.js', {
   },
 });
 
-const { STORAGE_MODE } = config;
+const {
+  /** The selected storage mode. */
+  STORAGE_MODE,
+} = config;
 
+/**
+ * Load the gistSync file.
+ */
 const loadGistSyncFile = () => {
   const data = gistSync.getFile('attic-db.json');
   if (!data) {
@@ -25,13 +31,10 @@ const loadGistSyncFile = () => {
   return data;
 };
 
+/** Implementation of each storage mode using same interface */
 const MODE_HANDLERS = {
-  db: {
-    init: () => {},
-    exists: db.exists,
-    get: db.get,
-    set: db.set,
-  },
+  db,
+  mongo,
   gistSync: {
     init: gistSync.init,
     exists: key => loadGistSyncFile()[key] !== null,
@@ -45,7 +48,6 @@ const MODE_HANDLERS = {
       data[key] = value;
     },
   },
-  mongo,
 };
 
 module.exports = {
