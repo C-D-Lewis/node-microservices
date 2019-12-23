@@ -1,4 +1,11 @@
 {
+  "OPTIONS": {
+    "ENSURED_WEBHOOKS": [
+      {
+        "url": "/spotifyCallback"
+      }
+    ]
+  },
   "LOG": {
     "APP_NAME": "concierge",
     "LEVEL": "info",

@@ -5,18 +5,22 @@ const { ATTIC_KEY_WEBHOOKS, WEBHOOK_SCHEMA } = require('../modules/webhooks');
 
 /**
  * Handle a packet to add a new webhook.
+ *
+ * @param {Object} message - Packet message, which is a webhook object.
  */
-const handlePacketMessage = (hooks, message) => {
+const handlePacketWebhook = async (message) => {
+  const hooks = await attic.get(ATTIC_KEY_WEBHOOKS);
   const found = hooks.find(p => p.url === message.url);
   if (!found) {
     hooks.push(message);
     log.info(`Added new webhook for url ${message.url}`);
-    return;
+  } else {
+    found.url = message.url;
+    found.packet = message.packet;
+    log.info(`Updated webhook for url ${message.url}`);
   }
 
-  found.url = message.url;
-  found.packet = message.packet;
-  log.info(`Updated webhook for url ${message.url}`);
+  await attic.set(ATTIC_KEY_WEBHOOKS, hooks);
 };
 
 /**
@@ -33,11 +37,12 @@ const handleAddPacket = async (packet, res) => {
     return;
   }
 
-  const hooks = await attic.get(ATTIC_KEY_WEBHOOKS);
-  handlePacketMessage(hooks, message);
+  await handlePacketWebhook(message);
 
-  await attic.set(ATTIC_KEY_WEBHOOKS, hooks);
   conduit.respond(res, { status: 201, message: { content: 'Created' } });
 };
 
-module.exports = handleAddPacket;
+module.exports = {
+  handleAddPacket,
+  handlePacketWebhook,
+};

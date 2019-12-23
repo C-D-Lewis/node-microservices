@@ -5,7 +5,7 @@ const { WEBHOOK_SCHEMA } = require('./webhooks');
  * Register Conduit topic handlers.
  */
 const setup = () => {
-  conduit.on('add', require('../api/add'), WEBHOOK_SCHEMA);
+  conduit.on('add', require('../api/add').handleAddPacket, WEBHOOK_SCHEMA);
   conduit.on('remove', require('../api/remove'), WEBHOOK_SCHEMA);
 };
 
