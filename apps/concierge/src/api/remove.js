@@ -18,7 +18,8 @@ const handleRemovePacket = async (packet, res) => {
   hooks.splice(hooks.indexOf(found), 1);
 
   await attic.set(ATTIC_KEY_WEBHOOKS, hooks);
-  conduit.respond(res, { status: 200, message: { content: 'OK' } });
+  // Note - Can't be 204 otherwise the body gets discarded
+  conduit.respond(res, { status: 200, message: { content: 'Removed' } });
 };
 
 module.exports = handleRemovePacket;

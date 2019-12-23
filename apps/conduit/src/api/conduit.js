@@ -32,7 +32,7 @@ const PACKET_SCHEMA = {
   },
 };
 /** Default response when the recipient does not provide one. */
-const NO_RESPONSE = { status: 204, content: 'No content forwarded' };
+const NO_RESPONSE_PACKET = { status: 204, message: { content: 'No content forwarded' } };
 
 /**
  * Handle a packet request by forwarding to the intended recipient and returning
@@ -65,8 +65,8 @@ const handlePacketRequest = async (req, res) => {
     const port = (host === DEFAULT_HOST) ? appConfig.port : config.SERVER.PORT;
 
     // Deliver the packet to the recipient
-    log.debug(`>> (FWD) ${JSON.stringify(packet)}`);
-    const { body: response = NO_RESPONSE } = await requestAsync({
+    log.debug(`>> (FWD) ${packet.to} ${packet.topic} ${JSON.stringify(packet.message)}`);
+    const { body: response = NO_RESPONSE_PACKET } = await requestAsync({
       url: `http://${host}:${port}/conduit`,
       method: 'post',
       json: packet,
@@ -75,12 +75,12 @@ const handlePacketRequest = async (req, res) => {
     // Send response from 'to' app to message sender
     delete response.from;
     delete response.to;
-    log.debug(`<< (RES) ${JSON.stringify(response)}`);
-    res.status(response.status || 200).send(response);
+    log.debug(`<< (RES) ${response.status} ${packet.to} ${packet.topic} ${JSON.stringify(response.message)}`);
+    res.status(response.status || 200).json(response);
   } catch (e) {
     const error = `Error forwarding packet: ${e.stack}`;
     log.error(error);
-    res.status(500).send({ status: 500, error });
+    res.status(500).json({ status: 500, error });
   }
 };
 
