@@ -7,7 +7,7 @@ const { get, set } = require('../modules/storage');
  * @param {Object} packet - The conduit packet request.
  * @param {Object} res - Express response object.
  */
-const handleIncrementRequest = async (packet, res) => {
+const handleIncrementPacket = async (packet, res) => {
   const { app, key } = packet.message;
   const appData = await get(app);
   if (!appData || !appData[key]) {
@@ -26,4 +26,4 @@ const handleIncrementRequest = async (packet, res) => {
   conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };
 
-module.exports = handleIncrementRequest;
+module.exports = handleIncrementPacket;

@@ -1,6 +1,7 @@
 const { conduit } = require('../node-common')(['conduit']);
 
-const SET_ALL_MESSAGE_SCHEMA = {
+/** Schema for a setAll packet */
+const SET_ALL_PACKET_SCHEMA = {
   additionalProperties: false,
   required: ['all'],
   properties: {
@@ -8,14 +9,16 @@ const SET_ALL_MESSAGE_SCHEMA = {
   },
 };
 
-const INDEXED_MESSAGE_SCHEMA = {
+/** Schema for a packet with indexed data fields */
+const INDEXED_PACKET_SCHEMA = {
   additionalProperties: false,
   patternProperties: {
     '[0-9]{1}': { type: 'array', items: { type: 'integer' } },
   },
 };
 
-const SET_TEXT_MESSAGE_SCHEMA = {
+/** Schema for a packet used to set text display content */
+const SET_TEXT_PACKET_SCHEMA = {
   additionalProperties: false,
   required: ['lines'],
   properties: {
@@ -23,16 +26,20 @@ const SET_TEXT_MESSAGE_SCHEMA = {
   },
 };
 
-const EMPTY_MESSAGE_SCHEMA = { type: 'object' };
+/** Schema for an empty packet */
+const EMPTY_PACKET_SCHEMA = { type: 'object' };
 
+/**
+ * Register with conduit and setup packet topic handlers.
+ */
 const setup = async () => {
   await conduit.register();
 
-  conduit.on('setAll', require('../api/setAll'), SET_ALL_MESSAGE_SCHEMA);
-  conduit.on('setPixel', require('../api/setPixel'), INDEXED_MESSAGE_SCHEMA);
-  conduit.on('blink', require('../api/blink'), INDEXED_MESSAGE_SCHEMA);
-  conduit.on('setText', require('../api/setText'), SET_TEXT_MESSAGE_SCHEMA);
-  conduit.on('state', require('../api/state'), EMPTY_MESSAGE_SCHEMA);
+  conduit.on('setAll', require('../api/setAll'), SET_ALL_PACKET_SCHEMA);
+  conduit.on('setPixel', require('../api/setPixel'), INDEXED_PACKET_SCHEMA);
+  conduit.on('blink', require('../api/blink'), INDEXED_PACKET_SCHEMA);
+  conduit.on('setText', require('../api/setText'), SET_TEXT_PACKET_SCHEMA);
+  conduit.on('state', require('../api/state'), EMPTY_PACKET_SCHEMA);
 };
 
 module.exports = {

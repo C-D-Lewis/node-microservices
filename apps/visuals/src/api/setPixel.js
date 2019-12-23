@@ -1,6 +1,13 @@
 const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
 
-module.exports = ({ message }, res) => {
+/**
+ * Handle a 'setPixel' topic packet.
+ *
+ * @param {Object} packet - The conduit packet request.
+ * @param {Object} res - Express response object.
+ */
+const handleSetPixelPacket = (packet, res) => {
+  const { message } = packet;
   for (var i = 0; i < leds.getNumLEDs(); i += 1) {
     if (message[i]) {
       leds.set(i, message[i]);
@@ -9,3 +16,5 @@ module.exports = ({ message }, res) => {
 
   conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };
+
+module.exports = handleSetPixelPacket;

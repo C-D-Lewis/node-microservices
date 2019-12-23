@@ -1,6 +1,13 @@
 const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
 
-module.exports = ({ message }, res) => {
+/**
+ * Handle a 'blink' topic packet.
+ *
+ * @param {Object} packet - The conduit packet request.
+ * @param {Object} res - Express response object.
+ */
+const handleBlinkPacket = (packet, res) => {
+  const { message } = packet;
   for (let i = 0; i < leds.getNumLEDs(); i += 1) {
     if (message[i]) {
       leds.blink(i, message[i]);
@@ -9,3 +16,5 @@ module.exports = ({ message }, res) => {
 
   conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };
+
+module.exports = handleBlinkPacket;
