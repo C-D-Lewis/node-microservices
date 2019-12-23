@@ -30,13 +30,13 @@ describe('API', () => {
   });
 
   describe('Conduit topic: add', () => {
-    it('should return 200 / OK', async () => {
+    it('should return 201 / OK', async () => {
       const response = await testing.sendConduitPacket({
         to: 'concierge', topic: 'add',
         message: TEST_WEBHOOK
       });
 
-      expect(response.status).to.equal(200);
+      expect(response.status).to.equal(201);
       expect(response.message.content).to.equal('OK');
     });
   });
