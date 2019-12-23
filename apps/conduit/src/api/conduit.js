@@ -31,6 +31,8 @@ const PACKET_SCHEMA = {
     host: { type: 'string' },     // Which other Conduit server to send to
   },
 };
+/** Default response when the recipient does not provide one. */
+const NO_RESPONSE = { content: 'No response forwarded' };
 
 /**
  * Handle a packet request by forwarding to the intended recipient and returning
@@ -64,7 +66,7 @@ const handlePacketRequest = async (req, res) => {
 
     // Deliver the packet to the recipient
     log.debug(`>> (FWD) ${JSON.stringify(packet)}`);
-    const { body: response } = await requestAsync({
+    const { body: response = NO_RESPONSE } = await requestAsync({
       url: `http://${host}:${port}/conduit`,
       method: 'post',
       json: packet,
