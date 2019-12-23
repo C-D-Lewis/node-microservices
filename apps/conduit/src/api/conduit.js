@@ -32,7 +32,7 @@ const PACKET_SCHEMA = {
   },
 };
 /** Default response when the recipient does not provide one. */
-const NO_RESPONSE = { content: 'No response forwarded' };
+const NO_RESPONSE = { status: 204, content: 'No content forwarded' };
 
 /**
  * Handle a packet request by forwarding to the intended recipient and returning
