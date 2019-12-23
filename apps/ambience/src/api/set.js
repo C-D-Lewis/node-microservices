@@ -1,12 +1,16 @@
-const { config, log, conduit } = require('../node-common')(['config', 'log', 'conduit']);
+const { conduit } = require('../node-common')(['conduit']);
 
-module.exports = async (packet, res) => {
-  await conduit.send({
-    to: 'visuals', topic: 'setAll', message: { all: packet.message.all },
-  });
+/**
+ * Handle a 'set' topic packet.
+ *
+ * @param {Object} packet - The conduit packet request.
+ * @param {Object} res - Express response object.
+ */
+const handleSetPacket = async (packet, res) => {
+  const { all } = packet.message;
+  await conduit.send({ to: 'visuals', topic: 'setAll', message: { all } });
 
-  conduit.respond(res, {
-    status: 200,
-    message: { content: 'OK' },
-  });
+  conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };
+
+module.exports = handleSetPacket;

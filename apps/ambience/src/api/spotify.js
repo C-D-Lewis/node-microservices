@@ -1,13 +1,21 @@
 const { log, conduit } = require('../node-common')(['log', 'conduit']);
-const anims = require('../modules/anims');
+const { spotify } = require('../modules/anims');
 
-module.exports = async (packet, res) => {
+/**
+ * Handle a 'spotify' topic packet.
+ *
+ * @param {Object} packet - The conduit packet request.
+ * @param {Object} res - Express response object.
+ */
+const handleSpotifyPacket = async (packet, res) => {
   try {
-    const rgbArr = await anims.spotify();
+    const rgbArr = await spotify();
 
     conduit.respond(res, { status: 200, message: { content: rgbArr } });
   } catch (e) {
     log.error(e);
-    conduit.respond(res, { status: 500, error: e.message });
+    conduit.respond(res, { status: 500, error: e.stack });
   }
 };
+
+module.exports = handleSpotifyPacket;

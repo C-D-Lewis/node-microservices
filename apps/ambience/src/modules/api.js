@@ -1,6 +1,7 @@
 const { conduit } = require('../node-common')(['conduit']);
 
-const _TO_MESSAGE_SCHEMA  = {
+/** Schema for a 'to' packet */
+const TO_PACKET_SCHEMA  = {
   additionalProperties: false,
   required: ['all'],
   properties: {
@@ -8,16 +9,20 @@ const _TO_MESSAGE_SCHEMA  = {
   },
 };
 
-const _NO_MESSAGE_SCHEMA = { type: 'object' };
+/** Schema for a packet with no message. */
+const NO_PACKET_SCHEMA = { type: 'object' };
 
+/**
+ * Register with Conduit and setup topic handlers.
+ */
 const setup = async () => {
   await conduit.register();
 
-  conduit.on('set', require('../api/set'), _TO_MESSAGE_SCHEMA);
-  conduit.on('fade', require('../api/fade'), _TO_MESSAGE_SCHEMA);
-  conduit.on('spotify', require('../api/spotify'), _NO_MESSAGE_SCHEMA);
-  conduit.on('demo', require('../api/demo'), _NO_MESSAGE_SCHEMA);
-  conduit.on('off', require('../api/off'), _NO_MESSAGE_SCHEMA);
+  conduit.on('set', require('../api/set'), TO_PACKET_SCHEMA);
+  conduit.on('fade', require('../api/fade'), TO_PACKET_SCHEMA);
+  conduit.on('spotify', require('../api/spotify'), NO_PACKET_SCHEMA);
+  conduit.on('demo', require('../api/demo'), NO_PACKET_SCHEMA);
+  conduit.on('off', require('../api/off'), NO_PACKET_SCHEMA);
 };
 
 module.exports = {
