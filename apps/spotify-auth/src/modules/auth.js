@@ -55,7 +55,7 @@ const DB_KEYS = {
 const buildCredentials = () => ({
   clientId: SPOTIFY.CLIENT_ID,
   clientSecret: SPOTIFY.CLIENT_SECRET,
-  redirectUri: `http://${SPOTIFY.SERVER_IP}:${SERVER.PORT}/callback`
+  redirectUri: `http://${SPOTIFY.SERVER_IP}:${SERVER.PORT}/spotifyCallback`
 });
 
 /**
@@ -145,7 +145,7 @@ const authenticate = async () => {
  * @param {Object} res - Express response object.
  */
 const onCallback = async (req, res) => {
-  log.debug('<< /callback');
+  log.debug('<< /spotifyCallback');
 
   const url = req.originalUrl;
   const authCode = url.substring(url.indexOf('?code=') + '?code='.length, url.indexOf('&state='));

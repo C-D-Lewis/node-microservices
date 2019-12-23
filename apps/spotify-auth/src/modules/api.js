@@ -9,7 +9,7 @@ const setup = () => {
   server.start();
   const app = server.getExpressApp();
 
-  app.get('/callback', onCallback);
+  app.get('/spotifyCallback', onCallback);
   app.get('/color', onColor);
 };
 
