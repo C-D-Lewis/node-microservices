@@ -1,10 +1,13 @@
 const { conduit, log } = require('./node-common')(['conduit', 'log']);
+const { authenticate } = require('./modules/auth');
 const api = require('./modules/api');
-const auth = require('./modules/auth');
 
+/**
+ * Test the credentials on boot to help debugging.
+ */
 const testCredentials = async () => {
   try {
-    await auth.authenticate();
+    await authenticate();
     log.info('Credentials are valid');
   } catch (e) {
     log.error(e);
@@ -12,6 +15,9 @@ const testCredentials = async () => {
   }
 };
 
+/**
+ * The main function.
+ */
 const main = async () => {
   log.begin();
 
