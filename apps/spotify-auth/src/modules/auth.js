@@ -17,11 +17,12 @@ config.requireKeys('auth.js', {
   required: ['SPOTIFY', 'SERVER'],
   properties: {
     SPOTIFY: {
-      required: ['CLIENT_ID', 'CLIENT_SECRET', 'SERVER_IP'],
+      required: ['CLIENT_ID', 'CLIENT_SECRET', 'SERVER_IP', 'SERVER_PORT'],
       properties: {
         CLIENT_ID: { type: 'string' },
         CLIENT_SECRET: { type: 'string' },
         SERVER_IP: { type: 'string' },
+        SERVER_PORT: { type: 'number' }, // Temporary until transition to concierge
       },
     },
     SERVER: {
@@ -55,7 +56,7 @@ const DB_KEYS = {
 const buildCredentials = () => ({
   clientId: SPOTIFY.CLIENT_ID,
   clientSecret: SPOTIFY.CLIENT_SECRET,
-  redirectUri: `http://${SPOTIFY.SERVER_IP}:${SERVER.PORT}/spotifyCallback`
+  redirectUri: `http://${SPOTIFY.SERVER_IP}:${SPOTIFY.SERVER_PORT}/spotifyCallback`
 });
 
 /**

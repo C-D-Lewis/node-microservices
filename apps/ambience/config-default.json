@@ -6,7 +6,7 @@
   },
   "SPOTIFY_AUTH": {
     "URL": "http://",
-    "PORT": 5005
+    "PORT": 4665
   },
   "CONDUIT": {
     "HOST": "localhost",
