@@ -1,20 +1,6 @@
 const request = require('request');
-const {
-  requestAsync, config, conduit, log,
-} = require('../node-common')(['requestAsync', 'config', 'conduit', 'log']);
-
-config.requireKeys('anims.js', {
-  required: ['SPOTIFY_AUTH'],
-  properties: {
-    SPOTIFY_AUTH: {
-      required: ['URL', 'PORT'],
-      properties: {
-        URL: { type: 'string' },
-        PORT: { type: 'number' },
-      },
-    },
-  },
-});
+const { conduit, log } = require('../node-common')(['conduit', 'log']);
+const { getSpotifyColor } = require('./spotifyColor');
 
 /** Interval between demo color changes */
 const DEMO_INTERVAL_S = 30;
@@ -100,7 +86,7 @@ const fadeTo = (nextRgb) => {
 /**
  * Begin a demo color loop.
  */
-const demo = () => {
+const demoAnimation = () => {
   clearAll();
 
   let current = 0;
@@ -132,30 +118,11 @@ const spotifyColorUpdate = async () => {
 };
 
 /**
- * Get the spotify color using Spotify-Auth service.
- *
- * TODO: Move this logic into here so concierge can receive the callback instead of Spotify-Auth.
- */
-const getSpotifyColor = async () => {
-  log.debug('>> $SPOTIFY_AUTH/color');
-
-  // Fetch from spotify-auth, if credentials are valid
-  const url = `${config.SPOTIFY_AUTH.URL}:${config.SPOTIFY_AUTH.PORT}/color`;
-  const { response, body } = await requestAsync(url);
-  if (response.statusCode !== 200) {
-    throw new Error(`getSpotifyColor() failed: ${body}`);
-  }
-
-  // Response is [r,g,b] JSON array
-  return JSON.parse(body).map(Math.round);
-};
-
-/**
  * Begin a Spotify color loop.
  *
  * @returns {number[]} The new Spotify rgb array to be returned to the Conduit caller.
  */
-const spotify = async () => {
+const spotifyAnimation = async () => {
   clearAll();
 
   const rgbArr = await getSpotifyColor();
@@ -180,7 +147,7 @@ const clearAll = () => {
 
 module.exports = {
   fadeTo,
-  demo,
+  demoAnimation,
   clearAll,
-  spotify,
+  spotifyAnimation,
 };

@@ -1,5 +1,5 @@
 const { conduit } = require('../node-common')(['conduit']);
-const { demo } = require('../modules/anims');
+const { demoAnimation } = require('../modules/anims');
 
 /**
  * Handle a 'demo' topic packet.
@@ -8,7 +8,7 @@ const { demo } = require('../modules/anims');
  * @param {Object} res - Express response object.
  */
 const handleDemoPacket = (packet, res) => {
-  demo();
+  demoAnimation();
 
   conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };

@@ -1,5 +1,5 @@
 const { log, conduit } = require('../node-common')(['log', 'conduit']);
-const { spotify } = require('../modules/anims');
+const { spotifyAnimation } = require('../modules/anims');
 
 /**
  * Handle a 'spotify' topic packet.
@@ -9,7 +9,7 @@ const { spotify } = require('../modules/anims');
  */
 const handleSpotifyPacket = async (packet, res) => {
   try {
-    const rgbArr = await spotify();
+    const rgbArr = await spotifyAnimation();
 
     conduit.respond(res, { status: 200, message: { content: rgbArr } });
   } catch (e) {

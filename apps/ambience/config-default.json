@@ -1,12 +1,21 @@
 {
+  "OPTIONS": {
+    "SHOW_READY": true
+  },
   "LOG": {
     "APP_NAME": "ambience",
     "TO_FILE": false,
     "LEVEL": "info"
   },
-  "SPOTIFY_AUTH": {
-    "URL": "http://",
-    "PORT": 4665
+  "AUTH_ATTIC": {
+    "HOST": "localhost",
+    "KEY": "/spotifyCallback"
+  },
+  "SPOTIFY": {
+    "CLIENT_ID": "",
+    "CLIENT_SECRET": "",
+    "CONCIERGE_IP": "",
+    "CONCIERGE_PORT": 4665,
   },
   "CONDUIT": {
     "HOST": "localhost",
