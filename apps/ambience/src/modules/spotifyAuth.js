@@ -146,35 +146,30 @@ const testCredentials = async (spotifyApi) => {
  * @returns {Object<Spotify>} Spotify API object for use.
  */
 const createSpotifyClient = async () => {
-  try {
-    const spotifyApi = new Spotify(buildCredentials());
-    const accessTokenExists = await attic.exists(DB_KEYS.ACCESS_TOKEN);
-    const refreshTokenExists = await attic.exists(DB_KEYS.REFRESH_TOKEN);
+  const spotifyApi = new Spotify(buildCredentials());
+  const accessTokenExists = await attic.exists(DB_KEYS.ACCESS_TOKEN);
+  const refreshTokenExists = await attic.exists(DB_KEYS.REFRESH_TOKEN);
 
-    if (accessTokenExists && refreshTokenExists) {
-      // Use saved credentials, which may require updating
-      log.debug('Using existing credentials');
-      await testCredentials(spotifyApi);
-      return spotifyApi;
-    }
-
-    log.debug('Granting new credentials...');
-    await updateRemoteAuthCode();
-    const authCode = await attic.get(DB_KEYS.AUTH_CODE);
-    const authorizationCodeGrantAsync = promisify(spotifyApi.authorizationCodeGrant).bind(spotifyApi);
-
-    const res = await authorizationCodeGrantAsync(authCode);
-    log.debug('Granted new credentials');
-    await attic.set(DB_KEYS.ACCESS_TOKEN, res.body['access_token']);
-    await attic.set(DB_KEYS.REFRESH_TOKEN, res.body['refresh_token']);
-
-    // Test and return API object
+  if (accessTokenExists && refreshTokenExists) {
+    // Use saved credentials, which may require updating
+    log.debug('Using existing credentials');
     await testCredentials(spotifyApi);
     return spotifyApi;
-  } catch (e) {
-    log.error(`createSpotifyClient() failed: ${e.stack}`);
-    return null;
   }
+
+  log.debug('Granting new credentials...');
+  await updateRemoteAuthCode();
+  const authCode = await attic.get(DB_KEYS.AUTH_CODE);
+  const authorizationCodeGrantAsync = promisify(spotifyApi.authorizationCodeGrant).bind(spotifyApi);
+
+  const res = await authorizationCodeGrantAsync(authCode);
+  log.debug('Granted new credentials');
+  await attic.set(DB_KEYS.ACCESS_TOKEN, res.body['access_token']);
+  await attic.set(DB_KEYS.REFRESH_TOKEN, res.body['refresh_token']);
+
+  // Test and return API object
+  await testCredentials(spotifyApi);
+  return spotifyApi;
 };
 
 module.exports = {

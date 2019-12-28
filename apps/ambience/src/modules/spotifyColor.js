@@ -49,10 +49,6 @@ const getDominantColor = async (url) => {
 const getSpotifyColor = async () => {
   try {
     const spotifyApi = await createSpotifyClient();
-    if (!spotifyApi) {
-      throw new Error('Unable to create Spotify client object - credentials may not yet be saved');
-    }
-
     const url = await getLargestImageUrl(spotifyApi);
     const rgbArr = await getDominantColor(url);
 
