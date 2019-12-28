@@ -17,7 +17,7 @@ config.requireKeys('conduit.js', {
 });
 
 /** Default destination host (same machine) */
-const DEFAULT_HOST = 'localhost';
+const DEFAULT_HOST_LOCAL = 'localhost';
 /** Schema for all conduit message packets. */
 const PACKET_SCHEMA = {
   required: ['to', 'topic'],
@@ -52,9 +52,9 @@ const handlePacketRequest = async (req, res) => {
   }
 
   // Extract data and forward to recipient
-  const { to, host = DEFAULT_HOST } = packet;
+  const { to, host = DEFAULT_HOST_LOCAL } = packet;
   const appConfig = findByApp(to);
-  if ((host === DEFAULT_HOST) && !appConfig) {
+  if ((host === DEFAULT_HOST_LOCAL) && !appConfig) {
     log.error(`No app registered with name ${to}`);
     sendNotFound(res);
     return;
@@ -62,10 +62,15 @@ const handlePacketRequest = async (req, res) => {
 
   try {
     // In case that the host is not this one, forward (all Conduit servers use 5959 currently)
-    const port = (host === DEFAULT_HOST) ? appConfig.port : config.SERVER.PORT;
+    const port = (host === DEFAULT_HOST_LOCAL) ? appConfig.port : config.SERVER.PORT;
+
+    // Prevent forwarding loops by limiting to one redirection
+    if (host !== DEFAULT_HOST_LOCAL) {
+      delete packet.host;
+    }
 
     // Deliver the packet to the recipient
-    log.debug(`>> (FWD) ${packet.to} ${packet.topic} ${JSON.stringify(packet.message)}`);
+    log.debug(`>> (FWD) ${host} ${to} ${packet.topic} ${JSON.stringify(packet.message)}`);
     const { body: response = NO_RESPONSE_PACKET } = await requestAsync({
       url: `http://${host}:${port}/conduit`,
       method: 'post',
