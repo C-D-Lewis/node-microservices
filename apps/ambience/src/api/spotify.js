@@ -14,7 +14,7 @@ const handleSpotifyPacket = async (packet, res) => {
     conduit.respond(res, { status: 200, message: { content: rgbArr } });
   } catch (e) {
     log.error(e);
-    conduit.respond(res, { status: 500, error: e.stack });
+    conduit.respond(res, { status: 500, error: e.message });
   }
 };
 

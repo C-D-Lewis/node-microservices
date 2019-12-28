@@ -90,11 +90,10 @@ const refreshCredentials = async (spotifyApi) => {
 /**
  * Fetch any authorization code deposited in remote attic by the logged in user
  * visiting the auth URL and being redirected to concierge.
+ *
+ * Should be done if authorization fails.
  */
 const updateRemoteAuthCode = async () => {
-  // TODO check local credentials exist first
-  // if (!localCredentialsExist()) {}
-
   // Fetch credentials
   const res = await conduit.send({
     to: 'attic',
@@ -102,6 +101,12 @@ const updateRemoteAuthCode = async () => {
     host: config.AUTH_ATTIC.HOST,
     message: { app: 'concierge', key: config.AUTH_ATTIC.KEY },
   });
+  if (!res || !res.message) {
+    // Nothing was found
+    log.error(`No code is stored yet or was not found: ${JSON.stringify(res)}`);
+    throw new Error('No code is stored yet');
+  }
+
   const { code } = res.message.value;
   if (!code) {
     throw new Error(`/spotifyCallback did not contain .code: ${JSON.stringify(res)}`);
@@ -154,6 +159,7 @@ const createSpotifyClient = async () => {
     }
 
     log.debug('Granting new credentials...');
+    await updateRemoteAuthCode();
     const authCode = await attic.get(DB_KEYS.AUTH_CODE);
     const authorizationCodeGrantAsync = promisify(spotifyApi.authorizationCodeGrant).bind(spotifyApi);
 
