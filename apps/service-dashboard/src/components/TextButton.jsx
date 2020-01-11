@@ -1,5 +1,5 @@
 import React from 'react';
-import { Colors } from '../util';
+import { Colors } from '../theme';
 
 const TextButton = ({ label, restyle, onClick }) => {
   const style = Object.assign({

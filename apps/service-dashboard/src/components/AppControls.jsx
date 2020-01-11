@@ -1,5 +1,7 @@
 import React from 'react';
-import { Colors, Fonts } from '../util';
+import { useSelector, useDispatch } from 'react-redux';
+import { setAtticData, setConduitData, setAmbienceData, setVisualsData } from '../actions';
+import { Colors, Fonts } from '../theme';
 import IconButton from './IconButton';
 import TextBox from './TextBox';
 import TextButton from './TextButton';
@@ -39,41 +41,42 @@ const Column = ({ children }) => {
   return <div style={style}>{children}</div>;
 };
 
-const AtticControls = ({ state, setState, conduitSend }) => {
-  const setProp = (key, value) => {
-    const { atticData } = state;
-    atticData[key] = value;
-    setState({ atticData });
-  };
+const AtticControls = ({ conduitSend }) => {
+  const dispatch = useDispatch();
+  const atticData = useSelector(state => state.atticData);
+
+  const setProp = (key, value) =>
+    dispatch(setAtticData({ ...atticData, [key]: value }));
+
   const getButtonRestyle = { width: '50%', borderBottomLeftRadius: 3 };
   const setButtonRestyle = { width: '50%', borderBottomRightRadius: 3 };
 
   return (
     <Column>
       <Bar>
-        <TextBox value={state.atticData.app} placeholder="App name"
+        <TextBox value={atticData.app} placeholder="App name"
           restyle={{ width: '40%' }}
           onChange={value => setProp('app', value)}/>
-        <TextBox value={state.atticData.key} placeholder="Key"
+        <TextBox value={atticData.key} placeholder="Key"
           restyle={{ width: '60%' }}
           onChange={value => setProp('key', value)}/>
       </Bar>
       <Bar>
-        <TextBox value={state.atticData.value} placeholder="{}"
+        <TextBox value={atticData.value} placeholder="{}"
           restyle={{ width: "100%" }}
           onChange={value => setProp('value', value)}/>
       </Bar>
       <ButtonBar>
         <TextButton label="Get" restyle={getButtonRestyle}
           onClick={() => {
-            const { app, key } = state.atticData;
+            const { app, key } = atticData;
             const message = { app, key };
             conduitSend({ to: 'attic', topic: 'get', message })
               .then(res => setProp('value', JSON.stringify(res.message.value)));
           }}/>
         <TextButton label="Set" restyle={setButtonRestyle}
           onClick={() => {
-            const { app, key, value } = state.atticData;
+            const { app, key, value } = atticData;
             const message = { app, key, value };
             conduitSend({ to: 'attic', topic: 'set', message });
           }}/>
@@ -82,25 +85,25 @@ const AtticControls = ({ state, setState, conduitSend }) => {
   );
 };
 
-const ConduitControls = ({ state, setState, conduitSend }) => {
-  const setProp = (key, value) => {
-    const { conduitData } = state;
-    conduitData[key] = value;
-    setState({ conduitData });
-  };
+const ConduitControls = ({ conduitSend }) => {
+  const dispatch = useDispatch();
+  const conduitData = useSelector(state => state.conduitData);
+
+  const setProp = (key, value) =>
+    dispatch(setConduitData({ ...conduitData, [key]: value }));
 
   return (
     <Column>
       <Bar>
-        <TextBox value={state.conduitData.app} placeholder="App name"
+        <TextBox value={conduitData.app} placeholder="App name"
           restyle={{ width: '40%' }}
           onChange={value => setProp('app', value)}/>
-        <TextBox value={state.conduitData.topic} placeholder="Topic"
+        <TextBox value={conduitData.topic} placeholder="Topic"
           restyle={{ width: '60%' }}
           onChange={value => setProp('topic', value)}/>
       </Bar>
       <Bar>
-        <TextBox value={state.conduitData.message} placeholder="{}"
+        <TextBox value={conduitData.message} placeholder="{}"
           restyle={{ width: "100%" }}
           onChange={value => setProp('message', value)}/>
       </Bar>
@@ -108,7 +111,7 @@ const ConduitControls = ({ state, setState, conduitSend }) => {
         <TextButton label="Send"
           restyle={{ width: '100%', borderRadius: '0px 0px 3px 3px' }}
           onClick={() => {
-            const { app: to, topic, message } = state.conduitData;
+            const { app: to, topic, message } = conduitData;
             conduitSend({ to, topic, message: JSON.parse(message) });
           }}/>
       </ButtonBar>
@@ -116,24 +119,25 @@ const ConduitControls = ({ state, setState, conduitSend }) => {
   );
 };
 
-const AmbienceControls = ({ state, setState, conduitSend }) => {
-  const setProp = (key, value) => {
-    const { ambienceData } = state;
-    ambienceData[key] = value;
-    setState({ ambienceData });
-  };
+const AmbienceControls = ({ conduitSend }) => {
+  const dispatch = useDispatch();
+  const ambienceData = useSelector(state => state.ambienceData);
+
+  const setProp = (key, value) =>
+    dispatch(setAmbienceData({ ...ambienceData, [key]: value }));
+
   const buttonRestyle = { width: '20%' };
 
   return (
     <Column>
       <Bar>
-        <TextBox value={state.ambienceData.red} placeholder="red"
+        <TextBox value={ambienceData.red} placeholder="red"
           restyle={{ width: "33%" }}
           onChange={value => setProp('red', value)}/>
-        <TextBox value={state.ambienceData.green} placeholder="green"
+        <TextBox value={ambienceData.green} placeholder="green"
           restyle={{ width: "33%" }}
           onChange={value => setProp('green', value)}/>
-        <TextBox value={state.ambienceData.blue} placeholder="blue"
+        <TextBox value={ambienceData.blue} placeholder="blue"
           restyle={{ width: "33%" }}
           onChange={value => setProp('blue', value)}/>
       </Bar>
@@ -146,7 +150,7 @@ const AmbienceControls = ({ state, setState, conduitSend }) => {
           onClick={() => conduitSend({ to: 'ambience', topic: 'demo' })}/>
         <TextButton label="Set" restyle={buttonRestyle}
           onClick={() => {
-            const { red, green, blue } = state.ambienceData;
+            const { red, green, blue } = ambienceData;
             conduitSend({
               to: 'ambience',
               topic: 'set',
@@ -155,7 +159,7 @@ const AmbienceControls = ({ state, setState, conduitSend }) => {
           }}/>
         <TextButton label="Fade" restyle={{ width: '20%', borderBottomRightRadius: 3 }}
           onClick={() => {
-            const { red, green, blue } = state.ambienceData;
+            const { red, green, blue } = ambienceData;
             conduitSend({
               to: 'ambience',
               topic: 'fade',
@@ -167,39 +171,40 @@ const AmbienceControls = ({ state, setState, conduitSend }) => {
   );
 };
 
-const VisualsControls = ({ state, setState, conduitSend }) => {
-  const setProp = (key, value) => {
-    const { visualsData } = state;
-    visualsData[key] = value;
-    setState({ visualsData });
-  };
+const VisualsControls = ({ conduitSend }) => {
+  const dispatch = useDispatch();
+  const visualsData = useSelector(state => state.visualsData);
+
+  const setProp = (key, value) =>
+    dispatch(setVisualsData({ ...visualsData, [key]: value }));
+
   const buttonRestyle = { width: '20%' };
 
   return (
     <Column>
       <Bar>
-        <TextBox value={state.visualsData.index} placeholder="index"
+        <TextBox value={visualsData.index} placeholder="index"
           restyle={{ width: "10%" }}
           onChange={value => setProp('index', value)}/>
-        <TextBox value={state.visualsData.red} placeholder="red"
+        <TextBox value={visualsData.red} placeholder="red"
           restyle={{ width: "30%" }}
           onChange={value => setProp('red', value)}/>
-        <TextBox value={state.visualsData.green} placeholder="green"
+        <TextBox value={visualsData.green} placeholder="green"
           restyle={{ width: "30%" }}
           onChange={value => setProp('green', value)}/>
-        <TextBox value={state.visualsData.blue} placeholder="blue"
+        <TextBox value={visualsData.blue} placeholder="blue"
           restyle={{ width: "30%" }}
           onChange={value => setProp('blue', value)}/>
       </Bar>
       <Bar>
-        <TextBox value={state.visualsData.text} placeholder="text"
+        <TextBox value={visualsData.text} placeholder="text"
           restyle={{ width: "100%" }}
           onChange={value => setProp('text', value)}/>
       </Bar>
       <ButtonBar>
         <TextButton label="All" restyle={{ width: '20%', borderBottomLeftRadius: 3 }}
           onClick={() => {
-            const { red, green, blue } = state.visualsData;
+            const { red, green, blue } = visualsData;
             conduitSend({
               to: 'visuals',
               topic: 'setAll',
@@ -208,7 +213,7 @@ const VisualsControls = ({ state, setState, conduitSend }) => {
           }}/>
         <TextButton label="Pixel" restyle={buttonRestyle}
           onClick={() => {
-            const { index, red, green, blue } = state.visualsData;
+            const { index, red, green, blue } = visualsData;
             conduitSend({
               to: 'visuals',
               topic: 'setPixel',
@@ -217,7 +222,7 @@ const VisualsControls = ({ state, setState, conduitSend }) => {
           }}/>
         <TextButton label="Blink" restyle={buttonRestyle}
           onClick={() => {
-            const { index, red, green, blue } = state.visualsData;
+            const { index, red, green, blue } = visualsData;
             conduitSend({
               to: 'visuals',
               topic: 'blink',
@@ -226,7 +231,7 @@ const VisualsControls = ({ state, setState, conduitSend }) => {
           }}/>
         <TextButton label="Text" restyle={buttonRestyle}
           onClick={() => {
-            const { text } = state.visualsData;
+            const { text } = visualsData;
             conduitSend({
               to: 'visuals',
               topic: 'setText',
@@ -246,7 +251,7 @@ const VisualsControls = ({ state, setState, conduitSend }) => {
   );
 };
 
-const AppControls = ({ state, setState, data, conduitSend }) => {
+const AppControls = ({ data, conduitSend }) => {
   const controlsMap = {
     attic: AtticControls,
     conduit: ConduitControls,
@@ -255,12 +260,7 @@ const AppControls = ({ state, setState, data, conduitSend }) => {
   };
 
   const Controls = controlsMap[data.app] || NoControls;
-  return (
-    <div>
-      <Controls data={data} state={state} setState={setState}
-        conduitSend={conduitSend}/>
-    </div>
-  );
+  return <Controls conduitSend={conduitSend}/>;
 };
 
 export default AppControls;

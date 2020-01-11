@@ -1,5 +1,5 @@
-import React from 'react';
-import { Colors } from '../util';
+import React, { useEffect, useState } from 'react';
+import { Colors } from '../theme';
 import AppControls from './AppControls';
 
 const Container = ({ children, visible }) => {
@@ -86,36 +86,22 @@ const TitleRow = ({ children }) => {
   return <div style={style}>{children}</div>;
 };
 
-class AppCard extends React.Component {
+const AppCard = ({ data, conduitSend }) => {
+  const [visible, setVisible] = useState(false);
 
-  constructor(props) {
-    super(props);
+  useEffect(() => {
+    setTimeout(() => setVisible(true), 100);
+  }, []);
 
-    this.state = {
-      visible: false,
-    };
-  }
-
-  componentDidMount() {
-    setTimeout(() => this.setState({ visible: true }), 100);
-  }
-
-  render() {
-    const { state, setState, data, conduitSend } = this.props;
-
-    return (
-      <Container visible={this.state.visible}>
-        <TitleRow>
-          <Title>{data.app}</Title>
-          <Status data={data}/>
-        </TitleRow>
-        <AppControls state={state} setState={setState}
-          data={data}
-          conduitSend={conduitSend}/>
-      </Container>
-    );
-  }
-
-}
+  return (
+    <Container visible={visible}>
+      <TitleRow>
+        <Title>{data.app}</Title>
+        <Status data={data}/>
+      </TitleRow>
+      <AppControls data={data} conduitSend={conduitSend}/>
+    </Container>
+  );
+};
 
 export default AppCard;
