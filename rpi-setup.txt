@@ -32,6 +32,7 @@ npm -v
 <setup config.json for apps/*>
 
 # Blinkt?
+curl https://get.pimoroni.com/blinkt | bash
 cd node-common && npm i node-blinkt
 
 # Mote?
