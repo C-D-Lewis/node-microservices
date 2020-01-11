@@ -69,10 +69,10 @@ class FleetItem extends React.Component {
     return (
       <Container>
         <Name>{deviceName}</Name>
-        <IP reachable={this.state.reachable.publicIp} onClick={() => this.props.loadIp(publicIp)}>
+        <IP reachable={this.state.reachable.publicIp} onClick={() => this.props.setIp(publicIp)}>
           {publicIp}
         </IP>
-        <IP reachable={this.state.reachable.localIp} onClick={() => this.props.loadIp(localIp)}>
+        <IP reachable={this.state.reachable.localIp} onClick={() => this.props.setIp(localIp)}>
           {localIp}
         </IP>
       </Container>

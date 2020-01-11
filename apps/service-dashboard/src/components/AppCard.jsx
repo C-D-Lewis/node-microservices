@@ -1,6 +1,5 @@
 import React from 'react';
 import { Colors } from '../util';
-import { FlexRow } from './FlexComponents';
 import AppControls from './AppControls';
 
 const Container = ({ children, visible }) => {

@@ -11,5 +11,3 @@ export const Colors = {
 export const Fonts = {
   body: 'sans-serif',
 };
-
-export const BOTTOM_BAR_HEIGHT = 30;

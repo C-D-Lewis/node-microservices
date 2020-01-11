@@ -1,58 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BOTTOM_BAR_HEIGHT } from './util';
 import AppCard from './components/AppCard';
-import BottomBar from './components/BottomBar';
+import { BottomBar } from './components/BottomBar';
+import Container from './components/Container';
+import FleetItem from './components/FleetItem';
 import IconButton from './components/IconButton';
 import IPTextBox from './components/IPTextBox';
+import LeftColumn from './components/LeftColumn';
+import MainArea from './components/MainArea';
 import Navbar from './components/Navbar';
-import FleetItem from './components/FleetItem';
 
-const FLEET_HOST = '46.101.3.163';
+const {
+  /* Where the fleet list can be found. */
+  FLEET_HOST,
+} = window.config;
+/** Port to look for conduit apps */
 const CONDUIT_PORT = 5959;
-
-const Page = ({ children }) => {
-  const style = {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    width: '100%',
-  };
-
-  return <div style={style}>{children}</div>;
-};
-
-const WidgetArea = ({ children }) => {
-  const style = {
-    display: 'flex',
-    flexDirection: 'row',
-    flex: 5,
-    flexWrap: 'wrap',
-    width: '100%',
-    paddingTop: '10px',
-    paddingBottom: 2 * BOTTOM_BAR_HEIGHT,
-    alignItems: 'flex-start',
-  };
-
-  return <div style={style}>{children}</div>;
-};
-
-const FleetArea = ({ children }) => {
-  const style = {
-    display: 'flex',
-    flexDirection: 'column',
-    flex: 1,
-    backgroundColor: 'white',
-    width: '100%',
-    height: '100vh',
-    alignItems: 'flex-start',
-    borderRight: 'solid 1px #0004',
-    paddingTop: 10,
-    boxShadow: '0px 2px 3px 1px #5557',
-  };
-
-  return <div style={style}>{children}</div>;
-};
 
 class Application extends React.Component {
 
@@ -62,7 +25,7 @@ class Application extends React.Component {
     this.state = {
       apps: [],
       fleetList: [],
-      ip: '',
+      ip: FLEET_HOST,
       bottomBarText: 'Ready',
       atticData: {
         app: '',
@@ -89,10 +52,8 @@ class Application extends React.Component {
     };
 
     this.setState = this.setState.bind(this);
-    this.loadApps = this.loadApps.bind(this);
-    this.loadIp = this.loadIp.bind(this);
+    this.setIp = this.setIp.bind(this);
     this.conduitSend = this.conduitSend.bind(this);
-    this.loadFleetList = this.loadFleetList.bind(this);
   }
 
   componentDidMount() {
@@ -129,7 +90,7 @@ class Application extends React.Component {
       .catch(console.error);
   }
 
-  loadIp(ip) {
+  setIp(ip) {
     this.setState({ ip }, this.loadApps);
   }
 
@@ -156,23 +117,23 @@ class Application extends React.Component {
       <div>
         <Navbar title="Service Dashboard" icon="../assets/raspberrypi.png">
           <IPTextBox ip={this.state.ip} onChange={ip => this.setState({ ip })}/>
-          <IconButton iconSrc="../assets/reload.png" onClick={this.loadApps}/>
+          <IconButton iconSrc="../assets/reload.png" onClick={() => this.loadApps()}/>
         </Navbar>
-        <Page>
-          <FleetArea>
+        <Container restyle={{ width: '100%' }}>
+          <LeftColumn>
             {this.state.fleetList.map(p => (
-              <FleetItem key={p.deviceName} data={p} loadIp={this.loadIp}/>
+              <FleetItem key={p.deviceName} data={p} setIp={this.setIp}/>
             ))}
-          </FleetArea>
-          <WidgetArea>
+          </LeftColumn>
+          <MainArea>
             {this.state.apps.map(p => (
               <AppCard key={p.app} state={this.state} setState={this.setState}
                 data={p}
                 conduitSend={this.conduitSend}/>
             ))}
-          </WidgetArea>
+          </MainArea>
           <BottomBar>{this.state.bottomBarText}</BottomBar>
-        </Page>
+        </Container>
       </div>
     );
   }

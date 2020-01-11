@@ -1,10 +1,11 @@
 import React from 'react';
-import { BOTTOM_BAR_HEIGHT } from '../util';
+import Container from './Container';
 
-const BottomBar = ({ children }) => {
+/** Height of the bottom status bar */
+export const BOTTOM_BAR_HEIGHT = 30;
+
+export const BottomBar = ({ children }) => {
   const style = {
-    display: 'flex',
-    flexDirection: 'row',
     fontFamily: 'monospace',
     position: 'fixed',
     bottom: 0,
@@ -16,7 +17,5 @@ const BottomBar = ({ children }) => {
     alignItems: 'center',
   };
 
-  return <div style={style}>{children}</div>;
+  return <Container restyle={style}>{children}</Container>;
 };
-
-export default BottomBar;

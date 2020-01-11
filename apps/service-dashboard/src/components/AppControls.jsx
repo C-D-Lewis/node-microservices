@@ -246,13 +246,6 @@ const VisualsControls = ({ state, setState, conduitSend }) => {
   );
 };
 
-
-const Container = ({ children }) => {
-  const style = {};
-
-  return <div style={style}>{children}</div>;
-}
-
 const AppControls = ({ state, setState, data, conduitSend }) => {
   const controlsMap = {
     attic: AtticControls,
@@ -263,10 +256,10 @@ const AppControls = ({ state, setState, data, conduitSend }) => {
 
   const Controls = controlsMap[data.app] || NoControls;
   return (
-    <Container>
+    <div>
       <Controls data={data} state={state} setState={setState}
         conduitSend={conduitSend}/>
-    </Container>
+    </div>
   );
 };
 
