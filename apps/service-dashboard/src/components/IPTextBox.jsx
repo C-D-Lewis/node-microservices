@@ -1,6 +1,6 @@
 import React from 'react';
 
-const IPTextBox = ({ ip, onChange }) => {
+const IPTextBox = ({ value, onChange }) => {
   const style = {
     width: '200px',
     height: '30px',
@@ -13,8 +13,8 @@ const IPTextBox = ({ ip, onChange }) => {
   };
 
   return (
-    <input id="ip-text-box" style={style} type="text" value={ip}
-      onChange={el => onChange(el.target.value)}/>
+    <input id="ip-text-box" style={style} type="text" value={value}
+      onChange={event => onChange(event.target.value)}/>
   );
 };
 

@@ -91,7 +91,7 @@ const Dashboard = () => {
   return (
     <div>
       <Navbar title="Service Dashboard" icon="../assets/raspberrypi.png">
-        <IPTextBox ip={ip} onChange={ip => dispatch(setIp(ip))}/>
+        <IPTextBox value={ip} onChange={ip => dispatch(setIp(ip))}/>
         <IconButton iconSrc="../assets/reload.png" onClick={() => loadApps()}/>
       </Navbar>
       <Container restyle={{ width: '100%' }}>
