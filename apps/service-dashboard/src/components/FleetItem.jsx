@@ -36,7 +36,7 @@ const Container = ({ children }) => {
   return <div style={style}>{children}</div>;
 };
 
-const FleetItem = ({ data, loadFromIp }) => {
+const FleetItem = ({ data, setIp }) => {
   const [publicIpValid, setPublicIpValid] = useState(false);
   const [localIpValid, setLocalIpValid] = useState(false);
   const [tested, setTested] = useState(false);
@@ -68,10 +68,10 @@ const FleetItem = ({ data, loadFromIp }) => {
   return (
     <Container>
       <Name>{deviceName}</Name>
-      <IP reachable={publicIpValid} onClick={() => loadFromIp(publicIp)}>
+      <IP reachable={publicIpValid} onClick={() => setIp(publicIp)}>
         {publicIp}
       </IP>
-      <IP reachable={localIpValid} onClick={() => loadFromIp(localIp)}>
+      <IP reachable={localIpValid} onClick={() => setIp(localIp)}>
         {localIp}
       </IP>
     </Container>

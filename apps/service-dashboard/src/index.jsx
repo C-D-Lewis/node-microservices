@@ -43,8 +43,8 @@ const Dashboard = () => {
     };
 
     try {
-      const json = await fetch(`http://${FLEET_HOST}:${CONDUIT_PORT}/conduit`, opts)
-        .then(res => res.json());
+      const res = await fetch(`http://${FLEET_HOST}:${CONDUIT_PORT}/conduit`, opts)
+      const json = await res.json();
       const fleetList = json.message.value;
       dispatch(setFleetList(fleetList));
     } catch (err) {
@@ -56,23 +56,22 @@ const Dashboard = () => {
     setTimeout(loadFleetList, 200);
   }, []);
 
-  const loadApps = async (ip) => {
+  const loadApps = async () => {
     dispatch(setApps([]));
 
     try {
-      const json = await fetch(`http://${ip}:${CONDUIT_PORT}/apps`)
-        .then(res => res.json());
+      const res = await fetch(`http://${ip}:${CONDUIT_PORT}/apps`);
+      const json = await res.json();
       const apps =  json.sort((a, b) => a.app < b.app ? -1 : 1);
       dispatch(setApps(apps));
     } catch (err) {
       console.error(err);
     }
-  }
-
-  const loadFromIp = ip => {
-    dispatch(setIp(ip));
-    loadApps(ip);
   };
+
+  useEffect(() => {
+    loadApps();
+  }, [ip]);
 
   const conduitSend = async (packet) => {
     dispatch(setBottomBarText('Sending...'));
@@ -82,8 +81,8 @@ const Dashboard = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(packet),
     };
-    const json = await fetch(`http://${ip}:5959/conduit`, opts)
-      .then(res => res.json());
+    const res = await fetch(`http://${ip}:5959/conduit`, opts);
+    const json = await res.json();
     dispatch(setBottomBarText(JSON.stringify(json)));
     return json;
   };
@@ -97,7 +96,7 @@ const Dashboard = () => {
       <Container restyle={{ width: '100%' }}>
         <LeftColumn>
           {fleetList.map(p => (
-            <FleetItem key={p.deviceName} data={p} loadFromIp={v => loadFromIp(v)}/>
+            <FleetItem key={p.deviceName} data={p} setIp={v => dispatch(setIp(v))}/>
           ))}
         </LeftColumn>
         <MainArea>
