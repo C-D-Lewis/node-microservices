@@ -75,7 +75,7 @@ const Dashboard = () => {
   };
 
   const conduitSend = async (packet) => {
-    dispatch(setBottomBarText(''));
+    dispatch(setBottomBarText('Sending...'));
 
     const opts = {
       method: 'POST',

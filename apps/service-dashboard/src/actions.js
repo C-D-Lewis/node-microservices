@@ -13,9 +13,9 @@ export const setIp = ip => ({
   ip,
 });
 
-export const setBottomBarText = setBottomBarText => ({
+export const setBottomBarText = bottomBarText => ({
   type: 'SET_BOTTOM_BAR_TEXT',
-  setBottomBarText,
+  bottomBarText,
 });
 
 export const setAtticData = atticData => ({
