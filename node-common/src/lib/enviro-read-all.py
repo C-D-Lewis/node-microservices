@@ -11,6 +11,11 @@ ltr559 = LTR559()
 
 time.sleep(0.3) # Takes a while to warm up lux
 
+# Seems first couple of values are always the same
+for i in range(0, 5):
+  bme280.get_temperature()
+  bme280.get_pressure()
+
 print(bme280.get_temperature())
 print(bme280.get_pressure())
 print(bme280.get_humidity())
