@@ -4,6 +4,7 @@ require('./attic.spec');
 // Sorted
 require('./config.spec');
 require('./db.spec');
+require('./enviro.spec');
 require('./eventBus.spec');
 require('./evtdb.spec');
 require('./extract.spec');
