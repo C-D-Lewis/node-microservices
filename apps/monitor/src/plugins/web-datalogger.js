@@ -5,7 +5,7 @@ const {
 module.exports = async (args) => {
   const { URL, BEFORES, AFTER, ATTIC_KEY } = args;
   const configured = URL && BEFORES && AFTER && ATTIC_KEY;
-  log.assert(configured, 'datalogger.js requires some ARGS specified', true);
+  log.assert(configured, 'web-datalogger.js requires some ARGS specified', true);
 
   try {
     const { body } = await requestAsync({ url: URL });
