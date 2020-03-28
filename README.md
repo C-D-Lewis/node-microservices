@@ -21,6 +21,14 @@ For each app required, install dependencies and perform initial startup:
 
 4. Finish setting up `config.json` that is generated.
 
+Lastly, setup the `node-common` module, shared by all apps:
+
+1. `cd node-common`
+
+2. `npm ci`
+
+3. If using a Blinkt! or Enviro Phat, see the `README.md` for more dependencies.
+
 
 ## Launching Apps
 
@@ -54,15 +62,11 @@ node runner.js conduit attic visuals monitor
 * [`service-dashboard`](apps/service-dashboard) - React application that shows
   the status of all local apps running through `conduit`, and provides a GUI for
   their APIs. For example, setting colors for `visuals`.
-* [`spotify-auth`](apps/spotify-auth) - Since Spotify requires a static IP for
-  callbacks to their API, this service handles responses when `ambience`
-  wants to know the color of the user's now playing album art, for mood lighting
-  purposes.
 * [`concierge`](apps/concierge) - API service that allows creation and deletion
   of webhook callbacks, and can message other apps locally in response.
 
 
-## Common
+## Common Modules
 
 The [`node-common`](node-common) project contains a set of modules that are
 commonly used across all of these apps for purposes such as API requests, data
@@ -70,7 +74,7 @@ storage, configuration behavior, etc. It is published as an `npm` module for
 easy reuse. It also includes a full set of tests, with minimal configuration
 required.
 
-However, apps that don't want to use the published module can use a copy of 
+However, apps that don't want to use the published module can use a copy of
 `node-common.js` to require them in a pseudo-local manner:
 
 ```js
