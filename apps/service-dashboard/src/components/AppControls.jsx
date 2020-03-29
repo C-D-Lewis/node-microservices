@@ -136,15 +136,15 @@ const AmbienceControls = () => {
         <TextBox value={ambienceData.red}
           placeholder="red"
           style={{ width: "33%" }}
-          onChange={value => setProp('red', value)}/>
+          onChange={value => setProp('red', parseInt(value))}/>
         <TextBox value={ambienceData.green}
           placeholder="green"
           style={{ width: "33%" }}
-          onChange={value => setProp('green', value)}/>
+          onChange={value => setProp('green', parseInt(value))}/>
         <TextBox value={ambienceData.blue}
           placeholder="blue"
           style={{ width: "33%" }}
-          onChange={value => setProp('blue', value)}/>
+          onChange={value => setProp('blue', parseInt(value))}/>
       </Row>
       <ButtonBar>
         <TextButton label="Off"
@@ -160,14 +160,14 @@ const AmbienceControls = () => {
           style={buttonStyle}
           onClick={() => {
             const { red, green, blue } = ambienceData;
-            const message = { all: [parseInt(red), parseInt(green), parseInt(blue)] };
+            const message = { all: [red, green, blue] };
             sendPacket({ to: 'ambience', topic: 'set', message });
           }}/>
         <TextButton label="Fade"
           style={{ width: '20%', borderBottomRightRadius: 3 }}
           onClick={() => {
             const { red, green, blue } = ambienceData;
-            const message = { all: [parseInt(red), parseInt(green), parseInt(blue)] };
+            const message = { all: [red, green, blue] };
             sendPacket({ to: 'ambience', topic: 'fade', message });
           }}/>
       </ButtonBar>
@@ -189,19 +189,19 @@ const VisualsControls = () => {
         <TextBox value={visualsData.index}
           placeholder="index"
           style={{ width: "10%" }}
-          onChange={value => setProp('index', value)}/>
+          onChange={value => setProp('index', parseInt(value))}/>
         <TextBox value={visualsData.red}
           placeholder="red"
           style={{ width: "30%" }}
-          onChange={value => setProp('red', value)}/>
+          onChange={value => setProp('red', parseInt(value))}/>
         <TextBox value={visualsData.green}
           placeholder="green"
           style={{ width: "30%" }}
-          onChange={value => setProp('green', value)}/>
+          onChange={value => setProp('green', parseInt(value))}/>
         <TextBox value={visualsData.blue}
           placeholder="blue"
           style={{ width: "30%" }}
-          onChange={value => setProp('blue', value)}/>
+          onChange={value => setProp('blue', parseInt(value))}/>
       </Row>
       <Row>
         <TextBox value={visualsData.text}
