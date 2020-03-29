@@ -100,15 +100,14 @@ const ServiceDashboard = () => {
         <LeftColumn>
           {fleetList.map(p => (
             <FleetItem key={p.deviceName}
-              itemData={p}
-              setIp={value => dispatch(setIp(value))}/>
+              itemData={p} />
           ))}
         </LeftColumn>
         <MainArea>
           {apps.map(p => (
             <AppCard key={p.app}
               appData={p}
-              conduitSend={data => conduitSend(data)}/>
+              conduitSend={data => conduitSend(data)} />
           ))}
         </MainArea>
         <BottomBar>{bottomBarText}</BottomBar>

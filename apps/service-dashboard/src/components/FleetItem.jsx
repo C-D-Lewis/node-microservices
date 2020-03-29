@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setIp } from '../actions';
 
 const ItemName = ({ children }) =>
   <span style={{
@@ -34,9 +36,8 @@ const ItemContainer = ({ children }) =>
     {children}
   </div>;
 
-// FIXME - setIp should dispatch the action here, not via a prop
-
-const FleetItem = ({ itemData, setIp }) => {
+const FleetItem = ({ itemData }) => {
+  const dispatch = useDispatch();
   const [publicIpValid, setPublicIpValid] = useState(false);
   const [localIpValid, setLocalIpValid] = useState(false);
 
@@ -65,11 +66,11 @@ const FleetItem = ({ itemData, setIp }) => {
     <ItemContainer>
       <ItemName>{deviceName}</ItemName>
       <ItemIP reachable={publicIpValid}
-        onClick={() => setIp(publicIp)}>
+        onClick={() => dispatch(setIp(publicIp))}>
         {publicIp}
       </ItemIP>
       <ItemIP reachable={localIpValid}
-        onClick={() => setIp(localIp)}>
+        onClick={() => dispatch(setIp(localIp))}>
         {localIp}
       </ItemIP>
     </ItemContainer>
