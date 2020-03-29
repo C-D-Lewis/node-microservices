@@ -1,7 +1,5 @@
 # conduit
 
-> Requires [`node-common`](https://github.com/C-D-Lewis/node-common)
-
 Easier inter-pi app communication without manually assigning ports for all services.
 
 The general idea is that each app registers its interest in receiving messages
