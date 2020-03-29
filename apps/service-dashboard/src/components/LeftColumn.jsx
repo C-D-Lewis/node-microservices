@@ -1,7 +1,7 @@
 import React from 'react';
 
-const LeftColumn = ({ children }) => {
-  const style = {
+const LeftColumn = ({ children }) =>
+  <div style={{
     display: 'flex',
     flexDirection: 'column',
     flex: 1,
@@ -12,9 +12,8 @@ const LeftColumn = ({ children }) => {
     borderRight: 'solid 1px #0004',
     paddingTop: 10,
     boxShadow: '0px 2px 3px 1px #5557',
-  };
-
-  return <div style={style}>{children}</div>;
-};
+  }}>
+    {children}
+  </div>;
 
 export default LeftColumn;

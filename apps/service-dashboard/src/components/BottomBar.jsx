@@ -4,8 +4,8 @@ import Container from './Container';
 /** Height of the bottom status bar */
 export const BOTTOM_BAR_HEIGHT = 30;
 
-export const BottomBar = ({ children }) => {
-  const style = {
+export const BottomBar = ({ children }) =>
+  <Container style={{
     fontFamily: 'monospace',
     position: 'fixed',
     bottom: 0,
@@ -15,7 +15,6 @@ export const BottomBar = ({ children }) => {
     backgroundColor: '#333',
     color: 'white',
     alignItems: 'center',
-  };
-
-  return <Container restyle={style}>{children}</Container>;
-};
+  }}>
+    {children}
+  </Container>;

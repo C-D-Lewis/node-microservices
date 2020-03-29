@@ -1,61 +1,59 @@
 import React, { useState, useEffect } from 'react';
 
-const Name = ({ children }) => {
-  const style = {
+const ItemName = ({ children }) =>
+  <span style={{
     color: 'black',
     fontWeight: 'bold',
     fontSize: '1.2rem',
     paddingLeft: '15px',
     marginBottom: '5px',
-  };
+  }}>
+    {children}
+  </span>;
 
-  return <span style={style}>{children}</span>;
-};
-
-const IP = ({ children, onClick, reachable }) => {
-  const style = {
+const ItemIP = ({ children, onClick, reachable }) =>
+  <span style={{
     color: reachable ? 'black' : 'lightgrey',
     fontSize: '1.1rem',
     paddingLeft: '25px',
     fontFamily: 'monospace',
     margin: '3px 0px 3px 0px',
     cursor: 'pointer',
-  };
+  }}
+  onClick={onClick}>
+    {children}
+  </span>;
 
-  return <span style={style} onClick={onClick}>{children}</span>;
-};
-
-const Container = ({ children }) => {
-  const style = {
+const ItemContainer = ({ children }) =>
+  <div style={{
     display: 'flex',
     flexDirection: 'column',
     border: '0',
     margin: '7px 0px 7px 0px',
-  };
+  }}>
+    {children}
+  </div>;
 
-  return <div style={style}>{children}</div>;
-};
+// FIXME - setIp should dispatch the action here, not via a prop
 
-const FleetItem = ({ data, setIp }) => {
+const FleetItem = ({ itemData, setIp }) => {
   const [publicIpValid, setPublicIpValid] = useState(false);
   const [localIpValid, setLocalIpValid] = useState(false);
-  const [tested, setTested] = useState(false);
+
+  const { deviceName, publicIp, localIp } = itemData;
 
   const testPublicIp = async () => {
-    setTested(true);
     try {
-      const json = await fetch(`http://${data.publicIp}:5959/apps`)
-        .then(res => res.json());
+      const res = await fetch(`http://${publicIp}:5959/apps`);
       setPublicIpValid(true);
-    } catch (err) {}
+    } catch (err) { /* It isn't available */ }
   };
 
   const testLocalIp = async () => {
     try {
-      const json = await fetch(`http://${data.localIp}:5959/apps`)
-        .then(res => res.json());
+      const res = await fetch(`http://${localIp}:5959/apps`);
       setLocalIpValid(true);
-    } catch (err) {}
+    } catch (err) { /* It isn't available */ }
   };
 
   useEffect(() => {
@@ -63,18 +61,18 @@ const FleetItem = ({ data, setIp }) => {
     testLocalIp();
   }, []);
 
-  const { deviceName, publicIp, localIp } = data;
-
   return (
-    <Container>
-      <Name>{deviceName}</Name>
-      <IP reachable={publicIpValid} onClick={() => setIp(publicIp)}>
+    <ItemContainer>
+      <ItemName>{deviceName}</ItemName>
+      <ItemIP reachable={publicIpValid}
+        onClick={() => setIp(publicIp)}>
         {publicIp}
-      </IP>
-      <IP reachable={localIpValid} onClick={() => setIp(localIp)}>
+      </ItemIP>
+      <ItemIP reachable={localIpValid}
+        onClick={() => setIp(localIp)}>
         {localIp}
-      </IP>
-    </Container>
+      </ItemIP>
+    </ItemContainer>
   );
 };
 

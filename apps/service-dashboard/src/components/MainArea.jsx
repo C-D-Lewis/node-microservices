@@ -1,8 +1,8 @@
 import React from 'react';
 import { BOTTOM_BAR_HEIGHT } from './BottomBar';
 
-const MainArea = ({ children }) => {
-  const style = {
+const MainArea = ({ children }) =>
+  <div style={{
     display: 'flex',
     flexDirection: 'row',
     flex: 5,
@@ -11,9 +11,8 @@ const MainArea = ({ children }) => {
     paddingTop: '10px',
     paddingBottom: 2 * BOTTOM_BAR_HEIGHT,
     alignItems: 'flex-start',
-  };
-
-  return <div style={style}>{children}</div>;
-};
+  }}>
+    {children}
+  </div>;
 
 export default MainArea;

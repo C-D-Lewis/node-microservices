@@ -96,12 +96,12 @@ const Dashboard = () => {
       <Container restyle={{ width: '100%' }}>
         <LeftColumn>
           {fleetList.map(p => (
-            <FleetItem key={p.deviceName} data={p} setIp={v => dispatch(setIp(v))}/>
+            <FleetItem key={p.deviceName} itemData={p} setIp={v => dispatch(setIp(v))}/>
           ))}
         </LeftColumn>
         <MainArea>
           {apps.map(p => (
-            <AppCard key={p.app} data={p} conduitSend={data => conduitSend(data)}/>
+            <AppCard key={p.app} appData={p} conduitSend={data => conduitSend(data)}/>
           ))}
         </MainArea>
         <BottomBar>{bottomBarText}</BottomBar>

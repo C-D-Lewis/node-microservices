@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Colors } from '../theme';
 import AppControls from './AppControls';
 
-const Container = ({ children, visible }) => {
-  const style = {
+const CardContainer = ({ children, visible }) =>
+  <div style={{
     display: 'flex',
     flexDirection: 'column',
     width: '375px',
@@ -14,66 +14,52 @@ const Container = ({ children, visible }) => {
     opacity: visible ? 1 : 0,
     visibility: visible ? 'visible' : 'hidden',
     transition: '0.6s',
-  };
+  }}>
+    {children}
+  </div>;
 
-  return <div style={style}>{children}</div>;
-};
-
-const Title = ({ children }) => {
-  const style = {
+const CardTitle = ({ children }) =>
+  <span style={{
     fontSize: '1.3rem',
     flex: 1,
     color: 'white',
-  };
+  }}>
+    {children}
+  </span>;
 
-  return <span style={style}>{children}</span>;
-};
-
-const Subtitle = ({ children }) => {
-  const style = {
+const CardSubtitle = ({ children }) =>
+  <span style={{
     fontSize: '1.0rem',
     color: Colors.lightGrey,
     paddingTop: 1,
-  };
+  }}>
+    {children}
+  </span>;
 
-  return <span style={style}>{children}</span>;
-};
-
-const LED = ({ status }) => {
-  const style = {
+const LED = ({ status }) =>
+  <div style={{
     backgroundColor: Colors.statusDown,
     width: '15px',
     height: '15px',
     borderRadius: '9px',
     marginRight: '5px',
-  };
+    backgroundColor: status.includes('OK') ? Colors.statusOk : Colors.statusDown,
+  }}/>;
 
-  if (status.includes('OK')) {
-    style.backgroundColor = Colors.statusOk;
-  }
-
-  return <div style={style}/>;
-};
-
-const Status = ({ data }) => {
-  const ledRowStyle = {
+const Status = ({ data }) =>
+  <div style={{
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
     flex: 2,
-  };
+  }}>
+    <LED status={data.status} />
+    <CardSubtitle>{data.status} ({data.port})</CardSubtitle>
+  </div>;
 
-  return (
-    <div style={ledRowStyle}>
-      <LED status={data.status}/>
-      <Subtitle>{data.status} ({data.port})</Subtitle>
-    </div>
-  );
-};
-
-const TitleRow = ({ children }) => {
-  const style = {
+const CardTitleRow = ({ children }) =>
+  <div style={{
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -81,12 +67,11 @@ const TitleRow = ({ children }) => {
     padding: '10px 15px',
     borderTopLeftRadius: 3,
     borderTopRightRadius: 3,
-  };
+  }}>
+    {children}
+  </div>;
 
-  return <div style={style}>{children}</div>;
-};
-
-const AppCard = ({ data, conduitSend }) => {
+const AppCard = ({ appData, conduitSend }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -94,13 +79,13 @@ const AppCard = ({ data, conduitSend }) => {
   }, []);
 
   return (
-    <Container visible={visible}>
-      <TitleRow>
-        <Title>{data.app}</Title>
-        <Status data={data}/>
-      </TitleRow>
-      <AppControls data={data} conduitSend={conduitSend}/>
-    </Container>
+    <CardContainer visible={visible}>
+      <CardTitleRow>
+        <CardTitle>{appData.app}</CardTitle>
+        <Status data={appData}/>
+      </CardTitleRow>
+      <AppControls data={appData} conduitSend={conduitSend}/>
+    </CardContainer>
   );
 };
 

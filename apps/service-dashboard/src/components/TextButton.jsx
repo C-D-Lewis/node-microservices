@@ -1,8 +1,8 @@
 import React from 'react';
 import { Colors } from '../theme';
 
-const TextButton = ({ label, restyle, onClick }) => {
-  const style = Object.assign({
+const TextButton = ({ label, style, onClick }) =>
+  <div style={{
     display: 'flex',
     flexDirection: 'column',
     height: '30px',
@@ -15,9 +15,10 @@ const TextButton = ({ label, restyle, onClick }) => {
     justifyContent: 'center',
     borderLeft: '1px solid #FFF4',
     borderRight: '1px solid #FFF4',
-  }, restyle);
-
-  return  <div style={style} onClick={onClick}>{label}</div>;
-};
+    ...style,
+  }}
+  onClick={onClick}>
+    {label}
+  </div>;
 
 export default TextButton;
