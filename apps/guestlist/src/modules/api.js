@@ -1,7 +1,8 @@
 const { conduit } = require('../node-common')(['conduit']);
 
-/** Schema for messages with no value */
+/** Schema for messages to create users */
 const CREATE_MESSAGE_SCHEMA = {
+  additionalProperties: false,
   required: ['name', 'apps', 'topics'],
   properties: {
     name: { type: 'string' },
@@ -18,6 +19,15 @@ const CREATE_MESSAGE_SCHEMA = {
   },
 };
 
+/** Schema for messages to get a user */
+const GET_MESSAGE_SCHEMA = {
+  additionalProperties: false,
+  required: ['name'],
+  properties: {
+    name: { type: 'string' },
+  },
+};
+
 /**
  * Setup Conduit topic handlers.
  */
@@ -25,6 +35,7 @@ const setup = async () => {
   await conduit.register();
 
   conduit.on('create', require('../api/create'), CREATE_MESSAGE_SCHEMA);
+  conduit.on('get', require('../api/get'), GET_MESSAGE_SCHEMA);
 };
 
 module.exports = {
