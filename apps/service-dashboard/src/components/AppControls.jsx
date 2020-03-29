@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setAtticData, setConduitData, setAmbienceData, setVisualsData } from '../actions';
 import { Colors, Fonts } from '../theme';
+import { sendPacket } from '../services/conduitService';
 import IconButton from './IconButton';
 import TextBox from './TextBox';
 import TextButton from './TextButton';
@@ -37,7 +38,7 @@ const Column = ({ children }) =>
     {children}
   </div>;
 
-const AtticControls = ({ conduitSend }) => {
+const AtticControls = () => {
   const dispatch = useDispatch();
   const atticData = useSelector(state => state.atticData);
 
@@ -70,7 +71,7 @@ const AtticControls = ({ conduitSend }) => {
           onClick={async () => {
             const { app, key } = atticData;
             const message = { app, key };
-            const res = await conduitSend({ to: 'attic', topic: 'get', message });
+            const res = await sendPacket({ to: 'attic', topic: 'get', message });
             setProp('value', JSON.stringify(res.message.value));
           }}/>
         <TextButton label="Set"
@@ -78,14 +79,14 @@ const AtticControls = ({ conduitSend }) => {
           onClick={() => {
             const { app, key, value } = atticData;
             const message = { app, key, value };
-            conduitSend({ to: 'attic', topic: 'set', message });
+            sendPacket({ to: 'attic', topic: 'set', message });
           }}/>
       </ButtonBar>
     </Column>
   );
 };
 
-const ConduitControls = ({ conduitSend }) => {
+const ConduitControls = () => {
   const dispatch = useDispatch();
   const conduitData = useSelector(state => state.conduitData);
 
@@ -114,14 +115,14 @@ const ConduitControls = ({ conduitSend }) => {
           style={{ width: '100%', borderRadius: '0px 0px 3px 3px' }}
           onClick={() => {
             const { app: to, topic, message } = conduitData;
-            conduitSend({ to, topic, message: JSON.parse(message) });
+            sendPacket({ to, topic, message: JSON.parse(message) });
           }}/>
       </ButtonBar>
     </Column>
   );
 };
 
-const AmbienceControls = ({ conduitSend }) => {
+const AmbienceControls = () => {
   const dispatch = useDispatch();
   const ambienceData = useSelector(state => state.ambienceData);
 
@@ -148,33 +149,33 @@ const AmbienceControls = ({ conduitSend }) => {
       <ButtonBar>
         <TextButton label="Off"
           style={{ width: '20%', borderBottomLeftRadius: 3 }}
-          onClick={() => conduitSend({ to: 'ambience', topic: 'off' })}/>
+          onClick={() => sendPacket({ to: 'ambience', topic: 'off' })}/>
         <TextButton label="Spotify"
           style={buttonStyle}
-          onClick={() => conduitSend({ to: 'ambience', topic: 'spotify' })}/>
+          onClick={() => sendPacket({ to: 'ambience', topic: 'spotify' })}/>
         <TextButton label="Demo"
           style={buttonStyle}
-          onClick={() => conduitSend({ to: 'ambience', topic: 'demo' })}/>
+          onClick={() => sendPacket({ to: 'ambience', topic: 'demo' })}/>
         <TextButton label="Set"
           style={buttonStyle}
           onClick={() => {
             const { red, green, blue } = ambienceData;
             const message = { all: [parseInt(red), parseInt(green), parseInt(blue)] };
-            conduitSend({ to: 'ambience', topic: 'set', message });
+            sendPacket({ to: 'ambience', topic: 'set', message });
           }}/>
         <TextButton label="Fade"
           style={{ width: '20%', borderBottomRightRadius: 3 }}
           onClick={() => {
             const { red, green, blue } = ambienceData;
             const message = { all: [parseInt(red), parseInt(green), parseInt(blue)] };
-            conduitSend({ to: 'ambience', topic: 'fade', message });
+            sendPacket({ to: 'ambience', topic: 'fade', message });
           }}/>
       </ButtonBar>
     </Column>
   );
 };
 
-const VisualsControls = ({ conduitSend }) => {
+const VisualsControls = () => {
   const dispatch = useDispatch();
   const visualsData = useSelector(state => state.visualsData);
 
@@ -214,40 +215,38 @@ const VisualsControls = ({ conduitSend }) => {
           onClick={() => {
             const { red, green, blue } = visualsData;
             const message = { all: [red, green, blue] };
-            conduitSend({ to: 'visuals', topic: 'setAll', message });
+            sendPacket({ to: 'visuals', topic: 'setAll', message });
           }}/>
         <TextButton label="Pixel"
           style={buttonStyle}
           onClick={() => {
             const { index, red, green, blue } = visualsData;
             const message = { [index]: [red, green, blue] };
-            conduitSend({ to: 'visuals', topic: 'setPixel', message });
+            sendPacket({ to: 'visuals', topic: 'setPixel', message });
           }}/>
         <TextButton label="Blink"
           style={buttonStyle}
           onClick={() => {
             const { index, red, green, blue } = visualsData;
             const message = { [index]: [red, green, blue] };
-            conduitSend({ to: 'visuals', topic: 'blink', message });
+            sendPacket({ to: 'visuals', topic: 'blink', message });
           }}/>
         <TextButton label="Text"
           style={buttonStyle}
           onClick={() => {
             const { text } = visualsData;
             const message = { lines: [text] }
-            conduitSend({ to: 'visuals', topic: 'setText', message });
+            sendPacket({ to: 'visuals', topic: 'setText', message });
           }}/>
         <TextButton label="State"
           style={{ width: '20%', borderBottomRightRadius: 3 }}
-          onClick={() => conduitSend({ to: 'visuals', topic: 'state' })}/>
+          onClick={() => sendPacket({ to: 'visuals', topic: 'state' })}/>
       </ButtonBar>
     </Column>
   );
 };
 
-// FIXME - conduitSend should be done through a service, not a prop
-
-const AppControls = ({ data, conduitSend }) => {
+const AppControls = ({ data }) => {
   const controlsMap = {
     attic: AtticControls,
     conduit: ConduitControls,
@@ -256,7 +255,7 @@ const AppControls = ({ data, conduitSend }) => {
   };
   const Controls = controlsMap[data.app] || NoControls;
 
-  return <Controls conduitSend={conduitSend}/>;
+  return <Controls />;
 };
 
 export default AppControls;

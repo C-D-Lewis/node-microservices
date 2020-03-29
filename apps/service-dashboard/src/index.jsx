@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { useSelector, useDispatch, Provider } from 'react-redux';
 import { BottomBar } from './components/BottomBar';
 import { setFleetList, setApps, setIp, setBottomBarText } from './actions';
+import { sendPacket } from './services/conduitService';
 import AppCard from './components/AppCard';
 import Container from './components/Container';
 import FleetItem from './components/FleetItem';
@@ -13,10 +14,6 @@ import MainArea from './components/MainArea';
 import Navbar from './components/Navbar';
 import store from './store';
 
-const {
-  /* Where the fleet list can be found. */
-  FLEET_HOST,
-} = window.config;
 /** Port to look for conduit apps */
 const CONDUIT_PORT = 5959;
 
@@ -36,15 +33,8 @@ const ServiceDashboard = () => {
       topic: 'get',
       message: { app: 'conduit', key: 'fleetList' },
     };
-    const opts = {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(packet),
-    };
-
     try {
-      const res = await fetch(`http://${FLEET_HOST}:${CONDUIT_PORT}/conduit`, opts)
-      const { message } = await res.json();
+      const { message } = await sendPacket(packet);
       const fleetList = message.value;
       dispatch(setFleetList(fleetList));
     } catch (err) {
@@ -73,20 +63,6 @@ const ServiceDashboard = () => {
     loadApps();
   }, [ip]);
 
-  const conduitSend = async (packet) => {
-    dispatch(setBottomBarText('Sending...'));
-
-    const opts = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(packet),
-    };
-    const res = await fetch(`http://${ip}:5959/conduit`, opts);
-    const json = await res.json();
-    dispatch(setBottomBarText(JSON.stringify(json)));
-    return json;
-  };
-
   return (
     <div>
       <Navbar title="Service Dashboard"
@@ -98,17 +74,10 @@ const ServiceDashboard = () => {
       </Navbar>
       <Container style={{ width: '100%' }}>
         <LeftColumn>
-          {fleetList.map(p => (
-            <FleetItem key={p.deviceName}
-              itemData={p} />
-          ))}
+          {fleetList.map(p => <FleetItem key={p.deviceName} itemData={p} />)}
         </LeftColumn>
         <MainArea>
-          {apps.map(p => (
-            <AppCard key={p.app}
-              appData={p}
-              conduitSend={data => conduitSend(data)} />
-          ))}
+          {apps.map(p => <AppCard key={p.app} appData={p} />)}
         </MainArea>
         <BottomBar>{bottomBarText}</BottomBar>
       </Container>

@@ -71,7 +71,7 @@ const CardTitleRow = ({ children }) =>
     {children}
   </div>;
 
-const AppCard = ({ appData, conduitSend }) => {
+const AppCard = ({ appData }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -84,7 +84,7 @@ const AppCard = ({ appData, conduitSend }) => {
         <CardTitle>{appData.app}</CardTitle>
         <Status data={appData}/>
       </CardTitleRow>
-      <AppControls data={appData} conduitSend={conduitSend}/>
+      <AppControls data={appData} />
     </CardContainer>
   );
 };
