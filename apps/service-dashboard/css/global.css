@@ -12,8 +12,3 @@ html, body, #app {
 tr {
   margin-top: 10px;
 }
-
-#ip-text-box:focus {
-  outline: none;
-  border-bottom: 2px solid #FFF;
-}

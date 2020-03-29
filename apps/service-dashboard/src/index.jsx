@@ -20,7 +20,7 @@ const {
 /** Port to look for conduit apps */
 const CONDUIT_PORT = 5959;
 
-const Dashboard = () => {
+const ServiceDashboard = () => {
   const dispatch = useDispatch();
 
   const ip = useSelector(state => state.ip);
@@ -44,8 +44,8 @@ const Dashboard = () => {
 
     try {
       const res = await fetch(`http://${FLEET_HOST}:${CONDUIT_PORT}/conduit`, opts)
-      const json = await res.json();
-      const fleetList = json.message.value;
+      const { message } = await res.json();
+      const fleetList = message.value;
       dispatch(setFleetList(fleetList));
     } catch (err) {
       console.error(err);
@@ -89,19 +89,26 @@ const Dashboard = () => {
 
   return (
     <div>
-      <Navbar title="Service Dashboard" icon="../assets/raspberrypi.png">
-        <IPTextBox value={ip} onChange={ip => dispatch(setIp(ip))}/>
-        <IconButton iconSrc="../assets/reload.png" onClick={() => loadApps()}/>
+      <Navbar title="Service Dashboard"
+        icon="../assets/raspberrypi.png">
+        <IPTextBox value={ip}
+          onChange={ip => dispatch(setIp(ip))}/>
+        <IconButton iconSrc="../assets/reload.png"
+          onClick={() => loadApps()}/>
       </Navbar>
-      <Container restyle={{ width: '100%' }}>
+      <Container style={{ width: '100%' }}>
         <LeftColumn>
           {fleetList.map(p => (
-            <FleetItem key={p.deviceName} itemData={p} setIp={v => dispatch(setIp(v))}/>
+            <FleetItem key={p.deviceName}
+              itemData={p}
+              setIp={value => dispatch(setIp(value))}/>
           ))}
         </LeftColumn>
         <MainArea>
           {apps.map(p => (
-            <AppCard key={p.app} appData={p} conduitSend={data => conduitSend(data)}/>
+            <AppCard key={p.app}
+              appData={p}
+              conduitSend={data => conduitSend(data)}/>
           ))}
         </MainArea>
         <BottomBar>{bottomBarText}</BottomBar>
@@ -112,7 +119,7 @@ const Dashboard = () => {
 
 const Application = () => (
   <Provider store={store}>
-    <Dashboard/>
+    <ServiceDashboard/>
   </Provider>
 );
 

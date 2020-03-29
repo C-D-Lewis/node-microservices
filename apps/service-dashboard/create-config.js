@@ -1,6 +1,7 @@
 const { writeFileSync } = require('fs');
 
 const {
+  /** Where the fleet can be found. */
   FLEET_HOST,
 } = process.env;
 
