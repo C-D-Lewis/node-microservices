@@ -1,27 +1,29 @@
-const {
-  log, enviro, attic,
-} = require('../node-common')(['log', 'enviro', 'attic']);
+const { readFileSync, writeFileSync, existsSync } = require('fs');
+const { log, enviro } = require('../node-common')(['log', 'enviro']);
+
+/** Destination file name */
+const CSV_FILE_NAME = `${__dirname}/../../enviro.csv`;
 
 module.exports = async (args) => {
-  const { ATTIC_KEY } = args;
-  const configured = ATTIC_KEY;
-  log.assert(configured, 'web-datalogger.js requires some ARGS specified', true);
-
   try {
     const sample = enviro.readAll();
-    const value = {
-      ...sample,
-      timestamp: Date.now(),
-    };
+    const timestamp = Date.now();
+    const {
+      temperature,
+      pressure,
+      humidity,
+      lux,
+      proximity,
+    } = sample;
 
-    let history = [];
-    if (await attic.exists(ATTIC_KEY)) {
-      history = await attic.get(ATTIC_KEY);
-    }
+    // Append to CSV
+    let data = (!existsSync(CSV_FILE_NAME))
+      ? 'timestamp,temperature,pressure,humidity,lux,proximity'
+      : readFileSync(CSV_FILE_NAME, 'utf8');
+    data = data.concat(`\n${timestamp},${temperature},${pressure},${humidity},${lux},${proximity}`);
+    writeFileSync(CSV_FILE_NAME, data, 'utf8');
 
-    history.push(value);
-    await attic.set(ATTIC_KEY, history);
-    log.info(`Logged '${JSON.stringify(value)}' from enviro`);
+    log.info(`Logged '${JSON.stringify(sample)}' from enviro`);
   } catch (e) {
     log.error(e);
   }
