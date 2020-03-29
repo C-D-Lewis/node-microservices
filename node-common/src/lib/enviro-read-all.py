@@ -28,16 +28,14 @@ def get_cpu_temperature():
 # temperature down, and increase to adjust up
 factor = 2.25
 cpu_temps = [get_cpu_temperature()] * 5
+cpu_temp = get_cpu_temperature()
+cpu_temps = cpu_temps[1:] + [cpu_temp]  # Smooth out with some averaging to decrease jitter
+avg_cpu_temp = sum(cpu_temps) / float(len(cpu_temps))
+raw_temp = bme280.get_temperature()
+comp_temp = raw_temp - ((avg_cpu_temp - raw_temp) / factor)
 
-def get_adjusted_temperature():
-  cpu_temp = get_cpu_temperature()
-  cpu_temps = cpu_temps[1:] + [cpu_temp]  # Smooth out with some averaging to decrease jitter
-  avg_cpu_temp = sum(cpu_temps) / float(len(cpu_temps))
-  raw_temp = bme280.get_temperature()
-  comp_temp = raw_temp - ((avg_cpu_temp - raw_temp) / factor)
-  return comp_temp
-
-print(get_adjusted_temperature())
+# Interface is one measurement per line, in this order
+print(comp_temp)
 print(bme280.get_pressure())
 print(bme280.get_humidity())
 print(ltr559.get_lux())
