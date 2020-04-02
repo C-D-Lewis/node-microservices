@@ -6,10 +6,11 @@ Credentials take the following format. For example, a user who can only read
 from the Attic service.
 
 TODO: App-specific permissions, such as which attic key can be read.
+TODO: Who can create users? Hardcode admin with password?
 
 ```json
 {
-  "name": "Attic User",
+  "name": "AtticUser",
   "apps": ["attic"],
   "topics": ["get"]
 }

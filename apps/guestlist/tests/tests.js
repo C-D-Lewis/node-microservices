@@ -1,86 +1,60 @@
 const { expect } = require('chai');
+const { testing } = require('../src/node-common')(['testing']);
 
-const { config, testing } = require('../src/node-common')(['config', 'testing']);
-
-const TEST_APP = 'TestApp';
-const TEST_KEY = 'TestKey';
-const TEST_VALUE = Math.round(Math.random() * 100);
+const TEST_USER_NAME = 'TestUser';
 
 describe('API', () => {
+  after(async () => {
+    // TODO: Delete test user
+  });
+
   describe('Conduit topic: status', () => {
     it('should return 200 / OK', async () => {
-      const response = await testing.sendConduitPacket({ to: 'attic', topic: 'status' });
+      const response = await testing.sendConduitPacket({ to: 'guestlist', topic: 'status' });
 
       expect(response.status).to.equal(200);
       expect(response.message.content).to.equal('OK');
     });
   });
 
-  describe('Conduit topic: set', () => {
-    it('should return 200 / OK', async () => {
+  describe('Conduit topic: create', () => {
+    it('should return 201 / UserDocument', async () => {
+      const payload = {
+        name: TEST_USER_NAME,
+        password: 'testpassword',
+        apps: ['attic'],
+        topics: ['get'],
+      };
       const response = await testing.sendConduitPacket({
-        to: 'attic',
-        topic: 'set',
-        message: {
-          app: TEST_APP,
-          key: TEST_KEY,
-          value: TEST_VALUE
-        }
+        to: 'guestlist',
+        topic: 'create',
+        message: payload,
       });
 
-      expect(response.status).to.equal(200);
-      expect(response.message.content).to.equal('OK');
+      const { status, message } = response;
+      expect(status).to.equal(201);
+      expect(message.name).to.equal(payload.name);
+      expect(message.password).to.equal(undefined);
+      expect(message.apps).to.deep.equal(payload.apps);
+      expect(message.topics).to.deep.equal(payload.topics);
     });
   });
 
   describe('Conduit topic: get', () => {
-    it('should return 200 / TEST_VALUE', async () => {
+    it('should return 200 / UserDocument', async () => {
+      const payload = { name: TEST_USER_NAME };
       const response = await testing.sendConduitPacket({
-        to: 'attic',
+        to: 'guestlist',
         topic: 'get',
-        message: {
-          app: 'TestApp',
-          key: 'TestKey'
-        }
+        message: payload,
       });
 
-      expect(response.status).to.equal(200);
-      expect(response.message.app).to.equal(TEST_APP);
-      expect(response.message.key).to.equal(TEST_KEY);
-      expect(response.message.value).to.equal(TEST_VALUE);
-      expect(response.message.timestamp).to.be.a('number');
-    });
-  });
-
-  describe('Conduit topic: increment', () => {
-    it('should return 200 / OK, then return 200 / TEST_VALUE + 1', async () => {
-      let response = await testing.sendConduitPacket({
-        to: 'attic',
-        topic: 'increment',
-        message: {
-          app: TEST_APP,
-          key: TEST_KEY,
-          value: TEST_VALUE
-        }
-      });
-
-      expect(response.status).to.equal(200);
-      expect(response.message.content).to.equal('OK');
-
-      response = await testing.sendConduitPacket({
-        to: 'attic',
-        topic: 'get',
-        message: {
-          app: TEST_APP,
-          key: TEST_KEY
-        }
-      });
-
-      expect(response.status).to.equal(200);
-      expect(response.message.app).to.equal(TEST_APP);
-      expect(response.message.key).to.equal(TEST_KEY);
-      expect(response.message.value).to.equal(TEST_VALUE + 1);
-      expect(response.message.timestamp).to.be.a('number');
+      const { status, message } = response;
+      expect(status).to.equal(200);
+      expect(message.name).to.equal(payload.name);
+      expect(message.password).to.equal(undefined);
+      expect(message.apps).to.be.an('array');
+      expect(message.topics).to.be.an('array');
     });
   });
 });
