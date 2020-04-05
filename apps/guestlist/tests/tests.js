@@ -82,9 +82,19 @@ describe('API', () => {
       expect(status).to.equal(200);
       expect(message.content).to.equal('OK');
     });
-  });
 
-  // TODO - reject bad key
+    it('should return 404 / Not found', async () => {
+      const response = await testing.sendConduitPacket({
+        to: 'guestlist',
+        topic: 'authorize',
+        message: { token: 'badtokenbadbadtoken' },
+      });
+
+      const { status, error } = response;
+      expect(status).to.equal(404);
+      expect(error).to.equal('User does not exist');
+    });
+  });
 
   describe('Conduit topic: delete', () => {
     it('should return 200 / OK', async () => {
