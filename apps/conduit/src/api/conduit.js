@@ -2,7 +2,7 @@ const {
   config, log, requestAsync, schema,
 } = require('../node-common')(['config', 'log', 'requestAsync', 'schema']);
 const { findByApp } = require('../modules/allocator');
-const { sendBadRequest, sendNotFound } = require('../modules/util');
+const { sendBadRequest, sendNotFound, sendPacket, sendNotAuthorized } = require('../modules/util');
 
 config.requireKeys('conduit.js', {
   required: ['SERVER'],
@@ -54,8 +54,19 @@ const handlePacketRequest = async (req, res) => {
 
   // Enforce only localhost need not supply a guestlist token
   if (hostname !== 'localhost') {
-    log.debug(`Origin: ${hostname} requries guestlist check`);
+    log.debug(`Origin: ${hostname} requires guestlist check`);
 
+    const authorizeResponse = await sendPacket({
+      to: 'guestlist',
+      topic: 'authorize',
+      message: { token: packet.auth },
+    });
+    console.log({ authorizeResponse})
+    if (authorizeResponse.error) {
+      log.error('Authorization check failed');
+      sendNotAuthorized(res);
+      return;
+    }
   }
 
   // Extract data and forward to recipient

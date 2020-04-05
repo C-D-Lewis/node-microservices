@@ -33,6 +33,16 @@ const sendNotFound = (res) => {
 };
 
 /**
+ * Send a 'not authorized' response.
+ *
+ * @param {Object} res - Express response object.
+ */
+const sendNotAuthorized = (res) => {
+  log.error('Not Authorized');
+  res.status(401).send({ error: 'Not Authorized', status: 401 });
+};
+
+/**
  * Send a packet.
  *
  * @param {Object} json - Packet to send.
@@ -52,4 +62,5 @@ module.exports = {
   sendBadRequest,
   sendPacket,
   sendNotFound,
+  sendNotAuthorized,
 };
