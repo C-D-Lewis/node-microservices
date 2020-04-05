@@ -4,13 +4,13 @@ const adminPassword = require('../modules/adminPassword');
 
 /**
  * Handle a 'delete' topic packet.
- * Requires 'auth' containing 'adminPassword' in the packet.
+ * Requires 'auth' Conduit field containing 'adminPassword'.
  *
  * @param {Object} packet - The conduit packet request.
  * @param {Object} res - Express response object.
  */
 const handleDeletePacket = async (packet, res) => {
-  const { name, auth } = packet.message;
+  const { auth, message } = packet;
 
   // Only the administrator can delete users (for now)
   const password = adminPassword.get();
@@ -28,7 +28,8 @@ const handleDeletePacket = async (packet, res) => {
     ? (await attic.get(ATTIC_KEY_USERS))
     : [];
 
-  const existing = list.find(p => p.name === name);
+  // Find existing user
+  const existing = list.find(p => p.name === message.name);
   if (!existing) {
     conduit.respond(res, { status: 404, error: 'User does not exist' });
     return;

@@ -12,13 +12,14 @@ const chance = new Chance();
 
 /**
  * Handle a 'create' topic packet.
- * Requires 'auth' containing 'adminPassword' in the packet.
+ * Requires 'auth' Conduit field containing 'adminPassword'.
  *
  * @param {Object} packet - The conduit packet request.
  * @param {Object} res - Express response object.
  */
 const handleCreatePacket = async (packet, res) => {
-  const { name, auth, apps, topics } = packet.message;
+  const { auth, message } = packet;
+  const { name, apps, topics } = message;
 
   // Only the administrator can create users (for now)
   const password = adminPassword.get();

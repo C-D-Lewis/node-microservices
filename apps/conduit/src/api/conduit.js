@@ -22,13 +22,14 @@ const DEFAULT_HOST_LOCAL = 'localhost';
 const PACKET_SCHEMA = {
   required: ['to', 'topic'],
   properties: {
-    status: { type: 'integer' },  // Response status
+    status: { type: 'integer' },  // Response status code
     to: { type: 'string' },       // Recipient Conduit client
     topic: { type: 'string' },    // The message topic (i.e: channel)
     message: { type: 'object' },  // The message object to send
     error: { type: 'string' },    // Any response error
     from: { type: 'string' },     // Sending Conduit client
     host: { type: 'string' },     // Which other Conduit server to send to
+    auth: { type: 'string' },     // Authorization, if required
   },
 };
 /** Default response when the recipient does not provide one. */
@@ -80,6 +81,7 @@ const handlePacketRequest = async (req, res) => {
     // Send response from 'to' app to message sender
     delete response.from;
     delete response.to;
+    delete response.auth;
     log.debug(`<< (RES) ${response.status} ${packet.to} ${packet.topic} ${JSON.stringify(response.message)}`);
     res.status(response.status || 200).json(response);
   } catch (e) {

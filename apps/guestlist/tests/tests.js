@@ -9,9 +9,8 @@ let auth;
 
 describe('API', () => {
   before(() => {
-    adminPassword.waitForFile();
     console.log('Waiting for read of adminPassword...');
-
+    adminPassword.waitForFile();
     while (!auth) {
       auth = adminPassword.get();
     }
@@ -30,7 +29,6 @@ describe('API', () => {
     it('should return 201 / User', async () => {
       const payload = {
         name: TEST_USER_NAME,
-        auth,
         apps: ['attic'],
         topics: ['get'],
       };
@@ -38,6 +36,7 @@ describe('API', () => {
         to: 'guestlist',
         topic: 'create',
         message: payload,
+        auth,
       });
 
       const { status, message } = response;
@@ -70,11 +69,12 @@ describe('API', () => {
 
   describe('Conduit topic: delete', () => {
     it('should return 200 / OK', async () => {
-      const payload = { name: TEST_USER_NAME, auth };
+      const payload = { name: TEST_USER_NAME };
       const response = await testing.sendConduitPacket({
         to: 'guestlist',
         topic: 'delete',
         message: payload,
+        auth,
       });
 
       const { status, message } = response;
