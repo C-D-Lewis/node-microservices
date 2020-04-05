@@ -42,4 +42,6 @@ describe('API', () => {
       expect(item.status).to.be.a('string');
     });
   });
+
+  // TODO guestlist authorize test for outside requests
 });

@@ -14,7 +14,7 @@ let password;
  */
 const waitForFile = () => {
   if (!existsSync(PASSWORD_FILE)) {
-    setTimeout(readPasswordFile, INTERVAL_MS);
+    setTimeout(waitForFile, INTERVAL_MS);
     return;
   }
 
