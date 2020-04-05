@@ -3,10 +3,10 @@ const { conduit } = require('../node-common')(['conduit']);
 /** Schema for messages to create users */
 const CREATE_MESSAGE_SCHEMA = {
   additionalProperties: false,
-  required: ['name', 'password', 'apps', 'topics'],
+  required: ['name', 'auth', 'apps', 'topics'],
   properties: {
     name: { type: 'string' },
-    password: { type: 'string' },
+    auth: { type: 'string' },
     apps: {
       type: 'array',
       items: { type: 'string' },
@@ -17,6 +17,16 @@ const CREATE_MESSAGE_SCHEMA = {
       items: { type: 'string' },
       minItems: 1
     },
+  },
+};
+
+/** Schema for messages to delete a user */
+const DELETE_MESSAGE_SCHEMA = {
+  additionalProperties: false,
+  required: ['name', 'auth'],
+  properties: {
+    name: { type: 'string' },
+    auth: { type: 'string' },
   },
 };
 
@@ -37,6 +47,7 @@ const setup = async () => {
 
   conduit.on('create', require('../api/create'), CREATE_MESSAGE_SCHEMA);
   conduit.on('get', require('../api/get'), GET_MESSAGE_SCHEMA);
+  conduit.on('delete', require('../api/delete'), DELETE_MESSAGE_SCHEMA);
 };
 
 module.exports = {

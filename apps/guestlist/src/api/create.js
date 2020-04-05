@@ -1,6 +1,7 @@
 const Chance = require('chance');
 const { conduit, attic } = require('../node-common')(['conduit', 'attic']);
 const { ATTIC_KEY_USERS } = require('../constants');
+const adminPassword = require('../modules/adminPassword');
 
 /** Reserved names for system roles */
 const RESERVED_NAMES = ['superadmin'];
@@ -11,14 +12,24 @@ const chance = new Chance();
 
 /**
  * Handle a 'create' topic packet.
+ * Requires 'auth' containing 'adminPassword' in the packet.
  *
  * @param {Object} packet - The conduit packet request.
  * @param {Object} res - Express response object.
  */
 const handleCreatePacket = async (packet, res) => {
-  const { name, password, apps, topics } = packet.message;
+  const { name, auth, apps, topics } = packet.message;
 
-  // Handle bad inputs
+  // Only the administrator can create users (for now)
+  const password = adminPassword.get();
+  if (!password) {
+    conduit.respond(res, { status: 500, error: 'Authorizing app not authorized' });
+    return;
+  }
+  if (!auth || auth !== password) {
+    conduit.respond(res, { status: 401, error: 'Unauthorized' });
+    return;
+  }
   if (RESERVED_NAMES.includes(name)) {
     conduit.respond(res, { status: 409, error: 'Cannot use reserved name' });
     return;
@@ -45,14 +56,14 @@ const handleCreatePacket = async (packet, res) => {
     name,
     apps,
     topics,
-    password,
+    token: chance.hash(),
+    createdAt: Date.now(),
   };
   list.push(user);
   await attic.set(ATTIC_KEY_USERS, list);
 
-  // Respond without password
-  const { password: omittedPassword, ...responseUser } = user;
-  conduit.respond(res, { status: 201, message: responseUser });
+  // Respond
+  conduit.respond(res, { status: 201, message: user });
 };
 
 module.exports = handleCreatePacket;

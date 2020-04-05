@@ -1,11 +1,20 @@
 const { expect } = require('chai');
 const { testing } = require('../src/node-common')(['testing']);
+const adminPassword = require('../src/modules/adminPassword');
 
+/** Test user name */
 const TEST_USER_NAME = 'TestUser';
 
+let auth;
+
 describe('API', () => {
-  after(async () => {
-    // TODO: Delete test user
+  before(() => {
+    adminPassword.waitForFile();
+    console.log('Waiting for read of adminPassword...');
+
+    while (!auth) {
+      auth = adminPassword.get();
+    }
   });
 
   describe('Conduit topic: status', () => {
@@ -18,10 +27,10 @@ describe('API', () => {
   });
 
   describe('Conduit topic: create', () => {
-    it('should return 201 / UserDocument', async () => {
+    it('should return 201 / User', async () => {
       const payload = {
         name: TEST_USER_NAME,
-        password: 'testpassword',
+        auth,
         apps: ['attic'],
         topics: ['get'],
       };
@@ -37,11 +46,12 @@ describe('API', () => {
       expect(message.password).to.equal(undefined);
       expect(message.apps).to.deep.equal(payload.apps);
       expect(message.topics).to.deep.equal(payload.topics);
+      expect(message.token).to.be.a('string');
     });
   });
 
   describe('Conduit topic: get', () => {
-    it('should return 200 / UserDocument', async () => {
+    it('should return 200 / User', async () => {
       const payload = { name: TEST_USER_NAME };
       const response = await testing.sendConduitPacket({
         to: 'guestlist',
@@ -55,6 +65,21 @@ describe('API', () => {
       expect(message.password).to.equal(undefined);
       expect(message.apps).to.be.an('array');
       expect(message.topics).to.be.an('array');
+    });
+  });
+
+  describe('Conduit topic: delete', () => {
+    it('should return 200 / OK', async () => {
+      const payload = { name: TEST_USER_NAME, auth };
+      const response = await testing.sendConduitPacket({
+        to: 'guestlist',
+        topic: 'delete',
+        message: payload,
+      });
+
+      const { status, message } = response;
+      expect(status).to.equal(200);
+      expect(message.content).to.equal('Deleted');
     });
   });
 });
