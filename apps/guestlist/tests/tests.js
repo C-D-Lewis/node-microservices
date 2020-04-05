@@ -6,6 +6,7 @@ const adminPassword = require('../src/modules/adminPassword');
 const TEST_USER_NAME = 'TestUser';
 
 let auth;
+let token;
 
 describe('API', () => {
   before(() => {
@@ -46,6 +47,8 @@ describe('API', () => {
       expect(message.apps).to.deep.equal(payload.apps);
       expect(message.topics).to.deep.equal(payload.topics);
       expect(message.token).to.be.a('string');
+
+      token = message.token;
     });
   });
 
@@ -61,11 +64,27 @@ describe('API', () => {
       const { status, message } = response;
       expect(status).to.equal(200);
       expect(message.name).to.equal(payload.name);
-      expect(message.password).to.equal(undefined);
+      expect(message.token).to.equal(undefined);
       expect(message.apps).to.be.an('array');
       expect(message.topics).to.be.an('array');
     });
   });
+
+  describe('Conduit topic: authorize', () => {
+    it('should return 200 / OK', async () => {
+      const response = await testing.sendConduitPacket({
+        to: 'guestlist',
+        topic: 'authorize',
+        message: { token },
+      });
+
+      const { status, message } = response;
+      expect(status).to.equal(200);
+      expect(message.content).to.equal('OK');
+    });
+  });
+
+  // TODO - reject bad key
 
   describe('Conduit topic: delete', () => {
     it('should return 200 / OK', async () => {

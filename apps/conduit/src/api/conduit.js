@@ -43,13 +43,19 @@ const NO_RESPONSE_PACKET = { status: 204, message: { content: 'No content forwar
  * @param {Object} res - Express response object.
  */
 const handlePacketRequest = async (req, res) => {
-  const { body: packet } = req;
+  const { body: packet, hostname } = req;
   log.debug(`<< (REQ) ${JSON.stringify(packet)}`);
 
   // Validate packet shape
   if (!schema(packet, PACKET_SCHEMA)) {
     sendBadRequest(res);
     return;
+  }
+
+  // Enforce only localhost need not supply a guestlist token
+  if (hostname !== 'localhost') {
+    log.debug(`Origin: ${hostname} requries guestlist check`);
+
   }
 
   // Extract data and forward to recipient
