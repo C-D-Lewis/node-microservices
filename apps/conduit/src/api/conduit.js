@@ -56,14 +56,19 @@ const handlePacketRequest = async (req, res) => {
   if (hostname !== 'localhost') {
     log.debug(`Origin: ${hostname} requires guestlist check`);
 
-    const authorizeResponse = await sendPacket({
+    if (!packet.auth) {
+      log.info('Authorization not provided');
+      sendNotAuthorized(res);
+      return;
+    }
+
+    const authCheckRes = await sendPacket({
       to: 'guestlist',
       topic: 'authorize',
       message: { token: packet.auth },
     });
-    console.log({ authorizeResponse})
-    if (authorizeResponse.error) {
-      log.error('Authorization check failed');
+    if (authCheckRes.error) {
+      log.info('Authorization check failed');
       sendNotAuthorized(res);
       return;
     }
