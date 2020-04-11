@@ -207,7 +207,7 @@ curl -X POST http://48.192.67.201:5959/conduit \
 For all requests that do not originate from `localhost`, each packet received
 by `conduit` must include the `auth` field with a token that can is then
 verified by `guestlist`. Where applicable additional checks are done on the
-`apps` and `topics` permissions asigned to that user.
+`apps` and `topics` permissions assigned to that user.
 
 For example, creating a user as the sysadmin with the master password (see
 [`guestlist`](apps/guestlist) for details):
