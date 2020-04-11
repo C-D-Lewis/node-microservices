@@ -1,5 +1,7 @@
 # node-microservices
 
+![](misc/overview.png)
+
 This is an ongoing project (since September 2016) that encompasses a set of
 small Node microservices that work together to deliver private and public
 features. It was originally (and still is) run on a Raspberry Pi running
