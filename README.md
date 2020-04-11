@@ -87,7 +87,7 @@ However, apps that don't want to use the published module can use a copy of
 `node-common.js` to require them in a pseudo-local manner:
 
 ```js
-const { log, conduit } = require('../node-common')('log', 'conduit');
+const { log, conduit } = require('../node-common')(['log', 'conduit']);
 ```
 
 
