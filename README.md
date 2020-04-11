@@ -8,13 +8,13 @@ reuable, extensible, and configurable architecture built 'from scratch' as
 possible. Therefore elements like common modules, logging, configuration,
 inter-app communication are of an original design.
 
-[Installation](#installation)
-[Launching Apps](#launching-apps)
-[App List](#app-list)
-[Common Modules](#common-modules)
-[Configuration](#configuration)
-[Communication](#communication)
-[Authentication](#authentication)
+* [Installation](#installation)
+* [Launching Apps](#launching-apps)
+* [App List](#app-list)
+* [Common Modules](#common-modules)
+* [Configuration](#configuration)
+* [Communication](#communication)
+* [Authentication](#authentication)
 
 
 ## Installation
