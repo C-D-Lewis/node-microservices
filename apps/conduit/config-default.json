@@ -3,8 +3,7 @@
     "RECORD_STATS": false,
     "FLEET": {
       "DEVICE_NAME": "",
-      "HOST": "",
-      "PORT": 5959
+      "HOST": ""
     }
   },
   "SERVER": {

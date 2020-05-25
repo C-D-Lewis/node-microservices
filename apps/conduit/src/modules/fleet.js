@@ -9,11 +9,10 @@ config.requireKeys('fleet.js', {
       required: ['FLEET'],
       properties: {
         FLEET: {
-          required: ['DEVICE_NAME', 'HOST', 'PORT'],
+          required: ['DEVICE_NAME', 'HOST'],
           properties: {
             DEVICE_NAME: { type: 'string' },
             HOST: { type: 'string' },
-            PORT: { type: 'number' },
           },
         },
       },
