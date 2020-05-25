@@ -10,7 +10,7 @@ from the Attic service:
 {
   "name": "AtticUser",
   "apps": ["attic"],
-  "topics": ["get"]
+  "topics": ["get", "set"]
 }
 ```
 
@@ -42,6 +42,9 @@ requests.
 
 
 ## Creating New Users
+
+> Users represent real users, or devices, and so should have all the permissions
+> they need to talk to all the apps they will talk to.
 
 New users are created with `conduit` messages where `auth` is the admin
 password:
@@ -90,4 +93,5 @@ by including their token as the `auth` field in a `conduit` request:
 }
 ```
 
-TODO: App-specific permissions, such as which attic key can be read.
+Apps that communicate with a token should include it as `TOKEN` in their
+`conduit` config.

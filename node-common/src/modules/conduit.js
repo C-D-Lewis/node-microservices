@@ -14,6 +14,7 @@ config.requireKeys('conduit.js', {
         HOST: { type: 'string' },
         PORT: { type: 'number' },
         APP: { type: 'string' },
+        TOKEN: { type: 'string' },
       },
     },
   },
@@ -48,7 +49,10 @@ const send = async (packet) => {
     throw new Error('conduit: Not yet registered');
   }
 
+  // Patch extras in
   packet.from = config.CONDUIT.APP;
+  packet.auth = config.CONDUIT.TOKEN || '';
+
   log.debug(`conduit: >> ${JSON.stringify(packet)}`);
   const { body } = await requestAsync({
     url: `http://${config.CONDUIT.HOST}:${config.CONDUIT.PORT}/conduit`,

@@ -52,30 +52,29 @@ const handlePacketRequest = async (req, res) => {
     return;
   }
 
+  const { to, topic, message, host = DEFAULT_HOST_LOCAL, auth } = packet;
+
   // Enforce only localhost need not supply a guestlist token
   if (hostname !== 'localhost') {
     log.debug(`Origin: ${hostname} requires guestlist check`);
 
-    if (!packet.auth) {
-      log.info('Authorization not provided');
-      sendNotAuthorized(res);
+    if (!auth) {
+      sendNotAuthorized(res, 'Authorization not provided');
       return;
     }
 
     const authCheckRes = await sendPacket({
       to: 'guestlist',
       topic: 'authorize',
-      message: { token: packet.auth },
+      message: { token: auth },
     });
     if (authCheckRes.error) {
-      log.info('Authorization check failed');
-      sendNotAuthorized(res);
+      sendNotAuthorized(res, 'Authorization check failed');
       return;
     }
   }
 
   // Extract data and forward to recipient
-  const { to, host = DEFAULT_HOST_LOCAL } = packet;
   const appConfig = findByApp(to);
   if ((host === DEFAULT_HOST_LOCAL) && !appConfig) {
     log.error(`No app registered with name ${to}`);
@@ -93,7 +92,7 @@ const handlePacketRequest = async (req, res) => {
     }
 
     // Deliver the packet to the recipient
-    log.debug(`>> (FWD) ${host} ${to} ${packet.topic} ${JSON.stringify(packet.message)}`);
+    log.debug(`>> (FWD) ${host} ${to} ${topic} ${JSON.stringify(message)}`);
     const { body: response = NO_RESPONSE_PACKET } = await requestAsync({
       url: `http://${host}:${port}/conduit`,
       method: 'post',
@@ -104,7 +103,7 @@ const handlePacketRequest = async (req, res) => {
     delete response.from;
     delete response.to;
     delete response.auth;
-    log.debug(`<< (RES) ${response.status} ${packet.to} ${packet.topic} ${JSON.stringify(response.message)}`);
+    log.debug(`<< (RES) ${response.status} ${to} ${topic} ${JSON.stringify(response.message)}`);
     res.status(response.status || 200).json(response);
   } catch (e) {
     const error = `Error forwarding packet: ${e.stack}`;

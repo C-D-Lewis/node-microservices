@@ -18,8 +18,9 @@ config.requireKeys('conduit.js', {
  * @param {Object} res - Express response object.
  */
 const sendBadRequest = (res) => {
-  log.error('Bad Request');
-  res.status(400).send({ error: 'Bad Request', status: 400 });
+  const error = 'Bad Request';
+  log.error(error);
+  res.status(400).send({ error, status: 400 });
 };
 
 /**
@@ -28,18 +29,21 @@ const sendBadRequest = (res) => {
  * @param {Object} res - Express response object.
  */
 const sendNotFound = (res) => {
-  log.error('Not Found');
-  res.status(404).send({ error: 'Not Found', status: 404 });
+  const error = 'Not Found';
+  log.error(error);
+  res.status(404).send({ error, status: 404 });
 };
 
 /**
  * Send a 'not authorized' response.
  *
  * @param {Object} res - Express response object.
+ * @param {string} reason - Reason not authorized.
  */
-const sendNotAuthorized = (res) => {
-  log.error('Not Authorized');
-  res.status(401).send({ error: 'Not Authorized', status: 401 });
+const sendNotAuthorized = (res, reason = 'None') => {
+  const error = `Not Authorized: ${reason}`;
+  log.error(error);
+  res.status(401).send({ error, status: 401 });
 };
 
 /**
