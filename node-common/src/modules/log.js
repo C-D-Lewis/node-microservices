@@ -28,7 +28,7 @@ const getTimeString = () => {
   return str.substring(str.indexOf('T') + 1, str.indexOf('.'));
 };
 
-const writePid = () => fs.writeFileSync(`${config.getInstallPath()}/pid`, process.pid, 'utf8');
+const writePid = () => fs.writeFileSync(`${config.getInstallPath()}/pid`, `${process.pid}`, 'utf8');
 
 const writeToFile = (msg) => {
   const filePath = `${config.getInstallPath()}/${config.LOG.APP_NAME.split(' ').join('-')}.log`;
