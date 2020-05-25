@@ -6,6 +6,10 @@
       "HOST": ""
     }
   },
+  "CONDUIT": {
+    "APP": "conduit",
+    "TOKEN": ""
+  },
   "SERVER": {
     "PORT": 5959
   },

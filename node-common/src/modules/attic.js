@@ -1,17 +1,36 @@
 const config = require('./config');
 const requestAsync = require('./requestAsync');
 
+config.requireKeys('attic.js', {
+  required: ['CONDUIT'],
+  properties: {
+    CONDUIT: {
+      required: ['APP'],
+      properties: {
+        APP: { type: 'string' },
+        TOKEN: { type: 'string' },
+      },
+    },
+  },
+});
+
 const CONDUIT_PORT = 5959;
 
 let host = 'localhost';
-let appName = config.CONDUIT ? config.CONDUIT.APP : 'Unknown';
+let appName = config.CONDUIT.APP || 'Unknown';
 
 // Even conduit shouldn't have to register with conduit
-const conduitSend = async packet => requestAsync({
-  url: `http://${host}:${CONDUIT_PORT}/conduit`,
-  method: 'post',
-  json: packet,
-}).then(res => res.body);
+const conduitSend = async packet => {
+  packet.auth = config.CONDUIT.TOKEN || '';
+
+  const res = await requestAsync({
+    url: `http://${host}:${CONDUIT_PORT}/conduit`,
+    method: 'post',
+    json: packet,
+  });
+
+  return res.body;
+};
 
 const setHost = (newHost) => {
   host = newHost;
