@@ -4,6 +4,8 @@ export const setApps = apps => ({ type: 'SET_APPS', apps });
 
 export const setIp = ip => ({ type: 'SET_IP', ip });
 
+export const setToken = token => ({ type: 'SET_TOKEN', token });
+
 export const setBottomBarText = bottomBarText => ({ type: 'SET_BOTTOM_BAR_TEXT', bottomBarText });
 
 export const setAtticData = atticData => ({ type: 'SET_ATTIC_DATA', atticData });

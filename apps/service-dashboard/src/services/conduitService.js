@@ -5,17 +5,26 @@ import { setBottomBarText } from '../actions';
 const CONDUIT_PORT = 5959;
 
 export const sendPacket = async (packet) => {
-  const { ip } = store.getState();
+  const { ip, token } = store.getState();
 
   store.dispatch(setBottomBarText('Sending...'));
 
   const opts = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(packet),
+    body: JSON.stringify({
+      ...packet,
+      auth: token || '',
+    }),
   };
-  const res = await fetch(`http://${ip}:${CONDUIT_PORT}/conduit`, opts);
-  const json = await res.json();
-  store.dispatch(setBottomBarText(JSON.stringify(json)));
-  return json;
+
+  try {
+    const res = await fetch(`http://${ip}:${CONDUIT_PORT}/conduit`, opts);
+    const json = await res.json();
+    store.dispatch(setBottomBarText(JSON.stringify(json)));
+    return json;
+  } catch (error) {
+    store.dispatch(setBottomBarText(error.message));
+    throw error;
+  }
 };

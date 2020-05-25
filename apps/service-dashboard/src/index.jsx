@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { useSelector, useDispatch, Provider } from 'react-redux';
 import { BottomBar } from './components/BottomBar';
-import { setFleetList, setApps, setIp, setBottomBarText } from './actions';
+import { setFleetList, setApps, setIp, setBottomBarText, setToken } from './actions';
 import { sendPacket } from './services/conduitService';
 import AppCard from './components/AppCard';
 import Container from './components/Container';
 import FleetItem from './components/FleetItem';
 import IconButton from './components/IconButton';
 import IPTextBox from './components/IPTextBox';
+import TokenTextBox from './components/TokenTextBox';
 import LeftColumn from './components/LeftColumn';
 import MainArea from './components/MainArea';
 import Navbar from './components/Navbar';
@@ -21,6 +22,7 @@ const ServiceDashboard = () => {
   const dispatch = useDispatch();
 
   const ip = useSelector(state => state.ip);
+  const token = useSelector(state => state.token);
   const fleetList = useSelector(state => state.fleetList);
   const apps = useSelector(state => state.apps);
   const bottomBarText = useSelector(state => state.bottomBarText);
@@ -41,10 +43,6 @@ const ServiceDashboard = () => {
       console.error(err);
     }
   };
-
-  useEffect(() => {
-    setTimeout(loadFleetList, 200);
-  }, []);
 
   const loadApps = async () => {
     dispatch(setApps([]));
@@ -68,7 +66,9 @@ const ServiceDashboard = () => {
       <Navbar title="Service Dashboard"
         icon="../assets/raspberrypi.png">
         <IPTextBox value={ip}
-          onChange={ip => dispatch(setIp(ip))}/>
+          onChange={value => dispatch(setIp(value))}/>
+        <TokenTextBox value={token}
+          onChange={value => dispatch(setToken(value))}/>
         <IconButton iconSrc="../assets/reload.png"
           onClick={() => loadApps()}/>
       </Navbar>

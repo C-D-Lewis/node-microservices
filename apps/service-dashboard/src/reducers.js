@@ -15,6 +15,9 @@ export const rootReducer = combineReducers({
   ip: buildReducer('', {
     SET_IP: (state, { ip }) => ip,
   }),
+  token: buildReducer('', {
+    SET_TOKEN: (state, { token }) => token,
+  }),
   bottomBarText: buildReducer('', {
     SET_BOTTOM_BAR_TEXT: (state, { bottomBarText }) => bottomBarText,
   }),
