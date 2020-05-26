@@ -73,7 +73,7 @@ const handlePacketRequest = async (req, res) => {
       },
     });
     if (authCheckRes.error) {
-      sendNotAuthorized(res, 'Authorization check failed');
+      sendNotAuthorized(res, `Authorization check failed: ${authCheckRes.error}`);
       return;
     }
   }
