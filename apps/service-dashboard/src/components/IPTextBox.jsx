@@ -14,6 +14,7 @@ const IPTextBox = ({ value, onChange }) =>
     }}
     type="text"
     value={value}
+    placeholder="Enter IP address"
     onChange={event => onChange(event.target.value)}/>;
 
 export default IPTextBox;

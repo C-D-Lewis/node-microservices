@@ -5,7 +5,7 @@ import React from 'react';
 const TokenTextBox = ({ value, onChange }) =>
   <input
     style={{
-      width: '250px',
+      width: '385px',
       height: '30px',
       border: 0,
       backgroundColor: '#0003',
@@ -16,6 +16,7 @@ const TokenTextBox = ({ value, onChange }) =>
     }}
     type="text"
     value={value}
+    placeholder="Enter token..."
     onChange={event => onChange(event.target.value)}/>;
 
 export default TokenTextBox;

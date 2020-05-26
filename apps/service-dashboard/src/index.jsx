@@ -70,7 +70,10 @@ const ServiceDashboard = () => {
         <TokenTextBox value={token}
           onChange={value => dispatch(setToken(value))}/>
         <IconButton iconSrc="../assets/reload.png"
-          onClick={() => loadApps()}/>
+          onClick={async () => {
+            await loadFleetList();
+            loadApps();
+          }}/>
       </Navbar>
       <Container style={{ width: '100%' }}>
         <LeftColumn>
