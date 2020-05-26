@@ -75,7 +75,11 @@ describe('API', () => {
       const response = await testing.sendConduitPacket({
         to: 'guestlist',
         topic: 'authorize',
-        message: { token },
+        message: {
+          to: 'attic',
+          topic: 'get',
+          token,
+        },
       });
 
       const { status, message } = response;
@@ -87,12 +91,48 @@ describe('API', () => {
       const response = await testing.sendConduitPacket({
         to: 'guestlist',
         topic: 'authorize',
-        message: { token: 'badtokenbadbadtoken' },
+        message: {
+          to: 'attic',
+          topic: 'get',
+          token: 'badtokenbadbadtoken',
+        },
       });
 
       const { status, error } = response;
       expect(status).to.equal(404);
       expect(error).to.equal('User does not exist');
+    });
+
+    it('should return 401 / Not Authorized for invalid app', async () => {
+      const response = await testing.sendConduitPacket({
+        to: 'guestlist',
+        topic: 'authorize',
+        message: {
+          to: 'ambience',
+          topic: 'off',
+          token,
+        },
+      });
+
+      const { status, error } = response;
+      expect(status).to.equal(401);
+      expect(error).to.equal('User is not permitted for app ambience');
+    });
+
+    it('should return 401 / Not Authorized for invalid topic', async () => {
+      const response = await testing.sendConduitPacket({
+        to: 'guestlist',
+        topic: 'authorize',
+        message: {
+          to: 'attic',
+          topic: 'set',
+          token,
+        },
+      });
+
+      const { status, error } = response;
+      expect(status).to.equal(401);
+      expect(error).to.equal('User is not permitted for topic set');
     });
   });
 

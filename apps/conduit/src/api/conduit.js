@@ -66,7 +66,11 @@ const handlePacketRequest = async (req, res) => {
     const authCheckRes = await sendPacket({
       to: 'guestlist',
       topic: 'authorize',
-      message: { token: auth },
+      message: {
+        to,
+        topic,
+        token: auth,
+      },
     });
     if (authCheckRes.error) {
       sendNotAuthorized(res, 'Authorization check failed');

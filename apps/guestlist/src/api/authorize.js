@@ -8,7 +8,7 @@ const { ATTIC_KEY_USERS } = require('../constants');
  * @param {Object} res - Express response object.
  */
 const handleAuthorizePacket = async (packet, res) => {
-  const { token } = packet.message;
+  const { token, to, topic } = packet.message;
 
   // Fetch user list
   const list = (await attic.exists(ATTIC_KEY_USERS))
@@ -22,7 +22,17 @@ const handleAuthorizePacket = async (packet, res) => {
     return;
   }
 
-  // TODO - Check app name and topics!
+  // Check apps
+  if (!(user.apps.includes(to) || user.apps.includes('all'))) {
+    conduit.respond(res, { status: 401, error: `User is not permitted for app ${to}` });
+    return;
+  }
+
+  // Check topics
+  if (!(user.topics.includes(topic) || user.topics.includes('all'))) {
+    conduit.respond(res, { status: 401, error: `User is not permitted for topic ${topic}` });
+    return;
+  }
 
   // Respond
   conduit.respond(res, { status: 200, message: { content: 'OK' } });
