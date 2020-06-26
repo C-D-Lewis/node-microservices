@@ -3,7 +3,7 @@ const { log, gpio, temperature } = require('../node-common')(['log', 'gpio','tem
 /** Fan GPIO pin */
 const GPIO_PIN = 23;
 /** High temperature threshold */
-const THRESHOLD = 40;
+const THRESHOLD = 50;
 
 module.exports = async (args) => {
   try {
