@@ -5,6 +5,8 @@ sudo dd if=2019-04-08-raspbian-stretch-lite.img of=/dev/DISK_NAME bs=1m
 sudo VBoxManage internalcommands createrawvmdk -filename ./sd-card.vmdk -rawdisk /dev/disk2
 sudo chmod 777 /dev/disk2
 sudo chmod 777 ./sd-card.vmdk
+(vboxmanage list hdds)
+(vboxmanage closemedium disk <uuid> --delete)
 Make sure name doesn't match one VB already knows about
 Make sure listed but NOT mounted in Diskutils app
 <enter vbox>
@@ -44,7 +46,13 @@ sudo apt install python-pip
 sudo pip install --upgrade pip
 sudo pip install inky
 
-# Startup
+# Enviro?
+curl -sSL https://get.pimoroni.com/enviroplus | bash
+
+# GPIO?
+sudo apt install python3-rpi.gpio (may already be installed)
+
+# Startup apps
 sudo crontab -l
 > @reboot /home/pi/node-microservices/tools/boot.sh
 

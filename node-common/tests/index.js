@@ -18,3 +18,4 @@ require('./requestAsync.spec');
 require('./schema.spec');
 require('./server.spec');
 require('./textDisplay.spec');
+require('./gpio.spec');
