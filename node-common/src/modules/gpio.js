@@ -11,7 +11,7 @@ const set = (pin, state) => {
   try {
     const pinState = state ? 1 : 0;
     const stdout = execSync(`python3 ${__dirname}/../lib/set-gpio.py ${pin} ${pinState}`);
-    if (stdout.includes(`set ${pin} to ${pinState}`)) {
+    if (!stdout.includes(`set ${pin} to ${pinState}`)) {
       throw new Error(`Unexpected output from set-gpio.py: ${stdout}`);
     }
   } catch (err) {
