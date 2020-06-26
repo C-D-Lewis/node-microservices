@@ -9,10 +9,7 @@ module.exports = async (args) => {
   try {
     const reading = temperature.get();
     const state = reading > THRESHOLD;
-    const success = gpio.set(GPIO_PIN, state);
-    if (!success) {
-      throw new Error('Fan set failed');
-    }
+    gpio.set(GPIO_PIN, state);
 
     log.info(`Set fan ${state}, temperature is ${reading}`);
   } catch (e) {
