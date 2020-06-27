@@ -79,13 +79,17 @@ const checkDelays = async (lineName) => {
   return stateNow.includes(STATES.GOOD_SERVICE) || stateNow.includes(STATES.SPECIAL_SERVICE);
 };
 
+/**
+ * Check TfL Rail and Greater Anglia for delays.
+ *
+ * @param {Object} args - plugin ARGS object.
+ */
 module.exports = async (args) => {
-  if (sleep.sleeping()) {
-    return;
-  }
+  if (sleep.sleeping()) return;
 
   try {
     // TODO: Configurable service lines in ARGS
+
     // const gaOk = await checkDelays(GREATER_ANGLIA);
     const tflOk = await checkDelays(TFL_RAIL);
     display.setLed(

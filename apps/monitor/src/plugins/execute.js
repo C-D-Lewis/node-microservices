@@ -6,6 +6,7 @@
  */
 module.exports = async (args) => {
   const { EXECUTE_SCRIPT, PARAMS } = args;
+
   const func = require(`${__dirname}/../executeScripts/${EXECUTE_SCRIPT}`);
   await func(PARAMS);
 };

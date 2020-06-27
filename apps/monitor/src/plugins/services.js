@@ -1,4 +1,6 @@
-const { config, fcm, log, requestAsync } = require('../node-common')(['config', 'fcm', 'log', 'requestAsync']);
+const {
+  config, fcm, log, requestAsync,
+} = require('../node-common')(['config', 'fcm', 'log', 'requestAsync']);
 const display = require('../modules/display');
 const sleep = require('../modules/sleep');
 
@@ -26,12 +28,15 @@ config.requireKeys('services.js', {
   },
 });
 
-let savedState = true;
+let lastState = true;
 
+/**
+ * Check all local conduit services are alive.
+ *
+ * @param {Object} args - plugin ARGS object.
+ */
 module.exports = async (args) => {
-  if (sleep.sleeping()) {
-    return;
-  }
+  if (sleep.sleeping()) return;
 
   const host = args.HOST || 'localhost';
   log.debug(`services host=${host}`);
@@ -40,9 +45,7 @@ module.exports = async (args) => {
   const json = JSON.parse(body);
   const downApps = json.reduce((result, item) => {
     log.debug(`Service ${item.app} returned ${item.status}`);
-    if (item.status !== 'OK') {
-      result.push(item.app);
-    }
+    if (item.status !== 'OK') result.push(item.app);
 
     return result;
   }, []);
@@ -56,15 +59,13 @@ module.exports = async (args) => {
   );
 
   // Was OK, not anymore
-  if (savedState && !stateNow) {
+  if (lastState && !stateNow) {
     await fcm.post('Monitor', 'monitor', `Services not OK: ${downApps.join(', ')}`);
   }
 
   // Same as before
-  if (stateNow === savedState) {
-    return;
-  }
+  if (stateNow === lastState) return;
 
   // Changed, update
-  savedState = stateNow;
+  lastState = stateNow;
 };

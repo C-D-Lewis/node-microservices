@@ -1,4 +1,6 @@
-const { requestAsync, config, fcm, log } = require('../node-common')(['requestAsync', 'config', 'fcm', 'log']);
+const {
+  requestAsync, config, fcm, log,
+} = require('../node-common')(['requestAsync', 'config', 'fcm', 'log']);
 const display = require('../modules/display');
 const sleep = require('../modules/sleep');
 
@@ -23,12 +25,18 @@ config.requireKeys('weather.js', {
   },
 });
 
+const { LED_STATES } = config.OPTIONS;
+
+/**
+ * Check weather from darksky.
+ *
+ * @param {Object} args - plugin ARGS object.
+ * @returns {number[]} LED state for weather.
+ */
 const checkWeather = async (args) => {
   const url = `https://api.darksky.net/forecast/${args.DARKSKY_KEY}/${args.LATITUDE},${args.LONGITUDE}?units=auto&exclude=hourly`;
   const { body } = await requestAsync(url);
-  if (!body) {
-    throw new Error('Error checking weather: no body.');
-  }
+  if (!body) throw new Error('Error checking weather: no body.');
 
   const { currently } = JSON.parse(body);
   const temperature = Math.round(currently.apparentTemperature);
@@ -36,22 +44,20 @@ const checkWeather = async (args) => {
   log.info(`It's ${temperature}C, and ${isRaining ? 'is' : 'not'} raining`);
 
   // Order of uncomfortableness
-  let state = config.OPTIONS.LED_STATES.OK;
-  if (isRaining) {
-    state = config.OPTIONS.LED_STATES.RAIN;
-  } else if (temperature < args.TEMP_COLD) {
-    state = config.OPTIONS.LED_STATES.COLD;
-  } else if (temperature > args.TEMP_HOT) {
-    state = config.OPTIONS.LED_STATES.HOT;
-  }
+  if (isRaining) return LED_STATES.RAIN;
+  if (temperature < args.TEMP_COLD) return LED_STATES.COLD;
+  if (temperature > args.TEMP_HOT) return LED_STATES.HOT;
 
-  return state;
+  return LED_STATES.OK;
 };
 
+/**
+ * Check weather from darksky.
+ *
+ * @param {Object} args - plugin ARGS object.
+ */
 module.exports = async (args) => {
-  if (sleep.sleeping()) {
-    return;
-  }
+  if (sleep.sleeping()) return;
 
   try {
     const state = await checkWeather(args);
@@ -60,6 +66,6 @@ module.exports = async (args) => {
     log.error(e);
 
     fcm.post('Monitor', 'monitor', `Error checking weather: ${e.message}`);
-    display.setLed(args.LED, config.OPTIONS.LED_STATES.DOWN);
+    display.setLed(args.LED, LED_STATES.DOWN);
   }
 };

@@ -2,6 +2,11 @@ const {
   requestAsync, log, extract, attic,
 } = require('../node-common')(['requestAsync', 'log', 'extract', 'attic']);
 
+/**
+ * Log a scraped value from a web page.
+ *
+ * @param {Object} args - plugin ARGS object.
+ */
 module.exports = async (args) => {
   const { URL, BEFORES, AFTER, ATTIC_KEY } = args;
   const configured = URL && BEFORES && AFTER && ATTIC_KEY;

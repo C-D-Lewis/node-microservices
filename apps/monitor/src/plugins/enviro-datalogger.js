@@ -4,6 +4,11 @@ const { log, enviro } = require('../node-common')(['log', 'enviro']);
 /** Destination file name */
 const CSV_FILE_NAME = `${__dirname}/../../enviro.csv`;
 
+/**
+ * Log environment sensor data to a file.
+ *
+ * @param {Object} args - plugin ARGS object.
+ */
 module.exports = async (args) => {
   try {
     const sample = enviro.readAll();
