@@ -52,7 +52,7 @@
       "FILE_NAME": "fan-control.js",
       "EVERY": 1,
       "ARGS": {
-        "GPIO_PIN": 23,
+        "GPIO_PIN": 14,
         "THRESHOLD": 40
       }
     }
