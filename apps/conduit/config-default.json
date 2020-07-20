@@ -4,7 +4,8 @@
     "FLEET": {
       "DEVICE_NAME": "",
       "HOST": ""
-    }
+    },
+    "AUTH_TOKENS": false
   },
   "CONDUIT": {
     "APP": "conduit",
