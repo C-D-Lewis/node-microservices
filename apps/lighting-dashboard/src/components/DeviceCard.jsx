@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Colors } from '../theme';
-import AppControls from './AppControls';
+import DeviceControls from './DeviceControls';
 
 const CardContainer = ({ children, visible }) =>
   <div style={{
     display: 'flex',
     flexDirection: 'column',
-    width: '375px',
-    margin: '10px 0px 10px 20px',
-    backgroundColor: 'white',
-    borderRadius: '3px',
-    boxShadow: '1px 2px 3px 1px #8884',
+    width: 375,
+    margin: '20px 0px 10px 0px',
+    backgroundColor: Colors.darkGrey,
+    borderRadius: 5,
     opacity: visible ? 1 : 0,
     visibility: visible ? 'visible' : 'hidden',
     transition: '0.6s',
+    overflow: 'hidden',
   }}>
     {children}
   </div>;
@@ -46,7 +46,7 @@ const LED = ({ status }) =>
     backgroundColor: status.includes('OK') ? Colors.statusOk : Colors.statusDown,
   }}/>;
 
-const Status = ({ data }) =>
+const Status = ({ device }) =>
   <div style={{
     display: 'flex',
     flexDirection: 'row',
@@ -54,8 +54,7 @@ const Status = ({ data }) =>
     justifyContent: 'flex-end',
     flex: 2,
   }}>
-    <LED status={data.status} />
-    <CardSubtitle>{data.status} ({data.port})</CardSubtitle>
+    <LED status={"N/A"} />
   </div>;
 
 const CardTitleRow = ({ children }) =>
@@ -71,22 +70,25 @@ const CardTitleRow = ({ children }) =>
     {children}
   </div>;
 
-const AppCard = ({ appData }) => {
+const DeviceCard = ({ device }) => {
   const [visible, setVisible] = useState(false);
 
+  // When the card appears
   useEffect(() => {
-    setTimeout(() => setVisible(true), 100);
+    setTimeout(() => setVisible(true), 200);
+
+    // TODO Ping device and set LED status
   }, []);
 
   return (
     <CardContainer visible={visible}>
       <CardTitleRow>
-        <CardTitle>{appData.app}</CardTitle>
-        <Status data={appData}/>
+        <CardTitle>{device.ip}</CardTitle>
+        <Status device={device}/>
       </CardTitleRow>
-      <AppControls data={appData} />
+      <DeviceControls device={device} />
     </CardContainer>
   );
 };
 
-export default AppCard;
+export default DeviceCard;

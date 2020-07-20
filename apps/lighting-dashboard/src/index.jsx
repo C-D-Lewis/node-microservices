@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { useSelector, useDispatch, Provider } from 'react-redux';
-import { sendDevicePacket } from './services/apiService';
+import { Provider } from 'react-redux';
 import Container from './components/Container';
+import DeviceCard from './components/DeviceCard';
 import Navbar from './components/Navbar';
 import store from './store';
 
@@ -14,13 +14,22 @@ if (!devices || devices.length < 1) {
   alert('Device config not setup');
 }
 
+/**
+ * LightingDashboard component.
+ *
+ * @returns {HTMLElement}
+ */
 const LightingDashboard = () => {
   return (
-    <Container style={{ width: '100%' }}>
-      <Navbar title="Lighting Dashboard" icon="../assets/string-lights.png">
-      </Navbar>
-      <Container style={{ width: '100%' }}>
-        {/* List of cards for each device */}
+    <Container style={{ flexDirection: 'column', width: '100%' }}>
+      <Navbar title="Lighting Dashboard" icon="../assets/string-lights.png" />
+      <Container
+        style={{
+          flexDirection: 'column',
+          width: '100%',
+          alignItems: 'center',
+        }}>
+        {devices.map(p => <DeviceCard key={p.name} device={p}/>)}
       </Container>
     </Container>
   );
