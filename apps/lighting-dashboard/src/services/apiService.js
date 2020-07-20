@@ -18,3 +18,15 @@ export const sendDevicePacket = async (device, packet) => {
     throw err;
   }
 };
+
+export const pingDevice = async (device) => {
+  try {
+    const res = await fetch(`http://${device.ip}:${CONDUIT_PORT}/apps`);
+    const json = await res.json();
+    return json;
+  } catch (err) {
+    console.log(err);
+    alert(err);
+    throw err;
+  }
+}

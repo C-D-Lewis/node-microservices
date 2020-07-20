@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Colors, Fonts } from '../theme';
 import { sendDevicePacket } from '../services/apiService';
 import TextButton from './TextButton';
@@ -34,8 +34,6 @@ const Column = ({ children }) =>
 
 const Controls = ({ device }) => {
   const buttonStyle = { flex: 1 };
-
-  // TODO Set/Fade swatches as rows
 
   return (
     <Column>

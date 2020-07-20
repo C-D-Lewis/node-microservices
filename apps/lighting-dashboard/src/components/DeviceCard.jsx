@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Colors } from '../theme';
+import { pingDevice } from '../services/apiService';
 import DeviceControls from './DeviceControls';
 
 const CardContainer = ({ children, visible }) =>
@@ -36,17 +37,17 @@ const CardSubtitle = ({ children }) =>
     {children}
   </span>;
 
-const LED = ({ status }) =>
+const LED = ({ available }) =>
   <div style={{
     backgroundColor: Colors.statusDown,
     width: '15px',
     height: '15px',
     borderRadius: '9px',
     marginRight: '5px',
-    backgroundColor: status.includes('OK') ? Colors.statusOk : Colors.statusDown,
+    backgroundColor: available ? Colors.statusOk : Colors.statusDown,
   }}/>;
 
-const Status = ({ device }) =>
+const Status = ({ device, available }) =>
   <div style={{
     display: 'flex',
     flexDirection: 'row',
@@ -54,7 +55,7 @@ const Status = ({ device }) =>
     justifyContent: 'flex-end',
     flex: 2,
   }}>
-    <LED status={"N/A"} />
+    <LED available={available} />
   </div>;
 
 const CardTitleRow = ({ children }) =>
@@ -72,19 +73,24 @@ const CardTitleRow = ({ children }) =>
 
 const DeviceCard = ({ device }) => {
   const [visible, setVisible] = useState(false);
+  const [available, setAvailable] = useState(false);
 
   // When the card appears
   useEffect(() => {
     setTimeout(() => setVisible(true), 200);
 
-    // TODO Ping device and set LED status
+    pingDevice(device)
+      .then(apps => {
+        const ambience = apps.find(p => p.app === 'ambience');
+        setAvailable(ambience && ambience.status === 'OK');
+      });
   }, []);
 
   return (
     <CardContainer visible={visible}>
       <CardTitleRow>
         <CardTitle>{device.ip}</CardTitle>
-        <Status device={device}/>
+        <Status device={device} available={available} />
       </CardTitleRow>
       <DeviceControls device={device} />
     </CardContainer>
