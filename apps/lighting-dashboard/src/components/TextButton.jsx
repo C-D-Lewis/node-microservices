@@ -9,7 +9,7 @@ const TextButton = ({ label, style, onClick }) =>
     backgroundColor: Colors.primary,
     color: 'white',
     padding: 5,
-    margin: 5,
+    margin: 10,
     borderRadius: 5,
     cursor: 'pointer',
     fontSize: '1.1rem',

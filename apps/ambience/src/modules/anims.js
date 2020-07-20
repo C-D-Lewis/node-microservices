@@ -49,6 +49,7 @@ const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min)) + min
  * Do a fade step
  */
 const fadeStep = async () => {
+  // FIXME: Now it is recurvives, hard to cancel
   if (fadeIsComplete()) {
     log.debug('Fade complete');
     return;
