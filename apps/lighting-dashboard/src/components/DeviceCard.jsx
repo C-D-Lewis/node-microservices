@@ -30,9 +30,11 @@ const CardTitle = ({ children }) =>
 
 const CardSubtitle = ({ children }) =>
   <span style={{
-    fontSize: '1.0rem',
+    fontSize: '1rem',
     color: Colors.lightGrey,
-    paddingTop: 1,
+    paddingRight: 10,
+    paddingTop: 2,
+    color: '#ddd',
   }}>
     {children}
   </span>;
@@ -53,8 +55,9 @@ const Status = ({ device, available }) =>
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    flex: 2,
+    flex: 1,
   }}>
+    <CardSubtitle>{device.ip}</CardSubtitle>
     <LED available={available} />
   </div>;
 
@@ -89,7 +92,7 @@ const DeviceCard = ({ device }) => {
   return (
     <CardContainer visible={visible}>
       <CardTitleRow>
-        <CardTitle>{device.ip}</CardTitle>
+        <CardTitle>{device.name}</CardTitle>
         <Status device={device} available={available} />
       </CardTitleRow>
       <DeviceControls device={device} />
