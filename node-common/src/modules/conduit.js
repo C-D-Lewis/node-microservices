@@ -82,6 +82,15 @@ const onMessage = (req, res) => {
   route.callback(req.body, res);
 };
 
+/**
+ * When API stop request is received.
+ */
+const onStop = (req, res) => {
+  log.info(`Stop requested, shutting down`);
+  res.status(200).send({ stop: true });
+  setTimeout(() => process.exit(), 1000);
+};
+
 const onStatus = (packet, res) => respond(res, { status: 200, message: { content: 'OK' } });
 
 const register = async () => {
@@ -96,6 +105,7 @@ const register = async () => {
 
   server = express();
   server.post('/conduit', bodyParser.json(), onMessage);
+  server.post('/stop', onStop);
 
   return new Promise((resolve) => {
     server.listen(body.port, () => {
