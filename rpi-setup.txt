@@ -2,13 +2,14 @@
 sudo dd if=2019-04-08-raspbian-stretch-lite.img of=/dev/DISK_NAME bs=1m
 
 # VBox mount and enable ssh/wifi
+(vboxmanage list hdds)
+(vboxmanage closemedium disk <uuid> --delete)
 sudo VBoxManage internalcommands createrawvmdk -filename ./sd-card.vmdk -rawdisk /dev/disk2
 sudo chmod 777 /dev/disk2
 sudo chmod 777 ./sd-card.vmdk
-(vboxmanage list hdds)
-(vboxmanage closemedium disk <uuid> --delete)
 Make sure name doesn't match one VB already knows about
 Make sure listed but NOT mounted in Diskutils app
+Add to storage devices while not mounted
 <enter vbox>
 touch /boot/ssh
 nano /rootfs/etc/wpa_supplicant/wpa_supplicant.conf
@@ -22,7 +23,7 @@ sudo apt install git
 git config --global credential.helper store
 git clone https://github.com/c-d-lewis/node-microservices
 
-# node & npm
+# node & npm (Pi 3 is armv7, Zero is armv6)
 wget https://nodejs.org/dist/v12.18.1/node-v12.18.1-linux-armv7l.tar.xz
 tar xf node-v12.18.1-linux-armv7l.tar.xz
 cd node-v12.18.1-linux-armv7l/
@@ -40,6 +41,16 @@ cd node-common && npm i node-blinkt
 
 # Mote?
 curl https://get.pimoroni.com/motephat | bash
+
+# PiOLED?
+sudo apt-get install python3-pip
+sudo pip3 install adafruit-circuitpython-ssd1306
+sudo apt-get install python3-pil
+sudo apt-get install -y python-smbus
+sudo apt-get install -y i2c-tools
+sudo raspi-config (Interfacing, Enable I2C)
+sudo reboot
+sudo i2cdetect -y 1
 
 # Inky?
 sudo apt install python-pip
