@@ -4,8 +4,8 @@ window.devices = [
     "ip": "192.168.0.149"
   },
   {
-    "name": "Living Room Pi",
-    "ip": "192.168.0.150"
+    "name": "TV Mote Pi",
+    "ip": "192.168.0.148"
   }
 ];
 
