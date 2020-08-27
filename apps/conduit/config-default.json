@@ -5,9 +5,7 @@
       "DEVICE_NAME": "",
       "HOST": ""
     },
-    "AUTH_TOKENS": false,
-    "PEERS": [],
-    "TASKS": []
+    "AUTH_TOKENS": false
   },
   "CONDUIT": {
     "APP": "conduit",
