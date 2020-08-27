@@ -1,7 +1,7 @@
 const { conduit } = require('./node-common')(['conduit']);
 const chalk = require('chalk');
 
-const INTERVAL_MS = 500;
+const INTERVAL_MS = 1000;
 
 const updateDisplay = (ledArr) => {
   process.stdout.clearLine();
