@@ -13,6 +13,14 @@
         "start": "npm start",
         "update": "defs/git-update"
       }
+    ],
+    "Marvin": [
+      {
+        "location": "node-microservices/apps/conduit",
+        "setup": "git clone https://github.com/c-d-lewis/node-microservices",
+        "start": "npm start",
+        "update": "defs/git-update"
+      }
     ]
   },
   "defs": {
