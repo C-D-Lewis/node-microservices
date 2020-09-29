@@ -1,0 +1,21 @@
+{
+  "hosts": {
+    "stack0": [
+      {
+        "location": "node-microservices/apps/conduit",
+        "setup": "git clone https://github.com/c-d-lewis/node-microservices",
+        "start": "npm start",
+        "update": "defs/git-update"
+      },
+      {
+        "location": "node-microservices/apps/attic",
+        "setup": "git clone https://github.com/c-d-lewis/node-microservices",
+        "start": "npm start",
+        "update": "defs/git-update"
+      }
+    ]
+  },
+  "defs": {
+    "git-update": "git checkout . && git reset --hard HEAD && git checkout master && git pull origin master"
+  }
+}
