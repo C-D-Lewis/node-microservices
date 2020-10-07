@@ -1,7 +1,7 @@
 {
   "OPTIONS": {
     "SLEEP": false,
-    "STATUS_LED": true,
+    "STATUS_LED": false,
     "DISPLAY_DRIVER": "leds"
   },
   "PLUGINS": [
@@ -59,7 +59,7 @@
           "COLOR": [255, 184, 10]
         }, {
           "NAME": "Nightlight glow",
-          "ON": "21:00",
+          "ON": "19:00",
           "OFF": "00:00",
           "COLOR": [64, 64, 64]
         }]

@@ -32,7 +32,7 @@ const start = () => {
 
     const rgb = state
       ? LED_STATE_OFF
-      : LED_STATES_STATUS;
+      : LED_STATE_STATUS;
     state = !state;
 
     display.setLed(LED_INDEX, rgb);
