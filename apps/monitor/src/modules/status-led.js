@@ -9,18 +9,13 @@ config.requireKeys('main.js', {
       required: ['STATUS_LED'],
       properties: {
         STATUS_LED: { type: 'boolean' },
-        LED_STATES: {
-          required: ['OFF', 'STATUS'],
-          properties: {
-            OFF: { type: 'array', items: { type: 'number' } },
-            STATUS: { type: 'array', items: { type: 'number' } },
-          },
-        },
       },
     },
   },
 });
 
+const LED_STATE_STATUS = [128, 128, 0];
+const LED_STATE_OFF = [0, 0, 0];
 const TOGGLE_INTERVAL_MS = 2000;
 const LED_INDEX = 7;
 
@@ -36,8 +31,8 @@ const start = () => {
     }
 
     const rgb = state
-      ? config.OPTIONS.LED_STATES.OFF
-      : config.OPTIONS.LED_STATES.STATUS;
+      ? LED_STATE_OFF
+      : LED_STATES_STATUS;
     state = !state;
 
     display.setLed(LED_INDEX, rgb);

@@ -2,16 +2,6 @@
   "OPTIONS": {
     "SLEEP": false,
     "STATUS_LED": true,
-    "LED_STATES": {
-      "OK": [0, 255, 0],
-      "OFF": [0, 0, 0],
-      "DOWN": [255, 0, 0],
-      "STATUS": [128, 128, 0],
-      "RAIN": [0, 0, 255],
-      "COLD": [135, 206, 250],
-      "HOT": [255, 165, 0],
-      "FAIR": [30, 30, 30],
-    },
     "DISPLAY_DRIVER": "leds"
   },
   "PLUGINS": [
@@ -55,6 +45,24 @@
       "ARGS": {
         "GPIO_PIN": 14,
         "THRESHOLD": 40
+      }
+    },
+    {
+      "ENABLED": true,
+      "FILE_NAME": "ambience-scheduler.js",
+      "EVERY": 1,
+      "ARGS": {
+        "EVENTS": [{
+          "NAME": "Wakeup glow",
+          "ON": "06:50",
+          "OFF": "08:30",
+          "COLOR": [255, 184, 10]
+        }, {
+          "NAME": "Nightlight glow",
+          "ON": "21:00",
+          "OFF": "00:00",
+          "COLOR": [64, 64, 64]
+        }]
       }
     }
   ],

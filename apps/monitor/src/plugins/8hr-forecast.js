@@ -1,31 +1,14 @@
 const {
-  requestAsync, config, fcm, log,
-} = require('../node-common')(['requestAsync', 'config', 'fcm', 'log']);
+  requestAsync, fcm, log,
+} = require('../node-common')(['requestAsync', 'fcm', 'log']);
 const display = require('../modules/display');
 const sleep = require('../modules/sleep');
 
-config.requireKeys('weather.js', {
-  required: ['OPTIONS'],
-  properties: {
-    OPTIONS: {
-      required: ['LED_STATES'],
-      properties: {
-        LED_STATES: {
-          required: ['DOWN', 'RAIN', 'COLD', 'HOT', 'FAIR'],
-          properties: {
-            DOWN: { type: 'array', items: { type: 'number' } },
-            RAIN: { type: 'array', items: { type: 'number' } },
-            COLD: { type: 'array', items: { type: 'number' } },
-            HOT: { type: 'array', items: { type: 'number' } },
-            FAIR: { type: 'array', items: { type: 'number' } },
-          },
-        },
-      },
-    },
-  },
-});
-
-const { LED_STATES } = config.OPTIONS;
+const LED_STATE_DOWN = [255, 0, 0];
+const LED_STATE_RAIN = [0, 0, 255];
+const LED_STATE_COLD = [135, 206, 250];
+const LED_STATE_HOT = [255, 165, 0];
+const LED_STATE_FAIR = [30, 30, 30];
 
 /**
  * Check weather from darksky.
@@ -59,10 +42,10 @@ const getForecastLedStates = async (args) => {
     const isRaining = icon.includes('rain');
 
     // Order of uncomfortableness
-    if (isRaining) return LED_STATES.RAIN;
-    if (apparentTemperature < args.TEMP_COLD) return LED_STATES.COLD;
-    if (apparentTemperature > args.TEMP_HOT) return LED_STATES.HOT;
-    return LED_STATES.FAIR;
+    if (isRaining) return LED_STATE_RAIN;
+    if (apparentTemperature < args.TEMP_COLD) return LED_STATE_COLD;
+    if (apparentTemperature > args.TEMP_HOT) return LED_STATE_HOT;
+    return LED_STATE_FAIR;
   });
 
   return ledStates;
@@ -85,6 +68,6 @@ module.exports = async (args) => {
     log.error(e);
 
     fcm.post('Monitor', 'monitor', `Error checking forecast: ${e.message}`);
-    display.setLed(args.LED, LED_STATES.DOWN);
+    display.setLed(args.LED, LED_STATE_DOWN);
   }
 };

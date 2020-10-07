@@ -6,14 +6,8 @@ config.requireKeys('main.js', {
   required: ['OPTIONS'],
   properties: {
     OPTIONS: {
-      required: ['LED_STATES', 'DISPLAY_DRIVER'],
+      required: ['DISPLAY_DRIVER'],
       properties: {
-        LED_STATES: {
-          required: ['OFF'],
-          properties: {
-            OFF: { type: 'array', items: { type: 'number' } },
-          },
-        },
         DISPLAY_DRIVER: {
           type: 'string',
           description: 'Name of corresponding node-common module',
@@ -29,7 +23,7 @@ const main = async () => {
 
   await conduit.register();
   await conduit.send({ to: 'visuals', topic: 'setAll',
-    message: { all: config.OPTIONS.LED_STATES.OFF },
+    message: { all: [0, 0, 0] },
   });
   statusLed.start();
 
