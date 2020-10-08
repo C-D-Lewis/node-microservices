@@ -1,0 +1,140 @@
+{
+  "hosts": {
+    "Marvin": [
+      {
+        "location": "code/node-microservices/node-common",
+        "install": "git clone https://github.com/c-d-lewis/node-microservices",
+        "update": "$git-pull",
+        "start": "npm ci"
+      },
+      {
+        "location": "code/node-microservices/apps/conduit",
+        "start": "$npm-start"
+      },
+      {
+        "location": "code/node-microservices/apps/attic",
+        "start": "$npm-start"
+      }
+    ],
+    "tv-mote-pi": [
+      {
+        "location": "node-microservices/node-common",
+        "install": "git clone https://github.com/c-d-lewis/node-microservices",
+        "update": "$git-pull",
+        "start": "npm ci"
+      },
+      {
+        "location": "node-microservices/apps/conduit",
+        "start": "$npm-start"
+      },
+      {
+        "location": "node-microservices/apps/attic",
+        "start": "$npm-start"
+      },
+      {
+        "location": "code/node-microservices/apps/visuals",
+        "start": "$npm-start"
+      },
+      {
+        "location": "code/node-microservices/apps/ambience",
+        "start": "$npm-start"
+      },
+      {
+        "location": "code/node-microservices/apps/monitor",
+        "start": "$npm-start"
+      }
+    ],
+    "bedroom-pi": [
+      {
+        "location": "node-microservices/node-common",
+        "install": "git clone https://github.com/c-d-lewis/node-microservices",
+        "update": "$git-pull",
+        "start": "npm ci"
+      },
+      {
+        "location": "node-microservices/apps/conduit",
+        "start": "$npm-start"
+      },
+      {
+        "location": "node-microservices/apps/attic",
+        "start": "$npm-start"
+      },
+      {
+        "location": "code/node-microservices/apps/visuals",
+        "start": "$npm-start"
+      },
+      {
+        "location": "code/node-microservices/apps/ambience",
+        "start": "$npm-start"
+      },
+      {
+        "location": "code/node-microservices/apps/monitor",
+        "start": "$npm-start"
+      }
+    ],
+    "stack0": [
+      {
+        "location": "node-microservices/node-common",
+        "install": "git clone https://github.com/c-d-lewis/node-microservices",
+        "update": "$git-pull",
+        "start": "npm ci"
+      },
+      {
+        "location": "node-microservices/apps/conduit",
+        "start": "$npm-start"
+      },
+      {
+        "location": "node-microservices/apps/attic",
+        "start": "$npm-start"
+      },
+      {
+        "location": "code/node-microservices/apps/visuals",
+        "start": "$npm-start"
+      },
+      {
+        "location": "code/node-microservices/apps/monitor",
+        "start": "$npm-start"
+      }
+    ],
+    "stack1": [
+      {
+        "location": "node-microservices/node-common",
+        "install": "git clone https://github.com/c-d-lewis/node-microservices",
+        "update": "$git-pull",
+        "start": "npm ci"
+      },
+      {
+        "location": "node-microservices/apps/conduit",
+        "start": "$npm-start"
+      },
+      {
+        "location": "node-microservices/apps/attic",
+        "start": "$npm-start"
+      },
+      {
+        "location": "code/node-microservices/apps/visuals",
+        "start": "$npm-start"
+      },
+      {
+        "location": "code/node-microservices/apps/monitor",
+        "start": "$npm-start"
+      }
+    ],
+    "stack1": [
+      {
+        "location": "node-microservices/node-common",
+        "install": "git clone https://github.com/c-d-lewis/node-microservices",
+        "update": "$git-pull",
+        "start": "npm ci"
+      },
+      {
+        "location": "node-microservices/apps/conduit",
+        "start": "$npm-start"
+      },
+      {
+        "location": "node-microservices/apps/attic",
+        "start": "$npm-start"
+      }
+    ]
+  }
+}

@@ -4,5 +4,5 @@
 # Wait for network up
 /home/pi/node-microservices/tools/wait_for_network.sh
 
-# Specify names of apps to launch as args in apps.txt
-cd /home/pi/node-microservices/tools && sudo node runner.js $(cat /home/pi/apps.txt) &
+# Run the node's launch configuration
+/home/pi/node-microservices/tools/launch-config/run-launch-config.sh
