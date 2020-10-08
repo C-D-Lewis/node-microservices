@@ -14,7 +14,7 @@ HOSTNAME=$(hostname)
 # Fetch the launch config and extract for this host
 CONFIG=$(curl -s $LC_URL)
 HOST_CONFIG=$(echo $CONFIG | jq -r ".hosts[\"$HOSTNAME\"]")
-if [[ $HOST_CONFIG =~ "null" ]]; then
+if [[ $HOST_CONFIG =~ null ]]; then
   printf "\nNo launch config for $HOSTNAME\n"
   exit 1
 fi
@@ -30,7 +30,7 @@ jq -c '.[]' hostConfig.json | while read i; do
   UPDATE=$(echo $i | jq -r '.update')
 
   # Check LOCATION exists, INSTALL if it doesn't
-  if [[ ! $LOCATION =~ "null" ]]; then
+  if [[ ! $LOCATION =~ null ]]; then
     if [ ! -d "$LOCATION" ]; then
       printf "\n>> Installing: $INSTALL\n"
       eval "$INSTALL"
@@ -42,7 +42,7 @@ jq -c '.[]' hostConfig.json | while read i; do
   printf "\n>> Location: $LOCATION\n"
 
   # Do any UPDATE
-  if [[ ! $UPDATE =~ "null" ]]; then
+  if [[ ! $UPDATE =~ null ]]; then
     printf "\n>> Update: $UPDATE\n"
 
     # Built-in git pull
@@ -56,7 +56,7 @@ jq -c '.[]' hostConfig.json | while read i; do
   # START task in background
   printf "\n>> Start: $START\n"
   # Built-in npm start
-  if [[ $START =~ '$npm-start' ]]; then
+  if [[ $START =~ '$npm-ci-start' ]]; then
     npm ci && npm start &
   else
     eval "$START"
