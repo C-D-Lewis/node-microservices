@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+set -eu
+
+# HOME is platform dependent
+HOME=$1
+
 LC_URL=https://s3.amazonaws.com/public-files.chrislewis.me.uk/launchConfig.json
 WAIT_S=10
 
@@ -15,7 +20,7 @@ if [[ $HOST_CONFIG =~ "null" ]]; then
 fi
 
 # All paths relative to home directory
-cd ~
+cd $HOME
 echo $HOST_CONFIG > hostConfig.json
 jq -c '.[]' hostConfig.json | while read i; do
   # Get commands for this task
