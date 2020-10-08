@@ -8,7 +8,7 @@ HOSTNAME=$(hostname)
 
 # Fetch the launch config and extract for this host
 CONFIG=$(curl -s $LC_URL)
-HOST_CONFIG=$(echo $CONFIG | jq -r ".hosts.$HOSTNAME")
+HOST_CONFIG=$(echo $CONFIG | jq -r ".hosts[\"$HOSTNAME\"]")
 if [[ $HOST_CONFIG =~ "null" ]]; then
   printf "\nNo launch config for $HOSTNAME\n"
   exit 1
