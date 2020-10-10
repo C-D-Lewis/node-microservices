@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -eu
+../wait_for_network.sh
 
 # HOME is platform dependent
 HOME=$1
