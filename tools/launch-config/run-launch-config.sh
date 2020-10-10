@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 set -eu
-../wait_for_network.sh
+
+# Wait for network access
+echo "Waiting for network..."
+until ping -c 1 -W 1 8.8.8.8; do sleep 1; done
 
 # HOME is platform dependent
 HOME=$1
