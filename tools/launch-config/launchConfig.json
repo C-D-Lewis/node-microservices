@@ -139,6 +139,22 @@
         "location": "node-microservices/apps/attic",
         "start": "npm start &"
       }
+    ],
+    "blackbox": [
+      {
+        "location": "node-microservices/node-common",
+        "install": "git clone https://github.com/c-d-lewis/node-microservices",
+        "update": "$git-pull",
+        "start": ""
+      },
+      {
+        "location": "node-microservices/apps/conduit",
+        "start": "npm start &"
+      },
+      {
+        "location": "node-microservices/apps/attic",
+        "start": "npm start &"
+      }
     ]
   }
 }
