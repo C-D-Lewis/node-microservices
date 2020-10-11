@@ -10,7 +10,7 @@ until ping -c 1 -W 1 8.8.8.8; do sleep 1; done
 HOME=$1
 
 LC_URL=https://s3.amazonaws.com/public-files.chrislewis.me.uk/launchConfig.json
-WAIT_S=10
+WAIT_S=15
 
 printf "\n>> Hostname: $HOSTNAME\n"
 HOSTNAME=$(hostname)
