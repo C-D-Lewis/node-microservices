@@ -124,7 +124,7 @@
         "start": "npm start &"
       }
     ],
-    "stack1": [
+    "stack2": [
       {
         "location": "node-microservices/node-common",
         "install": "git clone https://github.com/c-d-lewis/node-microservices",
