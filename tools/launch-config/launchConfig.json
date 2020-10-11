@@ -21,7 +21,7 @@
         "location": "node-microservices/node-common",
         "install": "git clone https://github.com/c-d-lewis/node-microservices",
         "update": "$git-pull",
-        "start": "npm ci"
+        "start": ""
       },
       {
         "location": "node-microservices/apps/conduit",
@@ -49,7 +49,7 @@
         "location": "node-microservices/node-common",
         "install": "git clone https://github.com/c-d-lewis/node-microservices",
         "update": "$git-pull",
-        "start": "npm ci"
+        "start": ""
       },
       {
         "location": "node-microservices/apps/conduit",
@@ -81,7 +81,7 @@
         "location": "node-microservices/node-common",
         "install": "git clone https://github.com/c-d-lewis/node-microservices",
         "update": "$git-pull",
-        "start": "npm ci"
+        "start": ""
       },
       {
         "location": "node-microservices/apps/conduit",
@@ -105,7 +105,7 @@
         "location": "node-microservices/node-common",
         "install": "git clone https://github.com/c-d-lewis/node-microservices",
         "update": "$git-pull",
-        "start": "npm ci"
+        "start": ""
       },
       {
         "location": "node-microservices/apps/conduit",
@@ -129,7 +129,7 @@
         "location": "node-microservices/node-common",
         "install": "git clone https://github.com/c-d-lewis/node-microservices",
         "update": "$git-pull",
-        "start": "npm ci"
+        "start": ""
       },
       {
         "location": "node-microservices/apps/conduit",
