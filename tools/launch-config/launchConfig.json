@@ -32,15 +32,15 @@
         "start": "npm start &"
       },
       {
-        "location": "code/node-microservices/apps/visuals",
+        "location": "node-microservices/apps/visuals",
         "start": "npm start &"
       },
       {
-        "location": "code/node-microservices/apps/ambience",
+        "location": "node-microservices/apps/ambience",
         "start": "npm start &"
       },
       {
-        "location": "code/node-microservices/apps/monitor",
+        "location": "node-microservices/apps/monitor",
         "start": "npm start &"
       }
     ],
@@ -60,19 +60,19 @@
         "start": "npm start &"
       },
       {
-        "location": "code/node-microservices/apps/visuals",
+        "location": "node-microservices/apps/visuals",
         "start": "npm start &"
       },
       {
-        "location": "code/node-microservices/apps/ambience",
+        "location": "node-microservices/apps/ambience",
         "start": "npm start &"
       },
       {
-        "location": "code/node-microservices/apps/monitor",
+        "location": "node-microservices/apps/monitor",
         "start": "npm start &"
       },
       {
-        "location": "code/node-microservices/apps/lighting-dashboard",
+        "location": "node-microservices/apps/lighting-dashboard",
         "start": "npm start &"
       }
     ],
@@ -92,11 +92,11 @@
         "start": "npm start &"
       },
       {
-        "location": "code/node-microservices/apps/visuals",
+        "location": "node-microservices/apps/visuals",
         "start": "npm start &"
       },
       {
-        "location": "code/node-microservices/apps/monitor",
+        "location": "node-microservices/apps/monitor",
         "start": "npm start &"
       }
     ],
@@ -116,11 +116,11 @@
         "start": "npm start &"
       },
       {
-        "location": "code/node-microservices/apps/visuals",
+        "location": "node-microservices/apps/visuals",
         "start": "npm start &"
       },
       {
-        "location": "code/node-microservices/apps/monitor",
+        "location": "node-microservices/apps/monitor",
         "start": "npm start &"
       }
     ],
