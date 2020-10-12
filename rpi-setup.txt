@@ -66,3 +66,8 @@ sudo apt install python3-rpi.gpio (may already be installed)
 # Startup apps with launch-config
 sudo crontab -e
 @reboot /home/pi/node-microservices/tools/launch-config/run-launch-config.sh /home/pi > /home/pi/cronlog.txt 2>&1
+
+# npm not found?
+sudo ln -s /usr/local/bin/node /usr/bin/node
+sudo ln -s /usr/local/lib/node /usr/lib/node
+sudo ln -s /usr/local/bin/npm /usr/bin/npm
