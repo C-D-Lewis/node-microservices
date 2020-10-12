@@ -63,8 +63,6 @@ curl -sSL https://get.pimoroni.com/enviroplus | bash
 # GPIO?
 sudo apt install python3-rpi.gpio (may already be installed)
 
-# Startup apps
-sudo crontab -l
-> @reboot /home/pi/node-microservices/tools/boot.sh
-
-echo 'conduit attic visuals' etc... > /home/pi/apps.txt
+# Startup apps with launch-config
+sudo crontab -e
+@reboot /home/pi/node-microservices/tools/launch-config/run-launch-config.sh /home/pi > /home/pi/cronlog.txt 2>&1
