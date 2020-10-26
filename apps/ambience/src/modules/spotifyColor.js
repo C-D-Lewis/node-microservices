@@ -55,7 +55,7 @@ const getSpotifyColor = async () => {
     return rgbArr.map(Math.round);
   } catch(e) {
     log.error(e);
-    throw new Error(buildAuthURL());
+    throw new Error(`${e.message}\ngoto: ${buildAuthURL()}`);
   }
 };
 
