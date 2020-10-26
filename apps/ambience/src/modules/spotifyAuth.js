@@ -40,6 +40,8 @@ config.requireKeys('spotifyAuth.js', {
 const {
   /** Spotify config */
   SPOTIFY,
+  /** Authorizing Attic config */
+  AUTH_ATTIC,
 } = config;
 
 /** Keys for Attic database */
@@ -98,8 +100,8 @@ const updateRemoteAuthCode = async () => {
   const res = await conduit.send({
     to: 'attic',
     topic: 'get',
-    host: config.AUTH_ATTIC.HOST,
-    message: { app: 'concierge', key: config.AUTH_ATTIC.KEY },
+    host: AUTH_ATTIC.HOST,
+    message: { app: 'concierge', key: AUTH_ATTIC.KEY },
   });
   if (!res || !res.message) {
     // Nothing was found

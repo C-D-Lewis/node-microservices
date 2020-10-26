@@ -4,7 +4,7 @@
   "scripts": {
     "build": "webpack --config webpack.config.js --mode production",
     "build-dev": "webpack --config webpack.config.js --mode development",
-    "serve": "python -m SimpleHTTPServer 54448",
+    "serve": "python3 -m http.server 54448",
     "start": "npm run build-dev && npm run serve"
   },
   "author": "Chris Lewis",

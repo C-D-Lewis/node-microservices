@@ -20,6 +20,7 @@
   "CONDUIT": {
     "HOST": "localhost",
     "PORT": 5959,
-    "APP": "ambience"
+    "APP": "ambience",
+    "TOKEN": ""
   }
 }
