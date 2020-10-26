@@ -1,4 +1,5 @@
 const { log, config } = require('./node-common')(['log', 'config']);
+const { createSpotifyClient } = require('./modules/spotifyAuth');
 const anims = require('./modules/anims');
 const api = require('./modules/api');
 
@@ -17,9 +18,17 @@ config.requireKeys('main.js', {
 /**
  * The main function.
  */
-const main = () => {
+const main = async () => {
   log.begin();
   api.setup();
+
+  // Test Spotify credentials
+  try {
+    await createSpotifyClient();
+  } catch (e) {
+    log.error('Failed to createSpotifyClient:');
+    log.error(e);
+  }
 
   if (config.OPTIONS.SHOW_READY) {
     // Initial fade to green to show readiness

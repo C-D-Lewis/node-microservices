@@ -136,6 +136,7 @@ const testCredentials = async (spotifyApi) => {
 
   try {
     await getMyCurrentPlaybackStateAsync('UK');
+    log.info('Credentials valid');
   } catch(e) {
     await refreshCredentials(spotifyApi);
   }
