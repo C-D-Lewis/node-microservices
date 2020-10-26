@@ -155,6 +155,46 @@
         "location": "code/node-microservices/apps/attic",
         "start": "npm start &"
       }
+    ],
+    "ubuntu-512mb-lon1-01": [
+      {
+        "location": "node-microservices/node-common",
+        "install": "git clone https://github.com/c-d-lewis/node-microservices",
+        "update": "$git-pull",
+        "start": ""
+      },
+      {
+        "location": "node-microservices/apps/conduit",
+        "start": "npm start &"
+      },
+      {
+        "location": "node-microservices/apps/attic",
+        "start": "npm start &"
+      },
+      {
+        "location": "node-microservices/apps/guestlist",
+        "start": "npm start &"
+      },
+      {
+        "location": "node-microservices/apps/visuals",
+        "start": "npm start &"
+      },
+      {
+        "location": "node-microservices/apps/ambience",
+        "start": "npm start &"
+      },
+      {
+        "location": "node-microservices/apps/concierge",
+        "start": "npm start &"
+      },
+      {
+        "location": "node-microservices/apps/monitor",
+        "start": "npm start &"
+      },
+      {
+        "location": "node-microservices/apps/service-dashboard",
+        "start": "npm start &"
+      }
     ]
   }
 }
