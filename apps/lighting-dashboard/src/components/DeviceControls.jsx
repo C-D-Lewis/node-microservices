@@ -34,6 +34,7 @@ const ButtonBar = ({ children, align, style }) =>
     display: 'flex',
     flexDirection: 'row',
     marginTop: '10px',
+    margin: 7,
     justifyContent: align === 'right' ? 'flex-end' : 'initial',
     ...style,
   }}>
@@ -79,21 +80,20 @@ const Controls = ({ device }) => {
       </ButtonBar>
       <ButtonBar>
         <TextButton label="Off"
-          style={buttonStyle}
+          style={{ ...buttonStyle, backgroundColor: 'black' }}
           onClick={() => sendDevicePacket(device, { to: 'ambience', topic: 'off' })}/>
         <TextButton label="Spotify"
-          style={buttonStyle}
+          style={{ ...buttonStyle, backgroundColor: '#1DB954' }}
           onClick={() => sendDevicePacket(device, { to: 'ambience', topic: 'spotify' })}/>
         <TextButton label="Demo"
           style={buttonStyle}
           onClick={() => sendDevicePacket(device, { to: 'ambience', topic: 'demo' })}/>
-        {/* <TextButton label="Set" */}
-        {/*   style={buttonStyle} */}
-        {/*   onClick={() => { */}
-        {/*     const { red, green, blue } = ambienceData; */}
-        {/*     const message = { all: [red, green, blue] }; */}
-        {/*     sendDevicePacket(device, { to: 'ambience', topic: 'set', message }); */}
-        {/*   }}/> */}
+        <TextButton label="Night"
+          style={{ ...buttonStyle, backgroundColor: '#aaa', color: 'black' }}
+          onClick={() => {
+            const message = { all: [64, 64, 64 ] };
+            sendDevicePacket(device, { to: 'ambience', topic: 'set', message });
+          }}/>
       </ButtonBar>
     </Column>
   );
