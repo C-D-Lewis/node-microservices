@@ -70,10 +70,6 @@
       {
         "location": "node-microservices/apps/monitor",
         "start": "npm start &"
-      },
-      {
-        "location": "node-microservices/apps/lighting-dashboard",
-        "start": "npm start &"
       }
     ],
     "stack0": [
@@ -97,6 +93,10 @@
       },
       {
         "location": "node-microservices/apps/monitor",
+        "start": "npm start &"
+      },
+      {
+        "location": "node-microservices/apps/lighting-dashboard",
         "start": "npm start &"
       }
     ],
