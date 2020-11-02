@@ -166,6 +166,11 @@ const fadeAll = async (toRgb, fromRgb) => {
   if (config.LEDS.HARDWARE_TYPE === 'mote') {
     // Go from the pixelsState currently unless fromRgb is set
     mote.fadeAll(toRgb, pixelsState[0]);
+
+    // Fade complete, remember the end state
+    for (let i = 0; i < NUM_LEDS; i++) {
+      pixelsState[i] = toRgb;
+    }
   }
 };
 
