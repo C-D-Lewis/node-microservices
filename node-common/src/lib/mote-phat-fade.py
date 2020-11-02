@@ -25,7 +25,7 @@ STEP = 5
 import motephat as mote
 
 def is_complete():
-  return start_r == target_r && start_g == target_g && start_b == target_g
+  return start_r == target_r and start_g == target_g and start_b == target_g
 
 def main():
   mote.set_clear_on_exit(False)  # Very important
