@@ -14,17 +14,6 @@ describe('API', () => {
     });
   });
 
-  describe('Conduit topic: demo', () => {
-    it('should return 200 / OK', async () => {
-      const response = await testing.sendConduitPacket({ to: 'ambience', topic: 'demo' });
-
-      expect(response.status).to.equal(200);
-      expect(response.message.content).to.equal('OK');
-
-      await testing.sleepAsync(SLEEP_MS);
-    });
-  });
-
   describe('Conduit topic: spotify', () => {
     it('should return 200 / [r,g,b]', async () => {
       const response = await testing.sendConduitPacket({ to: 'ambience', topic: 'spotify' });

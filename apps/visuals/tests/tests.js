@@ -52,4 +52,6 @@ describe('API', () => {
       expect(response.message.content).to.equal('OK');
     });
   });
+
+  // TODO: Add new tests for added newer APIs
 });

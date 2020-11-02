@@ -10,7 +10,6 @@ const setup = async () => {
   await conduit.register();
 
   conduit.on('spotify', require('../api/spotify'), NO_PACKET_SCHEMA);
-  conduit.on('demo', require('../api/demo'), NO_PACKET_SCHEMA);
 };
 
 module.exports = {

@@ -52,6 +52,7 @@ const setup = async () => {
   conduit.on('state', require('../api/state'), EMPTY_PACKET_SCHEMA);
   conduit.on('fadeAll', require('../api/fadeAll'), FADE_ALL_TO_PACKET_SCHEMA);
   conduit.on('off', require('../api/off'), EMPTY_PACKET_SCHEMA);
+  conduit.on('demo', require('../api/demo'), EMPTY_PACKET_SCHEMA);
 };
 
 module.exports = {
