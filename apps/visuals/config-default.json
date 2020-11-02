@@ -8,8 +8,7 @@
     "ATTENUATION_FACTOR": 0.1,
     "BRIGHTNESS": 0.1,
     "USE_HARDWARE": false,
-    "HARDWARE_TYPE": "blinkt",
-    "USE_SERVER": false
+    "HARDWARE_TYPE": "blinkt"
   },
   "CONDUIT": {
     "HOST": "localhost",

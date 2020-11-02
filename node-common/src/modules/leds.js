@@ -9,7 +9,7 @@ config.requireKeys('leds.js', {
   required: ['LEDS'],
   properties: {
     LEDS: {
-      required: ['ATTENUATION_FACTOR', 'BRIGHTNESS', 'USE_HARDWARE', 'HARDWARE_TYPE', 'USE_SERVER'],
+      required: ['ATTENUATION_FACTOR', 'BRIGHTNESS', 'USE_HARDWARE', 'HARDWARE_TYPE'],
       properties: {
         ATTENUATION_FACTOR: { type: 'number', maximum: 1.0 },
         BRIGHTNESS: { type: 'number', maximum: 1.0 },
