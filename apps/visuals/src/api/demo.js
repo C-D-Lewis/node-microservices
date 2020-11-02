@@ -31,7 +31,7 @@ const nextDemoColor = () => {
     nextColorIndex = randomInt(0, DEMO_COLORS.length);
   }
 
-  await leds.fadeAll(DEMO_COLORS[nextColorIndex]);
+  leds.fadeAll(DEMO_COLORS[nextColorIndex]);
   currentDemoColorIndex = nextColorIndex;
 };
 
