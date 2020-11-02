@@ -35,6 +35,7 @@ const setPixels = (leds) => {
 const fadeAll = (toRgb, fromRgb) => {
   log.assert(Array.isArray(toRgb), `toRgb must be an array. Was ${toRgb}`);
   log.assert(Array.isArray(fromRgb), `fromRgb must be an array. Was ${fromRgb}`);
+  console.log({ fromRgb, toRgb })
 
   execSync(`python3 ${`${__dirname}/../lib/mote-phat-fade.py`} ${fromRgb[0]} ${fromRgb[1]} ${fromRgb[2]} ${toRgb[0]} ${toRgb[1]} ${toRgb[2]}`);
 };
