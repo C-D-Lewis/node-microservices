@@ -152,7 +152,9 @@ const blink = (index, nextRgb) => {
  */
 const fadeAll = async (toRgb, fromRgb) => {
   if (fromRgb && fromRgb.length === 3) {
-    pixelsState = fromRgb;
+    for (let i = 0; i < NUM_LEDS; i++) {
+      pixelsState[i] = fromRgb;
+    }
   }
 
   if (!hardwareAvailable()) return;
@@ -163,7 +165,7 @@ const fadeAll = async (toRgb, fromRgb) => {
 
   if (config.LEDS.HARDWARE_TYPE === 'mote') {
     // Go from the pixelsState currently unless fromRgb is set
-    mote.fadeAll(toRgb, pixelsState);
+    mote.fadeAll(toRgb, pixelsState[0]);
   }
 };
 
