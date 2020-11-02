@@ -96,7 +96,7 @@
         "start": "npm start &"
       },
       {
-        "location": "node-microservices/apps/lighting-dashboard",
+        "location": "node-microservices/dashboards/lighting-dashboard",
         "start": "npm start &"
       }
     ],
@@ -192,7 +192,7 @@
         "start": "npm start &"
       },
       {
-        "location": "node-microservices/apps/service-dashboard",
+        "location": "node-microservices/dashboards/service-dashboard",
         "start": "npm start &"
       }
     ]
