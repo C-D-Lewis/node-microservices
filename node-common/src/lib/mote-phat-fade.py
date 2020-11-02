@@ -19,7 +19,7 @@ if 'arm' not in platform.machine():
 
 NUM_CHANNELS = 2
 NUM_PIXELS = 16
-INTERVAL = 0.1
+INTERVAL = 0.01
 STEP = 5
 
 import motephat as mote
