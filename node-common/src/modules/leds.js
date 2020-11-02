@@ -144,6 +144,29 @@ const blink = (index, nextRgb) => {
   }, BLINK_TIME_MS);
 };
 
+/**
+ * Fade all LEDs between two colors. Done in Python now for speed.
+ *
+ * @param {Array<number>} toRgb - To RGB color values.
+ * @param {Array<number>} [fromRgb] - From RGB color values, if not current state
+ */
+const fadeAll = async (toRgb, fromRgb) => {
+  if (fromRgb && fromRgb.length === 3) {
+    pixelsState = fromRgb;
+  }
+
+  if (!hardwareAvailable()) return;
+
+  if (config.LEDS.HARDWARE_TYPE === 'blinkt') {
+    throw new Error('Not implemented for blinkt currently');
+  }
+
+  if (config.LEDS.HARDWARE_TYPE === 'mote') {
+    // Go from the pixelsState currently unless fromRgb is set
+    mote.fadeAll(toRgb, pixelsState);
+  }
+};
+
 // OK to init mote straight away - Non-pi dev should specify 'blinkt' HARDWARE_TYPE
 (() => {
   if (config.LEDS.HARDWARE_TYPE === 'mote') init();

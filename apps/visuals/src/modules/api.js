@@ -26,6 +26,16 @@ const SET_TEXT_PACKET_SCHEMA = {
   },
 };
 
+/** Schema for a fromAll packet - from is optional, else using current state of LEDs */
+const FADE_ALL_TO_PACKET_SCHEMA = {
+  additionalProperties: false,
+  required: ['to'],
+  properties: {
+    from: { type: 'array', items: { type: 'integer' } },
+    to: { type: 'array', items: { type: 'integer' } },
+  },
+};
+
 /** Schema for an empty packet */
 const EMPTY_PACKET_SCHEMA = { type: 'object' };
 
@@ -40,6 +50,7 @@ const setup = async () => {
   conduit.on('blink', require('../api/blink'), INDEXED_PACKET_SCHEMA);
   conduit.on('setText', require('../api/setText'), SET_TEXT_PACKET_SCHEMA);
   conduit.on('state', require('../api/state'), EMPTY_PACKET_SCHEMA);
+  conduit.on('fadeAll', require('../api/fadeAll'), FADE_ALL_TO_PACKET_SCHEMA);
 };
 
 module.exports = {
