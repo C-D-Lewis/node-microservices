@@ -32,7 +32,7 @@ def main():
   current_r = start_r
   current_g = start_g
   current_b = start_b
-  while not start_r == target_r and start_g == target_g and start_b == target_g:
+  while not current_r == target_r and current_g == target_g and current_b == target_g:
     mote.set_all(current_r, current_g, current_b)
     mote.show()
 
