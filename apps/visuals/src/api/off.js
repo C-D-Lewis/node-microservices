@@ -1,5 +1,4 @@
-const { conduit } = require('../node-common')(['conduit']);
-const { clearAll } = require('../modules/anims');
+const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
 
 /**
  * Handle a 'off' topic packet.
@@ -8,9 +7,7 @@ const { clearAll } = require('../modules/anims');
  * @param {Object} res - Express response object.
  */
 const handleOffPacket = async (packet, res) => {
-  clearAll();
-
-  await conduit.send({ to: 'visuals', topic: 'setAll', message: { all: [0, 0, 0] } });
+  await leds.setAll([0, 0, 0]);
 
   conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };

@@ -21,7 +21,6 @@ const setup = async () => {
   conduit.on('set', require('../api/set'), TO_PACKET_SCHEMA);
   conduit.on('spotify', require('../api/spotify'), NO_PACKET_SCHEMA);
   conduit.on('demo', require('../api/demo'), NO_PACKET_SCHEMA);
-  conduit.on('off', require('../api/off'), NO_PACKET_SCHEMA);
 };
 
 module.exports = {

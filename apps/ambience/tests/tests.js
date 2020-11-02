@@ -25,17 +25,6 @@ describe('API', () => {
     });
   });
 
-  describe('Conduit topic: off', () => {
-    it('should return 200 / OK', async () => {
-      const response = await testing.sendConduitPacket({ to: 'ambience', topic: 'off' });
-
-      expect(response.status).to.equal(200);
-      expect(response.message.content).to.equal('OK');
-
-      await testing.sleepAsync(SLEEP_MS);
-    });
-  });
-
   describe('Conduit topic: set', () => {
     it('should return 200 / OK', async () => {
       const response = await testing.sendConduitPacket({
