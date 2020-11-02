@@ -24,9 +24,6 @@ STEP = 5
 
 import motephat as mote
 
-def is_complete():
-  return start_r == target_r and start_g == target_g and start_b == target_g
-
 def main():
   mote.set_clear_on_exit(False)  # Very important
   for c in range(NUM_CHANNELS):
@@ -35,7 +32,7 @@ def main():
   current_r = start_r
   current_g = start_g
   current_b = start_b
-  while not is_complete():
+  while not start_r == target_r and start_g == target_g and start_b == target_g:
     mote.set_all(current_r, current_g, current_b)
     mote.show()
 
