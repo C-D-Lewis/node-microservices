@@ -48,10 +48,10 @@ const handleDemoPacket = async (packet, res) => {
   }
 
   // Set up the animation cycle
-  nextDemoColor();
   handles['demo'] = setInterval(nextDemoColor, DEMO_INTERVAL_S * 1000);
 
   conduit.respond(res, { status: 200, message: { content: 'OK' } });
+  nextDemoColor();
 };
 
 module.exports = handleDemoPacket;
