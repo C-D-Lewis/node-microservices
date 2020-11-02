@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Example:
-#  ./conduit.sh 192.168.1.107 BacklightServer set '{"all": [128,128,128]}'
+#  ./conduit.sh 192.168.1.107 visuals setAll '{"all": [128,128,128]}'
 
 # Authorization comes after payload, if requried
 #  ./conduit.sh localhost guestlist create '{"name": "test"...}' $adminPassword

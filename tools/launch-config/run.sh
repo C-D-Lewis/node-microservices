@@ -59,6 +59,7 @@ jq -c '.[]' hostConfig.json | while read i; do
 
   # START task in background
   printf "\n>> Start: $START\n"
+
   # Built-in npm start
   if [[ $START =~ '$npm-ci-start' ]]; then
     npm ci && npm start &
