@@ -176,6 +176,7 @@ module.exports = {
   set,
   setAll,
   blink,
+  fadeAll,
   getState: () => pixelsState,
   getNumLEDs: () => NUM_LEDS,
 };
