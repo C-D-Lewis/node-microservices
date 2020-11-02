@@ -1,4 +1,5 @@
 const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
+const handles = require('../modules/handles');
 
 /**
  * Handle a 'off' topic packet.
@@ -8,6 +9,9 @@ const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
  */
 const handleOffPacket = async (packet, res) => {
   await leds.setAll([0, 0, 0]);
+
+  // Cancel all animation handles
+  Object.entries(handles).forEach(([name, handle]) => clearInterval(handle));
 
   conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };
