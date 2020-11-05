@@ -36,10 +36,6 @@
         "start": "npm start &"
       },
       {
-        "location": "node-microservices/apps/ambience",
-        "start": "npm start &"
-      },
-      {
         "location": "node-microservices/apps/monitor",
         "start": "npm start &"
       }
@@ -61,10 +57,6 @@
       },
       {
         "location": "node-microservices/apps/visuals",
-        "start": "npm start &"
-      },
-      {
-        "location": "node-microservices/apps/ambience",
         "start": "npm start &"
       },
       {
@@ -177,10 +169,6 @@
       },
       {
         "location": "node-microservices/apps/visuals",
-        "start": "npm start &"
-      },
-      {
-        "location": "node-microservices/apps/ambience",
         "start": "npm start &"
       },
       {
