@@ -1,11 +1,11 @@
-const { log } = require('../node-common')(['log']);
+const { log, leds } = require('../node-common')(['log', 'leds']);
 const { getColor } = require('./spotifyColor');
 const handles = require('./handles');
 
 /** Interval between spotify API updates */
 const SPOTIFY_INTERVAL_S = 10;
 
-const fadeTo = rgb => { /** Implement in visuals fade */ };
+const fadeTo = async rgb => leds.fadeAll(rgb);
 
 /**
  * Perform a color update using Spotify color.
