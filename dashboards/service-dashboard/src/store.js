@@ -21,11 +21,6 @@ const INITIAL_STATE = {
     topic: 'status',
     message: '{}',
   },
-  ambienceData: {
-    red: 128,
-    green: 128,
-    blue: 128,
-  },
   visualsData: {
     index: 0,
     red: 128,

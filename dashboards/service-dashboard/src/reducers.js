@@ -27,9 +27,6 @@ export const rootReducer = combineReducers({
   conduitData: buildReducer({}, {
     SET_CONDUIT_DATA: (state, { conduitData }) => conduitData,
   }),
-  ambienceData: buildReducer({}, {
-    SET_AMBIENCE_DATA: (state, { ambienceData }) => ambienceData,
-  }),
   visualsData: buildReducer({}, {
     SET_VISUALS_DATA: (state, { visualsData }) => visualsData,
   }),

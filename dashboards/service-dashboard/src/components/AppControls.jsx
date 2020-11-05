@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setAtticData, setConduitData, setAmbienceData, setVisualsData } from '../actions';
+import { setAtticData, setConduitData, setVisualsData } from '../actions';
 import { Colors, Fonts } from '../theme';
 import { sendPacket } from '../services/conduitService';
 import IconButton from './IconButton';
@@ -122,59 +122,6 @@ const ConduitControls = () => {
   );
 };
 
-const AmbienceControls = () => {
-  const dispatch = useDispatch();
-  const ambienceData = useSelector(state => state.ambienceData);
-
-  const buttonStyle = { width: '20%' };
-
-  const setProp = (key, value) => dispatch(setAmbienceData({ ...ambienceData, [key]: value }));
-
-  return (
-    <Column>
-      <Row>
-        <TextBox value={ambienceData.red}
-          placeholder="red"
-          style={{ width: "33%" }}
-          onChange={value => setProp('red', parseInt(value))}/>
-        <TextBox value={ambienceData.green}
-          placeholder="green"
-          style={{ width: "33%" }}
-          onChange={value => setProp('green', parseInt(value))}/>
-        <TextBox value={ambienceData.blue}
-          placeholder="blue"
-          style={{ width: "33%" }}
-          onChange={value => setProp('blue', parseInt(value))}/>
-      </Row>
-      <ButtonBar>
-        <TextButton label="Off"
-          style={{ width: '20%', borderBottomLeftRadius: 3 }}
-          onClick={() => sendPacket({ to: 'ambience', topic: 'off' })}/>
-        <TextButton label="Spotify"
-          style={buttonStyle}
-          onClick={() => sendPacket({ to: 'ambience', topic: 'spotify' })}/>
-        <TextButton label="Demo"
-          style={buttonStyle}
-          onClick={() => sendPacket({ to: 'ambience', topic: 'demo' })}/>
-        <TextButton label="Set"
-          style={buttonStyle}
-          onClick={() => {
-            const { red, green, blue } = ambienceData;
-            const message = { all: [red, green, blue] };
-            sendPacket({ to: 'ambience', topic: 'set', message });
-          }}/>
-        <TextButton label="Fade"
-          style={{ width: '20%', borderBottomRightRadius: 3 }}
-          onClick={() => {
-            const { red, green, blue } = ambienceData;
-            const message = { all: [red, green, blue] };
-            sendPacket({ to: 'ambience', topic: 'fade', message });
-          }}/>
-      </ButtonBar>
-    </Column>
-  );
-};
-
 const VisualsControls = () => {
   const dispatch = useDispatch();
   const visualsData = useSelector(state => state.visualsData);
@@ -186,10 +133,10 @@ const VisualsControls = () => {
   return (
     <Column>
       <Row>
-        <TextBox value={visualsData.index}
-          placeholder="index"
-          style={{ width: "10%" }}
-          onChange={value => setProp('index', parseInt(value))}/>
+        {/* <TextBox value={visualsData.index} */}
+        {/*   placeholder="index" */}
+        {/*   style={{ width: "10%" }} */}
+        {/*   onChange={value => setProp('index', parseInt(value))}/> */}
         <TextBox value={visualsData.red}
           placeholder="red"
           style={{ width: "30%" }}
@@ -250,7 +197,6 @@ const AppControls = ({ data }) => {
   const controlsMap = {
     attic: AtticControls,
     conduit: ConduitControls,
-    ambience: AmbienceControls,
     visuals: VisualsControls,
   };
   const Controls = controlsMap[data.app] || NoControls;
