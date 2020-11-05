@@ -84,8 +84,8 @@ const DeviceCard = ({ device }) => {
 
     pingDevice(device)
       .then(apps => {
-        const ambience = apps.find(p => p.app === 'ambience');
-        setAvailable(ambience && ambience.status === 'OK');
+        const visuals = apps.find(p => p.app === 'visuals');
+        setAvailable(visuals && visuals.status === 'OK');
       });
   }, []);
 

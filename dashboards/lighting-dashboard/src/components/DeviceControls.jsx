@@ -64,7 +64,7 @@ const Controls = ({ device }) => {
             color={`rgb(${p[0]},${p[1]},${p[2]}`}
             onClick={() => {
               const message = { all: p };
-              sendDevicePacket(device, { to: 'ambience', topic: 'set', message });
+              sendDevicePacket(device, { to: 'visuals', topic: 'setAll', message });
             }}/>
         ))}
       </ButtonBar>
@@ -74,25 +74,25 @@ const Controls = ({ device }) => {
             color={`rgb(${p[0]},${p[1]},${p[2]}`}
             onClick={() => {
               const message = { all: p };
-              sendDevicePacket(device, { to: 'ambience', topic: 'set', message });
+              sendDevicePacket(device, { to: 'visuals', topic: 'setAll', message });
             }}/>
         ))}
       </ButtonBar>
       <ButtonBar>
         <TextButton label="Off"
           style={{ ...buttonStyle, backgroundColor: 'black' }}
-          onClick={() => sendDevicePacket(device, { to: 'ambience', topic: 'off' })}/>
+          onClick={() => sendDevicePacket(device, { to: 'visuals', topic: 'off' })}/>
         <TextButton label="Spotify"
           style={{ ...buttonStyle, backgroundColor: '#1DB954' }}
-          onClick={() => sendDevicePacket(device, { to: 'ambience', topic: 'spotify' })}/>
+          onClick={() => sendDevicePacket(device, { to: 'visuals', topic: 'spotify' })}/>
         <TextButton label="Demo"
           style={buttonStyle}
-          onClick={() => sendDevicePacket(device, { to: 'ambience', topic: 'demo' })}/>
+          onClick={() => sendDevicePacket(device, { to: 'visuals', topic: 'demo' })}/>
         <TextButton label="Night"
           style={{ ...buttonStyle, backgroundColor: '#aaa', color: 'black' }}
           onClick={() => {
             const message = { all: [64, 64, 64 ] };
-            sendDevicePacket(device, { to: 'ambience', topic: 'set', message });
+            sendDevicePacket(device, { to: 'visuals', topic: 'setAll', message });
           }}/>
       </ButtonBar>
     </Column>
