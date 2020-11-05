@@ -5,14 +5,14 @@ const handles = require('./handles');
 /** Interval between spotify API updates */
 const SPOTIFY_INTERVAL_S = 10;
 
-const fadeTo = async rgb => leds.fadeAll(rgb);
-
 /**
  * Perform a color update using Spotify color.
  */
 const spotifyColorUpdate = async () => {
   try {
-    fadeTo(await getColor());
+    const nextRgb = await getColor();
+    log.info(`spotifyColorUpdate: ${JSON.stringify(nextRgb)}`);
+    leds.fadeAll(nextRgb)
   } catch (e) {
     log.error('spotifyColorUpdate failed, clearing animation');
     log.error(e);
@@ -29,7 +29,7 @@ const spotifyColorUpdate = async () => {
 const startAnimation = async () => {
   // Set initial value
   const rgbArr = await getColor();
-  fadeTo(rgbArr);
+  leds.fadeAll(rgbArr);
 
   // Regularly check for updates as tracks change
   const handle = setInterval(spotifyColorUpdate, SPOTIFY_INTERVAL_S * 1000);
