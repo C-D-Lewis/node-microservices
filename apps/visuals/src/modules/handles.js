@@ -1,5 +1,18 @@
-const handles = {
+let handles = {
   // demo: setIntervalRetVal
 };
 
-module.exports = handles;
+module.exports = {
+  add: (name, val) => (handles[name] = val),
+  get: name => handles[name],
+  remove: (name) => {
+    clearInterval(handles[name]);
+    handles[name] = null;
+  },
+  removeAll: () => {
+    Object.entries(handles)
+      .forEach(([name, handle]) => clearInterval(handle));
+
+    handles = {};
+  },
+};

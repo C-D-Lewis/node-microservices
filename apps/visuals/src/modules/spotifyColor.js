@@ -14,9 +14,7 @@ const getLargestImageUrl = async (spotifyApi) => {
     .bind(spotifyApi);
   const { body } = await getMyCurrentPlaybackStateAsync('UK');
 
-  if (!body || !body.item) {
-    throw new Error('Nothing is playing!');
-  }
+  if (!body || !body.item) throw new Error('Nothing is playing!');
 
   const { images } = body.item.album;
   const largest = images.reduce((acc, p) => (p.height > acc) ? p.height : acc, 0);
@@ -46,19 +44,19 @@ const getDominantColor = async (url) => {
  *
  * @returns {Promise<number[]} Resolves RGB array for album art vibrant color.
  */
-const getSpotifyColor = async () => {
+const getColor = async () => {
   try {
     const spotifyApi = await createSpotifyClient();
-    const url = await getLargestImageUrl(spotifyApi);
-    const rgbArr = await getDominantColor(url);
+    const imageUrl = await getLargestImageUrl(spotifyApi);
+    const rgbArr = await getDominantColor(imageUrl);
 
     return rgbArr.map(Math.round);
   } catch(e) {
     log.error(e);
-    throw new Error(`${e.message}\ngoto: ${buildAuthURL()}`);
+    throw new Error(`${e.message}\n\nGo to: ${buildAuthURL()}`);
   }
 };
 
 module.exports = {
-  getSpotifyColor,
+  getColor,
 };

@@ -10,11 +10,8 @@ const handles = require('../modules/handles');
 const handleOffPacket = async (packet, res) => {
   await leds.setAll([0, 0, 0]);
 
-  // Cancel all animation handles
-  Object.entries(handles).forEach(([name, handle]) => {
-    clearInterval(handle);
-    handles[name] = null;
-  });
+  // Also cancel animation handles
+  handles.removeAll();
 
   conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };

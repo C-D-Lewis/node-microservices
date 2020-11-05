@@ -103,6 +103,7 @@ const updateRemoteAuthCode = async () => {
     host: AUTH_ATTIC.HOST,
     message: { app: 'concierge', key: AUTH_ATTIC.KEY },
   });
+  if (res.error) throw new Error(res.error);
   if (!res || !res.message) {
     // Nothing was found
     log.error(`No code is stored yet or was not found: ${JSON.stringify(res)}`);

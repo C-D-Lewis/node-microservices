@@ -48,10 +48,6 @@ node runner.js conduit attic visuals monitor
 
 ## App List
 
-* [`ambience`](apps/ambience) - API service that allows outside
-  requests to control snap/fade/Spotify now-playing colors to be set on local
-  Raspberry Pi-driven LED lights, such as Mote or Blinkt hats. Backlights as a
-  service!
 * [`attic`](apps/attic) - Data storage service that allows outside apps to
   POST/GET app-specific data items, stored locally in a variety of formats
   (JSON, Gist, etc.).
@@ -72,7 +68,8 @@ node runner.js conduit attic visuals monitor
   the status of all local apps running through `conduit`, and provides a GUI for
   their APIs. For example, setting colors for `visuals`.
 * [`visuals`](apps/visuals) - API service that provides an API between
-  other services and the local LED lights hardware. Used by `ambience`.
+  other services and the local LED lights hardware. Also provides animations and
+  Spotify album art color integration.
 
 
 ## Common Modules
