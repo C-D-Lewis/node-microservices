@@ -13,6 +13,7 @@ inter-app communication are of an original design.
 * [Installation](#installation)
 * [Launching Apps](#launching-apps)
 * [App List](#app-list)
+* [Dashboard List](#dashboard-list)
 * [Common Modules](#common-modules)
 * [Configuration](#configuration)
 * [Communication](#communication)
@@ -21,8 +22,8 @@ inter-app communication are of an original design.
 
 ## Installation
 
-For each app in `apps ` required, install dependencies and perform initial
-startup:
+For each app in `apps` or dashboard in `dashboards`, install dependencies and
+perform initial startup:
 
 1. `npm ci && npm start`
 
@@ -33,8 +34,6 @@ Lastly, setup the `node-common` module, shared by all apps:
 1. `cd node-common`
 
 2. `npm ci`
-
-3. If using a Blinkt! or Enviro Phat, see the `README.md` for more dependencies.
 
 
 ## Launching Apps
@@ -48,28 +47,34 @@ node runner.js conduit attic visuals monitor
 
 ## App List
 
-* [`attic`](apps/attic) - Data storage service that allows outside apps to
+* [`attic`](apps/attic) - Data storage service that allows other apps to
   POST/GET app-specific data items, stored locally in a variety of formats
-  (JSON, Gist, etc.).
+  (JSON, Gist, MongoDB, etc.).
 * [`concierge`](apps/concierge) - API service that allows creation and deletion
-  of webhook callbacks, and can message other apps locally in response.
+  of webhook callbacks, and handles POST requests to those callbacks by saving
+  payloads received, or forwarding them on via `conduit`.
 * [`conduit`](apps/conduit) - API service that allows all the other apps to
   communicate, as well as providing a single entry-point for the outside world
-  to communicate with any single app, all using a standard message format.
+  to communicate with any single app, using a standard message format.
 * [`guestlist`](apps/guestlist) - API service that grants and checks user access
   tokens. Master access is granted via a local file for the sysasmin.
-* [`monitor`](apps/monitor) - The oldest service, runs plugin scripts on a timed
-  basis to perform generic tasks, including checking weather, train delays,
-  uptime status of other services and reporting this all to a variety of
-  reporters, such as Google Cloud Messaging.
+* [`monitor`](apps/monitor) - The oldest service, runs plugins and scripts on a
+  timed basis to perform generic tasks, including checking weather, train
+  delays, uptime status of other services, and updating LED lights on schedule.
 * [`plug-server`](apps/plug-server) - API service to control local smart
   devices, such as TP-Link Smart Plugs.
-* [`service-dashboard`](apps/service-dashboard) - React application that shows
-  the status of all local apps running through `conduit`, and provides a GUI for
-  their APIs. For example, setting colors for `visuals`.
 * [`visuals`](apps/visuals) - API service that provides an API between
   other services and the local LED lights hardware. Also provides animations and
   Spotify album art color integration.
+
+## Dashboard List
+
+* [`service-dashboard`](apps/service-dashboard) - React application that shows
+  the status of all local apps running through `conduit`, and provides a GUI for
+  their APIs. For example, setting colors for `visuals`.
+* [`lighting-dashboard`](apps/service-dashboard) - React application showing an
+  easy to use card of colors and shortcuts for `visuals` APIS, such as Spotify
+  mode.
 
 
 ## Common Modules
@@ -93,8 +98,8 @@ const { log, conduit } = require('../node-common')(['log', 'conduit']);
 Each app has a `config-default.json` that is created if no `config.json` exists,
 and in most cases the app will function normally. However, apps that require
 special keys (Spotify, DarkSky weather etc.) will not. Each module uses
-`config.requireKeys()` to declare a schema that must exist in the app's config
-file, or else it will not start. For example, app logging:
+`config.requireKeys()` to declare a partial schema that must exist in the app's
+config file, or else it will not start. For example, app logging:
 
 ```js
 config.requireKeys('log.js', {
@@ -142,10 +147,7 @@ module.exports = (packet, res) => {
   leds.setAll(packet.message.all);
 
   // Respond to the packet sender
-  conduit.respond(res, {
-    status: 200,
-    message: { content: 'OK' },
-  });
+  conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };
 ```
 
@@ -156,14 +158,14 @@ app. For example:
 
 ```bash
 # Fade to black
-./conduit.sh localhost ambience fade '{"all": [0, 0, 0]}'
+./conduit.sh localhost visuals fadeAll '{"all": [0, 0, 0]}'
 
 # Is equivalent to:
 curl -X POST localhost:5959/conduit \
   -H Content-Type:application/json \
   -d '{
-    "to": "ambience",
-    "topic": "fade",
+    "to": "visuals",
+    "topic": "fadeAll",
     "message": {
       "all": [0, 0, 0]
     }
@@ -205,8 +207,9 @@ curl -X POST http://48.192.67.201:5959/conduit \
 
 For all requests that do not originate from `localhost`, each packet received
 by `conduit` must include the `auth` field with a token that can is then
-verified by `guestlist`. Where applicable additional checks are done on the
-`apps` and `topics` permissions assigned to that user.
+verified by `guestlist`, though this can be disabled. Where applicable
+additional checks are done on the `apps` and `topics` permissions assigned to
+that user.
 
 For example, creating a user as the sysadmin with the master password (see
 [`guestlist`](apps/guestlist) for details):
@@ -218,8 +221,8 @@ For example, creating a user as the sysadmin with the master password (see
   "auth": "MyAdminPassword",
   "message": {
     "name": "BacklightUser",
-    "apps": ["ambience"],
-    "topics": ["set", "fade", "off"]
+    "apps": ["visuals"],
+    "topics": ["set", "fadeAll", "off"]
   }
 }
 ```
@@ -233,8 +236,8 @@ user for their requests:
   "message": {
     "id": "165dacd16a253b28",
     "name": "BacklightUser",
-    "apps": ["ambience"],
-    "topics": ["set","fade","off"],
+    "apps": ["visuals"],
+    "topics": ["set","fadeAll","off"],
     "token": "b6aacf6f46dbdd24659b537f7754506eb4aa5638",
     "createdAt": 1586599862140
   }
@@ -245,7 +248,7 @@ Such an example request simply uses the token as the `auth` parameter:
 
 ```json
 {
-  "to": "ambience",
+  "to": "visuals",
   "topic": "off",
   "auth": "b6aacf6f46dbdd24659b537f7754506eb4aa5638"
 }
