@@ -7,10 +7,12 @@ apps.
 
 ## Setup
 
+> Note: this app must be started before any others, since they register on
+> each start.
+
 1. `npm ci && npm start` to create `config.json`.
 
-3. Optionally set information for `FLEET` in `config.json` to keep track of this
-   `conduit` node in the fleet of devices.
+3. Optionally configure features in `config.json`.
 
 4. Start the service again to apply the new configuration.
 
@@ -21,7 +23,27 @@ This service provides the following HTTP API via Express:
 
 ### `GET /apps`
 
-List all known apps and their status
+List all known apps and their status.
+
+```json
+[
+  {
+    "app": "attic",
+    "port": 6973,
+    "status": "OK"
+  },
+  {
+    "app": "visuals",
+    "port": 8236,
+    "status": "OK"
+  },
+  {
+    "app": "conduit",
+    "port": 5959,
+    "status": "OK"
+  }
+]
+```
 
 ### `POST /conduit`
 
