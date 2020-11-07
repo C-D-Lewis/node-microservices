@@ -10,7 +10,7 @@ from the Attic service:
 {
   "name": "AtticUser",
   "apps": ["attic"],
-  "topics": ["get", "set"]
+  "topics": ["get"]
 }
 ```
 
@@ -80,7 +80,7 @@ at this one time**:
 ```
 
 
-## User Requests
+## Authenticating User Requests
 
 After creation, a user may then connect to the `apps` and `topics` specified
 by including their token as the `auth` field in a `conduit` request:
@@ -95,3 +95,44 @@ by including their token as the `auth` field in a `conduit` request:
 
 Apps that communicate with a token should include it as `TOKEN` in their
 `conduit` config.
+
+
+## API
+
+This service provides the following `conduit` topics and message formats:
+
+### `create`
+
+Create a new user with appropriate permissions.
+
+> Must include `auth` packet field, set to the admin password.
+
+Send: `{ name, apps, topics }`
+
+Receive: `user` (the created user with one-time visible token).
+
+### `authorize`
+
+Check a given `auth` token corresponds to a valid and known user.
+
+Send: `{ token, to, topic }`
+
+Receive: `{ content: 'OK' }` or a 4XX error if not.
+
+### `get`
+
+Get the details of an existing user but *not* their token.
+
+Send: `{ name }`
+
+Receive: `user` (but without their access token)
+
+### `delete`
+
+> Must include `auth` packet field, set to the admin password.
+
+Delete an existing user as the admin.
+
+Send: `{ name }`
+
+Receive: `{ content: 'Deleted' }`
