@@ -9,7 +9,7 @@ apps.
 
 1. `npm ci && npm start` to create `config.json`.
 
-3. Optionally set information for `FLEET` in `config.json` to kepp track of this
+3. Optionally set information for `FLEET` in `config.json` to keep track of this
    `conduit` node in the fleet of devices.
 
 4. Start the service again to apply the new configuration.
