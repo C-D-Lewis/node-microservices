@@ -1,0 +1,9 @@
+[all]
+#dtoverlay=vc4-fkms-v3d
+max_usb_current=1
+hdmi_force_hotplug=1
+config_hdmi_boost=10
+hdmi_group=2
+hdmi_mode=87
+hdmi_cvt 1024 600 120 6 0 0 0
+hdmi_drive=1
