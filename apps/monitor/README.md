@@ -29,17 +29,15 @@ Any plugin can be supplied with arguments at runtime specified in the soft
 configuration by adding the `ARGS` property as the object to provide at
 invocation in the `plugins` item.
 
-For example, a list of services to ping for the `services.js` plugin:
+For example, a list of scheduled requests to update LED lights:
 
 ```
 "plugins": [
-  { "ENABLED": true, "FILE_NAME": "services.js", "EVERY": 10,
+  { "ENABLED": true, "FILE_NAME": "visuals-scheduler.js", "EVERY": 1,
     "ARGS": {
-      "SERVICES": [
-        { "TAG": "NEWS_HEADLINES", "PORT": 5000, "LED": 0 },
-        { "TAG": "TUBE_STATUS", "PORT": 5050, "LED": 1 },
-        { "TAG": "LED_SERVER", "PORT": 5001, "LED": 2 },
-        { "TAG": "ATTIC", "PORT": 5006, "LED": 3 }
+      "EVENTS": [
+        { "NAME": "Morning", "ON": "07:30", "OFF": "08:00", "COLOR": [128, 128, 128] },
+        { "NAME": "Nightlight", "ON": "17:30", "OFF": "00:00", "COLOR": [25, 25, 25] },
       ]
     }
   }
@@ -66,12 +64,3 @@ For example, to use the `post.js` to call another service at 7pm:
   }
 ]
 ```
-
-
-## Other Features
-
-Plugins benefit from a range of extra functionality from modules in the
-`common` directory, including safe soft configuration, Google Cloud Messaging
-integration, Gist syncrhonisation,
-[`led-server`](https://github.com/C-D-Lewis/led-server) integration, and a
-streamlined Express server.

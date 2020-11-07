@@ -35,18 +35,18 @@ module.exports = (args) => {
     if (isTime(onAtHours, onAtMinutes)) {
       log.info(`Time for ON: ${NAME}`);
       await conduitPost({
-        to: 'ambience',
-        topic: 'fade',
-        message: { all: COLOR },
+        to: 'visuals',
+        topic: 'fadeAll',
+        message: { to: COLOR },
       });
     }
 
     if (isTime(offAtHours, offAtMinutes)) {
       log.info(`Time for OFF: ${NAME}`);
       await conduitPost({
-        to: 'ambience',
-        topic: 'fade',
-        message: { all: OFF_COLOR },
+        to: 'visuals',
+        topic: 'fadeAll',
+        message: { to: OFF_COLOR },
       });
     }
   });
