@@ -188,7 +188,6 @@ instead:
 ./conduit.sh 48.192.67.201 attic get '{"app":"TestApp","key":"itemList"}' fa874c2f584dac2f3e68e6aa5f27d75ac208a88e
 
 # Is equivalent to
-
 curl -X POST http://48.192.67.201:5959/conduit \
   -H Content-Type:application/json \
   -d '{
