@@ -36,14 +36,14 @@ they play.
 The setup process:
 
 1. Run `conduit`, `attic`, and `concierge` on a static IP, internet-accessible
-   machine, such as in AWS, or another hosting provider.
+   machine such as in AWS, or another hosting provider.
 
 2. Log into the Spotify developer dashboard and create an application in order
    to get a client ID and secret. Put these into `config.json` in the `SPOTIFY`
    block.
 
 3. Add this host with `concierge` port and callback URL in the list of allowed
-   callback URLS, such as `http:/46.101.3.163:4665/spotifyCallback`.
+   callback URLS, such as `http://46.101.3.163:4665/spotifyCallback`.
 
 To use the feature:
 
@@ -55,7 +55,8 @@ To use the feature:
 2. Once signed in, `concierge` will acknowledge with `OK` and the authorization
    `code` will be saved in the static IP instance of `attic`. If this is set as
    the `AUTH_ATTIC`, on the next `spotify` packet `visuals` will read this code
-   and use the client ID and secret to full authorize.
+   and use the client ID and secret to fully authorize to begin reading
+   Now Playing data.
 
 3. Once authorized, the colors will fade to that of the album art of the music
    playing every ten seconds until an `off` packet is received.
@@ -99,7 +100,11 @@ Receive: `{ leds }`
 
 ### `fadeAll`
 
-Same as `setAll`, but fades to the new color from the last known color.
+Similar to `setAll`, but fades to the new color from the last known color.
+
+Send: `{ to: [r, g, b] }` and optionally add `from` to override the start color.
+
+Receive: `{ content: 'OK' }`
 
 ### `off`
 
@@ -112,3 +117,7 @@ Cycle between one of a set of rainbow colors once every 30 seconds.
 ### `spotify`
 
 Trigger the Spotify album art color mode mentioned above, once authorized.
+
+Send: N/A
+
+Receive: `{ rgb }`
