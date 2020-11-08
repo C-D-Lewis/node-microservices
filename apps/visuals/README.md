@@ -35,8 +35,8 @@ they play.
 
 The setup process:
 
-1. Run `conduit`, `attic`, and `concierge` on a static IP machine, such as in
-   AWS, or another hosting provider.
+1. Run `conduit`, `attic`, and `concierge` on a static IP, internet-accessible
+   machine, such as in AWS, or another hosting provider.
 
 2. Log into the Spotify developer dashboard and create an application in order
    to get a client ID and secret. Put these into `config.json` in the `SPOTIFY`
