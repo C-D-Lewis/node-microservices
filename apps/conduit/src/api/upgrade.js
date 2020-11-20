@@ -1,4 +1,5 @@
 const { execSync } = require('child_process');
+const { log } = require('../node-common')(['log']);
 
 /** Time until reboot. */
 const DELAY_MS = 10000;

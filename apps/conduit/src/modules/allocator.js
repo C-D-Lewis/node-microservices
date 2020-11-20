@@ -13,7 +13,7 @@ const configs = []; // Each item is: { app, port }
  * @param {string} app - App name to find.
  * @returns {Object} The corresponding app config.
  */
-const findByApp = app => configs.find(item => item.app === app);
+const findByApp = (app) => configs.find(p => p.app === app);
 
 /**
  * Send a config over the network.
@@ -37,7 +37,7 @@ const roll = () => Math.round(Math.random() * (PORT_MAX - PORT_MIN)) + PORT_MIN;
  */
 const generatePortNumber = () => {
   let port = roll();
-  while(configs.find(item => item.port === port)) {
+  while (configs.find(p => p.port === port)) {
     port = roll();
   }
 

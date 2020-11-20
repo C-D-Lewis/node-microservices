@@ -1,4 +1,4 @@
-const { config } = require('..//node-common')(['config']);
+const { config } = require('../node-common')(['config']);
 const allocator = require('../modules/allocator');
 const util = require('../modules/util');
 

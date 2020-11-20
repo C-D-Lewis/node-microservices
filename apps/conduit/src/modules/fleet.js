@@ -43,7 +43,7 @@ const initAtticModule = () => {
  * @param {number} b - Second item.
  * @returns {number} -1 to sort above, 1 to sort below.
  */
-const sortByLastCheckIn = (a, b) => a.lastCheckIn > b.lastCheckIn ? -1 : 1;
+const sortByLastCheckIn = (a, b) => (a.lastCheckIn > b.lastCheckIn ? -1 : 1);
 
 /**
  * Send the data to remote Attic to perform the checkin.
@@ -52,7 +52,7 @@ const checkIn = async () => {
   // Create the remote list if it doesn't already exist
   if (!(await attic.exists(FLEET_LIST_KEY))) {
     await attic.set(FLEET_LIST_KEY, []);
-  };
+  }
 
   const now = new Date();
   const updatePayload = {
@@ -64,7 +64,7 @@ const checkIn = async () => {
   };
 
   const fleetList = await attic.get(FLEET_LIST_KEY);
-  const found = fleetList.find(p => p.deviceName === FLEET.DEVICE_NAME);
+  const found = fleetList.find((p) => p.deviceName === FLEET.DEVICE_NAME);
   if (!found) {
     // Add a new entry
     fleetList.push(updatePayload);

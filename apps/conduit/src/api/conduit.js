@@ -2,7 +2,9 @@ const {
   config, log, requestAsync, schema,
 } = require('../node-common')(['config', 'log', 'requestAsync', 'schema']);
 const { findByApp } = require('../modules/allocator');
-const { sendBadRequest, sendNotFound, sendPacket, sendNotAuthorized } = require('../modules/util');
+const {
+  sendBadRequest, sendNotFound, sendPacket, sendNotAuthorized,
+} = require('../modules/util');
 
 config.requireKeys('conduit.js', {
   required: ['SERVER'],
@@ -57,7 +59,9 @@ const handlePacketRequest = async (req, res) => {
     return;
   }
 
-  const { to, topic, message, host = DEFAULT_HOST_LOCAL, auth } = packet;
+  const {
+    to, topic, message, host = DEFAULT_HOST_LOCAL, auth ,
+  } = packet;
 
   // Enforce only localhost need not supply a guestlist token
   if (hostname !== 'localhost' && config.OPTIONS.AUTH_TOKENS) {
