@@ -25,7 +25,7 @@ const loadGistSyncFile = () => {
   const data = gistSync.getFile('attic-db.json');
   if (!data) {
     log.error('Could get load gistSync file!');
-    return;
+    return undefined;
   }
 
   return data;
@@ -37,8 +37,8 @@ const MODE_HANDLERS = {
   mongo,
   gistSync: {
     init: gistSync.init,
-    exists: key => loadGistSyncFile()[key] !== null,
-    get: key => loadGistSyncFile()[key],
+    exists: (key) => loadGistSyncFile()[key] !== null,
+    get: (key) => loadGistSyncFile()[key],
     set: (key, value) => {
       const data = loadGistSyncFile();
       if (!data) {
@@ -51,8 +51,8 @@ const MODE_HANDLERS = {
 };
 
 module.exports = {
-  get: key => MODE_HANDLERS[STORAGE_MODE].get(key),
+  get: (key) => MODE_HANDLERS[STORAGE_MODE].get(key),
   set: (key, value) => MODE_HANDLERS[STORAGE_MODE].set(key, value),
-  exists: key => MODE_HANDLERS[STORAGE_MODE].exists(key),
+  exists: (key) => MODE_HANDLERS[STORAGE_MODE].exists(key),
   init: () => MODE_HANDLERS[STORAGE_MODE].init(),
 };

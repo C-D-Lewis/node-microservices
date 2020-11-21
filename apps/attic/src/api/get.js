@@ -16,7 +16,12 @@ const handleGetPacket = async (packet, res) => {
   }
 
   const { value, timestamp } = appData[key];
-  conduit.respond(res, { status: 200, message: { app, key, value, timestamp } });
+  conduit.respond(res, {
+    status: 200,
+    message: {
+      app, key, value, timestamp,
+    },
+  });
 };
 
 module.exports = handleGetPacket;

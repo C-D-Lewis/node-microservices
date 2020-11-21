@@ -1,11 +1,11 @@
-const { log } = require('../node-common')(['log']);
 const { MongoClient } = require('mongodb');
+const { log } = require('../node-common')(['log']);
 
-/** mongod URL **/
+/** mongod URL */
 const DB_URL = 'mongodb://localhost:27017';
-/** MongoDB name **/
+/** MongoDB name */
 const DB_NAME = 'AtticAppData';
-/** MongoDB collection name **/
+/** MongoDB collection name */
 const COLLECTION_NAME = 'AppDataDocument';
 
 const client = new MongoClient(DB_URL);
@@ -27,7 +27,7 @@ const init = async () => {
  * @param {string} key - The key.
  * @returns {*} The value.
  */
- const get = async (key) => {
+const get = async (key) => {
   const res = await db.collection(COLLECTION_NAME).findOne({ key });
   log.debug(`mongodb get ${JSON.stringify(res)}`);
 
@@ -40,7 +40,7 @@ const init = async () => {
  * @param {string} key - The key.
  * @returns {boolean} true if the key exists.
  */
-const exists = async key => get(key) !== null;
+const exists = async (key) => get(key) !== null;
 
 /**
  * Set a value with key and value. Created if does not exist.

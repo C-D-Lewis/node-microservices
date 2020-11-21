@@ -16,7 +16,7 @@ const SET_MESSAGE_SCHEMA = {
     app: { type: 'string' },
     key: { type: 'string' },
     value: {},
-  }
+  },
 };
 
 /**
