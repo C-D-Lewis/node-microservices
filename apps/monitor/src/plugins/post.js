@@ -12,7 +12,7 @@ module.exports = async (args) => {
     const { body } = await requestAsync({
       url: args.URL,
       method: 'post',
-      json: args.JSON
+      json: args.JSON,
     });
 
     log.info(`POST ${args.URL} OK`);

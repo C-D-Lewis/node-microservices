@@ -1,5 +1,5 @@
 const {
-  requestAsync, conduit, config, fcm, log, extract,
+  requestAsync, config, fcm, log, extract,
 } = require('../node-common')(['requestAsync', 'conduit', 'config', 'fcm', 'log', 'extract']);
 const display = require('../modules/display');
 const sleep = require('../modules/sleep');
@@ -58,7 +58,7 @@ const checkReasons = async (lineName) => {
   }
 
   const results = (reasons.length >= 1) ? reasons.join('\n') : 'None found';
-  log.info('Reasons: ' + results);
+  log.info(`Reasons: ${results}`);
   return results;
 };
 
@@ -66,10 +66,10 @@ const checkDelays = async (lineName) => {
   const url = 'http://www.nationalrail.co.uk/service_disruptions/indicator.aspx';
   const { body } = await requestAsync(url);
   const stateNow = extract(body, [`${lineName}</td>`, '<td>'], '</td>').trim();
-  log.info(`${lineName}: \'${stateNow}\'`);
+  log.info(`${lineName}: '${stateNow}'`);
 
   // If it's changed, and not OK
-  if ((stateNow != lastStates[lineName]) && (stateNow !== STATES.GOOD_SERVICE)) {
+  if ((stateNow !== lastStates[lineName]) && (stateNow !== STATES.GOOD_SERVICE)) {
     const reasons = await checkReasons(lineName);
     const message = `${stateNow.toUpperCase()}:\n${lineName}.\nReason: ${reasons || ''}`;
     fcm.post('Monitor', 'monitor', message);
@@ -94,9 +94,9 @@ module.exports = async (args) => {
     const tflOk = await checkDelays(TFL_RAIL);
     display.setLed(
       args.LED,
-      (/*gaOk && */tflOk) ? config.OPTIONS.LED_STATES.OK : config.OPTIONS.LED_STATES.DOWN
+      (/* gaOk && */tflOk) ? config.OPTIONS.LED_STATES.OK : config.OPTIONS.LED_STATES.DOWN,
     );
-  } catch(e) {
+  } catch (e) {
     log.error(e);
     fcm.post('Monitor', 'monitor', `Error checking delays: ${e.message}`);
     display.setLed(args.LED, config.OPTIONS.LED_STATES.DOWN);

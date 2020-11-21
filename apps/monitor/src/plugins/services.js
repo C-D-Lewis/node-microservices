@@ -51,11 +51,11 @@ module.exports = async (args) => {
   }, []);
 
   const stateNow = downApps.length === 0;
-  const serviceList = json.map(p => p.app).join(', ');
+  const serviceList = json.map((p) => p.app).join(', ');
   log.info(`Services up: ${stateNow} (${serviceList})`);
   display.setLed(
     args.LED,
-    stateNow ? config.OPTIONS.LED_STATES.OK : config.OPTIONS.LED_STATES.DOWN
+    stateNow ? config.OPTIONS.LED_STATES.OK : config.OPTIONS.LED_STATES.DOWN,
   );
 
   // Was OK, not anymore

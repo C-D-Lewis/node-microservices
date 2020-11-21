@@ -9,7 +9,7 @@ const CSV_FILE_NAME = `${__dirname}/../../enviro.csv`;
  *
  * @param {Object} args - plugin ARGS object.
  */
-module.exports = async (args) => {
+module.exports = async () => {
   try {
     const sample = enviro.readAll();
     const timestamp = Date.now();

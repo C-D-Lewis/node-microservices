@@ -61,7 +61,7 @@ module.exports = async (args) => {
 
   try {
     const ledStates = await getForecastLedStates(args);
-    for (let i = 0; i < ledStates.length; i++) {
+    for (let i = 0; i < ledStates.length; i += 1) {
       await display.setLed(i, ledStates[i]);
     }
   } catch (e) {

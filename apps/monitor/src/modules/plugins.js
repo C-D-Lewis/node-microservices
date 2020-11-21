@@ -22,10 +22,10 @@ const handleAt = (pluginName, plugin, pluginFunc) => {
     const now = new Date();
     const [whenHours, whenMins] = plugin.AT.split(':');
     if (
-      now.getHours() !== parseInt(whenHours) ||
-      now.getMinutes() !== parseInt(whenMins) ||
-      now.getSeconds() !== 0
-      ) {
+      now.getHours() !== parseInt(whenHours, 10)
+      || now.getMinutes() !== parseInt(whenMins, 10)
+      || now.getSeconds() !== 0
+    ) {
       return;
     }
 

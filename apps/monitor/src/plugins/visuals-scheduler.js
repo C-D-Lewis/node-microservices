@@ -9,7 +9,7 @@ const OFF_COLOR = [0, 0, 0];
  */
 const isTime = (hours, minutes) => {
   const now = new Date();
-  return now.getHours() === parseInt(hours) && now.getMinutes() === parseInt(minutes);
+  return now.getHours() === parseInt(hours, 10) && now.getMinutes() === parseInt(minutes, 10);
 };
 
 /**
@@ -21,13 +21,15 @@ module.exports = (args) => {
   const { EVENTS = [] } = args;
 
   EVENTS.forEach(async (event) => {
-    const { NAME, ON, OFF, COLOR } = event;
+    const {
+      NAME, ON, OFF, COLOR,
+    } = event;
     log.assert(ON.length === 5 && ON.includes(':'), 'ON must be HH:MM', true);
     log.assert(OFF.length === 5 && OFF.includes(':'), 'OFF must be HH:MM', true);
     log.assert(
-      COLOR.length === 3 && COLOR.every(c => typeof c === 'number'),
+      COLOR.length === 3 && COLOR.every((c) => typeof c === 'number'),
       'COLOR must be 3 numbers',
-      true
+      true,
     );
 
     const [onAtHours, onAtMinutes] = ON.split(':');

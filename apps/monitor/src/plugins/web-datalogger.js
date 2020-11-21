@@ -8,7 +8,9 @@ const {
  * @param {Object} args - plugin ARGS object.
  */
 module.exports = async (args) => {
-  const { URL, BEFORES, AFTER, ATTIC_KEY } = args;
+  const {
+    URL, BEFORES, AFTER, ATTIC_KEY,
+  } = args;
   const configured = URL && BEFORES && AFTER && ATTIC_KEY;
   log.assert(configured, 'web-datalogger.js requires some ARGS specified', true);
 

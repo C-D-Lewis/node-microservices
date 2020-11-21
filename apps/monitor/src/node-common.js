@@ -4,7 +4,7 @@
  * @param {string[]} list - Array of modules names.
  * @returns {Object[]} Array of loaded modules.
  */
-module.exports = list => list.reduce((result, item) => {
-  result[item] = require(`${__dirname}/../../../node-common/src/modules/${item}`);
-  return result;
-}, {});
+module.exports = (list) => list.reduce((acc, item) => ({
+  ...acc,
+  [item]: require(`${__dirname}/../../../node-common/src/modules/${item}`),
+}), {});

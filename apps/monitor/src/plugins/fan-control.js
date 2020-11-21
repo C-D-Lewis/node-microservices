@@ -1,4 +1,4 @@
-const { log, gpio, temperature } = require('../node-common')(['log', 'gpio','temperature']);
+const { log, gpio, temperature } = require('../node-common')(['log', 'gpio', 'temperature']);
 
 /**
  * Monitor temperature and control onboard fan.
@@ -10,7 +10,7 @@ module.exports = (args) => {
     log.assert(
       args.GPIO_PIN && args.THRESHOLD,
       'fan-control.js requires GPIO_PIN and THRESHOLD specified',
-      true
+      true,
     );
     const { GPIO_PIN, THRESHOLD } = args;
 

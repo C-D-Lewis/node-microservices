@@ -1,4 +1,6 @@
-const { config, conduit, fcm, log } = require('./node-common')(['config', 'conduit', 'fcm', 'log']);
+const {
+  config, conduit, fcm, log,
+} = require('./node-common')(['config', 'conduit', 'fcm', 'log']);
 const plugins = require('./modules/plugins');
 const statusLed = require('./modules/status-led');
 
@@ -22,7 +24,9 @@ const main = async () => {
   log.begin();
 
   await conduit.register();
-  await conduit.send({ to: 'visuals', topic: 'setAll',
+  await conduit.send({
+    to: 'visuals',
+    topic: 'setAll',
     message: { all: [0, 0, 0] },
   });
   statusLed.start();
