@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const { Client } = require('tplink-smarthome-api');
 const { log } = require('../node-common')(['log']);
 
@@ -13,7 +14,7 @@ const knownDevices = [];
  * @returns {Array<Object>} List of { alias, state } objects representing devices.
  */
 const getAvailablePlugs = () => knownDevices
-  .map(d => ({ alias: d._sysInfo.alias, state: d._sysInfo.relay_state }));
+  .map((d) => ({ alias: d._sysInfo.alias, state: d._sysInfo.relay_state }));
 
 /**
  * When a new device is discovered.
@@ -22,7 +23,7 @@ const getAvailablePlugs = () => knownDevices
  */
 const onNewDevice = (device) => {
   // Already known device? (Although evidence suggests this is handled for us)
-  if (knownDevices.find(p => p._sysInfo.alias === device._sysInfo.alias)) return;
+  if (knownDevices.find((p) => p._sysInfo.alias === device._sysInfo.alias)) return;
 
   log.info(`Found new device: ${device._sysInfo.alias}`);
   log.debug(JSON.stringify(device._sysInfo));
@@ -51,7 +52,7 @@ const rediscover = () => {
  * @param {boolean} state - New device state.
  */
 const setPlugState = (alias, state) => {
-  const device = knownDevices.find(p => p._sysInfo.alias === alias);
+  const device = knownDevices.find((p) => p._sysInfo.alias === alias);
   if (!device) throw new Error(`Plug ${alias} not found!`);
 
   log.debug(`Setting ${alias} to ${state}...`);

@@ -1,4 +1,4 @@
-const { conduit, schema } = require('../node-common')(['conduit', 'schema']);
+const { conduit } = require('../node-common')(['conduit', 'schema']);
 
 /** Empty message schema. */
 const EMPTY_MESSAGE_SCHEMA = { type: 'object' };
