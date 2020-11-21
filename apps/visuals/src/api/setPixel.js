@@ -8,7 +8,7 @@ const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
  */
 const handleSetPixelPacket = (packet, res) => {
   const { message } = packet;
-  for (var i = 0; i < leds.getNumLEDs(); i += 1) {
+  for (let i = 0; i < leds.getNumLEDs(); i += 1) {
     if (message[i]) {
       leds.set(i, message[i]);
     }

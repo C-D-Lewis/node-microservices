@@ -12,7 +12,7 @@ const spotifyColorUpdate = async () => {
   try {
     const nextRgb = await getColor();
     log.info(`spotifyColorUpdate: ${JSON.stringify(nextRgb)}`);
-    leds.fadeAll(nextRgb)
+    leds.fadeAll(nextRgb);
   } catch (e) {
     log.error('spotifyColorUpdate failed, clearing animation');
     log.error(e);

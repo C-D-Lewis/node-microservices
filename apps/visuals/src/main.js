@@ -9,7 +9,6 @@ const main = async () => {
   log.begin();
   api.setup();
 
-  // TODO
   try {
     await createSpotifyClient();
   } catch (e) {

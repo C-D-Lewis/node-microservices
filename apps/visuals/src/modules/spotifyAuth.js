@@ -80,7 +80,7 @@ const buildAuthURL = () => {
 const refreshCredentials = async (spotifyApi) => {
   const refreshAccessTokenAsync = promisify(spotifyApi.refreshAccessToken).bind(spotifyApi);
   const { body } = await refreshAccessTokenAsync();
-  const accessToken = body['access_token'];
+  const accessToken = body.access_token;
 
   // Save the new token
   await attic.set(DB_KEYS.ACCESS_TOKEN, accessToken);
@@ -138,7 +138,7 @@ const testCredentials = async (spotifyApi) => {
   try {
     await getMyCurrentPlaybackStateAsync('UK');
     log.info('Credentials valid');
-  } catch(e) {
+  } catch (e) {
     await refreshCredentials(spotifyApi);
   }
 };
@@ -168,8 +168,8 @@ const createSpotifyClient = async () => {
 
   const res = await authorizationCodeGrantAsync(authCode);
   log.debug('Granted new credentials');
-  await attic.set(DB_KEYS.ACCESS_TOKEN, res.body['access_token']);
-  await attic.set(DB_KEYS.REFRESH_TOKEN, res.body['refresh_token']);
+  await attic.set(DB_KEYS.ACCESS_TOKEN, res.body.access_token);
+  await attic.set(DB_KEYS.REFRESH_TOKEN, res.body.refresh_token);
 
   // Test and return API object
   await testCredentials(spotifyApi);

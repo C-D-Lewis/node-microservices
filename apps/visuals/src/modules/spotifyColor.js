@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const { promisify } = require('util');
 const Vibrant = require('node-vibrant');
 const { log } = require('../node-common')(['log']);
@@ -17,8 +18,8 @@ const getLargestImageUrl = async (spotifyApi) => {
   if (!body || !body.item) throw new Error('Nothing is playing!');
 
   const { images } = body.item.album;
-  const largest = images.reduce((acc, p) => (p.height > acc) ? p.height : acc, 0);
-  return images.find(p => p.height === largest).url;
+  const largest = images.reduce((acc, p) => ((p.height > acc) ? p.height : acc), 0);
+  return images.find((p) => p.height === largest).url;
 };
 
 /** Use Vibrant to get the dominant color in the album art image.
@@ -32,11 +33,9 @@ const getDominantColor = async (url) => {
   const palette = await getPaletteAsync();
 
   // Use Vibrant color, else, LightVibrant, else black
-  return (palette.Vibrant)
-    ? palette.Vibrant._rgb
-    : ((palette.LightVibrant)
-      ? palette.LightVibrant._rgb
-      : [0, 0, 0]);
+  if (palette.Vibrant) return palette.Vibrant._rgb;
+  if (palette.LightVibrant) return palette.LightVibrant._rgb;
+  return [0, 0, 0];
 };
 
 /**
@@ -51,7 +50,7 @@ const getColor = async () => {
     const rgbArr = await getDominantColor(imageUrl);
 
     return rgbArr.map(Math.round);
-  } catch(e) {
+  } catch (e) {
     log.error(e);
     throw new Error(`${e.message}\n\nGo to: ${buildAuthURL()}`);
   }

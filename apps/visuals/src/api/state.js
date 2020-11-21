@@ -6,7 +6,8 @@ const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
  * @param {Object} packet - The conduit packet request.
  * @param {Object} res - Express response object.
  */
-const handleStatePacket = (packet, res) =>
-  conduit.respond(res, { status: 200, message: { leds: leds.getState() } });
+const handleStatePacket = async (packet, res) => {
+  await conduit.respond(res, { status: 200, message: { leds: leds.getState() } });
+};
 
 module.exports = handleStatePacket;
