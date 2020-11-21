@@ -16,7 +16,7 @@ const handleGetPacket = async (packet, res) => {
     : [];
 
   // Check it doesn't already exist
-  const user = list.find(p => p.name === name);
+  const user = list.find((p) => p.name === name);
   if (!user) {
     conduit.respond(res, { status: 404, error: 'User does not exist' });
     return;

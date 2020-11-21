@@ -16,7 +16,7 @@ const handleAuthorizePacket = async (packet, res) => {
     : [];
 
   // Check it exists
-  const user = list.find(p => p.token === token);
+  const user = list.find((p) => p.token === token);
   if (!user) {
     conduit.respond(res, { status: 404, error: 'User does not exist' });
     return;

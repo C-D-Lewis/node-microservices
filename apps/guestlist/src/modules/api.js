@@ -9,12 +9,12 @@ const CREATE_MESSAGE_SCHEMA = {
     apps: {
       type: 'array',
       items: { type: 'string' },
-      minItems: 1
+      minItems: 1,
     },
     topics: {
       type: 'array',
       items: { type: 'string' },
-      minItems: 1
+      minItems: 1,
     },
   },
 };

@@ -45,7 +45,7 @@ const handleCreatePacket = async (packet, res) => {
     ? (await attic.get(ATTIC_KEY_USERS))
     : [];
 
-  const existing = list.find(p => p.name === name);
+  const existing = list.find((p) => p.name === name);
   if (existing) {
     conduit.respond(res, { status: 409, error: 'User already exists' });
     return;

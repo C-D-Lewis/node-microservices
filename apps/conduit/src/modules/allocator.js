@@ -13,7 +13,7 @@ const configs = []; // Each item is: { app, port }
  * @param {string} app - App name to find.
  * @returns {Object} The corresponding app config.
  */
-const findByApp = (app) => configs.find(p => p.app === app);
+const findByApp = (app) => configs.find((p) => p.app === app);
 
 /**
  * Send a config over the network.

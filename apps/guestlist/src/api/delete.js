@@ -29,7 +29,7 @@ const handleDeletePacket = async (packet, res) => {
     : [];
 
   // Find existing user
-  const existing = list.find(p => p.name === message.name);
+  const existing = list.find((p) => p.name === message.name);
   if (!existing) {
     conduit.respond(res, { status: 404, error: 'User does not exist' });
     return;
