@@ -36,7 +36,7 @@ const handleRequest = async (req, res) => {
 
   // Check there is a hook for this URL
   const { path, query } = req;
-  const found = hooks.find(p => p.url === path);
+  const found = hooks.find((p) => p.url === path);
   if (!found) {
     log.error(`Webhook does not exist for URL ${path}`);
     res.status(404).json({ error: 'No hook found' });

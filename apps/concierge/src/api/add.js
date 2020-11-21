@@ -10,7 +10,7 @@ const { ATTIC_KEY_WEBHOOKS, WEBHOOK_SCHEMA } = require('../modules/webhooks');
  */
 const handlePacketWebhook = async (message) => {
   const hooks = await attic.get(ATTIC_KEY_WEBHOOKS);
-  const found = hooks.find(p => p.url === message.url);
+  const found = hooks.find((p) => p.url === message.url);
   if (!found) {
     hooks.push(message);
     log.info(`Added new webhook for url ${message.url}`);

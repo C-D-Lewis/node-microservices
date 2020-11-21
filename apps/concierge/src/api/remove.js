@@ -9,7 +9,7 @@ const { ATTIC_KEY_WEBHOOKS } = require('../modules/webhooks');
  */
 const handleRemovePacket = async (packet, res) => {
   const hooks = await attic.get(ATTIC_KEY_WEBHOOKS);
-  const found = hooks.find(p => p.url === packet.message.url);
+  const found = hooks.find((p) => p.url === packet.message.url);
   if (!found) {
     conduit.respond(res, { status: 404, error: 'Not Found' });
     return;

@@ -18,6 +18,40 @@ config.requireKeys('main.js', {
 });
 
 /**
+ * Show the stored webhooks, or initialise if missing.
+ */
+const initWebhooks = async () => {
+  try {
+    // Throws if app not yet found
+    const existing = await attic.get(ATTIC_KEY_WEBHOOKS);
+    if (existing.length) {
+      log.info('Known webhooks:');
+      existing.forEach((p) => log.info(`  POST ${p.url}`));
+    }
+  } catch (e) {
+    log.info('Initialising empty list of webhooks');
+    await attic.set(ATTIC_KEY_WEBHOOKS, []);
+  }
+};
+
+/**
+ * Add any missing ensured webhooks (required).
+ */
+const initEnsuredWebhooks = async () => {
+  const { ENSURED_WEBHOOKS } = config.OPTIONS;
+  const existing = await attic.get(ATTIC_KEY_WEBHOOKS);
+  for (let i = 0; i < ENSURED_WEBHOOKS.length; i += 1) {
+    const hook = ENSURED_WEBHOOKS[i];
+
+    // If it's missing, store it
+    if (!existing.find((p) => p.url === hook.url)) {
+      await handlePacketWebhook(hook);
+      log.info(`Ensured missing hook ${JSON.stringify(hook)}`);
+    }
+  }
+};
+
+/**
  * The main function.
  */
 const main = async () => {
@@ -26,34 +60,13 @@ const main = async () => {
   try {
     await conduit.register();
     await conduit.send({ to: 'attic', topic: 'status' });
-  } catch(e) {
+  } catch (e) {
     log.error(e);
     log.fatal('Unable to reach attic!');
   }
 
-  // Intialise app-wide data
-  try {
-    // Throws if app not yet found
-    const existing = await attic.get(ATTIC_KEY_WEBHOOKS);
-    if (existing.length) {
-      log.info('Known webhooks:');
-      existing.forEach(p => log.info(`  POST ${p.url}`));
-    }
-  } catch (e) {
-    log.info('Initialising empty list of webhooks');
-    await attic.set(ATTIC_KEY_WEBHOOKS, []);
-  }
-
-  // Place any webhooks that are missing
-  const { ENSURED_WEBHOOKS } = config.OPTIONS;
-  const existing = await attic.get(ATTIC_KEY_WEBHOOKS);
-  for (let i = 0; i < ENSURED_WEBHOOKS.length; i += 1) {
-    const hook = ENSURED_WEBHOOKS[i];
-    if (!existing.find(p => p.url === hook.url)) {
-      await handlePacketWebhook(hook);
-      log.info(`Ensured missing hook ${JSON.stringify(hook)}`);
-    }
-  }
+  await initWebhooks();
+  await initEnsuredWebhooks();
 
   setupHandler();
   api.setup();
