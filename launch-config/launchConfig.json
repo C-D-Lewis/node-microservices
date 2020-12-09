@@ -110,14 +110,6 @@
       {
         "location": "node-microservices/apps/attic",
         "start": "npm start &"
-      },
-      {
-        "location": "node-microservices/apps/visuals",
-        "start": "npm start &"
-      },
-      {
-        "location": "node-microservices/apps/monitor",
-        "start": "npm start &"
       }
     ],
     "stack2": [
