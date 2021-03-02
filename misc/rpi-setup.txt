@@ -7,12 +7,12 @@ sudo dd if=2019-04-08-raspbian-stretch-lite.img of=/dev/DISK_NAME bs=1m
 sudo VBoxManage internalcommands createrawvmdk -filename ./sd-card.vmdk -rawdisk /dev/disk2
 sudo chmod 777 /dev/disk2
 sudo chmod 777 ./sd-card.vmdk
-Make sure name doesn't match one VB already knows about
-Make sure listed but NOT mounted in Diskutils app
-Add to storage devices while not mounted
+> Make sure name doesn't match one VB already knows about
+> Make sure listed but NOT mounted in Diskutils app
+> Add to storage devices while not mounted
 <enter vbox>
 touch /boot/ssh
-nano /rootfs/etc/wpa_supplicant/wpa_supplicant.conf
+sudo nano /rootfs/etc/wpa_supplicant/wpa_supplicant.conf
 
 # Distro
 sudo apt-get update
@@ -25,6 +25,7 @@ git clone https://github.com/c-d-lewis/node-microservices
 
 # node & npm (Pi 3 is armv7, Zero is armv6)
 wget https://nodejs.org/dist/v12.18.1/node-v12.18.1-linux-armv7l.tar.xz
+wget https://nodejs.org/dist/v10.9.0/node-v10.9.0-linux-armv6l.tar.gz
 tar xf node-v12.18.1-linux-armv7l.tar.xz
 cd node-v12.18.1-linux-armv7l/
 sudo cp -R ./* /usr/local/
@@ -62,6 +63,11 @@ curl -sSL https://get.pimoroni.com/enviroplus | bash
 
 # GPIO?
 sudo apt install python3-rpi.gpio (may already be installed)
+
+# Waveshare E-Paper?
+sudo apt-get install python3-pip python3-pil python3-numpy
+sudo pip3 install RPi.GPIO spidev
+git clone https://github.com/waveshare/e-Paper
 
 # Startup apps with launch-config
 sudo crontab -e
