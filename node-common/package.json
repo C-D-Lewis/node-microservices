@@ -12,10 +12,11 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "jsonschema": "^1.2.0",
+    "node-fetch": "^2.6.1",
     "request": "^2.88.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^5.2.0"
+    "mocha": "^8.3.2"
   }
 }

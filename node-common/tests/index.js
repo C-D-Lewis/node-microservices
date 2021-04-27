@@ -18,4 +18,5 @@ require('./requestAsync.spec');
 require('./schema.spec');
 require('./server.spec');
 require('./textDisplay.spec');
+require('./twilio.spec');
 require('./gpio.spec');

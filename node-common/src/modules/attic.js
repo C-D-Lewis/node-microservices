@@ -23,13 +23,13 @@ let appName = config.CONDUIT.APP || 'Unknown';
 const conduitSend = async packet => {
   packet.auth = config.CONDUIT.TOKEN || '';
 
-  const res = await requestAsync({
+  const { body } = await requestAsync({
     url: `http://${host}:${CONDUIT_PORT}/conduit`,
     method: 'post',
     json: packet,
   });
 
-  return res.body;
+  return body;
 };
 
 const setHost = (newHost) => {
