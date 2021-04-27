@@ -58,7 +58,7 @@ const sendSmsNotification = async (body) => {
     body: formBody,
   });
 
-  log.debug(`Twilio << ${JSON.stringify(responseBody, null, 2)}`);
+  log.debug(`Twilio << ${JSON.stringify(JSON.parse(responseBody), null, 2)}`);
   return responseBody.status === 'accepted';
 };
 

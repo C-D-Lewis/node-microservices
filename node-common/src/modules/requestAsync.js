@@ -1,10 +1,12 @@
-const fetch = require('node-fetch');
+const request = require('request');
 
-module.exports = async (opts) => {
-  const { url, ...rest } = opts;
-  const res = await fetch(url, rest);
-  const body = await res.json();
+module.exports = opts => new Promise((resolve, reject) => {
+  request(opts, (err, response, body) => {
+    if (err) {
+      reject(err);
+      return;
+    }
 
-  // As of 27/4/21, seems 'response' is not currently used
-  return { body };
-};
+    resolve({ response, body });
+  });
+});

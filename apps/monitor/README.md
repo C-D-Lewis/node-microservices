@@ -11,7 +11,7 @@ controlling other applications through requests.
 Adding a plugin is easy. Simply place it in the `plugins` directory and export a
 single function as the `exports`. See existing plugins as examples. The plugin
 will be called according to its configuration in `config.json`. Specify either
-`AT` with a specific time, or `EVERY` to be called at that many minutes
+`AT` with a specific time (or 'start'), `EVERY` to be called at that many minutes
 interval.
 
 For example to run `delays.js` every 15 minutes:

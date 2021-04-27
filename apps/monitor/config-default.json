@@ -6,7 +6,7 @@
   },
   "PLUGINS": [
     {
-      "ENABLED": true,
+      "ENABLED": false,
       "FILE_NAME": "delays.js",
       "EVERY": 15,
       "ARGS": {
@@ -48,7 +48,7 @@
       }
     },
     {
-      "ENABLED": true,
+      "ENABLED": false,
       "FILE_NAME": "ambience-scheduler.js",
       "EVERY": 1,
       "ARGS": {
@@ -63,6 +63,16 @@
           "OFF": "00:00",
           "COLOR": [64, 64, 64]
         }]
+      }
+    },
+    {
+      "ENABLED": false,
+      "FILE_NAME": "crypto-alerts.js",
+      "EVERY": 10,
+      "ARGS": {
+        "CODES": ["BTC"],
+        "CONVERT_TO": "GBP",
+        "NOMICS_KEY": ""
       }
     }
   ],

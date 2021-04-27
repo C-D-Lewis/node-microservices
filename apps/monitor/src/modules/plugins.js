@@ -11,13 +11,37 @@ config.requireKeys('plugins.js', {
 const HANDLE_AT_INTERVAL_MS = 1000;
 
 /**
+ * Run a plugin now.
+ *
+ * @param {string} pluginName - Name of the plugin.
+ * @param {Object} plugin - The plugin object.
+ * @param {Function} pluginFunc - Function to call to call the plugin's code.
+ */
+const runPlugin = async (pluginName, plugin, pluginFunc) => {
+  log.info(`Running ${pluginName}`);
+  try {
+    await pluginFunc(plugin.ARGS);
+  } catch (e) {
+    log.error(`Failed to run plugin function: ${pluginName}`);
+    log.error(e);
+  }
+};
+
+/**
  * Handle a plugin specifying an AT time scheme.
  *
  * @param {string} pluginName - Name of the plugin.
  * @param {Object} plugin - The plugin object.
  * @param {Function} pluginFunc - Function to call to call the plugin's code.
  */
-const handleAt = (pluginName, plugin, pluginFunc) => {
+const handleAt = async (pluginName, plugin, pluginFunc) => {
+  // Now?
+  if (plugin.AT === 'start') {
+    await runPlugin(pluginName, plugin, pluginFunc);
+    return;
+  }
+
+  // A certain time in the future
   setInterval(async () => {
     const now = new Date();
     const [whenHours, whenMins] = plugin.AT.split(':');
@@ -29,13 +53,7 @@ const handleAt = (pluginName, plugin, pluginFunc) => {
       return;
     }
 
-    log.info(`Running ${pluginName}`);
-    try {
-      await pluginFunc(plugin.ARGS);
-    } catch (e) {
-      log.error(`Failed to run plugin function: ${pluginName}`);
-      log.error(e);
-    }
+    await runPlugin(pluginName, plugin, pluginFunc);
   }, HANDLE_AT_INTERVAL_MS);
   log.info(`AT ${plugin.AT}: ${JSON.stringify(plugin)}`);
 };
@@ -64,7 +82,7 @@ const handleEvery = (pluginName, plugin, pluginFunc) => {
  * Load all plugins in config.
  */
 const loadAll = () => {
-  config.PLUGINS.forEach((plugin) => {
+  config.PLUGINS.forEach(async (plugin) => {
     // Verify plugin config
     log.assert(!(plugin.EVERY && plugin.AT), 'Plugin must have only EVERY or AT, not both', true);
     log.assert(!(plugin.FILE_NAME && plugin.USE), 'Plugin must have only FILE_NAME or USE, not both', true);
@@ -84,7 +102,7 @@ const loadAll = () => {
     }
 
     if (plugin.AT) {
-      handleAt(pluginName, plugin, pluginFunc);
+      await handleAt(pluginName, plugin, pluginFunc);
       return;
     }
 
