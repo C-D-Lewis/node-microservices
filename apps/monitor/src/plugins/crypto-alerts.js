@@ -14,14 +14,14 @@ const analyseAndAlert = async (currency) => {
   // Down by 10% today
   const lastDayChange = parseFloat(lastDay.price_change_pct);
   if (lastDayChange < 0 && Math.abs(lastDayChange) > 0.1) {
-    await twilio.sendSmsNotification(`${name} (${id}) is DOWN 10% today!`);
+    await twilio.sendSmsNotification(`${name} (${id}) is DOWN ${lastDayChange} today!`);
     return;
   }
 
   // Down by 20% this week
   const lastWeekChange = parseFloat(lastWeek.price_change_pct);
   if (lastWeekChange < 0 && Math.abs(lastWeekChange) > 0.2) {
-    await twilio.sendSmsNotification(`${name} (${id}) is DOWN 20% this week!`);
+    await twilio.sendSmsNotification(`${name} (${id}) is DOWN ${lastWeekChange} this week!`);
     return;
   }
 
