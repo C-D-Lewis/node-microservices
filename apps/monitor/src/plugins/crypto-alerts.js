@@ -1,5 +1,10 @@
 const { log, requestAsync, twilio } = require('../node-common')(['log', 'requestAsync', 'twilio']);
 
+/** Alert at most once every 6 hours per currency */
+const ALERT_INTERVAL_MS = 1000 * 60 * 60 * 6;
+
+const lastAlert = {};
+
 /**
  * Analyse changes and alert if needed.
  *
@@ -10,18 +15,35 @@ const analyseAndAlert = async (currency) => {
   const {
     id, name, '1d': lastDay, '7d': lastWeek,
   } = currency;
+  const now = Date.now();
 
   // Down by 10% today
   const lastDayChange = parseFloat(lastDay.price_change_pct);
   if (lastDayChange < 0 && Math.abs(lastDayChange) > 0.1) {
+    if (lastAlert[name] && (now - lastAlert[name]) < ALERT_INTERVAL_MS) return;
+
     await twilio.sendSmsNotification(`${name} (${id}) is DOWN ${lastDayChange} today!`);
+    lastAlert[name] = now;
+    return;
+  }
+
+  // Down by 10% this week
+  let lastWeekChange = parseFloat(lastWeek.price_change_pct);
+  if (lastWeekChange < 0 && Math.abs(lastWeekChange) > 0.1) {
+    if (lastAlert[name] && (now - lastAlert[name]) < ALERT_INTERVAL_MS) return;
+
+    await twilio.sendSmsNotification(`${name} (${id}) is DOWN ${lastWeekChange} this week!`);
+    lastAlert[name] = now;
     return;
   }
 
   // Down by 20% this week
-  const lastWeekChange = parseFloat(lastWeek.price_change_pct);
+  lastWeekChange = parseFloat(lastWeek.price_change_pct);
   if (lastWeekChange < 0 && Math.abs(lastWeekChange) > 0.2) {
+    if (lastAlert[name] && (now - lastAlert[name]) < ALERT_INTERVAL_MS) return;
+
     await twilio.sendSmsNotification(`${name} (${id}) is DOWN ${lastWeekChange} this week!`);
+    lastAlert[name] = now;
     return;
   }
 
