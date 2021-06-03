@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Colors, Fonts } from '../theme';
 import { sendDevicePacket } from '../services/apiService';
 import TextButton from './TextButton';
 import SwatchButton from './SwatchButton';
@@ -18,16 +17,6 @@ const DEMO_COLORS = [
   [255, 0, 255],  // Pink
   [255, 0, 127],  // Hot pink
 ];
-
-const Row = ({ children, align }) =>
-  <div style={{
-    display: 'flex',
-    marginTop: '10px',
-    justifyContent: align === 'right' ? 'flex-end' : 'initial',
-    padding: '0px 10px',
-  }}>
-    {children}
-  </div>;
 
 const ButtonBar = ({ children, align, style }) =>
   <div style={{

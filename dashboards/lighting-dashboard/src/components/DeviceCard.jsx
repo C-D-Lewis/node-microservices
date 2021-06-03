@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Colors } from '../theme';
 import { pingDevice } from '../services/apiService';
 import DeviceControls from './DeviceControls';
@@ -39,15 +40,27 @@ const CardSubtitle = ({ children }) =>
     {children}
   </span>;
 
-const LED = ({ available }) =>
-  <div style={{
-    backgroundColor: Colors.statusDown,
-    width: '15px',
-    height: '15px',
-    borderRadius: '9px',
-    marginRight: '5px',
-    backgroundColor: available ? Colors.statusOk : Colors.statusDown,
-  }}/>;
+const LED = ({ available }) => {
+  const requestInProgress = useSelector(state => state.requestInProgress);
+
+  return requestInProgress
+    ? (
+      <img style={{
+        width: 15, height: 15,
+        marginRight: 5,
+      }} src="../../assets/spinner.gif" />
+    )
+    : (
+      <div style={{
+        backgroundColor: Colors.statusDown,
+        width: '15px',
+        height: '15px',
+        borderRadius: '9px',
+        marginRight: '5px',
+        backgroundColor: available ? Colors.statusOk : Colors.statusDown,
+      }}/>
+    );
+};
 
 const Status = ({ device, available }) =>
   <div style={{
