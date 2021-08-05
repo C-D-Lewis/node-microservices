@@ -42,17 +42,14 @@ const nextDemoColor = () => {
  * @param {Object} res - Express response object.
  */
 const handleDemoPacket = async (packet, res) => {
-  if (handles.get('demo')) {
-    conduit.respond(res, { status: 200, message: { content: 'Already doing demo' } });
-    return;
-  }
+  handles.cancelAll();
 
   // Set up the animation cycle
   const handle = setInterval(nextDemoColor, DEMO_INTERVAL_S * 1000);
   handles.add('demo', handle);
 
-  conduit.respond(res, { status: 200, message: { content: 'OK' } });
   nextDemoColor();
+  conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };
 
 module.exports = handleDemoPacket;

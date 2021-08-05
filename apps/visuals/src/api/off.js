@@ -8,10 +8,9 @@ const handles = require('../modules/handles');
  * @param {Object} res - Express response object.
  */
 const handleOffPacket = async (packet, res) => {
-  await leds.setAll([0, 0, 0]);
+  handles.cancelAll();
 
-  // Also cancel animation handles
-  handles.removeAll();
+  await leds.setAll([0, 0, 0]);
 
   conduit.respond(res, { status: 200, message: { content: 'OK' } });
 };

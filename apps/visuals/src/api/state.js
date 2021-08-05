@@ -1,3 +1,5 @@
+const handles = require('../modules/handles');
+
 const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
 
 /**
@@ -7,7 +9,11 @@ const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
  * @param {Object} res - Express response object.
  */
 const handleStatePacket = async (packet, res) => {
-  await conduit.respond(res, { status: 200, message: { leds: leds.getState() } });
+  const message = {
+    leds: leds.getState(),
+    handles: Object.entries(handles.getAll()).map(([k, v]) => ({ [k]: !!v })),
+  };
+  await conduit.respond(res, { status: 200, message });
 };
 
 module.exports = handleStatePacket;

@@ -14,7 +14,7 @@ const handleFadeAllPacket = async (packet, res) => {
   await leds.fadeAll(to, from);
 
   // If fading to black, sometimes MOTE needs a confirmation 'set'
-  if (to.every(p => p === 0)) {
+  if (to.every((p) => p === 0)) {
     setTimeout(() => leds.setAll(to), OFF_CONFIRMATION_MS);
   }
 

@@ -1,7 +1,7 @@
 const { spawn } = require('child_process');
 const fs = require('fs');
 
-const INTERVAL_S = 10;
+const INTERVAL_S = process.arch.includes('arm') ? 10 : 3;
 
 const waitAsync = ms => new Promise(resolve => setTimeout(resolve, ms));
 

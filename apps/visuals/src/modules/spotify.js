@@ -17,7 +17,7 @@ const spotifyColorUpdate = async () => {
     log.error('spotifyColorUpdate failed, clearing animation');
     log.error(e);
 
-    handles.remove('spotify');
+    handles.cancelAll();
   }
 };
 
@@ -27,13 +27,15 @@ const spotifyColorUpdate = async () => {
  * @returns {number[]} The new Spotify rgb array to be returned to the Conduit caller.
  */
 const startAnimation = async () => {
-  // Set initial value
-  const rgbArr = await getColor();
-  leds.fadeAll(rgbArr);
+  handles.cancelAll();
 
   // Regularly check for updates as tracks change
   const handle = setInterval(spotifyColorUpdate, SPOTIFY_INTERVAL_S * 1000);
   handles.add('spotify', handle);
+
+  // Set initial value
+  const rgbArr = await getColor();
+  leds.fadeAll(rgbArr);
 
   return rgbArr;
 };
