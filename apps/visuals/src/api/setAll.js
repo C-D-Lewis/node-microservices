@@ -1,4 +1,5 @@
 const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
+const handles = require('../modules/handles');
 
 /**
  * Handle a 'setAll' topic packet.
@@ -7,6 +8,8 @@ const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
  * @param {Object} res - Express response object.
  */
 const handleSetAllPacket = async (packet, res) => {
+  handles.cancelAll();
+
   const { all } = packet.message;
   await leds.setAll(all);
 
