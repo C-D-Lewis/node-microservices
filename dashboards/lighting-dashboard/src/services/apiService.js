@@ -1,11 +1,17 @@
-import { setRequestInProgress } from '../actions';
-import store from '../store';
-
 /** Port to look for conduit apps */
 const CONDUIT_PORT = 5959;
 
-export const sendDevicePacket = async (device, packet) => {
-  store.dispatch(setRequestInProgress(true));
+const { updateState } = fabricate;
+
+/**
+ * Send a device packet.
+ *
+ * @param {object} device - Device object with IP.
+ * @param {object} packet - Packet to send.
+ * @returns {Promise<object>} Response JSON.
+ */
+const sendDevicePacket = async (device, packet) => {
+  updateState('requestInProgress', () => true);
 
   const opts = {
     method: 'POST',
@@ -17,31 +23,38 @@ export const sendDevicePacket = async (device, packet) => {
     const res = await fetch(`http://${device.ip}:${CONDUIT_PORT}/conduit`, opts);
     const json = await res.json();
 
-    store.dispatch(setRequestInProgress(false));
+    updateState('requestInProgress', () => false);
     return json;
   } catch (err) {
     console.log(err);
     alert(err);
 
-    store.dispatch(setRequestInProgress(false));
+    updateState('requestInProgress', () => false);
     throw err;
   }
 };
 
-export const pingDevice = async (device) => {
-  store.dispatch(setRequestInProgress(true));
+/**
+ * Ping a device.
+ *
+ * @param {object} device - Device object with IP.
+ * @returns {Promise<object>} Response JSON.
+ */
+const pingDevice = async (device) => {
+  updateState('requestInProgress', () => true);
 
   try {
     const res = await fetch(`http://${device.ip}:${CONDUIT_PORT}/apps`);
     const json = await res.json();
 
-    store.dispatch(setRequestInProgress(false));
+    updateState('requestInProgress', () => false);
     return json;
   } catch (err) {
     console.log(err);
     alert(err);
 
-    store.dispatch(setRequestInProgress(false));
+    updateState('requestInProgress', () => false);
     throw err;
   }
-}
+};
+

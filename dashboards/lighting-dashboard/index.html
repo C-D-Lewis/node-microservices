@@ -8,12 +8,21 @@
     <meta charset="UTF-8">
 
     <link rel="stylesheet" type="text/css" href="./css/global.css">
-    <link rel="stylesheet" type="text/css" href="./css/components.css">
   </head>
   <body>
-    <div id="app"></div>
+    <!-- Libraries -->
+    <script src="./lib/fabricate.js"></script>
 
+    <!-- Load before app -->
     <script src="./deviceConfig.js"></script>
-    <script src="./dist/index.js"></script>
+    <script src="./src/theme.js"></script>
+    <script src="./src/services/apiService.js"></script>
+    <script src="./src/components/SwatchButton.js"></script>
+    <script src="./src/components/TextButton.js"></script>
+    <script src="./src/components/DeviceControls.js"></script>
+    <script src="./src/components/DeviceCard.js"></script>
+
+    <!-- App -->
+    <script src="./src/index.js"></script>
   </body>
 </html>
