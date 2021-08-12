@@ -3,7 +3,7 @@ const {
 } = window;
 
 if (!deviceList || deviceList.length < 1) {
-  alert('deviceConfig.j not setup');
+  alert('deviceConfig.json not setup');
 }
 
 /**
