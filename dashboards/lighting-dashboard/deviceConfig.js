@@ -6,6 +6,10 @@ window.deviceList = [
   {
     "name": "TV Mote Pi",
     "ip": "192.168.0.148"
+  },
+  {
+    "name": "localhost",
+    "ip": "localhost"
   }
 ];
 
