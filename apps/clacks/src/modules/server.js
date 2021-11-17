@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 
-const { config } = require('../node-common')(['config']);
+const { config, log } = require('../node-common')(['config', 'log']);
 
 config.requireKeys('server.js', {
   required: ['SERVER'],
@@ -8,9 +8,7 @@ config.requireKeys('server.js', {
     SERVER: {
       required: ['PORT'],
       properties: {
-        PORT: {
-          type: 'number',
-        },
+        PORT: { type: 'number' },
       },
     },
   },
@@ -19,6 +17,20 @@ config.requireKeys('server.js', {
 const { SERVER: { PORT } } = config;
 
 let server;
+
+/**
+ * Validate a message has the correct format.
+ *
+ * @param {object} json - JSON message received.
+ */
+const validateMessage = (json) => {
+  const { hostname, topic, data } = json;
+
+  if (!hostname) throw new Error('Message missing hostname');
+  if (!topic) throw new Error('Message missing topic');
+  if (!data) throw new Error('Message missing data');
+  if (typeof data !== 'object') throw new Error('data is not object');
+};
 
 /**
  * Broadcast data to all clients.
@@ -31,10 +43,27 @@ const broadcast = (data) => server.clients.forEach((p) => p.send(data));
  * When a client sends a message.
  *
  * @param {object} client - Client that sent the message.
- * @param {string} data - The message.
+ * @param {ArrayBuffer} data - The message.
  */
 const onClientMessage = (client, data) => {
-  console.log(`message: ${data}`);
+  log.debug(`message: ${data}`);
+
+  // Ensure it has the right data
+  let json;
+  try {
+    json = JSON.parse(data.toString());
+    validateMessage(json);
+  } catch (e) {
+    log.error(e);
+    return;
+  }
+
+  // TODO: Special - query for connected hosts?
+  const { topic } = json;
+  if (topic === 'getHostnames') {
+    log.error('Not implemented yet');
+    return;
+  }
 
   // Re-broadcast message to all clients
   broadcast(data);
@@ -46,7 +75,7 @@ const onClientMessage = (client, data) => {
  * @param {object} client - The newly connected client.
  */
 const onNewClient = (client) => {
-  console.log('New client connected');
+  log.info('New client connected');
 
   client.on('message', (data) => onClientMessage(client, data));
 };
@@ -56,7 +85,7 @@ const onNewClient = (client) => {
  */
 const start = () => {
   server = new WebSocket.Server({ port: PORT });
-  console.log(`Server listening on ${PORT}`);
+  log.info(`Server listening on ${PORT}`);
 
   // Handle new connections
   server.on('connection', onNewClient);
@@ -66,7 +95,7 @@ const start = () => {
  * Stop the server.
  */
 const stop = () => {
-  console.log('Stopping server');
+  log.info('Stopping server');
   server.close();
 };
 

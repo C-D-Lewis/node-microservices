@@ -3,6 +3,7 @@ require('./attic.spec');
 
 // Sorted
 require('./config.spec');
+require('./clacks.spec');
 require('./db.spec');
 require('./enviro.spec');
 require('./eventBus.spec');

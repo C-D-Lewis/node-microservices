@@ -12,7 +12,7 @@
     "APP": "NodeCommon",
     "PORT": 5959
   },
-  "EVTDB": {
+  "EVT_DB": {
     "THNG_ID": "",
     "DEVICE_API_KEY": ""
   },
@@ -43,5 +43,10 @@
     "MESSAGING_SERVICE_SID": "",
     "ACCOUNT_SID": "",
     "AUTH_TOKEN": ""
+  },
+  "CLACKS": {
+    "SERVER": "localhost",
+    "PORT": 7777,
+    "HOSTNAME": "TEST_HOSTNAME"
   }
 }

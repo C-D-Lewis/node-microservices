@@ -1,6 +1,4 @@
-const request = require('request');
 const config = require('./config');
-const log = require('./log');
 const requestAsync = require('./requestAsync');
 
 config.requireKeys('conduit.js', {
