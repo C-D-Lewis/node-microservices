@@ -1,0 +1,15 @@
+{
+  "LOG": {
+    "APP_NAME": "clacks",
+    "LEVEL": "info",
+    "TO_FILE": false
+  },
+  "SERVER": {
+    "PORT": 7777
+  },
+  "CONDUIT": {
+    "HOST": "localhost",
+    "PORT": 5959,
+    "APP": "clacks"
+  }
+}
