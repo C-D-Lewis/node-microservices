@@ -60,7 +60,7 @@ const handlePacketRequest = async (req, res) => {
   }
 
   const {
-    to, topic, message, host = DEFAULT_HOST_LOCAL, auth ,
+    to, topic, message, host = DEFAULT_HOST_LOCAL, auth,
   } = packet;
 
   // Enforce only localhost need not supply a guestlist token

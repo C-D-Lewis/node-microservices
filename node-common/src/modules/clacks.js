@@ -62,7 +62,7 @@ const connect = async () => new Promise(resolve => {
 
   socket.on('message', (buffer) => {
     const { topic, data } = JSON.parse(buffer.toString());
-    log.debug(`clacks << ${topic} ${data}`);
+    log.debug(`clacks << ${topic} ${JSON.stringify(data)}`);
 
     if (!subscriptions[topic]) return;
 

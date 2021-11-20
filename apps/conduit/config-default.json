@@ -18,6 +18,11 @@
     "APP_NAME": "conduit",
     "LEVEL": "info",
     "TO_FILE": false
+  },
+  "CLACKS": {
+    "SERVER": "localhost",
+    "PORT": 7777,
+    "HOSTNAME": "DEFAULT_HOSTNAME"
   }
 }
 
