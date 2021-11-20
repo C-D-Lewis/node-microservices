@@ -8,9 +8,18 @@ config.requireKeys('clacks.js', {
     CLACKS: {
       required: ['SERVER', 'PORT', 'HOSTNAME'],
       properties: {
-        SERVER: { type: 'string' },
-        PORT: { type: 'number' },
-        HOSTNAME: { type: 'string' },
+        SERVER: {
+          type: 'string',
+          description: 'Clacks server to connect to',
+        },
+        PORT: {
+          type: 'number',
+          description: 'WebSocket port to connect to',
+        },
+        HOSTNAME: {
+          type: 'string',
+          description: 'Device unique name to respond to /global/getHostnames'
+        },
       },
     },
   },
@@ -19,6 +28,11 @@ config.requireKeys('clacks.js', {
 const {
   CLACKS: { SERVER, PORT, HOSTNAME },
 } = config;
+
+/** Get hostnames topic */
+const TOPIC_GLOBAL_GET_HOSTNAMES = '/global/getHostnames';
+/** Get hostnames response topic */
+const TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE = '/global/getHostnamesResponse';
 
 // Map of topic to callback
 const subscriptions = {};
@@ -32,9 +46,9 @@ let connected;
  * @returns {Promise<void>}
  */
 const connect = async () => new Promise(resolve => {
-  // Already connected? TODO: Reconnection?
+  // Already connected?
   if (connected) {
-    resolve();
+    log.error('Warning: Already connected to clacks');
     return;
   }
 
@@ -47,11 +61,9 @@ const connect = async () => new Promise(resolve => {
   });
 
   socket.on('message', (buffer) => {
-    const { hostname, topic, data } = JSON.parse(buffer.toString());
-    log.debug(`clacks << ${hostname} ${topic} ${data}`);
+    const { topic, data } = JSON.parse(buffer.toString());
+    log.debug(`clacks << ${topic} ${data}`);
 
-    // It's not for us
-    if (hostname !== HOSTNAME) return;
     if (!subscriptions[topic]) return;
 
     // Pass to the application
@@ -66,8 +78,8 @@ const disconnect = () => {
   if (!connected) throw new Error('clacks: not yet connected');
 
   socket.close();
-  log.debug('clacks: Closed');
   connected = false;
+  log.debug('clacks: Closed');
 };
 
 /**
@@ -76,7 +88,7 @@ const disconnect = () => {
  * @param {string} topic - Topic to listen to.
  * @param {function} onTopicMessage - Callback when a message with the matching topic is received.
  */
-const subscribe = (topic, onTopicMessage) => {
+const subscribeTopic = (topic, onTopicMessage) => {
   if (!connected) throw new Error('clacks: not yet connected');
 
   subscriptions[topic] = onTopicMessage;
@@ -85,25 +97,42 @@ const subscribe = (topic, onTopicMessage) => {
 /**
  * Send some JSON data to the server.
  *
- * @param {object} message - Message to send. 
- * @param {string} message.hostname - Hostname of the device to reach.
- * @param {string} message.topic - Topic to broadcast on.
- * @param {object} message.data - Data to send.
+ * @param {string} topic - Topic to broadcast on.
+ * @param {object} data - Data to send.
  */
-const send = (message) => {
+const send = (topic, data = {}) => {
   if (!connected) throw new Error('clacks: not yet connected');
   
+  const message = { topic, data };
   log.debug(`clacks >> ${JSON.stringify(message)}`);
   socket.send(JSON.stringify(message));
 };
 
-// TODO: Remote host discoverability
-// subscriptions.getHostname = () =>
-//   send({ hostname: 'server', topic: 'getHostnameResponse', data: { hostname: HOSTNAME } });
+/**
+ * Subscribe for hostnames received from other devices.
+ *
+ * @param {function} onHostnameResponse - When a hostname response message arrives.
+ */
+const subscribeHostnames = (onHostnameResponse) =>
+  subscribeTopic(
+    TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE,
+    (data) => onHostnameResponse(data.hostname)
+  );
+
+/**
+ * Request devices to send hostnames.
+ */
+const requestHostnames = () => send(TOPIC_GLOBAL_GET_HOSTNAMES);
+
+// Remote host discoverability
+subscriptions[TOPIC_GLOBAL_GET_HOSTNAMES] = () =>
+  send(TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE, { hostname: HOSTNAME });
 
 module.exports = {
   connect,
   disconnect,
-  subscribe,
   send,
+  subscribeTopic,
+  subscribeHostnames,
+  requestHostnames,
 };

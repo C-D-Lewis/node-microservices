@@ -8,8 +8,7 @@ const { SERVER: { PORT } } = config;
 
 /** Test JSON message */
 const TEST_MESSAGE = {
-  hostname: 'testDevice',
-  topic: 'global',
+  topic: '/global',
   data: {
     foo: 'bar',
   },

@@ -24,9 +24,8 @@ let server;
  * @param {object} json - JSON message received.
  */
 const validateMessage = (json) => {
-  const { hostname, topic, data } = json;
+  const { topic, data } = json;
 
-  if (!hostname) throw new Error('Message missing hostname');
   if (!topic) throw new Error('Message missing topic');
   if (!data) throw new Error('Message missing data');
   if (typeof data !== 'object') throw new Error('data is not object');

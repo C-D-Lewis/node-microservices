@@ -7,28 +7,34 @@ const {
 } = config;
 
 /** Test topic */
-const TEST_TOPIC = 'testTopic';
-/** Test message */
-const TEST_MESSAGE = {
-  hostname: HOSTNAME,
-  topic: TEST_TOPIC,
-  data: { foo: 'bar' },
-};
+const TEST_TOPIC = `/devices/${HOSTNAME}/testTopic`;
 
 describe.only('clacks.js', () => {
   after(clacks.disconnect);
 
   it('should subscribe to a topic and send itself data', (done) => {
+    const testData = { foo: 'bar' };
+
     clacks.connect()
       .then(() => {
-        clacks.subscribe(TEST_TOPIC, (data) => {
-          expect(data).to.deep.equal(TEST_MESSAGE.data);
+        clacks.subscribeTopic(TEST_TOPIC, (data) => {
+          expect(data).to.deep.equal(testData);
           done();
         });
     
-        clacks.send(TEST_MESSAGE);
+        clacks.send(TEST_TOPIC, testData);
       });
   });
 
-  it('should respond with hostname');
+  it('should respond with hostname', (done) => {
+    // Wait for responses
+    clacks.subscribeHostnames((name) => {
+      // Only one expected
+      expect(name).to.equal(HOSTNAME);
+      done();
+    });
+
+    // Request
+    clacks.requestHostnames();
+  });
 });
