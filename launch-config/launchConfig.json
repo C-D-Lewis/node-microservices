@@ -148,6 +148,10 @@
         "start": ""
       },
       {
+        "location": "node-microservices/apps/clacks",
+        "start": "npm start &"
+      },
+      {
         "location": "node-microservices/apps/conduit",
         "start": "npm start &"
       },
