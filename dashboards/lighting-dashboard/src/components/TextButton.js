@@ -1,4 +1,3 @@
-
 /**
  * TextButton component.
  *

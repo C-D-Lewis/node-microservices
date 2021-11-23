@@ -1,9 +1,9 @@
 const {
   deviceList,
-} = window;
+} = window.Config;
 
 if (!deviceList || deviceList.length < 1) {
-  alert('deviceConfig.json not setup');
+  alert('config.json not setup');
 }
 
 /**
@@ -35,3 +35,6 @@ const initialState = {
   devices: [...deviceList],
 };
 fabricate.app(LightingDashboard(), initialState);
+
+// Connect WebSockets
+websocketConnect();
