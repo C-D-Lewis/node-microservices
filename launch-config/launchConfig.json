@@ -179,6 +179,26 @@
         "location": "node-microservices/dashboards/service-dashboard",
         "start": "npm start &"
       }
+    ],
+    "peter-pi": [
+      {
+        "location": "code/node-microservices/node-common",
+        "install": "git clone https://github.com/c-d-lewis/node-microservices",
+        "update": "$git-pull",
+        "start": ""
+      },
+      {
+        "location": "code/node-microservices/apps/conduit",
+        "start": "npm start &"
+      },
+      {
+        "location": "code/node-microservices/apps/attic",
+        "start": "npm start &"
+      },
+      {
+        "location": "code/node-microservices/apps/visuals",
+        "start": "npm start &"
+      }
     ]
   }
 }
