@@ -1,40 +1,38 @@
-# Image
-sudo dd if=2019-04-08-raspbian-stretch-lite.img of=/dev/DISK_NAME bs=1m
+# Image (manual)
+sudo dd if=2021-01-11-raspios-buster-armhf-lite.img of=/dev/disk2s1 bs=1m
 
-# VBox mount and enable ssh/wifi
-(vboxmanage list hdds)
-(vboxmanage closemedium disk <uuid> --delete)
-sudo VBoxManage internalcommands createrawvmdk -filename ./sd-card.vmdk -rawdisk /dev/disk2
-sudo chmod 777 /dev/disk2
-sudo chmod 777 ./sd-card.vmdk
-> Make sure name doesn't match one VB already knows about
-> Make sure listed but NOT mounted in Diskutils app
-> Add to storage devices while not mounted
-<enter vbox>
-touch /boot/ssh
-sudo nano /rootfs/etc/wpa_supplicant/wpa_supplicant.conf
+# Image (auto) > Write with Raspberry Pi Imager, then re-insert
+# Enable SSH/Wi-Fi
+touch /Volumes/boot/ssh
+nano /Volumes/boot/wpa_supplicant.conf
+> Enter the following content:
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+network={
+  ssid=""
+  psk=""
+}
 
 # Distro
-sudo apt-get update
+sudo apt-get update && sudo apt-get upgrade
+sudo apt full-upgrade
 sudo apt-get dist-upgrade
 
 # git
 sudo apt install git
 git config --global credential.helper store
-git clone https://github.com/c-d-lewis/node-microservices
+
+# jq
+sudo apt install jq
 
 # node & npm (Pi 3 is armv7, Zero is armv6)
-wget https://nodejs.org/dist/v12.18.1/node-v12.18.1-linux-armv7l.tar.xz
-wget https://nodejs.org/dist/v10.9.0/node-v10.9.0-linux-armv6l.tar.gz
-tar xf node-v12.18.1-linux-armv7l.tar.xz
-cd node-v12.18.1-linux-armv7l/
-sudo cp -R ./* /usr/local/
-node -v
-npm -v
+> Use nvm
 
 # Apps
-<install node-common and apps/* dependencies>
-<setup config.json for apps/*>
+git clone https://github.com/c-d-lewis/node-microservices
+> install node-common and apps/* dependencies
+> setup config.json for apps/*
 
 # Blinkt?
 curl https://get.pimoroni.com/blinkt | bash
@@ -67,13 +65,18 @@ sudo apt install python3-rpi.gpio (may already be installed)
 # Waveshare E-Paper?
 sudo apt-get install python3-pip python3-pil python3-numpy
 sudo pip3 install RPi.GPIO spidev
-git clone https://github.com/waveshare/e-Paper
+sudo raspi-config
+> enable SPI interface
 
 # Startup apps with launch-config
 sudo crontab -e
-@reboot /home/pi/node-microservices/tools/launch-config/run.sh /home/pi > /home/pi/cronlog.txt 2>&1
+@reboot /home/pi/node-microservices/launch-config/run.sh /home/pi > /home/pi/cronlog.txt 2>&1
 
 # npm not found?
 sudo ln -s /usr/local/bin/node /usr/bin/node
 sudo ln -s /usr/local/lib/node /usr/lib/node
 sudo ln -s /usr/local/bin/npm /usr/bin/npm
+> or if not found as sudo in crontab (after nvm installation)
+> which npm/node
+sudo ln -s /home/pi/.nvm/versions/node/v14.18.1/bin/npm /usr/local/bin/npm
+sudo ln -s /home/pi/.nvm/versions/node/v14.18.1/bin/node /usr/local/bin/node
