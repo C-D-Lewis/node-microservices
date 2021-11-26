@@ -1,3 +1,5 @@
+/** App theme colors and fonts */
+// eslint-disable-next-line no-unused-vars
 const Theme = {
   Colors: {
     primary: '#4527a0',

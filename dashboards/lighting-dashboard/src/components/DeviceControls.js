@@ -1,3 +1,5 @@
+/* global websocketSendPacket TextButton SwatchButton */
+
 /** Colors for demo */
 const DEMO_COLORS = [
   [255, 0, 0],    // Red
@@ -45,21 +47,19 @@ const SwatchesBar = ({ device }) => {
     .addChildren([
       ButtonBar()
         .withStyles(buttonBarStyles)
-        .addChildren(row1Colors.map(p =>
-          SwatchButton({ backgroundColor: `rgb(${p[0]},${p[1]},${p[2]}` })
+        .addChildren(row1Colors.map(
+          (p) => SwatchButton({ backgroundColor: `rgb(${p[0]},${p[1]},${p[2]}` })
             .onClick(() => {
               websocketSendPacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } });
             }),
         )),
       ButtonBar()
         .withStyles(buttonBarStyles)
-        .addChildren(row2Colors.map(p =>
-          SwatchButton({
-            backgroundColor: `rgb(${p[0]},${p[1]},${p[2]}`,
-          })
-          .onClick(() => {
-            websocketSendPacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } });
-          }),
+        .addChildren(row2Colors.map(
+          (p) => SwatchButton({ backgroundColor: `rgb(${p[0]},${p[1]},${p[2]}` })
+            .onClick(() => {
+              websocketSendPacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } });
+            }),
         )),
     ]);
 };
@@ -106,7 +106,7 @@ const FunctionsBar = ({ device }) => {
           })
             .withStyles(buttonStyle)
             .onClick(() => {
-              const message = { all: [64, 64, 64 ] };
+              const message = { all: [64, 64, 64] };
               websocketSendPacket(device, { to: 'visuals', topic: 'setAll', message });
             }),
         ]),
@@ -120,6 +120,7 @@ const FunctionsBar = ({ device }) => {
  * @param {object} props.device - Device object.
  * @returns {HTMLElement}
  */
+// eslint-disable-next-line no-unused-vars
 const DeviceControls = ({ device }) => fabricate.Column()
   .withStyles({ width: '100%' })
   .addChildren([

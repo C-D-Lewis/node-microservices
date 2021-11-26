@@ -5,6 +5,7 @@
  * @param {string} props.backgroundColor - Background color.
  * @returns {HTMLElement}
  */
+// eslint-disable-next-line no-unused-vars
 const SwatchButton = ({ backgroundColor }) => fabricate('div')
   .asFlex('row')
   .withStyles({

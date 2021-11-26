@@ -1,3 +1,5 @@
+/* global DeviceCard websocketConnect */
+
 /**
  * DeviceList component.
  *
@@ -30,5 +32,5 @@ const initialState = {
 };
 fabricate.app(LightingDashboard(), initialState);
 
-// Connect WebSockets
+// Connect WebSocket server
 websocketConnect();

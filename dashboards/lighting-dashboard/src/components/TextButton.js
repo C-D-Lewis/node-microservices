@@ -7,6 +7,7 @@
  * @param {string} props.backgroundColor - Button background color.
  * @returns {HTMLElement}
  */
+// eslint-disable-next-line no-unused-vars
 const TextButton = ({
   label,
   color,

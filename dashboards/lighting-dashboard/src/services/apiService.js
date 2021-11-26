@@ -10,6 +10,7 @@ const { updateState } = fabricate;
  * @param {object} packet - Packet to send.
  * @returns {Promise<object>} Response JSON.
  */
+// eslint-disable-next-line no-unused-vars
 const sendDevicePacket = async (device, packet) => {
   updateState('requestInProgress', () => true);
 
@@ -40,6 +41,7 @@ const sendDevicePacket = async (device, packet) => {
  * @param {object} device - Device object with IP.
  * @returns {Promise<object>} Response JSON.
  */
+// eslint-disable-next-line no-unused-vars
 const pingDevice = async (device) => {
   updateState('requestInProgress', () => true);
 
@@ -57,4 +59,3 @@ const pingDevice = async (device) => {
     throw err;
   }
 };
-

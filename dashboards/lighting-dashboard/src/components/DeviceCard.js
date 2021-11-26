@@ -1,8 +1,10 @@
+/* global DeviceControls */
+
 /**
  * CardContainer component.
  *
  * @param {object} props - Component props.
- * @param {Array<HTMLElement>} children - Child components. 
+ * @param {Array<HTMLElement>} children - Child components.
  * @returns {HTMLElement}
  */
 const CardContainer = () => fabricate.Column()
@@ -38,7 +40,6 @@ const CardSubtitle = ({ text }) => fabricate.Text({ text })
     paddingRight: '10px',
     paddingTop: '2px',
     cursor: 'default',
-    color: '#ddd',
   });
 
 /**
@@ -98,6 +99,7 @@ const CardTitleRow = () => fabricate.Row()
  * @param {object} props.device - Device object.
  * @returns {HTMLElement}
  */
+// eslint-disable-next-line no-unused-vars
 const DeviceCard = ({ device }) => fabricate.Fader()
   .addChildren([
     CardContainer()

@@ -31,6 +31,7 @@ const onMessage = (topic, data) => {
  * @param {object} device - Device object.
  * @param {object} packet - Conduit packet to send.
  */
+// eslint-disable-next-line no-unused-vars
 const websocketSendPacket = (device, packet) => {
   const topic = `/devices/${device.hostname}/conduit`;
   socket.send(JSON.stringify({
@@ -44,6 +45,7 @@ const websocketSendPacket = (device, packet) => {
  *
  * @returns {Promise<void>}
  */
+// eslint-disable-next-line no-unused-vars
 const websocketConnect = () => new Promise((resolve) => {
   socket = new WebSocket(`ws://${wsServer}:${WS_PORT}`);
 
