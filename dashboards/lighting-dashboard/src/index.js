@@ -1,11 +1,3 @@
-const {
-  deviceList,
-} = window.Config;
-
-if (!deviceList || deviceList.length < 1) {
-  alert('config.json not setup');
-}
-
 /**
  * DeviceList component.
  *
@@ -13,7 +5,10 @@ if (!deviceList || deviceList.length < 1) {
  */
 const DeviceList = () => fabricate.Column()
   .withStyles({ alignItems: 'center' })
-  .addChildren(deviceList.map(d => DeviceCard({ device: d })));
+  .watchState((el, state) => {
+    el.clear();
+    el.addChildren(state.devices.map((d) => DeviceCard({ device: d })));
+  });
 
 /**
  * LightingDashboard component.
@@ -31,8 +26,7 @@ const LightingDashboard = () => fabricate.Column()
   ]);
 
 const initialState = {
-  requestInProgress: false,
-  devices: [...deviceList],
+  devices: [],
 };
 fabricate.app(LightingDashboard(), initialState);
 

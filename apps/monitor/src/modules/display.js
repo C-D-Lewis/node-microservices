@@ -10,9 +10,6 @@ const setAllLeds = async (rgb) => conduit.send({ to: 'visuals', topic: 'setAll',
 
 const setText = async (lines) => conduit.send({ to: 'visuals', topic: 'setText', message: { lines } });
 
-/**
- * TODO - make this dual interface a node-common or led-server API
- */
 const setBoth = (data) => {
   const [ledData, textData] = data;
   if (config.DISPLAY_DRIVER === 'textDisplay') {

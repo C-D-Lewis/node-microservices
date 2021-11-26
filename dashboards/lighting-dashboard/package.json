@@ -1,0 +1,30 @@
+{
+  "name": "lighting-dashboard",
+  "version": "1.0.0",
+  "description": "React-based web application providing specialised interaction UI for local devices running `ambience` via `conduit`.",
+  "scripts": {
+    "start": "python3 -m http.server"
+  },
+  "devDependencies": {
+    "eslint": "^8.3.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.3"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-airbnb-base",
+    "env": {
+      "browser": true
+    },
+    "rules": {
+      "no-multi-spaces": 0,
+      "global-require": 0,
+      "import/no-dynamic-require": 0,
+      "no-await-in-loop": 0,
+      "no-console": 0
+    },
+    "globals": {
+      "fabricate": "readonly",
+      "Theme": "readonly"
+    }
+  }
+}

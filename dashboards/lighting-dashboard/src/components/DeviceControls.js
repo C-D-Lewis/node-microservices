@@ -48,7 +48,7 @@ const SwatchesBar = ({ device }) => {
         .addChildren(row1Colors.map(p =>
           SwatchButton({ backgroundColor: `rgb(${p[0]},${p[1]},${p[2]}` })
             .onClick(() => {
-              sendDevicePacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } });
+              websocketSendPacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } });
             }),
         )),
       ButtonBar()
@@ -58,7 +58,7 @@ const SwatchesBar = ({ device }) => {
             backgroundColor: `rgb(${p[0]},${p[1]},${p[2]}`,
           })
           .onClick(() => {
-            sendDevicePacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } });
+            websocketSendPacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } });
           }),
         )),
     ]);
@@ -84,21 +84,21 @@ const FunctionsBar = ({ device }) => {
             color: 'white',
           })
             .withStyles(buttonStyle)
-            .onClick(() => sendDevicePacket(device, { to: 'visuals', topic: 'off' })),
+            .onClick(() => websocketSendPacket(device, { to: 'visuals', topic: 'off' })),
           TextButton({
             label: 'Spotify',
             backgroundColor: '#1DB954',
             color: 'white',
           })
             .withStyles(buttonStyle)
-            .onClick(() => sendDevicePacket(device, { to: 'visuals', topic: 'spotify' })),
+            .onClick(() => websocketSendPacket(device, { to: 'visuals', topic: 'spotify' })),
           TextButton({
             label: 'Demo',
             backgroundColor: Theme.Colors.primary,
             color: 'white',
           })
             .withStyles(buttonStyle)
-            .onClick(() => sendDevicePacket(device, { to: 'visuals', topic: 'demo' })),
+            .onClick(() => websocketSendPacket(device, { to: 'visuals', topic: 'demo' })),
           TextButton({
             label: 'Night',
             backgroundColor: '#aaa',
@@ -107,7 +107,7 @@ const FunctionsBar = ({ device }) => {
             .withStyles(buttonStyle)
             .onClick(() => {
               const message = { all: [64, 64, 64 ] };
-              sendDevicePacket(device, { to: 'visuals', topic: 'setAll', message });
+              websocketSendPacket(device, { to: 'visuals', topic: 'setAll', message });
             }),
         ]),
     ]);

@@ -48,50 +48,33 @@ const CardSubtitle = ({ text }) => fabricate.Text({ text })
  * @param {object} props.device - Device object.
  * @returns {HTMLElement}
  */
-const LED = ({ device }) => fabricate('div')
+const LED = () => fabricate('div')
   .addChildren([
-    fabricate.when(
-      state => state.requestInProgress,
-      () => fabricate.Loader({ size: 15, lineWidth: 3 })
-        .withStyles({ marginRight: '5px' }),
-    ),
-    fabricate.when(
-      state => !state.requestInProgress,
-      () => fabricate('div')
-        .withStyles({
-          width: '15px',
-          height: '15px',
-          borderRadius: '9px',
-          marginRight: '5px',
-          backgroundColor: Theme.Colors.statusDown,
-        })
-        .watchState((el, state) => {
-          const { devices } = state;
-          const found = devices.find(p => p.ip === device.ip);
-
-          el.addStyles({
-            backgroundColor: found.available ? Theme.Colors.statusOk : Theme.Colors.statusDown,
-          });
-        }),
-    ),
+    fabricate('div')
+      .withStyles({
+        width: '15px',
+        height: '15px',
+        borderRadius: '9px',
+        marginRight: '5px',
+        backgroundColor: Theme.Colors.statusOk,
+      }),
   ]);
 
 /**
- * IpStatus component.
+ * CardStatus component.
  *
  * @param {object} props - Component props.
- * @param {object} props.device - Device object.
  * @returns {HTMLElement}
  */
-const IpStatus = ({ device }) => fabricate.Row()
+const CardStatus = () => fabricate.Row()
   .withStyles({
     alignItems: 'center',
     justifyContent: 'flex-end',
     flex: 1,
   })
   .addChildren([
-    CardSubtitle({ text: device.ip }),
-    LED({ device }),
+    CardSubtitle({ text: '' }),
+    LED(),
   ]);
 
 /**
@@ -115,30 +98,15 @@ const CardTitleRow = () => fabricate.Row()
  * @param {object} props.device - Device object.
  * @returns {HTMLElement}
  */
-const DeviceCard = ({ device }) => {
-  // When the card appears
-  pingDevice(device)
-    .then(apps => {
-      const visuals = apps.find(p => p.app === 'visuals');
-      fabricate.updateState('devices', state => {
-        const { devices } = state;
-        const found = devices.find(p => p.ip === device.ip);
-        found.available = visuals && visuals.status === 'OK';
-
-        return devices;
-      });
-    });
-
-  return fabricate.Fader()
-    .addChildren([
-      CardContainer()
-        .addChildren([
-          CardTitleRow()
-            .addChildren([
-              CardTitle({ text: device.name }),
-              IpStatus({ device }),
-            ]),
-          DeviceControls({ device }),
-        ]),
-    ]);
-};
+const DeviceCard = ({ device }) => fabricate.Fader()
+  .addChildren([
+    CardContainer()
+      .addChildren([
+        CardTitleRow()
+          .addChildren([
+            CardTitle({ text: device.hostname }),
+            CardStatus({ device }),
+          ]),
+        DeviceControls({ device }),
+      ]),
+  ]);

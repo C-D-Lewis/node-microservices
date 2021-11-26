@@ -57,13 +57,6 @@ const onClientMessage = (client, data) => {
     return;
   }
 
-  // TODO: Special - query for connected hosts?
-  const { topic } = json;
-  if (topic === 'getHostnames') {
-    log.error('Not implemented yet');
-    return;
-  }
-
   // Re-broadcast message to all clients
   broadcast(data);
 };

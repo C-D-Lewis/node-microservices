@@ -88,7 +88,7 @@ module.exports = async (args) => {
   if (sleep.sleeping()) return;
 
   try {
-    // TODO: Configurable service lines in ARGS
+    // TODO: Configurable service line names in ARGS
 
     // const gaOk = await checkDelays(GREATER_ANGLIA);
     const tflOk = await checkDelays(TFL_RAIL);

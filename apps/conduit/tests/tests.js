@@ -43,5 +43,5 @@ describe('API', () => {
     });
   });
 
-  // TODO guestlist authorize test for outside requests
+  // TODO guestlist authorize test for outside requests (fake hostname?)
 });

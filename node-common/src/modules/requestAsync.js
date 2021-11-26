@@ -1,3 +1,5 @@
+// TODO: Upgrade to node-fetch
+
 const request = require('request');
 
 module.exports = opts => new Promise((resolve, reject) => {

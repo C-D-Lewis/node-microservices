@@ -20,15 +20,29 @@ let socket;
 const onMessage = (topic, data) => {
   // Receive hostnames
   if (topic === TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE) {
-    
-    return;
+    const { hostname } = data;
+    fabricate.updateState('devices', ({ devices }) => [...devices, { hostname }]);
   }
+};
+
+/**
+ * Send a conduit packet over WebSocket.
+ *
+ * @param {object} device - Device object.
+ * @param {object} packet - Conduit packet to send.
+ */
+const websocketSendPacket = (device, packet) => {
+  const topic = `/devices/${device.hostname}/conduit`;
+  socket.send(JSON.stringify({
+    topic,
+    data: packet,
+  }));
 };
 
 /**
  * Connect websocket server.
  *
- * @returns {Promise}
+ * @returns {Promise<void>}
  */
 const websocketConnect = () => new Promise((resolve) => {
   socket = new WebSocket(`ws://${wsServer}:${WS_PORT}`);

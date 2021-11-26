@@ -14,8 +14,8 @@ sudo python setup.py install
 test: sudo python examples/stats.py
 '''
 
-# TODO: Parameterise this to allow multiple clients
-# TODO: Parameterise clear at start
+# Parameterise this to allow multiple clients
+# Parameterise clear at start
 
 import sys
 import time

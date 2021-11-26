@@ -69,7 +69,7 @@ const checkIn = async () => {
     // Add a new entry
     fleetList.push(updatePayload);
   } else {
-    // Update found extry in place (TODO: avoid the 'else')
+    // Update found extry in place
     Object.assign(found, updatePayload);
   }
 

@@ -1,3 +1,5 @@
+// TODO: Centralize in notification.js
+
 const config = require('./config');
 const log = require('./log');
 const requestAsync = require('./requestAsync');

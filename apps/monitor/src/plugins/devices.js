@@ -11,7 +11,7 @@ const sleep = require('../modules/sleep');
 //   res.send(JSON.stringify(recentDevices));
 // });
 
-// TODO Major code style update
+// Major code style update
 
 var recentDevices = [];  // [{ ip, mac, name, lastSeen }]
 

@@ -1,7 +1,6 @@
 import React from 'react';
 
-// TODO: Can be consolidated with IPTextBox
-
+// Can be consolidated with IPTextBox
 const TokenTextBox = ({ value, onChange }) =>
   <input
     style={{
