@@ -27,7 +27,17 @@ git config --global credential.helper store
 sudo apt install jq
 
 # node & npm (Pi 3 is armv7, Zero is armv6)
-> Use nvm
+> Use nvm where binaries available
+> Use install-node-14-armv6l.sh for armv6l (Zero)
+
+# npm not found?
+sudo ln -s /usr/local/bin/node /usr/bin/node
+sudo ln -s /usr/local/lib/node /usr/lib/node
+sudo ln -s /usr/local/bin/npm /usr/bin/npm
+> or if not found as sudo in crontab (after nvm installation)
+> which npm/node
+sudo ln -s /home/pi/.nvm/versions/node/v14.18.1/bin/npm /usr/local/bin/npm
+sudo ln -s /home/pi/.nvm/versions/node/v14.18.1/bin/node /usr/local/bin/node
 
 # Apps
 git clone https://github.com/c-d-lewis/node-microservices
@@ -71,12 +81,3 @@ sudo raspi-config
 # Startup apps with launch-config
 sudo crontab -e
 @reboot /home/pi/node-microservices/launch-config/run.sh /home/pi > /home/pi/cronlog.txt 2>&1
-
-# npm not found?
-sudo ln -s /usr/local/bin/node /usr/bin/node
-sudo ln -s /usr/local/lib/node /usr/lib/node
-sudo ln -s /usr/local/bin/npm /usr/bin/npm
-> or if not found as sudo in crontab (after nvm installation)
-> which npm/node
-sudo ln -s /home/pi/.nvm/versions/node/v14.18.1/bin/npm /usr/local/bin/npm
-sudo ln -s /home/pi/.nvm/versions/node/v14.18.1/bin/node /usr/local/bin/node
