@@ -33,12 +33,28 @@ const {
 const TOPIC_GLOBAL_GET_HOSTNAMES = '/global/getHostnames';
 /** Get hostnames response topic */
 const TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE = '/global/getHostnamesResponse';
+/** Heartbeat interval */
+const HEARTBEAT_INTERVAL_MS = 10000;
 
 // Map of topic to callback
 const subscriptions = {};
 
 let socket;
 let connected;
+let heartbeatHandle;
+
+/**
+ * Start heartbeat loop.
+ */
+const startHeartbeat = () => {
+  const thisDeviceTopic = `/devices/${HOSTNAME}/heartbeat`;
+
+  clearInterval(heartbeatHandle);
+  heartbeatHandle = setInterval(() => {
+    log.debug('Sending heartbeat');
+    socket.send(JSON.stringify({ topic: thisDeviceTopic, data: {} }));
+  }, HEARTBEAT_INTERVAL_MS);
+};
 
 /**
  * Connect to the configured server.
@@ -57,6 +73,8 @@ const connect = async () => new Promise(resolve => {
   socket.on('open', () => {
     log.debug('clacks: connected');
     connected = true;
+
+    startHeartbeat();
     resolve();
   });
 
