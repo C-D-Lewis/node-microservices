@@ -2,7 +2,7 @@
   "LOG": {
     "TO_FILE": false,
     "APP_NAME": "visuals",
-    "LEVEL": "info"
+    "LEVEL": "info|debug"
   },
   "LEDS": {
     "ATTENUATION_FACTOR": 0.1,
