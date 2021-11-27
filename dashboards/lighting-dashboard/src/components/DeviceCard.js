@@ -57,7 +57,11 @@ const LED = () => fabricate('div')
         height: '15px',
         borderRadius: '9px',
         marginRight: '5px',
-        backgroundColor: Theme.Colors.statusOk,
+      })
+      .watchState((el, state) => {
+        el.style.backgroundColor = state.connected
+          ? Theme.Colors.statusOk
+          : Theme.Colors.statusDown;
       }),
   ]);
 
