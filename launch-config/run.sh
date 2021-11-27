@@ -12,9 +12,8 @@ HOME=$1
 LC_URL=https://s3.amazonaws.com/public-files.chrislewis.me.uk/launchConfig.json
 WAIT_S=15
 
-# HACK - allow access to gpiomem
-sudo chmod a+rwX /dev/gpiomem
-printf "\n>> gpiomem access granted\n"
+# HACK - allow access to gpiomem on Raspberry Pi
+sudo chmod a+rwX /dev/gpiomem || true
 
 printf "\n>> Hostname: $HOSTNAME\n"
 HOSTNAME=$(hostname)
