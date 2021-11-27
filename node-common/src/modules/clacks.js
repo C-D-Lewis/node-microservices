@@ -51,7 +51,6 @@ const startHeartbeat = () => {
 
   clearInterval(heartbeatHandle);
   heartbeatHandle = setInterval(() => {
-    log.debug('Sending heartbeat');
     socket.send(JSON.stringify({ topic: thisDeviceTopic, data: {} }));
   }, HEARTBEAT_INTERVAL_MS);
 };

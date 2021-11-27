@@ -8,8 +8,11 @@ const WS_PORT = 7777;
 const TOPIC_GLOBAL_GET_HOSTNAMES = '/global/getHostnames';
 /** Get hostnames response topic */
 const TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE = '/global/getHostnamesResponse';
+/** Heartbeat interval */
+const HEARTBEAT_INTERVAL_MS = 10000;
 
 let socket;
+let heartbeatHandle;
 
 /**
  * When a message is received.
@@ -41,6 +44,18 @@ const websocketSendPacket = (device, packet) => {
 };
 
 /**
+   * Start heartbeat loop.
+   */
+const startHeartbeat = () => {
+  const thisDeviceTopic = '/lighting-dashboard/heartbeat';
+
+  clearInterval(heartbeatHandle);
+  heartbeatHandle = setInterval(() => {
+    socket.send(JSON.stringify({ topic: thisDeviceTopic, data: {} }));
+  }, HEARTBEAT_INTERVAL_MS);
+};
+
+/**
  * Connect websocket server.
  *
  * @returns {Promise<void>}
@@ -54,6 +69,8 @@ const websocketConnect = () => new Promise((resolve) => {
     socket.send(JSON.stringify({ topic: TOPIC_GLOBAL_GET_HOSTNAMES, data: {} }));
 
     console.log('Connected');
+    fabricate.updateState('connected', () => true);
+    startHeartbeat();
     resolve();
   };
 
@@ -61,5 +78,15 @@ const websocketConnect = () => new Promise((resolve) => {
     const str = await event.data.text();
     const { topic, data } = JSON.parse(str);
     onMessage(topic, data);
+  };
+
+  socket.onclose = () => {
+    fabricate.updateState('connected', () => false);
+    setTimeout(websocketConnect, 5000);
+  };
+
+  socket.onerror = (err) => {
+    console.log(err);
+    socket.close();
   };
 });
