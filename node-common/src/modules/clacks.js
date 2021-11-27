@@ -55,7 +55,7 @@ const connect = async () => new Promise(resolve => {
   socket = new WebSocket(`ws://${SERVER}:${PORT}`);
 
   socket.on('open', () => {
-    log.debug('clacks: Connected');
+    log.debug('clacks: connected');
     connected = true;
     resolve();
   });
@@ -68,6 +68,18 @@ const connect = async () => new Promise(resolve => {
 
     // Pass to the application
     subscriptions[topic](data);
+  });
+
+  socket.on('close', () => {
+    connected = false;
+    log.debug('clacks: closed - retrying in 5s');
+    setTimeout(connect, 5000);
+  });
+
+  socket.on('error', (err) => {
+    log.error(err);
+    log.debug('clacks: errored - closing');
+    socket.close();
   });
 });
 
