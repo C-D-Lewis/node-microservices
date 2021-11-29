@@ -24,7 +24,11 @@ const onMessage = (topic, data) => {
   // Receive hostnames
   if (topic === TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE) {
     const { hostname } = data;
+    const existingDevices = fabricate.getState('devices');
+    if (existingDevices.find((p) => p.hostname === hostname)) return;
+
     fabricate.updateState('devices', ({ devices }) => [...devices, { hostname }]);
+    return;
   }
 };
 
