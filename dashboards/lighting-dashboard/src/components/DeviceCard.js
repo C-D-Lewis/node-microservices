@@ -57,28 +57,30 @@ const LED = () => fabricate('div')
         height: '15px',
         borderRadius: '9px',
         marginRight: '5px',
-      })
-      .watchState((el, state) => {
-        el.style.backgroundColor = state.connected
-          ? Theme.Colors.statusOk
-          : Theme.Colors.statusDown;
+        backgroundColor: Theme.Colors.statusOk,
       }),
+    // .watchState((el, state) => {
+    //   el.style.backgroundColor = state.connected
+    //     ? Theme.Colors.statusOk
+    //     : Theme.Colors.statusDown;
+    // }),
   ]);
 
 /**
  * CardStatus component.
  *
  * @param {object} props - Component props.
+ * @param {object} props.device - Device object.
  * @returns {HTMLElement}
  */
-const CardStatus = () => fabricate.Row()
+const CardStatus = ({ device }) => fabricate.Row()
   .withStyles({
     alignItems: 'center',
     justifyContent: 'flex-end',
     flex: 1,
   })
   .addChildren([
-    CardSubtitle({ text: '' }),
+    CardSubtitle({ text: device.localIp || '' }),
     LED(),
   ]);
 

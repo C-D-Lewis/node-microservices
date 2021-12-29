@@ -21,14 +21,13 @@ let heartbeatHandle;
  * @param {object} data - Message data.
  */
 const onMessage = (topic, data) => {
-  // Receive hostnames
+  // Receive hostnames - data is a device
   if (topic === TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE) {
     const { hostname } = data;
     const existingDevices = fabricate.getState('devices');
     if (existingDevices.find((p) => p.hostname === hostname)) return;
 
-    fabricate.updateState('devices', ({ devices }) => [...devices, { hostname }]);
-    return;
+    fabricate.updateState('devices', ({ devices }) => [...devices, { ...data }]);
   }
 };
 

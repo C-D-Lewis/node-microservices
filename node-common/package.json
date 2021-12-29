@@ -12,7 +12,7 @@
     "express": "^4.16.2",
     "jsonschema": "^1.2.0",
     "node-fetch": "^2.6.1",
-    "request": "^2.88.0",
+    "request": "^2.88.2",
     "ws": "^8.2.3"
   },
   "devDependencies": {

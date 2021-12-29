@@ -1,6 +1,7 @@
 const { WebSocket } = require('ws')
 const log = require('./log');
 const config = require('./config');
+const ip = require('./ip');
 
 config.requireKeys('clacks.js', {
   required: ['CLACKS'],
@@ -154,8 +155,11 @@ const subscribeHostnames = (onHostnameResponse) =>
 const requestHostnames = () => send(TOPIC_GLOBAL_GET_HOSTNAMES);
 
 // Remote host discoverability
-subscriptions[TOPIC_GLOBAL_GET_HOSTNAMES] = () =>
-  send(TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE, { hostname: HOSTNAME });
+subscriptions[TOPIC_GLOBAL_GET_HOSTNAMES] = async () =>
+  send(
+    TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE,
+    { hostname: HOSTNAME, localIp: await ip.getLocal() },
+  );
 
 module.exports = {
   connect,
