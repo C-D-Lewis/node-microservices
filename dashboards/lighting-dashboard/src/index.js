@@ -1,4 +1,24 @@
-/* global DeviceCard websocketConnect */
+/* global DeviceCard websocketConnect LED */
+
+/**
+ * AppNavBar component.
+ *
+ * @returns {HTMLElement}
+ */
+const AppNavBar = () => fabricate.NavBar({
+  title: 'Lighting Dashboard',
+  backgroundColor: Theme.Colors.primary,
+})
+  .withChildren([
+    fabricate.Text({ text: 'Server' })
+      .withStyles({
+        marginLeft: 'auto',
+        color: Theme.Colors.lightGrey,
+        cursor: 'default',
+      }),
+    LED()
+      .watchState((el, state) => el.setConnected(state.connected)),
+  ]);
 
 /**
  * DeviceList component.
@@ -14,16 +34,16 @@ const DeviceList = () => fabricate.Column()
       .filter((p) => !window.Config.ignoreHosts.includes(p.hostname))
       .map((d) => DeviceCard({ device: d }));
 
+    const noDevicesText = fabricate.Text({ text: 'No devices are connected' })
+      .withStyles({
+        color: Theme.Colors.lightGrey,
+        marginTop: '25px',
+      });
+
     el.addChildren(
-      deviceCards.length
+      deviceCards.length > 0
         ? deviceCards
-        : [
-          fabricate.Text({ text: 'No devices are connected' })
-            .withStyles({
-              color: 'white',
-              marginTop: '25px',
-            }),
-        ],
+        : [noDevicesText],
     );
   });
 
@@ -34,11 +54,8 @@ const DeviceList = () => fabricate.Column()
  */
 const LightingDashboard = () => fabricate.Column()
   .withStyles({ width: '100%' })
-  .addChildren([
-    fabricate.NavBar({
-      title: 'Lighting Dashboard',
-      backgroundColor: Theme.Colors.primary,
-    }),
+  .withChildren([
+    AppNavBar(),
     DeviceList(),
   ]);
 

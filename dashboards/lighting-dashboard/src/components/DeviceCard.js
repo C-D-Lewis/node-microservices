@@ -1,4 +1,4 @@
-/* global DeviceControls */
+/* global DeviceControls LED */
 
 /**
  * CardContainer component.
@@ -37,34 +37,10 @@ const CardTitle = ({ text }) => fabricate.Text({ text })
 const CardSubtitle = ({ text }) => fabricate.Text({ text })
   .withStyles({
     color: Theme.Colors.lightGrey,
-    paddingRight: '10px',
+    paddingRight: '5px',
     paddingTop: '2px',
     cursor: 'default',
   });
-
-/**
- * LED component.
- *
- * @param {object} props - Component props.
- * @param {object} props.device - Device object.
- * @returns {HTMLElement}
- */
-const LED = () => fabricate('div')
-  .addChildren([
-    fabricate('div')
-      .withStyles({
-        width: '15px',
-        height: '15px',
-        borderRadius: '9px',
-        marginRight: '5px',
-        backgroundColor: Theme.Colors.statusOk,
-      }),
-    // .watchState((el, state) => {
-    //   el.style.backgroundColor = state.connected
-    //     ? Theme.Colors.statusOk
-    //     : Theme.Colors.statusDown;
-    // }),
-  ]);
 
 /**
  * CardStatus component.
@@ -81,7 +57,7 @@ const CardStatus = ({ device }) => fabricate.Row()
   })
   .addChildren([
     CardSubtitle({ text: device.localIp || '' }),
-    LED(),
+    LED().then((el) => el.setConnected(true)),
   ]);
 
 /**
