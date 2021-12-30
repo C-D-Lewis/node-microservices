@@ -39,6 +39,10 @@ sudo ln -s /usr/local/bin/npm /usr/bin/npm
 sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/node" "/usr/local/bin/node"
 sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/npm" "/usr/local/bin/npm"
 
+# Setup HTTP server
+npm i -g http-server
+sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/npm" "/usr/local/bin/http-server"
+
 # Apps
 git clone https://github.com/c-d-lewis/node-microservices
 > install node-common and apps/* dependencies
