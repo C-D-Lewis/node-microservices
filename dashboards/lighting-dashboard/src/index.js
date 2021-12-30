@@ -9,10 +9,21 @@ const DeviceList = () => fabricate.Column()
   .withStyles({ alignItems: 'center' })
   .watchState((el, state) => {
     el.clear();
+
+    const deviceCards = state.devices
+      .filter((p) => !window.Config.ignoreHosts.includes(p.hostname))
+      .map((d) => DeviceCard({ device: d }));
+
     el.addChildren(
-      state.devices
-        .filter((p) => !window.Config.ignoreHosts.includes(p.hostname))
-        .map((d) => DeviceCard({ device: d })),
+      deviceCards.length
+        ? deviceCards
+        : [
+          fabricate.Text({ text: 'No devices are connected' })
+            .withStyles({
+              color: 'white',
+              marginTop: '25px',
+            }),
+        ],
     );
   });
 
