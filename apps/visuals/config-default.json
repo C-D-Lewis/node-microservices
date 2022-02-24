@@ -20,13 +20,13 @@
     "HARDWARE_TYPE": "pioled"
   },
   "AUTH_ATTIC": {
-    "HOST": "46.101.3.163",
+    "HOST": "",
     "KEY": "/spotifyCallback"
   },
   "SPOTIFY": {
     "CLIENT_ID": "",
     "CLIENT_SECRET": "",
-    "CONCIERGE_IP": "46.101.3.163",
+    "CONCIERGE_IP": "",
     "CONCIERGE_PORT": 4665
   }
 }

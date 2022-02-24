@@ -226,6 +226,18 @@
       {
         "location": "code/node-microservices/apps/attic",
         "start": "npm start &"
+      },
+      {
+        "location": "code/node-microservices/apps/guestlist",
+        "start": "npm start &"
+      },
+      {
+        "location": "code/node-microservices/apps/concierge",
+        "start": "npm start &"
+      },
+      {
+        "location": "code/node-microservices/dashboards/lighting-dashboard",
+        "start": "http-server -p 54448 &"
       }
     ]
   }

@@ -1,5 +1,5 @@
 window.Config = {
-  wsServer: '46.101.3.163',
+  wsServer: 'conduit.chrislewis.me.uk',
   ignoreHosts: [
     'DigitalOceanDroplet',
   ],
