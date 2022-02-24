@@ -1,6 +1,5 @@
 {
   "LOG": {
-    "TO_FILE": false,
     "APP_NAME": "visuals",
     "LEVEL": "info|debug"
   },

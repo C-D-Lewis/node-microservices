@@ -1,8 +1,7 @@
 {
   "LOG": {
     "APP_NAME": "guestlist",
-    "LEVEL": "info|debug",
-    "TO_FILE": false
+    "LEVEL": "info|debug"
   },
   "CONDUIT": {
     "HOST": "localhost",

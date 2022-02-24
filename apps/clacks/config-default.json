@@ -1,8 +1,7 @@
 {
   "LOG": {
     "APP_NAME": "clacks",
-    "LEVEL": "info|debug",
-    "TO_FILE": false
+    "LEVEL": "info|debug"
   },
   "SERVER": {
     "PORT": 7777

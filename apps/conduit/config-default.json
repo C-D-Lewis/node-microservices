@@ -16,8 +16,7 @@
   },
   "LOG": {
     "APP_NAME": "conduit",
-    "LEVEL": "info",
-    "TO_FILE": false
+    "LEVEL": "info"
   },
   "CLACKS": {
     "SERVER": "localhost",

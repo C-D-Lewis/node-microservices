@@ -228,6 +228,10 @@
         "start": "npm start &"
       },
       {
+        "location": "code/node-microservices/apps/visuals",
+        "start": "npm start &"
+      },
+      {
         "location": "code/node-microservices/apps/guestlist",
         "start": "npm start &"
       },

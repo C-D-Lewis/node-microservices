@@ -1,8 +1,7 @@
 {
   "LOG": {
     "LEVEL": "info",
-    "APP_NAME": "TestApp",
-    "TO_FILE": false
+    "APP_NAME": "TestApp"
   },
   "DB": {
     "FILE": "./db.json"

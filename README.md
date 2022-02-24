@@ -106,11 +106,10 @@ config.requireKeys('log.js', {
   required: ['LOG'],
   properties: {
     LOG: {
-      required: ['APP_NAME', 'LEVEL', 'TO_FILE'],
+      required: ['APP_NAME', 'LEVEL'],
       properties: {
         APP_NAME: { type: 'string' },
         LEVEL: { type: 'string' },
-        TO_FILE: { type: 'boolean' },
       },
     },
   },

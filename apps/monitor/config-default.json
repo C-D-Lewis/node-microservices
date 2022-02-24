@@ -77,7 +77,6 @@
     }
   ],
   "LOG": {
-    "TO_FILE": false,
     "APP_NAME": "monitor",
     "LEVEL": "info|debug"
   },

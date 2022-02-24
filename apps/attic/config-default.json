@@ -1,8 +1,7 @@
 {
   "LOG": {
     "APP_NAME": "attic",
-    "LEVEL": "info|debug",
-    "TO_FILE": false
+    "LEVEL": "info|debug"
   },
   "STORAGE_MODE": "db",
   "GIST_SYNC": {
