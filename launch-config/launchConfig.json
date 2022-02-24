@@ -237,7 +237,7 @@
       },
       {
         "location": "code/node-microservices/dashboards/lighting-dashboard",
-        "start": "http-server -p 54448 &"
+        "start": "python3 -m http.server 54448 &"
       }
     ]
   }
