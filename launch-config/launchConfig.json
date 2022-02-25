@@ -243,6 +243,22 @@
         "location": "code/node-microservices/dashboards/lighting-dashboard",
         "start": "python3 -m http.server 54448 &"
       }
+    ],
+    "e-paper-dashboard-witham": [
+      {
+        "location": "code/node-microservices/node-common",
+        "install": "git clone https://github.com/c-d-lewis/node-microservices",
+        "update": "$git-pull",
+        "start": ""
+      },
+      {
+        "location": "code/node-microservices/apps/conduit",
+        "start": "npm start &"
+      },
+      {
+        "location": "code/node-microservices/apps/attic",
+        "start": "npm start &"
+      }
     ]
   }
 }

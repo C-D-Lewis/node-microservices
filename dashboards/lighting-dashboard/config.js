@@ -3,5 +3,6 @@ window.Config = {
   ignoreHosts: [
     'DigitalOceanDroplet',
     'AWSConduit',
+    'e-paper-dashboard-witham',
   ],
 };

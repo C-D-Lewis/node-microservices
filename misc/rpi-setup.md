@@ -26,9 +26,11 @@ git config --global credential.helper store
 # jq
 sudo apt install jq
 
-# node & npm (Pi 3 is armv7, Zero is armv6)
+# node (nvm) & npm (Pi 3 is armv7, Zero is armv6)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 > Use nvm where binaries available
 > Use install-node-14-armv6l.sh for armv6l (Zero)
+npm i -g npm@^7
 
 # npm not found?
 sudo ln -s /usr/local/bin/node /usr/bin/node
@@ -84,4 +86,4 @@ sudo raspi-config
 
 # Startup apps with launch-config
 sudo crontab -e
-@reboot /home/pi/node-microservices/launch-config/run.sh /home/pi > /home/pi/cronlog.txt 2>&1
+@reboot /home/pi/code/node-microservices/launch-config/run.sh /home/pi > /home/pi/cronlog.txt 2>&1
