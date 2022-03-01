@@ -4,8 +4,8 @@ const { get } = require('../modules/storage');
 /**
  * Handle a 'get' topic packet.
  *
- * @param {Object} packet - The conduit packet request.
- * @param {Object} res - Express response object.
+ * @param {object} packet - The conduit packet request.
+ * @param {object} res - Express response object.
  */
 const handleGetPacket = async (packet, res) => {
   const { app, key } = packet.message;

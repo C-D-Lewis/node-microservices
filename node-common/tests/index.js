@@ -9,7 +9,6 @@ require('./enviro.spec');
 require('./eventBus.spec');
 require('./evtdb.spec');
 require('./extract.spec');
-require('./fcm.spec');
 require('./gistSync.spec');
 require('./ip.spec');
 require('./leds.spec');

@@ -54,7 +54,7 @@ const DB_KEYS = {
 /**
  * Build a credentials object for spotify-web-api-node
  *
- * @returns {Object}
+ * @returns {object}
  */
 const buildCredentials = () => ({
   clientId: SPOTIFY.CLIENT_ID,

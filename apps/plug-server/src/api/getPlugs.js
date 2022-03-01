@@ -4,8 +4,8 @@ const devices = require('../modules/devices');
 /**
  * Handle a 'getPlugs' topic packet.
  *
- * @param {Object} packet - The conduit packet request.
- * @param {Object} res - Express response object.
+ * @param {object} packet - The conduit packet request.
+ * @param {object} res - Express response object.
  */
 const handleGetPlugs = (packet, res) => {
   const plugs = devices.getAvailablePlugs();

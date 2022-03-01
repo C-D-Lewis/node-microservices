@@ -19,7 +19,7 @@ const getAvailablePlugs = () => knownDevices
 /**
  * When a new device is discovered.
  *
- * @param {Object} device - The new device.
+ * @param {object} device - The new device.
  */
 const onNewDevice = (device) => {
   // Already known device? (Although evidence suggests this is handled for us)

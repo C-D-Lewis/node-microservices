@@ -5,7 +5,7 @@ const util = require('../modules/util');
 /**
  * Get the status of an allocated app, and construct the response piece.
  *
- * @param {Object} item - Allocator item.
+ * @param {object} item - Allocator item.
  * @returns {Promise<Object>}
  */
 const getAppStatus = async (item) => {
@@ -19,8 +19,8 @@ const getAppStatus = async (item) => {
 /**
  * Collate status of all connected apps and response with a list.
  *
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
  */
 const respondWithApps = async (req, res) => {
   const apps = allocator.getAll();

@@ -1,4 +1,4 @@
-// TODO: Upgrade to node-fetch
+// TODO: Upgrade to node-fetch - what opts are needed?
 
 const request = require('request');
 

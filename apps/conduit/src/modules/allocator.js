@@ -11,15 +11,15 @@ const configs = []; // Each item is: { app, port }
  * Find an app by 'app' name
  *
  * @param {string} app - App name to find.
- * @returns {Object} The corresponding app config.
+ * @returns {object} The corresponding app config.
  */
 const findByApp = (app) => configs.find((p) => p.app === app);
 
 /**
  * Send a config over the network.
  *
- * @param {Object} res - Express request object.
- * @Param {Object} config - App config to send.
+ * @param {object} res - Express request object.
+ * @Param {object} config - App config to send.
  */
 const sendConfig = (res, config) => res.status(200).send(config);
 
@@ -47,8 +47,8 @@ const generatePortNumber = () => {
 /**
  * Send port to the requesting app.
  *
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
  */
 const sendPort = (req, res) => {
   const { app } = req.body;

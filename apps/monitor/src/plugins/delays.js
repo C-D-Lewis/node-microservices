@@ -1,6 +1,6 @@
 const {
-  requestAsync, config, fcm, log, extract,
-} = require('../node-common')(['requestAsync', 'conduit', 'config', 'fcm', 'log', 'extract']);
+  requestAsync, config, log, extract,
+} = require('../node-common')(['requestAsync', 'config', 'log', 'extract']);
 const display = require('../modules/display');
 const sleep = require('../modules/sleep');
 
@@ -72,7 +72,6 @@ const checkDelays = async (lineName) => {
   if ((stateNow !== lastStates[lineName]) && (stateNow !== STATES.GOOD_SERVICE)) {
     const reasons = await checkReasons(lineName);
     const message = `${stateNow.toUpperCase()}:\n${lineName}.\nReason: ${reasons || ''}`;
-    fcm.post('Monitor', 'monitor', message);
     lastStates[lineName] = stateNow;
   }
 
@@ -82,7 +81,7 @@ const checkDelays = async (lineName) => {
 /**
  * Check TfL Rail and Greater Anglia for delays.
  *
- * @param {Object} args - plugin ARGS object.
+ * @param {object} args - plugin ARGS object.
  */
 module.exports = async (args) => {
   if (sleep.sleeping()) return;
@@ -98,7 +97,7 @@ module.exports = async (args) => {
     );
   } catch (e) {
     log.error(e);
-    fcm.post('Monitor', 'monitor', `Error checking delays: ${e.message}`);
+
     display.setLed(args.LED, config.OPTIONS.LED_STATES.DOWN);
   }
 };

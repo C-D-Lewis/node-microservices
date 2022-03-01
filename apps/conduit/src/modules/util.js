@@ -15,7 +15,7 @@ config.requireKeys('conduit.js', {
 /**
  * Send a 'bad request' response.
  *
- * @param {Object} res - Express response object.
+ * @param {object} res - Express response object.
  */
 const sendBadRequest = (res) => {
   const error = 'Bad Request';
@@ -26,7 +26,7 @@ const sendBadRequest = (res) => {
 /**
  * Send a 'not found' response.
  *
- * @param {Object} res - Express response object.
+ * @param {object} res - Express response object.
  */
 const sendNotFound = (res) => {
   const error = 'Not Found';
@@ -37,7 +37,7 @@ const sendNotFound = (res) => {
 /**
  * Send a 'not authorized' response.
  *
- * @param {Object} res - Express response object.
+ * @param {object} res - Express response object.
  * @param {string} reason - Reason not authorized.
  */
 const sendNotAuthorized = (res, reason = 'None') => {
@@ -49,7 +49,7 @@ const sendNotAuthorized = (res, reason = 'None') => {
 /**
  * Send a packet.
  *
- * @param {Object} json - Packet to send.
+ * @param {object} json - Packet to send.
  * @returns {Promise<Object>} The request response.
  */
 const sendPacket = async (json) => {

@@ -4,8 +4,8 @@ const { startAnimation } = require('../modules/spotify');
 /**
  * Handle a 'spotify' topic packet.
  *
- * @param {Object} packet - The conduit packet request.
- * @param {Object} res - Express response object.
+ * @param {object} packet - The conduit packet request.
+ * @param {object} res - Express response object.
  */
 const handleSpotifyPacket = async (packet, res) => {
   try {

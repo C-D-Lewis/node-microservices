@@ -3,8 +3,8 @@ const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
 /**
  * Handle a 'setPixel' topic packet.
  *
- * @param {Object} packet - The conduit packet request.
- * @param {Object} res - Express response object.
+ * @param {object} packet - The conduit packet request.
+ * @param {object} res - Express response object.
  */
 const handleSetPixelPacket = (packet, res) => {
   const { message } = packet;

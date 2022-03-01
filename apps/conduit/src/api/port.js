@@ -13,8 +13,8 @@ const PORT_MESSAGE_SCHEMA = {
 /**
  * Handle a request for a port allocation for a service.
  *
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
  */
 const handlePortRequest = async (req, res) => {
   // Check it's a valid request

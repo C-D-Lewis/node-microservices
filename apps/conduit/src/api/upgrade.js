@@ -7,8 +7,8 @@ const DELAY_MS = 10000;
 /**
  * Handle an API request to do a git upgrade.
  *
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
  */
 const handleUpgradeRequest = async (req, res) => {
   try {

@@ -3,7 +3,7 @@ const { log, gpio, temperature } = require('../node-common')(['log', 'gpio', 'te
 /**
  * Monitor temperature and control onboard fan.
  *
- * @param {Object} args - plugin ARGS object.
+ * @param {object} args - plugin ARGS object.
  */
 module.exports = (args) => {
   try {

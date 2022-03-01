@@ -158,7 +158,7 @@ const requestHostnames = () => send(TOPIC_GLOBAL_GET_HOSTNAMES);
 subscriptions[TOPIC_GLOBAL_GET_HOSTNAMES] = async () =>
   send(
     TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE,
-    { hostname: HOSTNAME, localIp: await ip.getLocal() },
+    { hostname: HOSTNAME, localIp: ip.getLocal() },
   );
 
 module.exports = {

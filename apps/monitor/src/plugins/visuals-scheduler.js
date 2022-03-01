@@ -15,7 +15,7 @@ const isTime = (hours, minutes) => {
 /**
  * Set LEDs to colors at given times.
  *
- * @param {Object} args - plugin ARGS object.
+ * @param {object} args - plugin ARGS object.
  */
 module.exports = (args) => {
   const { EVENTS = [] } = args;

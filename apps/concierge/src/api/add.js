@@ -6,7 +6,7 @@ const { ATTIC_KEY_WEBHOOKS, WEBHOOK_SCHEMA } = require('../modules/webhooks');
 /**
  * Handle a packet to add a new webhook.
  *
- * @param {Object} message - Packet message, which is a webhook object.
+ * @param {object} message - Packet message, which is a webhook object.
  */
 const handlePacketWebhook = async (message) => {
   const hooks = await attic.get(ATTIC_KEY_WEBHOOKS);
@@ -26,8 +26,8 @@ const handlePacketWebhook = async (message) => {
 /**
  * Handle a 'add' packet.
  *
- * @param {Object} packet - The conduit packet request.
- * @param {Object} res - Express response object.
+ * @param {object} packet - The conduit packet request.
+ * @param {object} res - Express response object.
  */
 const handleAddPacket = async (packet, res) => {
   const { message } = packet;

@@ -53,7 +53,7 @@ const analyseAndAlert = async (currency) => {
 /**
  * Send a Twilio alert given certain crypto price changes, such as '-0.1'% change.
  *
- * @param {Object} args - plugin ARGS object.
+ * @param {object} args - plugin ARGS object.
  */
 module.exports = async (args) => {
   const {

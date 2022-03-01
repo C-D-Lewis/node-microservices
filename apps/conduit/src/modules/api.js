@@ -4,8 +4,8 @@ const { server } = require('../node-common')(['server']);
 /**
  * Middleware to enable browser pre-flight requests.
  *
- * @param {Object} req - Request object.
- * @param {Object} res - Response object.
+ * @param {object} req - Request object.
+ * @param {object} res - Response object.
  * @param {Function} next - Callback for next middleware.
  */
 const enablePreflight = (req, res, next) => {

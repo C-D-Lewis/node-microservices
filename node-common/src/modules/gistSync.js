@@ -41,7 +41,7 @@ const init = () => {
   }
 
   if (config.GIST_SYNC.SYNC_INTERVAL_M) {
-    log.info(`Setting gistSync to sync every ${config.GIST_SYNC.SYNC_INTERVAL_M} minutesa.`);
+    log.info(`Setting gistSync to sync every ${config.GIST_SYNC.SYNC_INTERVAL_M} minutes.`);
     setInterval(sync, 1000 * 60 * config.GIST_SYNC.SYNC_INTERVAL_M);
   }
 

@@ -14,7 +14,7 @@ const HANDLE_AT_INTERVAL_MS = 1000;
  * Run a plugin now.
  *
  * @param {string} pluginName - Name of the plugin.
- * @param {Object} plugin - The plugin object.
+ * @param {object} plugin - The plugin object.
  * @param {Function} pluginFunc - Function to call to call the plugin's code.
  */
 const runPlugin = async (pluginName, plugin, pluginFunc) => {
@@ -31,7 +31,7 @@ const runPlugin = async (pluginName, plugin, pluginFunc) => {
  * Handle a plugin specifying an AT time scheme.
  *
  * @param {string} pluginName - Name of the plugin.
- * @param {Object} plugin - The plugin object.
+ * @param {object} plugin - The plugin object.
  * @param {Function} pluginFunc - Function to call to call the plugin's code.
  */
 const handleAt = async (pluginName, plugin, pluginFunc) => {
@@ -62,7 +62,7 @@ const handleAt = async (pluginName, plugin, pluginFunc) => {
  * Handle a plugin specifying an EVERY time scheme.
  *
  * @param {string} pluginName - Name of the plugin.
- * @param {Object} plugin - The plugin object.
+ * @param {object} plugin - The plugin object.
  * @param {Function} pluginFunc - Function to call to call the plugin's code.
  */
 const handleEvery = (pluginName, plugin, pluginFunc) => {

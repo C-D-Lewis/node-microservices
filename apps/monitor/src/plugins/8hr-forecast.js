@@ -1,6 +1,4 @@
-const {
-  requestAsync, fcm, log,
-} = require('../node-common')(['requestAsync', 'fcm', 'log']);
+const { requestAsync, log } = require('../node-common')(['requestAsync', 'log']);
 const display = require('../modules/display');
 const sleep = require('../modules/sleep');
 
@@ -13,7 +11,7 @@ const LED_STATE_FAIR = [30, 30, 30];
 /**
  * Check weather from darksky.
  *
- * @param {Object} args - plugin ARGS object.
+ * @param {object} args - plugin ARGS object.
  * @returns {number[][]} LED states for weather.
  */
 const getForecastLedStates = async (args) => {
@@ -54,7 +52,7 @@ const getForecastLedStates = async (args) => {
 /**
  * Check weather from darksky and set an 8 hour forecast on LEDs 0 - 8.
  *
- * @param {Object} args - plugin ARGS object.
+ * @param {object} args - plugin ARGS object.
  */
 module.exports = async (args) => {
   if (sleep.sleeping()) return;
@@ -67,7 +65,6 @@ module.exports = async (args) => {
   } catch (e) {
     log.error(e);
 
-    fcm.post('Monitor', 'monitor', `Error checking forecast: ${e.message}`);
     display.setLed(args.LED, LED_STATE_DOWN);
   }
 };

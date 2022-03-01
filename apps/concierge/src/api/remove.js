@@ -4,8 +4,8 @@ const { ATTIC_KEY_WEBHOOKS } = require('../modules/webhooks');
 /**
  * Handle a 'remove' packet.
  *
- * @param {Object} packet - The conduit packet request.
- * @param {Object} res - Express response object.
+ * @param {object} packet - The conduit packet request.
+ * @param {object} res - Express response object.
  */
 const handleRemovePacket = async (packet, res) => {
   const hooks = await attic.get(ATTIC_KEY_WEBHOOKS);

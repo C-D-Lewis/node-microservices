@@ -4,8 +4,8 @@ const { ATTIC_KEY_USERS } = require('../constants');
 /**
  * Handle a 'get' topic packet.
  *
- * @param {Object} packet - The conduit packet request.
- * @param {Object} res - Express response object.
+ * @param {object} packet - The conduit packet request.
+ * @param {object} res - Express response object.
  */
 const handleGetPacket = async (packet, res) => {
   const { name } = packet.message;

@@ -5,7 +5,7 @@ const {
 /**
  * Log a scraped value from a web page.
  *
- * @param {Object} args - plugin ARGS object.
+ * @param {object} args - plugin ARGS object.
  */
 module.exports = async (args) => {
   const {

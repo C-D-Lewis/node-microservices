@@ -6,8 +6,8 @@ const OFF_CONFIRMATION_MS = 10000;
 /**
  * Handle a 'fadeAll' topic packet.
  *
- * @param {Object} packet - The conduit packet request.
- * @param {Object} res - Express response object.
+ * @param {object} packet - The conduit packet request.
+ * @param {object} res - Express response object.
  */
 const handleFadeAllPacket = async (packet, res) => {
   const { to, from } = packet.message;

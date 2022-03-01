@@ -1,6 +1,6 @@
 const {
-  config, conduit, fcm, log,
-} = require('./node-common')(['config', 'conduit', 'fcm', 'log']);
+  config, conduit, log,
+} = require('./node-common')(['config', 'conduit', 'log']);
 const plugins = require('./modules/plugins');
 const statusLed = require('./modules/status-led');
 
@@ -32,8 +32,6 @@ const main = async () => {
   statusLed.start();
 
   plugins.loadAll();
-
-  fcm.post('Monitor', 'monitor', 'Monitor started successfully');
 };
 
 main();

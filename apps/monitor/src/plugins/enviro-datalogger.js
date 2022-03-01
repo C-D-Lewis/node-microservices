@@ -7,7 +7,7 @@ const CSV_FILE_NAME = `${__dirname}/../../enviro.csv`;
 /**
  * Log environment sensor data to a file.
  *
- * @param {Object} args - plugin ARGS object.
+ * @param {object} args - plugin ARGS object.
  */
 module.exports = async () => {
   try {

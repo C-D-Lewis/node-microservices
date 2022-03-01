@@ -6,8 +6,8 @@ const adminPassword = require('../modules/adminPassword');
  * Handle a 'delete' topic packet.
  * Requires 'auth' Conduit field containing 'adminPassword'.
  *
- * @param {Object} packet - The conduit packet request.
- * @param {Object} res - Express response object.
+ * @param {object} packet - The conduit packet request.
+ * @param {object} res - Express response object.
  */
 const handleDeletePacket = async (packet, res) => {
   const { auth, message } = packet;

@@ -1,6 +1,6 @@
 const {
-  config, fcm, log, requestAsync,
-} = require('../node-common')(['config', 'fcm', 'log', 'requestAsync']);
+  config, log, requestAsync,
+} = require('../node-common')(['config', 'log', 'requestAsync']);
 const display = require('../modules/display');
 const sleep = require('../modules/sleep');
 
@@ -33,7 +33,7 @@ let lastState = true;
 /**
  * Check all local conduit services are alive.
  *
- * @param {Object} args - plugin ARGS object.
+ * @param {object} args - plugin ARGS object.
  */
 module.exports = async (args) => {
   if (sleep.sleeping()) return;
@@ -60,7 +60,8 @@ module.exports = async (args) => {
 
   // Was OK, not anymore
   if (lastState && !stateNow) {
-    await fcm.post('Monitor', 'monitor', `Services not OK: ${downApps.join(', ')}`);
+    // Some other notification mechanism
+    // await .post('Monitor', 'monitor', `Services not OK: ${downApps.join(', ')}`);
   }
 
   // Same as before
