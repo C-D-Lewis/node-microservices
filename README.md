@@ -66,6 +66,12 @@ node runner.js conduit attic visuals monitor
 * [`visuals`](apps/visuals) - API service that provides an API between
   other services and the local LED lights hardware. Also provides animations and
   Spotify album art color integration.
+* [`clacks`](apps/clacks) - Simple WebSocket server to allow persistent
+  connections from apps, dashboards, webapps etc over WS protocol.
+* [`polaris`](apps/polaris) - Servie that monitors the local network's public
+  IP address and keeps an AWS Route53 record in sync, removing the need for a
+  permanent IP to be assigned from the ISP.
+
 
 ## Dashboard List
 

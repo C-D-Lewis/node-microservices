@@ -1,0 +1,21 @@
+{
+  "OPTIONS": {
+    "UPDATE_INTERVAL_M": 10
+  },
+  "AWS": {
+    "REGION": "eu-west-2",
+    "ACCESS_KEY_ID": "",
+    "SECRET_ACCESS_KEY": "",
+    "HOSTED_ZONE_NAME": "",
+    "RECORD_NAME_PREFIX": "polaris"
+  },
+  "LOG": {
+    "APP_NAME": "polaris",
+    "LEVEL": "info|debug"
+  },
+  "CONDUIT": {
+    "HOST": "localhost",
+    "PORT": 5959,
+    "APP": "polaris"
+  }
+}
