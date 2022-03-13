@@ -24,7 +24,7 @@ const TAGS = {
   fatal: 'F',
 };
 /** Time between log size evaluations */
-const MONITOR_INTERVAL_MS = 60000;
+const MONITOR_INTERVAL_MS = 60 * 60 * 1000;
 /** Max log size */
 const MAX_SIZE_MB = 50;
 /** Log path */
