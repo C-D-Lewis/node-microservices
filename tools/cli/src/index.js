@@ -12,7 +12,7 @@ const printHelp = () => {
 nms-cli - ${description}
 
 Commands:
-
+${Object.entries(commands.COMMAND_LIST).map(([, { firstArg, description }]) => `  ${firstArg} - ${description}`)}
 `);
 };
 
@@ -26,19 +26,24 @@ const main = () => {
     return;
   }
 
-  operation.execute(ARGS.slice(1));
+  try {
+    operation.execute(ARGS.slice(1));
+  } catch (e) {
+    console.log(e);
+  }
 
   // nms conduit send $app $topic $message
-  // nms conduit apps list
 
   // nms attic get $app $key
   // nms attic set $app $key $value
 
-  // nms host $hostUrl
-
   // nms fleet list
 
-  // nms launch $appName
+  // nms app $appName start
+  // nms app $appName stop
+  // nms app list
+
+  // --host
 };
 
 main();

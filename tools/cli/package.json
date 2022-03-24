@@ -11,5 +11,25 @@
   },
   "keywords": [],
   "author": "Chris Lewis",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "eslint": "^8.11.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-airbnb-base",
+    "env": {
+      "node": true
+    },
+    "rules": {
+      "no-multi-spaces": 0,
+      "global-require": 0,
+      "import/no-dynamic-require": 0,
+      "no-await-in-loop": 0
+    }
+  },
+  "dependencies": {
+    "colors": "^1.4.0"
+  }
 }

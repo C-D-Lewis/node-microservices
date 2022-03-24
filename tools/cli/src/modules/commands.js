@@ -1,7 +1,20 @@
+require('colors');
+
 /** All commands available. */
 const COMMAND_LIST = [
-  require('../commands/echo'),
+  require('../commands/app'),
 ];
+
+const colorParams = argsStr => argsStr.split(' ').map(p => (p.includes('$') ? `${p}`.grey : p)).join(' ');
+
+const printOperations = ({ firstArg, operations }) => {
+  const specs = Object.keys(operations).map((item) => {
+    const { pattern } = operations[item];
+    return `  nms ${firstArg} ${colorParams(pattern)}`;
+  });
+
+  console.log(`Available operations for '${firstArg}':\n${specs.join('\n')}`);
+}
 
 /**
  * Match one arg with ability to interpret placeholders.
@@ -12,7 +25,7 @@ const COMMAND_LIST = [
  */
 const matchArg = (patternArg, restArg) => {
   // $value can be any value
-  if (patternArg === '$value') return restArg.length > 0;
+  if (patternArg.includes('$')) return restArg.length > 0;
 
   // Else must match
   return patternArg === restArg;
@@ -29,10 +42,10 @@ const identify = (args) => {
 
   // Find the command by firstArg
   const foundCmd = COMMAND_LIST.find(c => c.firstArg === firstArg);
-  if (!foundCmd) throw new Error(`Command '${firstArg}' not found`);
+  if (!foundCmd) return undefined;
 
   // Find the operation with pattern matching the remaining args
-  const [, operation] = Object
+  const foundOperationEntry = Object
     .entries(foundCmd.operations)
     .find(([name, { pattern }]) => {
       const patternArgs = pattern.split(' ');
@@ -42,10 +55,16 @@ const identify = (args) => {
 
       return name;
     });
+  if (!foundOperationEntry) {
+    printOperations(foundCmd);
+    return undefined;
+  }
 
+  const [, operation] = foundOperationEntry;
   return operation;
 };
 
 module.exports = {
+  COMMAND_LIST,
   identify,
 };
