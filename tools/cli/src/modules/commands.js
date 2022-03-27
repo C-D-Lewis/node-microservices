@@ -5,8 +5,21 @@ const COMMAND_LIST = [
   require('../commands/app'),
 ];
 
+/**
+ * Color params in command patterns.
+ *
+ * @param {Array<string>} argsStr - Array of args.
+ * @returns {string} Colored string.
+ */
 const colorParams = argsStr => argsStr.split(' ').map(p => (p.includes('$') ? `${p}`.grey : p)).join(' ');
 
+/**
+ * Print the operations for a specific command.
+ *
+ * @param {object} command - Command object.
+ * @param {string} command.firstArg - First arg of the command.
+ * @param {object} command.operations - Command operations.
+ */
 const printOperations = ({ firstArg, operations }) => {
   const specs = Object.keys(operations).map((item) => {
     const { pattern } = operations[item];
@@ -14,7 +27,7 @@ const printOperations = ({ firstArg, operations }) => {
   });
 
   console.log(`Available operations for '${firstArg}':\n${specs.join('\n')}`);
-}
+};
 
 /**
  * Match one arg with ability to interpret placeholders.
@@ -55,10 +68,9 @@ const identify = (args) => {
 
       return name;
     });
-  if (!foundOperationEntry) {
-    printOperations(foundCmd);
-    return undefined;
-  }
+
+  // If no operation matched, print options available
+  if (!foundOperationEntry) return { foundCmd, partial: true };
 
   const [, operation] = foundOperationEntry;
   return operation;
@@ -67,4 +79,5 @@ const identify = (args) => {
 module.exports = {
   COMMAND_LIST,
   identify,
+  printOperations,
 };

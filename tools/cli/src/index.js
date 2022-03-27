@@ -21,11 +21,20 @@ ${Object.entries(commands.COMMAND_LIST).map(([, { firstArg, description }]) => `
  */
 const main = () => {
   const operation = commands.identify(ARGS);
+
+  // No command matched, print all
   if (!operation) {
     printHelp();
     return;
   }
 
+  // Command matched, but no operation matched
+  if (operation.partial) {
+    commands.printOperations(operation.foundCmd);
+    return;
+  }
+
+  // Run the command operation
   try {
     operation.execute(ARGS.slice(1));
   } catch (e) {
