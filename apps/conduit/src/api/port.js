@@ -4,9 +4,10 @@ const { sendBadRequest } = require('../modules/util');
 
 /** Schema for a port request request. */
 const PORT_MESSAGE_SCHEMA = {
-  required: ['app'],
+  required: ['app', 'pid'],
   properties: {
     app: { type: 'string' },  // Name of the app requesting a port allocation
+    pid: { type: 'number' },  // Process ID
   },
 };
 

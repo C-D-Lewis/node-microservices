@@ -1,3 +1,5 @@
+require('colors');
+
 const { description } = require('../package.json');
 const commands = require('./modules/commands');
 
@@ -19,7 +21,7 @@ ${Object.entries(commands.COMMAND_LIST).map(([, { firstArg, description }]) => `
 /**
  * The main function.
  */
-const main = () => {
+const main = async () => {
   const operation = commands.identify(ARGS);
 
   // No command matched, print all
@@ -36,9 +38,9 @@ const main = () => {
 
   // Run the command operation
   try {
-    operation.execute(ARGS.slice(1));
+    await operation.execute(ARGS.slice(1));
   } catch (e) {
-    console.log(e);
+    console.log(`Error: ${e.message}`.red);
   }
 
   // nms conduit send $app $topic $message

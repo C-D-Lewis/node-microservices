@@ -137,7 +137,7 @@ const register = async () => {
   // Request a random port to be known by
   const { body } = await requestAsync({
     url: `http://${config.CONDUIT.HOST}:${config.CONDUIT.PORT}/port`,
-    json: { app: config.CONDUIT.APP },
+    json: { app: config.CONDUIT.APP, pid: process.pid },
   });
 
   // Start a local HTTP server and add routes

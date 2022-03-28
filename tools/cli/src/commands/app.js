@@ -1,12 +1,23 @@
 const { existsSync } = require('fs');
 const { spawn } = require('child_process');
+const fetch = require('node-fetch').default;
+
+/** Default conduit port */
+const CONDUIT_PORT = 5959;
+
+/**
+ * Fetch the running apps list.
+ *
+ * @returns {Array<object>} List of apps. 
+ */
+const fetchRunningApps = async () => fetch(`http://localhost:${CONDUIT_PORT}/apps`).then(r => r.json());
 
 /**
  * Launch an app by name.
  *
- * @param {string} appName - Name of the app to launch.
+ * @param {string} appName - Name of the app to start.
  */
-const launch = async (appName) => {
+const start = async (appName) => {
   const appDir = `${__dirname}/../../../../apps/${appName}`;
   if (!existsSync(appDir)) throw new Error(`App does not exist: ${appName}`);
 
@@ -17,6 +28,22 @@ const launch = async (appName) => {
   // });
   console.log(`Started ${appName} in the background`);
   child.unref();
+};
+
+/**
+ * Stop an app.
+ *
+ * @param {string} appName - Name of the app to stop.
+ */
+const stop = async (appName) => {
+  // Get apps running
+  const apps = await fetchRunningApps();
+  const found = apps.find(p => p.app === appName);
+  if (!found) throw new Error(`App ${appName} is not running`);
+
+  const { port } = found;
+  const res = await fetch(`http://localhost:${port}/kill`, { method: 'POST' }).then(r => r.json());
+  console.log(res);
 };
 
 module.exports = {
@@ -30,8 +57,18 @@ module.exports = {
        * @param {Array<string>} args - Command args
        * @returns {Promise<void>}
        */
-      execute: async ([, appName]) => launch(appName),
-      pattern: 'launch $appName',
+      execute: async ([, appName]) => start(appName),
+      pattern: 'start $appName',
+    },
+    stopApp: {
+      /**
+       * Stop an app.
+       *
+       * @param {Array<string>} args - Command args
+       * @returns {Promise<void>}
+       */
+      execute: async ([, appName]) => stop(appName),
+      pattern: 'stop $appName',
     },
   },
 };

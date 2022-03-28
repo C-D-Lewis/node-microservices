@@ -51,15 +51,17 @@ const generatePortNumber = () => {
  * @param {object} res - Express response object.
  */
 const sendPort = (req, res) => {
-  const { app } = req.body;
+  const { app, pid } = req.body;
   const foundConfig = findByApp(app);
+
+  // Preserve port allocations - TODO: pid will be out of date
   if (foundConfig) {
     sendConfig(res, foundConfig);
     log.info(`Sent existing port ${foundConfig.port} to ${app}`);
     return;
   }
 
-  const newConfig = { app, port: generatePortNumber() };
+  const newConfig = { app, port: generatePortNumber(), pid };
   configs.push(newConfig);
   sendConfig(res, newConfig);
   log.info(`Allocated new port ${newConfig.port} to ${app}`);

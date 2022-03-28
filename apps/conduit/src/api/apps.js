@@ -27,7 +27,12 @@ const respondWithApps = async (req, res) => {
   const result = await Promise.all(apps.map(getAppStatus));
 
   // Report conduit itself for completeness
-  result.push({ app: 'conduit', port: config.SERVER.PORT, status: 'OK' });
+  result.push({
+    app: 'conduit',
+    port: config.SERVER.PORT,
+    status: 'OK',
+    pid: process.pid,
+  });
 
   res.status(200).send(JSON.stringify(result, null, 2));
 };
