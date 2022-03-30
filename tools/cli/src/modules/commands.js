@@ -37,6 +37,8 @@ const printOperations = ({ firstArg, operations }) => {
  * @returns {true} if a match is suitable.
  */
 const matchArg = (patternArg, restArg) => {
+  if (!restArg) return false;
+
   // $value can be any value
   if (patternArg.includes('$')) return restArg.length > 0;
 

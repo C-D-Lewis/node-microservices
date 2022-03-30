@@ -50,10 +50,6 @@ const main = async () => {
 
   // nms fleet list
 
-  // nms app $appName start
-  // nms app $appName stop
-  // nms app list
-
   // --host
 };
 

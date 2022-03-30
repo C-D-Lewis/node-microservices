@@ -1,6 +1,7 @@
 const { existsSync } = require('fs');
 const { spawn } = require('child_process');
 const fetch = require('node-fetch').default;
+const printTable = require('../functions/printTable');
 
 /** Default conduit port */
 const CONDUIT_PORT = 5959;
@@ -23,6 +24,7 @@ const start = async (appName) => {
 
   const options = { stdio: 'ignore', shell: true, detatched: true };
   const child = spawn(`cd ${appDir} && npm start`, options);
+  // Remove stdio option above and uncomment to monitor
   // child.stdout.on('data', (data) => {
   //   console.log(`${appName}: ${data}`);
   // });
@@ -43,22 +45,35 @@ const stop = async (appName) => {
 
   const { port } = found;
   const res = await fetch(`http://localhost:${port}/kill`, { method: 'POST' }).then(r => r.json());
-  console.log(res);
+  if (!res.stop) throw new Error(`Failed to stop app: ${res}`);
+
+  console.log(`Stopped ${appName}`);
+};
+
+/**
+ * List running apps.
+ */
+const list = async () => {
+  const apps = await fetchRunningApps();
+
+  const headers = ['name', 'port', 'pid', 'status'];
+  const rows = apps.reduce((acc, p) => ([...acc, [p.app, p.port, p.pid, p.status.slice(0, 64)]]), []);
+  printTable(headers, rows);
 };
 
 module.exports = {
-  firstArg: 'app',
+  firstArg: 'apps',
   description: 'Work with apps.',
   operations: {
-    launchApp: {
+    startApp: {
       /**
        * Launch an app.
        *
        * @param {Array<string>} args - Command args
        * @returns {Promise<void>}
        */
-      execute: async ([, appName]) => start(appName),
-      pattern: 'start $appName',
+      execute: async ([appName]) => start(appName),
+      pattern: '$appName start',
     },
     stopApp: {
       /**
@@ -67,8 +82,17 @@ module.exports = {
        * @param {Array<string>} args - Command args
        * @returns {Promise<void>}
        */
-      execute: async ([, appName]) => stop(appName),
-      pattern: 'stop $appName',
+      execute: async ([appName]) => stop(appName),
+      pattern: '$appName stop',
+    },
+    listApps: {
+      /**
+       * List running apps.
+       *
+       * @returns {Promise<void>}
+       */
+       execute: list,
+       pattern: 'list',
     },
   },
 };
