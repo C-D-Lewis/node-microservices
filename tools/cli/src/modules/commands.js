@@ -2,9 +2,12 @@ require('colors');
 
 /** All commands available. */
 const COMMAND_LIST = [
-  require('../commands/app'),
+  require('../commands/apps'),
+  require('../commands/attic'),
   require('../commands/conduit'),
+  require('../commands/guestlist'),
   require('../commands/fleet'),
+  require('../commands/visuals'),
 ];
 
 /**

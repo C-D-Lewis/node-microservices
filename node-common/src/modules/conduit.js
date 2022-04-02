@@ -96,7 +96,7 @@ const onMessage = (req, res) => {
 
   // Not expected format
   if (!schema(message, route.schema)) {
-    respond(res, { status: 400, error: `Bad Request: data:${message} schema:${route.schema}` });
+    respond(res, { status: 400, error: `Bad Request: data:${JSON.stringify(message)} schema:${JSON.stringify(route.schema)}` });
     return;
   }
 

@@ -48,6 +48,12 @@ const GET_MESSAGE_SCHEMA = {
   },
 };
 
+/** Schema for messages to get all users, minus tokens */
+const GET_ALL_MESSAGE_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+};
+
 /**
  * Setup Conduit topic handlers.
  */
@@ -56,6 +62,7 @@ const setup = async () => {
 
   conduit.on('create', require('../api/create'), CREATE_MESSAGE_SCHEMA);
   conduit.on('get', require('../api/get'), GET_MESSAGE_SCHEMA);
+  conduit.on('getAll', require('../api/getAll'), GET_ALL_MESSAGE_SCHEMA);
   conduit.on('authorize', require('../api/authorize'), AUTHORIZE_MESSAGE_SCHEMA);
   conduit.on('delete', require('../api/delete'), DELETE_MESSAGE_SCHEMA);
 };

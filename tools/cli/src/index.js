@@ -43,9 +43,6 @@ const main = async () => {
     console.log(`Error: ${e.stack}`.red);
   }
 
-  // nms attic get $app $key
-  // nms attic set $app $key $value
-
   // --host
 };
 

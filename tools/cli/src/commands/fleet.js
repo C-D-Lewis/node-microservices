@@ -1,13 +1,5 @@
-const fetch = require('node-fetch').default;
 const printTable = require('../functions/printTable');
-
-/** Default conduit port */
-const CONDUIT_PORT = 5959;
-
-const {
-  /** Token required for the host, if any */
-  CONDUIT_TOKEN,
-} = process.env;
+const { send } = require('./conduit');
 
 /**
  * Fetch and display fleet members.
@@ -23,25 +15,15 @@ const list = async (host) => {
       app: 'conduit',
       key: 'fleetList',
     },
-    auth: CONDUIT_TOKEN || undefined,
   };
-  const res = await fetch(`http://${host}:${CONDUIT_PORT}/conduit`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(packet),
-  });
-  const json = await res.json();
+  const json = await send({ packet, host });
 
   // Display the fleet
   const fleetList = json.message.value;
-  const headers = ['Name', 'Last checkin', 'Public IP', 'Local IP'];
-  const rows = fleetList.map((p) => ([
-    p.deviceName,
-    p.lastCheckInDate,
-    p.publicIp,
-    p.localIp,
-  ]));
-  printTable(headers, rows);
+  printTable(
+    ['Name', 'Last checkin', 'Public IP', 'Local IP'],
+    fleetList.map((p) => ([p.deviceName, p.lastCheckInDate, p.publicIp, p.localIp])),
+  );
 };
 
 module.exports = {

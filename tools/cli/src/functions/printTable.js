@@ -17,7 +17,7 @@ const pad = (input, max = CELL_SIZE) => {
  *
  * @param {string} s - String to print.
  */
-const print = s => process.stdout.write(s);
+const print = (s) => process.stdout.write(s);
 
 /**
  * Print data as a table.
@@ -28,7 +28,10 @@ const print = s => process.stdout.write(s);
 const printTable = (headers, rows) => {
   const colWidths = [];
   headers.forEach((h, i) => {
-    const max = rows.reduce((acc, row) => (row[i].length > acc ? row[i].length : acc), 0);
+    const max = rows.reduce((acc, row) => {
+      const rowLength = Array.isArray(row[i]) ? row[i].join(',').length : row[i].length;
+      return (rowLength > acc ? rowLength : acc);
+    }, 0);
     colWidths[i] = Math.max(max, CELL_SIZE) + 1;
   });
 

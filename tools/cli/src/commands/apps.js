@@ -9,7 +9,7 @@ const CONDUIT_PORT = 5959;
 /**
  * Fetch the running apps list.
  *
- * @returns {Array<object>} List of apps.
+ * @returns {Promise<Array<object>>} List of apps.
  */
 const fetchRunningApps = async () => fetch(`http://localhost:${CONDUIT_PORT}/apps`).then((r) => r.json());
 
@@ -29,7 +29,7 @@ const start = async (appName) => {
   // child.stdout.on('data', (data) => {
   //   console.log(`${appName}: ${data}`);
   // });
-  console.log(`Started ${appName} in the background...`);
+  console.log(`Starting ${appName}...`);
   child.unref();
 
   // Check it worked
@@ -41,7 +41,7 @@ const start = async (appName) => {
       return;
     }
 
-    console.log(`App ${found} failed to launch - check app logs for info.`);
+    console.log(`App ${found} failed to launch - check app logs for info`);
   }, 5000);
 };
 
@@ -64,13 +64,34 @@ const stop = async (appName) => {
 };
 
 /**
+ * Stop all running apps.
+ */
+const stopAll = async () => {
+  const apps = await fetchRunningApps();
+
+  // Stop all except conduit itself
+  for (let i = 0; i < apps.length; i += 1) {
+    const { app } = apps[i];
+    if (app === 'conduit') continue;
+
+    await stop(app);
+  }
+
+  // Stop conduit
+  await stop('conduit');
+};
+
+/**
  * List running apps.
  */
 const list = async () => {
   const apps = await fetchRunningApps();
 
   const headers = ['name', 'port', 'pid', 'status'];
-  const rows = apps.reduce((acc, p) => ([...acc, [p.app, p.port, p.pid, p.status.slice(0, 64)]]), []);
+  const rows = apps.reduce(
+    (acc, p) => ([...acc, [p.app, p.port, p.pid, p.status.slice(0, 64)]]),
+    [],
+  );
   printTable(headers, rows);
 };
 
@@ -106,6 +127,15 @@ module.exports = {
        */
       execute: list,
       pattern: 'list',
+    },
+    stopAll: {
+      /**
+       * Stop all running apps.
+       *
+       * @returns {Promise<void>}
+       */
+      execute: stopAll,
+      pattern: 'stop-all',
     },
   },
 };
