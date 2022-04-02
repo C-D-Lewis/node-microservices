@@ -2,6 +2,7 @@ const { existsSync } = require('fs');
 const { spawn } = require('child_process');
 const fetch = require('node-fetch').default;
 const printTable = require('../functions/printTable');
+const switches = require('../modules/switches');
 
 /** Default conduit port */
 const CONDUIT_PORT = 5959;
@@ -11,7 +12,11 @@ const CONDUIT_PORT = 5959;
  *
  * @returns {Promise<Array<object>>} List of apps.
  */
-const fetchRunningApps = async () => fetch(`http://localhost:${CONDUIT_PORT}/apps`).then((r) => r.json());
+const fetchRunningApps = async () => {
+  const finalHost = switches.HOST || 'localhost';
+
+  return fetch(`http://${finalHost}:${CONDUIT_PORT}/apps`).then((r) => r.json());
+};
 
 /**
  * Launch an app by name.
@@ -56,8 +61,9 @@ const stop = async (appName) => {
   const found = apps.find((p) => p.app === appName);
   if (!found) throw new Error(`App ${appName} is not running`);
 
+  const finalHost = switches.HOST || 'localhost';
   const { port } = found;
-  const res = await fetch(`http://localhost:${port}/kill`, { method: 'POST' }).then((r) => r.json());
+  const res = await fetch(`http://${finalHost}:${port}/kill`, { method: 'POST' }).then((r) => r.json());
   if (!res.stop) throw new Error(`Failed to stop app: ${res}`);
 
   console.log(`Stopped ${appName}`);

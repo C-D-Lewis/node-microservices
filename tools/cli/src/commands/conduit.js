@@ -1,4 +1,5 @@
 const fetch = require('node-fetch').default;
+const switches = require('../modules/switches');
 
 const {
   /** Token required for the host, if any */
@@ -14,10 +15,12 @@ const CONDUIT_PORT = 5959;
  *
  * @param {object} opts - Options.
  * @param {object} opts.packet - Packet to send.
- * @param {string} opts.host - Host to use.
+ * @param {string} opts.host - Host to use, if override required.
  */
-const send = async ({ packet, host = 'localhost' }) => {
-  const res = await fetch(`http://${host}:${CONDUIT_PORT}/conduit`, {
+const send = async ({ packet, host }) => {
+  const finalHost = host || switches.HOST || 'localhost';
+
+  const res = await fetch(`http://${finalHost}:${CONDUIT_PORT}/conduit`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -41,7 +44,8 @@ module.exports = {
        * @returns {Promise<void>}
        */
       execute: async ([, to, topic, messageJson]) => {
-        const res = await send({ to, topic, message: JSON.parse(messageJson) });
+        const packet = { to, topic, message: JSON.parse(messageJson) };
+        const res = await send({ packet });
         console.log(res);
       },
       pattern: 'send $to $topic $message',
