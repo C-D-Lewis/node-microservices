@@ -3,6 +3,8 @@ require('colors');
 /** All commands available. */
 const COMMAND_LIST = [
   require('../commands/app'),
+  require('../commands/conduit'),
+  require('../commands/fleet'),
 ];
 
 /**
@@ -11,7 +13,7 @@ const COMMAND_LIST = [
  * @param {Array<string>} argsStr - Array of args.
  * @returns {string} Colored string.
  */
-const colorParams = argsStr => argsStr.split(' ').map(p => (p.includes('$') ? `${p}`.grey : p)).join(' ');
+const colorParams = (argsStr) => argsStr.split(' ').map((p) => (p.includes('$') ? `${p}`.grey : p)).join(' ');
 
 /**
  * Print the operations for a specific command.
@@ -56,7 +58,7 @@ const identify = (args) => {
   const [firstArg, ...rest] = args;
 
   // Find the command by firstArg
-  const foundCmd = COMMAND_LIST.find(c => c.firstArg === firstArg);
+  const foundCmd = COMMAND_LIST.find((c) => c.firstArg === firstArg);
   if (!foundCmd) return undefined;
 
   // Find the operation with pattern matching the remaining args

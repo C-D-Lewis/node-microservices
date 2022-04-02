@@ -1,6 +1,6 @@
 require('colors');
 
-const { description } = require('../package.json');
+const pkg = require('../package.json');
 const commands = require('./modules/commands');
 
 /** Program args */
@@ -11,10 +11,10 @@ const ARGS = process.argv.slice(2);
  */
 const printHelp = () => {
   console.log(`
-nms-cli - ${description}
+nms-cli - ${pkg.description}
 
 Commands:
-${Object.entries(commands.COMMAND_LIST).map(([, { firstArg, description }]) => `  ${firstArg} - ${description}`)}
+${Object.entries(commands.COMMAND_LIST).map(([, { firstArg, description }]) => `  ${firstArg} - ${description}`).join('\n')}
 `);
 };
 
@@ -40,15 +40,11 @@ const main = async () => {
   try {
     await operation.execute(ARGS.slice(1));
   } catch (e) {
-    console.log(`Error: ${e.message}`.red);
+    console.log(`Error: ${e.stack}`.red);
   }
-
-  // nms conduit send $app $topic $message
 
   // nms attic get $app $key
   // nms attic set $app $key $value
-
-  // nms fleet list
 
   // --host
 };

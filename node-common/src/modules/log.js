@@ -148,11 +148,11 @@ const begin = () => {
 
   process.on('uncaughtException', (err) => {
     error('uncaughtException:');
-    error(err.stack);
+    fatal(err.stack);
   });
   process.on('unhandledRejection', (err) => {
     error('unhandledRejection:');
-    error(err.stack);
+    fatal(err.stack);
   });
 };
 

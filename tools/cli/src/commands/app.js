@@ -9,9 +9,9 @@ const CONDUIT_PORT = 5959;
 /**
  * Fetch the running apps list.
  *
- * @returns {Array<object>} List of apps. 
+ * @returns {Array<object>} List of apps.
  */
-const fetchRunningApps = async () => fetch(`http://localhost:${CONDUIT_PORT}/apps`).then(r => r.json());
+const fetchRunningApps = async () => fetch(`http://localhost:${CONDUIT_PORT}/apps`).then((r) => r.json());
 
 /**
  * Launch an app by name.
@@ -20,16 +20,29 @@ const fetchRunningApps = async () => fetch(`http://localhost:${CONDUIT_PORT}/app
  */
 const start = async (appName) => {
   const appDir = `${__dirname}/../../../../apps/${appName}`;
-  if (!existsSync(appDir)) throw new Error(`App does not exist: ${appName}`);
+  if (!existsSync(appDir)) throw new Error(`App ${appName} does not exist`);
 
+  // Launch and detatch process
   const options = { stdio: 'ignore', shell: true, detatched: true };
   const child = spawn(`cd ${appDir} && npm start`, options);
   // Remove stdio option above and uncomment to monitor
   // child.stdout.on('data', (data) => {
   //   console.log(`${appName}: ${data}`);
   // });
-  console.log(`Started ${appName} in the background`);
+  console.log(`Started ${appName} in the background...`);
   child.unref();
+
+  // Check it worked
+  setTimeout(async () => {
+    const apps = await fetchRunningApps();
+    const found = apps.find((p) => p.app === appName);
+    if (found && found.status === 'OK') {
+      console.log(`App ${appName} is running`);
+      return;
+    }
+
+    console.log(`App ${found} failed to launch - check app logs for info.`);
+  }, 5000);
 };
 
 /**
@@ -40,11 +53,11 @@ const start = async (appName) => {
 const stop = async (appName) => {
   // Get apps running
   const apps = await fetchRunningApps();
-  const found = apps.find(p => p.app === appName);
+  const found = apps.find((p) => p.app === appName);
   if (!found) throw new Error(`App ${appName} is not running`);
 
   const { port } = found;
-  const res = await fetch(`http://localhost:${port}/kill`, { method: 'POST' }).then(r => r.json());
+  const res = await fetch(`http://localhost:${port}/kill`, { method: 'POST' }).then((r) => r.json());
   if (!res.stop) throw new Error(`Failed to stop app: ${res}`);
 
   console.log(`Stopped ${appName}`);
@@ -91,8 +104,8 @@ module.exports = {
        *
        * @returns {Promise<void>}
        */
-       execute: list,
-       pattern: 'list',
+      execute: list,
+      pattern: 'list',
     },
   },
 };
