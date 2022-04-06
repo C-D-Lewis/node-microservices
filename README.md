@@ -57,7 +57,7 @@ node runner.js conduit attic visuals monitor
   communicate, as well as providing a single entry-point for the outside world
   to communicate with any single app, using a standard message format.
 * [`guestlist`](apps/guestlist) - API service that grants and checks user access
-  tokens. Master access is granted via a local file for the sysasmin.
+  tokens. Master access is granted via a local file for the admin.
 * [`monitor`](apps/monitor) - The oldest service, runs plugins and scripts on a
   timed basis to perform generic tasks, including checking weather, train
   delays, uptime status of other services, and updating LED lights on schedule.
@@ -68,7 +68,7 @@ node runner.js conduit attic visuals monitor
   Spotify album art color integration.
 * [`clacks`](apps/clacks) - Simple WebSocket server to allow persistent
   connections from apps, dashboards, webapps etc over WS protocol.
-* [`polaris`](apps/polaris) - Servie that monitors the local network's public
+* [`polaris`](apps/polaris) - Service that monitors the local network's public
   IP address and keeps an AWS Route53 record in sync, removing the need for a
   permanent IP to be assigned from the ISP.
 
