@@ -2,16 +2,11 @@ const { execSync } = require('child_process');
 const os = require('os');
 
 /**
- * Can LED hardware be used?
+ * Can hardware be used?
  *
  * @returns {boolean}
  */
-const hardwareAvailable = () => {
-  if (!os.arch().includes('arm') || !config.LEDS.USE_HARDWARE) return false;
-  if (!initialised) init();
-
-  return true;
-};
+const hardwareAvailable = () => os.arch().includes('arm');
 
 /**
  * Set a GPIO pin.
