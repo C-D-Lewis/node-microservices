@@ -7,6 +7,7 @@ mkdir code Downloads
 sudo apt-get update && sudo apt-get upgrade -y
 sudo apt install git jq
 git config --global credential.helper store
+git config --global pull.rebase false
 
 # Install aliases
 echo 'alias gs="git status"' >> ~/.bash_aliases

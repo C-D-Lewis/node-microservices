@@ -110,21 +110,21 @@
     ],
     "stack2": [
       {
-        "location": "node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/node-microservices",
+        "location": "code/node-microservices/node-common",
+        "install": "git clone https://github.com/c-d-lewis/code/node-microservices",
         "update": "$git-pull",
         "start": ""
       },
       {
-        "location": "node-microservices/apps/conduit",
+        "location": "code/node-microservices/apps/conduit",
         "start": "npm start &"
       },
       {
-        "location": "node-microservices/apps/attic",
+        "location": "code/node-microservices/apps/attic",
         "start": "npm start &"
       },
       {
-        "location": "node-microservices/apps/polaris",
+        "location": "code/node-microservices/apps/polaris",
         "start": "npm start &"
       }
     ],

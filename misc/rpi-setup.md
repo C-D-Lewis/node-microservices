@@ -31,6 +31,7 @@ alias gf="git fetch"
 # git
 sudo apt install git
 git config --global credential.helper store
+git config --global pull.rebase false
 
 # jq
 sudo apt install jq
