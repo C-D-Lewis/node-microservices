@@ -42,17 +42,18 @@ sudo apt install jq
 npm i -g npm@^7
 
 # npm not found?
-sudo ln -s /usr/local/bin/node /usr/bin/node
-sudo ln -s /usr/local/lib/node /usr/lib/node
-sudo ln -s /usr/local/bin/npm /usr/bin/npm
 > or if not found as sudo in crontab (after nvm installation and nvm alias default)
 > which npm/node
 sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/node" "/usr/local/bin/node"
 sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/npm" "/usr/local/bin/npm"
+sudo ln -s /usr/local/bin/node /usr/bin/node
+sudo ln -s /usr/local/lib/node /usr/lib/node
+sudo ln -s /usr/local/bin/npm /usr/bin/npm
 
 # Setup HTTP server?
 npm i -g http-server
 sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/npm" "/usr/local/bin/http-server"
+sudo ln -s /usr/local/bin/http-server /usr/bin/http-server
 
 # Apps
 git clone https://github.com/c-d-lewis/node-microservices

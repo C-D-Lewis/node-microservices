@@ -64,7 +64,7 @@
         "start": "npm start &"
       }
     ],
-    "stack0": [
+    "stack-ext": [
       {
         "location": "node-microservices/node-common",
         "install": "git clone https://github.com/c-d-lewis/node-microservices",
@@ -80,7 +80,23 @@
         "start": "npm start &"
       },
       {
-        "location": "node-microservices/apps/visuals",
+        "location": "node-microservices/apps/guestlist",
+        "start": "npm start &"
+      }
+    ],
+    "stack-int": [
+      {
+        "location": "node-microservices/node-common",
+        "install": "git clone https://github.com/c-d-lewis/node-microservices",
+        "update": "$git-pull",
+        "start": ""
+      },
+      {
+        "location": "node-microservices/apps/conduit",
+        "start": "npm start &"
+      },
+      {
+        "location": "node-microservices/apps/attic",
         "start": "npm start &"
       },
       {
@@ -89,26 +105,11 @@
       },
       {
         "location": "node-microservices/dashboards/lighting-dashboard",
-        "start": "python3 -m http.server 54448 &"
+        "start": "http-server -p 54448 &"
       }
+
     ],
-    "stack1": [
-      {
-        "location": "node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/node-microservices",
-        "update": "$git-pull",
-        "start": ""
-      },
-      {
-        "location": "node-microservices/apps/conduit",
-        "start": "npm start &"
-      },
-      {
-        "location": "node-microservices/apps/attic",
-        "start": "npm start &"
-      }
-    ],
-    "stack2": [
+    "stack-util": [
       {
         "location": "code/node-microservices/node-common",
         "install": "git clone https://github.com/c-d-lewis/code/node-microservices",
