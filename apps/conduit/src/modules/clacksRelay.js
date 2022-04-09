@@ -35,10 +35,15 @@ const onConduitClacksMessage = (packet) => {
  * Subscribe to receive and forward from clacks.
  */
 const setup = async () => {
-  await clacks.connect();
+  try {
+    await clacks.connect();
 
-  clacks.subscribeTopic(TOPIC_THIS_CONDUIT, onConduitClacksMessage);
-  log.info('Ready for clacks packets');
+    clacks.subscribeTopic(TOPIC_THIS_CONDUIT, onConduitClacksMessage);
+    log.info('Ready for clacks packets');
+  } catch (e) {
+    log.error(e);
+    log.error('Failed to connect to clacks');
+  }
 };
 
 module.exports = {

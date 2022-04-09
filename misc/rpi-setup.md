@@ -1,8 +1,7 @@
 # Image (manual)
 sudo dd if=2021-01-11-raspios-buster-armhf-lite.img of=/dev/disk2s1 bs=1m
 
-# Image (auto) > Write with Raspberry Pi Imager, then re-insert
-# Enable SSH/Wi-Fi
+## Enable SSH/Wi-Fi
 touch /Volumes/boot/ssh
 nano /Volumes/boot/wpa_supplicant.conf
 > Enter the following content:
@@ -14,10 +13,20 @@ network={
   psk=""
 }
 
-# Distro
+# Image (auto) > Write with Raspberry Pi Imager, then re-insert
+## Imager allows pre-setup of SSH and WiFi
+
+# Distro update
 sudo apt-get update && sudo apt-get upgrade
 sudo apt full-upgrade
 sudo apt-get dist-upgrade
+
+# Bash aliases
+> In .bash_rc, .bash_profile, or .bash_aliases
+alias gs="git status"
+alias gp="git push origin"
+alias gc="git commit -m"
+alias gf="git fetch"
 
 # git
 sudo apt install git
@@ -27,9 +36,8 @@ git config --global credential.helper store
 sudo apt install jq
 
 # node (nvm) & npm (Pi 3 is armv7, Zero is armv6)
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 > Use nvm where binaries available
-> Use install-node-14-armv6l.sh for armv6l (Zero)
+> Use tools/install-node-14-armv6l.sh for armv6l (Zero)
 npm i -g npm@^7
 
 # npm not found?
@@ -41,7 +49,7 @@ sudo ln -s /usr/local/bin/npm /usr/bin/npm
 sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/node" "/usr/local/bin/node"
 sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/npm" "/usr/local/bin/npm"
 
-# Setup HTTP server
+# Setup HTTP server?
 npm i -g http-server
 sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/npm" "/usr/local/bin/http-server"
 

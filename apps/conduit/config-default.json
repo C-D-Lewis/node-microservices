@@ -1,6 +1,5 @@
 {
   "OPTIONS": {
-    "RECORD_STATS": false,
     "FLEET": {
       "DEVICE_NAME": "",
       "HOST": ""
@@ -16,7 +15,7 @@
   },
   "LOG": {
     "APP_NAME": "conduit",
-    "LEVEL": "info"
+    "LEVEL": "info|debug"
   },
   "CLACKS": {
     "SERVER": "localhost",
