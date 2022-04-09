@@ -66,45 +66,45 @@
     ],
     "stack-ext": [
       {
-        "location": "node-microservices/node-common",
+        "location": "code/node-microservices/node-common",
         "install": "git clone https://github.com/c-d-lewis/node-microservices",
         "update": "$git-pull",
         "start": ""
       },
       {
-        "location": "node-microservices/apps/conduit",
+        "location": "code/node-microservices/apps/conduit",
         "start": "npm start &"
       },
       {
-        "location": "node-microservices/apps/attic",
+        "location": "code/node-microservices/apps/attic",
         "start": "npm start &"
       },
       {
-        "location": "node-microservices/apps/guestlist",
+        "location": "code/node-microservices/apps/guestlist",
         "start": "npm start &"
       }
     ],
     "stack-int": [
       {
-        "location": "node-microservices/node-common",
+        "location": "code/node-microservices/node-common",
         "install": "git clone https://github.com/c-d-lewis/node-microservices",
         "update": "$git-pull",
         "start": ""
       },
       {
-        "location": "node-microservices/apps/conduit",
+        "location": "code/node-microservices/apps/conduit",
         "start": "npm start &"
       },
       {
-        "location": "node-microservices/apps/attic",
+        "location": "code/node-microservices/apps/attic",
         "start": "npm start &"
       },
       {
-        "location": "node-microservices/apps/monitor",
+        "location": "code/node-microservices/apps/monitor",
         "start": "npm start &"
       },
       {
-        "location": "node-microservices/dashboards/lighting-dashboard",
+        "location": "code/node-microservices/dashboards/lighting-dashboard",
         "start": "http-server -p 54448 &"
       }
 
