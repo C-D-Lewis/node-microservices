@@ -53,7 +53,7 @@ sudo ln -s /usr/local/bin/npm /usr/bin/npm
 
 # Setup HTTP server?
 npm i -g http-server
-sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/npm" "/usr/local/bin/http-server"
+sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/http-server" "/usr/local/bin/http-server"
 sudo ln -s /usr/local/bin/http-server /usr/bin/http-server
 
 # Apps
