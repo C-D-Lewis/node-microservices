@@ -82,6 +82,12 @@
       {
         "location": "code/node-microservices/apps/guestlist",
         "start": "npm start &"
+      },
+      {
+        "location": "code/blog",
+        "install": "git clone https://github.com/c-d-lewis/blog",
+        "update": "$git-pull",
+        "start": "sudo http-server -p 80"
       }
     ],
     "stack-int": [
