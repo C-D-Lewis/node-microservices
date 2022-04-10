@@ -151,6 +151,7 @@ const blink = (index, nextRgb) => {
  * @param {Array<number>} [fromRgb] - From RGB color values, if not current state
  */
 const fadeAll = async (toRgb, fromRgb) => {
+  // Set initial state immediately
   if (fromRgb && fromRgb.length === 3) {
     for (let i = 0; i < NUM_LEDS; i++) {
       pixelsState[i] = fromRgb;

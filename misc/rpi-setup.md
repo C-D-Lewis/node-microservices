@@ -38,6 +38,7 @@ sudo apt install jq
 
 # node (nvm) & npm (Pi 3 is armv7, Zero is armv6)
 > Use nvm where binaries available
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 > Use tools/install-node-14-armv6l.sh for armv6l (Zero)
 npm i -g npm@^7
 

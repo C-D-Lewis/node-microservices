@@ -2,7 +2,6 @@ const {
   config, conduit, log,
 } = require('./node-common')(['config', 'conduit', 'log']);
 const plugins = require('./modules/plugins');
-const statusLed = require('./modules/status-led');
 
 config.requireKeys('main.js', {
   required: ['OPTIONS'],
@@ -20,6 +19,9 @@ config.requireKeys('main.js', {
   },
 });
 
+/**
+ * The main function.
+ */
 const main = async () => {
   log.begin();
 
@@ -29,7 +31,6 @@ const main = async () => {
     topic: 'setAll',
     message: { all: [0, 0, 0] },
   });
-  statusLed.start();
 
   plugins.loadAll();
 };

@@ -86,9 +86,7 @@ const loadAll = () => {
     // Verify plugin config
     log.assert(!(plugin.EVERY && plugin.AT), 'Plugin must have only EVERY or AT, not both', true);
     log.assert(!(plugin.FILE_NAME && plugin.USE), 'Plugin must have only FILE_NAME or USE, not both', true);
-    if (!plugin.ENABLED) {
-      return;
-    }
+    if (!plugin.ENABLED) return;
 
     // Load plugins and register timers
     const pluginFunc = (plugin.FILE_NAME)
@@ -96,11 +94,13 @@ const loadAll = () => {
       : require(`../plugins/${plugin.USE}`);
     const pluginName = plugin.FILE_NAME ? plugin.FILE_NAME : plugin.USE;
 
+    // Run every X minutes
     if (plugin.EVERY) {
       handleEvery(pluginName, plugin, pluginFunc);
       return;
     }
 
+    // Run at a certain time
     if (plugin.AT) {
       await handleAt(pluginName, plugin, pluginFunc);
       return;

@@ -8,7 +8,7 @@ const { log, gpio, temperature } = require('../node-common')(['log', 'gpio', 'te
 module.exports = (args) => {
   try {
     log.assert(
-      args.GPIO_PIN && args.THRESHOLD,
+      args && args.GPIO_PIN && args.THRESHOLD,
       'fan-control.js requires GPIO_PIN and THRESHOLD specified',
       true,
     );
@@ -16,7 +16,6 @@ module.exports = (args) => {
 
     const reading = temperature.get();
     const state = reading > THRESHOLD;
-
     gpio.set(GPIO_PIN, state);
     log.info(`Set fan ${state}, temperature is ${reading}`);
   } catch (e) {

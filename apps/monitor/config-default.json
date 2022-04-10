@@ -1,7 +1,5 @@
 {
   "OPTIONS": {
-    "SLEEP": false,
-    "STATUS_LED": false,
     "DISPLAY_DRIVER": "leds"
   },
   "PLUGINS": [
@@ -49,7 +47,7 @@
     },
     {
       "ENABLED": false,
-      "FILE_NAME": "ambience-scheduler.js",
+      "FILE_NAME": "visuals-scheduler.js",
       "EVERY": 1,
       "ARGS": {
         "EVENTS": [{
@@ -64,24 +62,11 @@
           "COLOR": [64, 64, 64]
         }]
       }
-    },
-    {
-      "ENABLED": false,
-      "FILE_NAME": "crypto-alerts.js",
-      "EVERY": 10,
-      "ARGS": {
-        "CODES": ["BTC"],
-        "CONVERT_TO": "GBP",
-        "NOMICS_KEY": ""
-      }
     }
   ],
   "LOG": {
     "APP_NAME": "monitor",
     "LEVEL": "info|debug"
-  },
-  "FCM": {
-    "API_KEY": ""
   },
   "CONDUIT": {
     "HOST": "localhost",

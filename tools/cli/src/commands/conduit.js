@@ -46,7 +46,7 @@ module.exports = {
       execute: async ([, to, topic, messageJson]) => {
         const packet = { to, topic, message: JSON.parse(messageJson) };
         const res = await send({ packet });
-        console.log(res);
+        console.log(JSON.stringify(res, null, 2));
       },
       pattern: 'send $to $topic $message',
     },

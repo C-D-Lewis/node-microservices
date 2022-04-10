@@ -2,12 +2,17 @@ const { log } = require('../node-common')(['log']);
 const conduitPost = require('./conduit');
 
 /** Off color */
-const OFF_COLOR = [0, 0, 0];
+const LED_STATE_OFF = [0, 0, 0];
 
 /**
  * Do something when the hours and minutes occur.
+ *
+ * @param {Array<string>} time - Times string portions.
+ * @param {string} hours - Hours string.
+ * @param {string} minutes - Minutes string.
+ * @returns {boolean} true if it is time to run.
  */
-const isTime = (hours, minutes) => {
+const isTime = ([hours, minutes]) => {
   const now = new Date();
   return now.getHours() === parseInt(hours, 10) && now.getMinutes() === parseInt(minutes, 10);
 };
@@ -21,6 +26,7 @@ module.exports = (args) => {
   const { EVENTS = [] } = args;
 
   EVENTS.forEach(async (event) => {
+    // Check configuration
     const {
       NAME, ON, OFF, COLOR,
     } = event;
@@ -32,9 +38,8 @@ module.exports = (args) => {
       true,
     );
 
-    const [onAtHours, onAtMinutes] = ON.split(':');
-    const [offAtHours, offAtMinutes] = OFF.split(':');
-    if (isTime(onAtHours, onAtMinutes)) {
+    // Time to be ON?
+    if (isTime(ON.split(':'))) {
       log.info(`Time for ON: ${NAME}`);
       await conduitPost({
         to: 'visuals',
@@ -43,12 +48,13 @@ module.exports = (args) => {
       });
     }
 
-    if (isTime(offAtHours, offAtMinutes)) {
+    // Time to be OFF?
+    if (isTime(OFF.split(':'))) {
       log.info(`Time for OFF: ${NAME}`);
       await conduitPost({
         to: 'visuals',
         topic: 'fadeAll',
-        message: { to: OFF_COLOR },
+        message: { to: LED_STATE_OFF },
       });
     }
   });

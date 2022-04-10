@@ -1,11 +1,15 @@
 const { requestAsync, log } = require('../node-common')(['requestAsync', 'log']);
 const display = require('../modules/display');
-const sleep = require('../modules/sleep');
 
+/** LED state for OK */
 const LED_STATE_OK = [0, 255, 0];
+/** LED state for DOWN */
 const LED_STATE_DOWN = [255, 0, 0];
+/** LED state for RAIN */
 const LED_STATE_RAIN = [0, 0, 255];
+/** LED state for COLD */
 const LED_STATE_COLD = [135, 206, 250];
+/** LED state for HOT */
 const LED_STATE_HOT = [255, 165, 0];
 
 /**
@@ -38,8 +42,6 @@ const checkWeather = async (args) => {
  * @param {object} args - plugin ARGS object.
  */
 module.exports = async (args) => {
-  if (sleep.sleeping()) return;
-
   try {
     const state = await checkWeather(args);
     display.setLed(args.LED, state);

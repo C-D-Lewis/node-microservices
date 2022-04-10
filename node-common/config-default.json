@@ -15,9 +15,6 @@
     "THNG_ID": "",
     "DEVICE_API_KEY": ""
   },
-  "FCM": {
-    "API_KEY": ""
-  },
   "GIST_SYNC": {
     "URL": "",
     "DIR": "",

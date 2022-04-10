@@ -6,7 +6,7 @@ const { requestAsync, log } = require('../node-common')(['requestAsync', 'log'])
  * @param {object} args - plugin ARGS object.
  */
 module.exports = async (args) => {
-  log.assert(args.URL && args.JSON, 'post.js requires URL and ARGS specified', true);
+  log.assert(args && args.URL && args.JSON, 'post.js requires URL and ARGS specified', true);
 
   try {
     const { body } = await requestAsync({

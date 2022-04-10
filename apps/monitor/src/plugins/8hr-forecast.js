@@ -1,11 +1,15 @@
 const { requestAsync, log } = require('../node-common')(['requestAsync', 'log']);
 const display = require('../modules/display');
-const sleep = require('../modules/sleep');
 
+/** LED state for DOWN */
 const LED_STATE_DOWN = [255, 0, 0];
+/** LED state for RAIN */
 const LED_STATE_RAIN = [0, 0, 255];
+/** LED state for COLD */
 const LED_STATE_COLD = [135, 206, 250];
+/** LED state for HOT */
 const LED_STATE_HOT = [255, 165, 0];
+/** LED state for FAIR */
 const LED_STATE_FAIR = [30, 30, 30];
 
 /**
@@ -21,7 +25,7 @@ const getForecastLedStates = async (args) => {
 
   const json = JSON.parse(body);
   const { data } = json.hourly;
-  const forecast = data.slice(0, args.HOURS_AHEAD).map(p => ({
+  const forecast = data.slice(0, args.HOURS_AHEAD).map((p) => ({
     time: p.time * 1000,
     icon: p.icon,
     precipProbability: p.precipProbability,
@@ -55,8 +59,6 @@ const getForecastLedStates = async (args) => {
  * @param {object} args - plugin ARGS object.
  */
 module.exports = async (args) => {
-  if (sleep.sleeping()) return;
-
   try {
     const ledStates = await getForecastLedStates(args);
     for (let i = 0; i < ledStates.length; i += 1) {

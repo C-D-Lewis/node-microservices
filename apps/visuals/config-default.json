@@ -4,10 +4,10 @@
     "LEVEL": "info|debug"
   },
   "LEDS": {
-    "ATTENUATION_FACTOR": 0.1,
-    "BRIGHTNESS": 0.1,
+    "ATTENUATION_FACTOR": 1,
+    "BRIGHTNESS": 1,
     "USE_HARDWARE": false,
-    "HARDWARE_TYPE": "blinkt"
+    "HARDWARE_TYPE": "mote"
   },
   "CONDUIT": {
     "HOST": "localhost",

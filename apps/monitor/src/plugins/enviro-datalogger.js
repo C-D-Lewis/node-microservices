@@ -21,7 +21,7 @@ module.exports = async () => {
       proximity,
     } = sample;
 
-    // Append to CSV
+    // Append to CSV or start with just headers
     let data = (!existsSync(CSV_FILE_NAME))
       ? 'timestamp,temperature,pressure,humidity,lux,proximity'
       : readFileSync(CSV_FILE_NAME, 'utf8');
