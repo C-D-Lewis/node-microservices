@@ -1,7 +1,7 @@
 {
   "LOG": {
     "APP_NAME": "plug-server",
-    "LEVEL": "info"
+    "LEVEL": "info|debug"
   },
   "CONDUIT": {
     "HOST": "localhost",
