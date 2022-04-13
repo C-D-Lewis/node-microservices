@@ -4,5 +4,8 @@ window.Config = {
     'DigitalOceanDroplet',
     'AWSConduit',
     'e-paper-dashboard-witham',
+    'stack-ext',
+    'stack-int',
+    'stack-util',
   ],
 };

@@ -1,3 +1,6 @@
+# Image (auto) > Write with Raspberry Pi Imager, then re-insert
+>Imager allows pre-setup of SSH and WiFi
+
 # Image (manual)
 sudo dd if=2021-01-11-raspios-buster-armhf-lite.img of=/dev/disk2s1 bs=1m
 
@@ -13,16 +16,13 @@ network={
   psk=""
 }
 
-# Image (auto) > Write with Raspberry Pi Imager, then re-insert
-## Imager allows pre-setup of SSH and WiFi
-
 # Distro update
 sudo apt-get update && sudo apt-get upgrade
 sudo apt full-upgrade
 sudo apt-get dist-upgrade
 
 # Bash aliases
-> In .bash_rc, .bash_profile, or .bash_aliases
+> In .bash_aliases
 alias gs="git status"
 alias gp="git push origin"
 alias gc="git commit -m"
@@ -60,6 +60,10 @@ sudo ln -s /usr/local/bin/http-server /usr/bin/http-server
 git clone https://github.com/c-d-lewis/node-microservices
 > install node-common and apps/* dependencies
 > setup config.json for apps/*
+
+# Fan control?
+> Prevent  Command failed: /opt/vc/bin/vcgencmd measure_temp VCHI initialization failed
+sudo usermod -aG video pi
 
 # Blinkt?
 curl https://get.pimoroni.com/blinkt | bash
