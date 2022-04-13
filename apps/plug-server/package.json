@@ -10,14 +10,14 @@
   "author": "Chris Lewis",
   "dependencies": {
     "express": "^4.16.2",
-    "tplink-smarthome-api": "^0.20.1"
+    "tplink-smarthome-api": "^4.2.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
     "eslint": "^7.2.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
-    "mocha": "^8.2.1"
+    "mocha": "^9.2.2"
   },
   "eslintConfig": {
     "extends": "eslint-config-airbnb-base",
