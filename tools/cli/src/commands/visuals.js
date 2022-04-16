@@ -118,7 +118,7 @@ module.exports = {
        * @returns {Promise<void>}
        */
       execute: async ([, r, g, b]) => setAll(r, g, b),
-      pattern: 'setAll $r $g $b',
+      pattern: 'set-all $r $g $b',
     },
     fadeAll: {
       /**
@@ -127,7 +127,7 @@ module.exports = {
        * @returns {Promise<void>}
        */
       execute: async ([, r, g, b]) => fadeAll(r, g, b),
-      pattern: 'fadeAll $r $g $b',
+      pattern: 'fade-all $r $g $b',
     },
   },
 };

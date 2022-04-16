@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "colors": "^1.4.0",
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.7",
+    "ws": "^8.5.0"
   }
 }

@@ -4,6 +4,7 @@ require('colors');
 const COMMAND_LIST = [
   require('../commands/apps'),
   require('../commands/attic'),
+  require('../commands/clacks'),
   require('../commands/conduit'),
   require('../commands/guestlist'),
   require('../commands/fleet'),
