@@ -1,9 +1,14 @@
+/* eslint-disable no-promise-executor-return */
 const { WebSocket } = require('ws');
 const printTable = require('../functions/printTable');
 const switches = require('../modules/switches');
 
 /** WS port - assume like conduit's that it will never change */
 const CLACKS_PORT = 7777;
+/** Get hostnames topic */
+const TOPIC_GLOBAL_GET_HOSTNAMES = '/global/getHostnames';
+/** Get hostnames response topic */
+const TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE = '/global/getHostnamesResponse';
 
 let socket;
 const subscriptions = {};
@@ -16,7 +21,6 @@ const subscriptions = {};
 const connect = () => new Promise((resolve) => {
   const finalHost = switches.HOST || 'localhost';
   socket = new WebSocket(`ws://${finalHost}:${CLACKS_PORT}`);
-  socket.on('open', resolve);
 
   socket.on('message', (buffer) => {
     const { topic, data } = JSON.parse(buffer.toString());
@@ -25,6 +29,8 @@ const connect = () => new Promise((resolve) => {
     // Pass to the subscription
     subscriptions[topic](data);
   });
+
+  socket.on('open', resolve);
 });
 
 /**
@@ -36,12 +42,28 @@ const disconnect = () => socket.close();
  * Get all clients.
  */
 const listClients = async () => {
+  await connect();
+
+  // Request hostnames and wait 5 seconds for responses
   const clients = [];
-  // Print clients
-  printTable(
-    ['name'],
-    clients.map((p) => [p.id, p.name, p.apps, p.topics, new Date(p.createdAt).toISOString()]),
-  );
+  socket.on('message', (buffer) => {
+    const { topic, data } = JSON.parse(buffer.toString());
+    if (topic !== TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE) return;
+
+    clients.push(data);
+  });
+  socket.send(JSON.stringify({ topic: TOPIC_GLOBAL_GET_HOSTNAMES, data: {} }));
+
+  // Print those that responded
+  setTimeout(() => {
+    // Print clients
+    printTable(
+      ['hostname', 'local IP'],
+      clients.map((p) => [p.hostname, p.localIp]),
+    );
+
+    disconnect();
+  }, 5000);
 };
 
 /**
@@ -93,7 +115,7 @@ module.exports = {
        * @param {Array<string>} args - Command args.
        * @returns {Promise<void>}
        */
-      execute: async ([, topic, data]) => send(topic, data),
+      execute: async ([, topic, data]) => send(topic, JSON.parse(data)),
       pattern: 'send $topic $data',
     },
     subscribe: {
