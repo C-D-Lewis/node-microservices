@@ -34,12 +34,6 @@
     "USE_HARDWARE": false,
     "HARDWARE_TYPE": "pioled"
   },
-  "TWILIO": {
-    "RECIPIENT": "",
-    "MESSAGING_SERVICE_SID": "",
-    "ACCOUNT_SID": "",
-    "AUTH_TOKEN": ""
-  },
   "CLACKS": {
     "SERVER": "localhost",
     "PORT": 7777,

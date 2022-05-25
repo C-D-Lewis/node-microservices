@@ -36,14 +36,15 @@ const saveFiles = () => jsonFiles.forEach((jsonFile) => {
 });
 
 const init = () => {
-  if (jsonFiles) {
-    return;
-  }
+  if (jsonFiles) return;
 
   if (config.GIST_SYNC.SYNC_INTERVAL_M) {
     log.info(`Setting gistSync to sync every ${config.GIST_SYNC.SYNC_INTERVAL_M} minutes.`);
     setInterval(sync, 1000 * 60 * config.GIST_SYNC.SYNC_INTERVAL_M);
   }
+
+  // Prevent erasing the whole project
+  if (!config.GIST_SYNC.DIR) throw new Error(`DIR not set`);
 
   execSync(`rm -rf "${GIST_DIR}"`);
   execSync(`git clone ${config.GIST_SYNC.URL} "${GIST_DIR}"`);
