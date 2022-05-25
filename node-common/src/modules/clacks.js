@@ -42,6 +42,7 @@ const subscriptions = {};
 
 let socket;
 let connected;
+let disconnected = false;
 let heartbeatHandle;
 
 /**
@@ -68,6 +69,7 @@ const connect = async () => new Promise(resolve => {
     return;
   }
 
+  disconnected = false;
   socket = new WebSocket(`ws://${SERVER}:${PORT}`);
 
   socket.on('open', () => {
@@ -90,8 +92,10 @@ const connect = async () => new Promise(resolve => {
 
   socket.on('close', () => {
     connected = false;
-    log.debug('clacks: closed - retrying in 5s');
-    setTimeout(connect, 5000);
+    log.debug('clacks: closed');
+
+    // Retry unless explicitly disconnected
+    if (!disconnected) setTimeout(connect, 5000);
   });
 
   socket.on('error', (err) => {
@@ -105,6 +109,7 @@ const connect = async () => new Promise(resolve => {
  * Close the connection.
  */
 const disconnect = () => {
+  disconnected = true;
   if (!connected) throw new Error('clacks: not yet connected');
 
   socket.close();

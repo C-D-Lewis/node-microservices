@@ -2,14 +2,22 @@ const os = require('os');
 const requestAsync = require('./requestAsync');
 const log = require('./log');
 
+/**
+ * Get the public IP address.
+ *
+ * @returns {Promise<string>} Public IP address.
+ */
 const getPublic = async () => {
-  const { body } = await requestAsync('http://www.canyouseeme.org');
-
-  const marker = 'name="IP" value="';
-  const start = body.indexOf(marker) + marker.length;
-  return body.substring(start, body.indexOf('"/>', start));
+  const { body } = await requestAsync('https://api.ipify.org?format=json');
+  return JSON.parse(body).ip;
 };
 
+/**
+ * Get address from an interface.
+ *
+ * @param {string} ifName - Interface name, such as wlan0
+ * @returns {string} Address of the interface.
+ */
 const getInterfaceAddress = (ifName) => {
   const interfaces = os.networkInterfaces();
   const iface = interfaces[ifName];
@@ -27,15 +35,18 @@ const getInterfaceAddress = (ifName) => {
   return v4.address;
 };
 
+/**
+ * Get local IP.
+ *
+ * @returns {string} Local IP address, if one of the tried interfaces has one.
+ */
 const getLocal = () => {
   const address = getInterfaceAddress('wlan0') ||  // WLAN
     getInterfaceAddress('eth0') ||                 // Ethernet
     getInterfaceAddress('en0') ||                  // Mac OS WLAN
     getInterfaceAddress('enp0s3');                 // Ubuntu VM Wired
 
-  if (!address) {
-    throw new Error('No interface available for ip.getLocal()');
-  }
+  if (!address) throw new Error('No interface available for ip.getLocal()');
 
   return address;
 };

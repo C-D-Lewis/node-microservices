@@ -1,13 +1,13 @@
 require('./conduit.spec');
 require('./attic.spec');
 
-// Sorted
+// Sorted - in use
 require('./clacks.spec');
 require('./config.spec');
 require('./db.spec');
 require('./enviro.spec');
 require('./eventBus.spec');
-require('./evtdb.spec');
+// require('./evtdb.spec');
 require('./extract.spec');
 require('./gistSync.spec');
 require('./gpio.spec');
@@ -18,4 +18,4 @@ require('./motePhat.spec');
 require('./requestAsync.spec');
 require('./schema.spec');
 require('./server.spec');
-require('./textDisplay.spec');
+// require('./textDisplay.spec');

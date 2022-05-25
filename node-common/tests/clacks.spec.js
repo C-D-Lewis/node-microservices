@@ -9,7 +9,7 @@ const {
 /** Test topic */
 const TEST_TOPIC = `/devices/${HOSTNAME}/testTopic`;
 
-describe.only('clacks.js', () => {
+describe('clacks.js', () => {
   after(clacks.disconnect);
 
   it('should subscribe to a topic and send itself data', (done) => {
