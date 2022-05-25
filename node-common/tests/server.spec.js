@@ -54,4 +54,8 @@ describe('server.js', () => {
     const { body } = await requestAsync(`http://localhost:${config.SERVER.PORT}/nf`);
     expect(body).to.equal('Not Found\n');
   });
+
+  it('should stop the server', () => {
+    expect(() => server.stop()).to.not.throw();
+  });
 });
