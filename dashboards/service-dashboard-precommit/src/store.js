@@ -10,7 +10,7 @@ const INITIAL_STATE = {
   apps: [],
   fleetList: [],
   ip: FLEET_HOST,
-  bottomBarText: 'Ready',
+  ResponseBarText: 'Ready',
   atticData: {
     app: '',
     key: '',

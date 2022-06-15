@@ -1,48 +1,42 @@
-/**
- * CardContainer component.
- *
- * @returns {HTMLElement}
- */
-const CardContainer = () => fab.Card()
-  .withStyle({
-    // width: '375px',
-    margin: '10px 0px 10px 20px',
-    opacity: 0,
-    visibility: 'hidden',
-    transition: '0.6s',
-  });
+import React, { useEffect, useState } from 'react';
+import { Colors } from '../theme';
+import AppControls from './AppControls';
 
-/**
- * CardTitle component.
- *
- * @param {object} props - Component props. 
- * @returns {HTMLElement}
- */
-const CardTitle = () => fab.Text({ color: 'white' })
-  .withStyle({
+const CardContainer = ({ children, visible }) =>
+  <div style={{
+    display: 'flex',
+    flexDirection: 'column',
+    width: '375px',
+    margin: '10px 0px 10px 20px',
+    backgroundColor: 'white',
+    borderRadius: '3px',
+    boxShadow: '1px 2px 3px 1px #8884',
+    opacity: visible ? 1 : 0,
+    visibility: visible ? 'visible' : 'hidden',
+    transition: '0.6s',
+    overflow: 'hidden',
+  }}>
+    {children}
+  </div>;
+
+const CardTitle = ({ children }) =>
+  <span style={{
     fontSize: '1.2rem',
     flex: 1,
     color: 'white',
-  });
+  }}>
+    {children}
+  </span>;
 
-/**
- * LEDText component.
- *
- * @param {object} props - Component props. 
- * @returns {HTMLElement}
- */
-const LEDText = () => fab.Text({ color: Colors.lightGrey })
-  .withStyle({
+const LEDText = ({ children }) =>
+  <span style={{
     fontSize: '0.9rem',
+    color: Colors.lightGrey,
     paddingTop: 1,
-  });
+  }}>
+    {children}
+  </span>;
 
-/**
- * LED component.
- *
- * @param {object} props - Component props. 
- * @returns {HTMLElement}
- */
 const LED = ({ status }) =>
   <div style={{
     backgroundColor: Colors.statusDown,
@@ -77,23 +71,21 @@ const CardTitleRow = ({ children }) =>
   </div>;
 
 const AppCard = ({ appData }) => {
-  const container = CardContainer();
+  const [visible, setVisible] = useState(false);
 
-  return fab.Column()
-    .withChildren([
+  useEffect(() => {
+    setTimeout(() => setVisible(true), 100);
+  }, []);
+
+  return (
+    <CardContainer visible={visible}>
       <CardTitleRow>
         <CardTitle>{appData.app}</CardTitle>
         <Status data={appData}/>
       </CardTitleRow>
       <AppControls data={appData} />
-    ])
-    .then((el) => {
-      // Become visible shortly after creation
-      setTimeout(() => {
-        container.addStyles({
-          opacity: visible ? 1 : 0,
-          visibility: visible ? 'visible' : 'hidden',
-        })
-      }, 100);
-    });
+    </CardContainer>
+  );
 };
+
+export default AppCard;

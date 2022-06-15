@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Service Dashboard React</title>
+    <title>Service Dashboard</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#007bff">
@@ -10,9 +10,16 @@
     <link rel="stylesheet" type="text/css" href="./css/components.css">
   </head>
   <body>
-    <div id="app"></div>
+    <!-- Libraries -->
+    <script src="https://unpkg.com/fabricate.js@1.6.1/fabricate.js"></script>
 
+    <!-- Load before app -->
     <script src="./config.js"></script>
-    <script src="./dist/index.js"></script>
+    <script src="./src/theme.js"></script>
+    <script src="./src/services/conduitService.js"></script>
+    <script src="./src/components/SwatchButton.js"></script>
+
+    <!-- App -->
+    <script src="./src/index.js"></script>
   </body>
 </html>

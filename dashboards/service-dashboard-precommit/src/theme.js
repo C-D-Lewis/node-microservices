@@ -1,4 +1,4 @@
-const Colors = {
+export const Colors = {
   primary: '#007bff',
   primaryDark: '#002da0',
   lightGrey: '#eee',
@@ -8,6 +8,6 @@ const Colors = {
   statusDown: '#DD6E40',
 };
 
-const Fonts = {
+export const Fonts = {
   body: 'sans-serif',
 };

@@ -7,6 +7,7 @@ const TokenTextBox = ({ value, onChange }) =>
       width: '385px',
       height: '30px',
       border: 0,
+      borderRadius: '3px',
       backgroundColor: '#0003',
       margin: '10px',
       color: 'white',

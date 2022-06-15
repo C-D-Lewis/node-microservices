@@ -1,0 +1,14 @@
+* {
+  font-family: sans-serif;
+}
+
+html, body, #app {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #EEE;
+}
+
+tr {
+  margin-top: 10px;
+}

@@ -18,8 +18,8 @@ export const rootReducer = combineReducers({
   token: buildReducer('', {
     SET_TOKEN: (state, { token }) => token,
   }),
-  bottomBarText: buildReducer('', {
-    SET_BOTTOM_BAR_TEXT: (state, { bottomBarText }) => bottomBarText,
+  ResponseBarText: buildReducer('', {
+    SET_BOTTOM_BAR_TEXT: (state, { ResponseBarText }) => ResponseBarText,
   }),
   atticData: buildReducer({}, {
     SET_ATTIC_DATA: (state, { atticData }) => atticData,
