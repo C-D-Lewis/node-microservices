@@ -45,16 +45,13 @@ const ItemContainer = () => fab.Column()
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const IpItem = ({ deviceName, ip, keyName }) => ItemIP()
-  .setText(ip)
-  .watchState((el, newState, key) => {
-    if (key !== `FleetItem:${deviceName}:${keyName}Valid`) return;
-
-    // Update style
-    const reachable = `FleetItem:${deviceName}:${keyName}Valid`;
-    el.addStyles({ color: reachable ? 'black' : 'lightgrey' });
-  })
-  .onClick(() => fab.updateState('ip', () => ip));
+const IpTextButton = ({ deviceName, ip, type }) => {
+  const { key, get: isReachable } = fab.manageState(`FleetItem[${deviceName}]`, `${type}IpValid`, false);
+  return ItemIP()
+    .setText(ip)
+    .watchState((el) => el.addStyles({ color: isReachable() ? 'black' : 'lightgrey' }), [key])
+    .onClick(() => fab.updateState('ip', () => ip));
+};
 
 /**
  * FleetItem component.
@@ -65,9 +62,8 @@ const IpItem = ({ deviceName, ip, keyName }) => ItemIP()
 // eslint-disable-next-line no-unused-vars
 const FleetItem = ({ itemData }) => {
   const { deviceName, publicIp, localIp } = itemData;
-
-  const setPublicIpValid = (valid) => fab.updateState(`FleetItem:${deviceName}:publicIpValid`, () => valid);
-  const setLocalIpValid = (valid) => fab.updateState(`FleetItem:${deviceName}:localIpValid`, () => valid);
+  const { set: setPublicIpValid } = fab.manageState(`FleetItem[${deviceName}]`, 'publicIpValid', false);
+  const { set: setLocalIpValid } = fab.manageState(`FleetItem[${deviceName}]`, 'localIpValid', false);
 
   /**
    * Test publicIp is reachable.
@@ -92,15 +88,15 @@ const FleetItem = ({ itemData }) => {
   return ItemContainer()
     .withChildren([
       ItemName().setText(deviceName),
-      IpItem({
+      IpTextButton({
         deviceName,
         ip: publicIp,
-        keyName: 'publicIp',
+        type: 'public',
       }),
-      IpItem({
+      IpTextButton({
         deviceName,
         ip: localIp,
-        keyName: 'localIp',
+        type: 'local',
       }),
     ])
     .then(() => {

@@ -1,3 +1,6 @@
+// eslint-disable-next-line max-len
+/* global LeftColumn, MainArea, ResponseBar, IPTextBox, TokenTextBox, IconButton, FleetItem, AppCard, sendPacket */
+
 const {
   /* Where the fleet list can be found. */
   FLEET_HOST,
@@ -56,9 +59,9 @@ const loadApps = async () => {
   fab.updateState('apps', () => []);
 
   try {
-    const res = await fetch(`http://${ip}:${CONDUIT_PORT}/apps`);
+    const res = await fetch(`http://${fab.getState('ip')}:${CONDUIT_PORT}/apps`);
     const json = await res.json();
-    const apps =  json.sort((a, b) => a.app < b.app ? -1 : 1);
+    const apps =  json.sort((a, b) => (a.app < b.app ? -1 : 1));
     fab.updateState('apps', () => apps);
   } catch (err) {
     console.error(err);
@@ -70,7 +73,7 @@ const loadApps = async () => {
  */
 const parseParams = () => {
   const params = new URLSearchParams(window.location.search);
-  
+
   // Token
   const tokenVal = params.get('token');
   if (tokenVal) {
@@ -78,20 +81,27 @@ const parseParams = () => {
   }
 };
 
+/**
+ * AppNavBar component.
+ *
+ * @returns {HTMLElement}
+ */
 const AppNavBar = () => fab.NavBar({
   title: 'Service Dashboard',
   backgroundColor: Colors.primary,
 })
   .withChildren([
-    <IPTextBox value={ip}
-      onChange={value => dispatch(setIp(value))}/>
-    <TokenTextBox value={token}
-      onChange={value => fab.updateState('token', () => value)}/>
-    <IconButton iconSrc="../assets/reload.png"
-      onClick={async () => {
+    IPTextBox()
+      .watchState((el, { ip }) => el.setText(ip), ['ip'])
+      .onChange((value) => fab.updateState('ip', () => value)),
+    TokenTextBox()
+      .watchState((el, { token }) => el.setText(token), ['token'])
+      .onChange((value) => fab.updateState('token', () => value)),
+    IconButton({ iconSrc: '../assets/reload.png' })
+      .onClick(async () => {
         await loadFleetList();
-        loadApps();
-      }}/>
+        await loadApps();
+      }),
   ]);
 
 /**
@@ -99,34 +109,30 @@ const AppNavBar = () => fab.NavBar({
  *
  * @returns {HTMLElement}
  */
-const ServiceDashboard = () =>
-  fab.Column()
-    .withChildren([
-      AppNavBar(),
-    ])
-    .watchState((el, newState, key) => {
-      if (key === 'ip') loadApps();
-      if (key === 'token') loadFleetList();
-      parseParams();
-    });
+const ServiceDashboard = () => fab.Column()
+  .withChildren([
+    AppNavBar(),
+    fab.Row()
+      .withChildren([
+        LeftColumn()
+          .watchState((el, { fleetList }) => {
+            el.clear();
+            el.addChildren(fleetList.map((itemData) => FleetItem({ itemData })));
+          }, ['fleetList']),
+        MainArea()
+          .watchState((el, { apps }) => {
+            el.clear();
+            el.addChildren([
+              ResponseBar(),
+              ...apps.map((appData) => AppCard({ appData })),
+            ]);
+          }, ['apps']),
+      ]),
+  ])
+  .watchState((el, newState, key) => {
+    parseParams();
+    if (key === 'ip') loadApps();
+    if (key === 'token') loadFleetList();
+  }, ['ip', 'token']);
 
-  return (
-    <div>
-      <Navbar title="Service Dashboard"
-        icon="../assets/raspberrypi.png">
-        
-      </Navbar>
-      <Container style={{ width: '100%' }}>
-        <LeftColumn>
-          {fleetList.map(p => <FleetItem key={p.deviceName} itemData={p} />)}
-        </LeftColumn>
-        <MainArea>
-          <ResponseBar>{ResponseBarText}</ResponseBar>
-          {apps.map(p => <AppCard key={p.app} appData={p} />)}
-        </MainArea>
-      </Container>
-    </div>
-  );
-};
-
-fab.app(ServiceDashboard(), INITIAL_STATE);
+fabricate.app(ServiceDashboard(), INITIAL_STATE);

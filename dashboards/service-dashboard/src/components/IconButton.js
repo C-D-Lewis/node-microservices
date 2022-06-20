@@ -4,12 +4,12 @@
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const IconButton = ({ iconSrc }) =>
-  fab.Image({
-    src: iconSrc,
-    width: '26px',
-    height: '26px',
-  })
+// eslint-disable-next-line no-unused-vars
+const IconButton = ({ iconSrc }) => fab.Image({
+  src: iconSrc,
+  width: '26px',
+  height: '26px',
+})
   .withStyle({
     backgroundColor: '#0003',
     padding: '3px',
