@@ -1,114 +1,118 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { setAtticData, setConduitData, setVisualsData } from '../actions';
-import { Colors, Fonts } from '../theme';
-import { sendPacket } from '../services/conduitService';
-import IconButton from './IconButton';
-import TextBox from './TextBox';
-import TextButton from './TextButton';
+/**
+ * NoControls component.
+ *
+ * @returns {HTMLElement}
+ */
+const NoControls = () => fab('div');
 
-const NoControls = () => <div/>;
-
-const Row = ({ children, align }) =>
-  <div style={{
-    display: 'flex',
+/**
+ * ControlRow component.
+ *
+ * @returns {HTMLElement}
+ */
+const ControlRow = () => fab.Row()
+  .withStyles({
     marginTop: '10px',
-    justifyContent: align === 'right' ? 'flex-end' : 'initial',
+    justifyContent: 'initial',
     padding: '0px 10px',
-  }}>
-    {children}
-  </div>;
+  });
 
-const ButtonBar = ({ children, align }) =>
-  <div style={{
-    display: 'flex',
-    flexDirection: 'row',
+/**
+ * ButtonBar component.
+ *
+ * @returns {HTMLElement}
+ */
+const ButtonBar = () => fab.Row()
+  .withStyles({
     marginTop: '10px',
-    justifyContent: align === 'right' ? 'flex-end' : 'initial',
-  }}>
-    {children}
-  </div>;
+    justifyContent: 'initial',
+  });
 
-const Column = ({ children }) =>
-  <div style={{
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-  }}>
-    {children}
-  </div>;
-
+/**
+ * AtticControls component.
+ *
+ * @returns {HTMLElement}
+ */
 const AtticControls = () => {
-  const dispatch = useDispatch();
-  const atticData = useSelector(state => state.atticData);
+  const atticState = fab.manageState('AtticControls', 'atticData', {});
 
   const buttonStyle = { width: '50%' };
 
-  const setProp = (key, value) => dispatch(setAtticData({ ...atticData, [key]: value }));
+  const setProp = (key, value) => atticState.set({ ...atticState.get(), [key]: value });
 
-  return (
-    <Column>
-      <Row>
-        <TextBox value={atticData.app}
-          placeholder="App name"
-          style={{ width: '40%' }}
-          onChange={value => setProp('app', value)}/>
-        <TextBox value={atticData.key}
-          placeholder="Key"
-          style={{ width: '60%' }}
-          onChange={value => setProp('key', value)}/>
-      </Row>
-      <Row>
-        <TextBox value={atticData.value}
-          placeholder="{}"
-          style={{ width: "100%" }}
-          onChange={value => setProp('value', value)}/>
-      </Row>
-      <ButtonBar>
-        <TextButton label="Get"
-          style={buttonStyle}
-          onClick={async () => {
-            const { app, key } = atticData;
-            const message = { app, key };
-            const res = await sendPacket({ to: 'attic', topic: 'get', message });
-            setProp('value', JSON.stringify(res.message.value));
-          }}/>
-        <TextButton label="Set"
-          style={buttonStyle}
-          onClick={() => {
-            const { app, key, value } = atticData;
-            const message = { app, key, value };
-            sendPacket({ to: 'attic', topic: 'set', message });
-          }}/>
-      </ButtonBar>
-    </Column>
-  );
+  return fab.Column()
+    .withChildren([
+      ControlRow()
+        .withChildren([
+          TextBox({ placeholder: 'App name' })
+            .withStyles({ width: '40%' })
+            .setText(atticData.app)
+            .onChange(value => setProp('app', value)),
+          TextBox({ placeholder: 'Key' })
+            .withStyles({ width: '60%' })
+            .setText(atticData.key)
+            .onChange(value => setProp('key', value)),
+        ]),
+      ControlRow()
+        .withChildren([
+          TextBox({ placeholder: '{}' })
+            .setText(atticData.value)
+            .withStyles({ width: '100%' })
+            .onChange(value => setProp('value', value)),
+        ]),
+      ButtonBar()
+        .withChildren([
+          TextButton()
+            .setText('Get')
+            .withStyles(buttonStyle)
+            .onClick(async () => {
+              const { app, key } = atticData;
+              const message = { app, key };
+              const res = await sendPacket({ to: 'attic', topic: 'get', message });
+              setProp('value', JSON.stringify(res.message.value));
+            }),
+          TextButton()
+            .setText('Set')
+            .withStyle(buttonStyle)
+            .onClick(() => {
+              const { app, key, value } = atticData;
+              const message = { app, key, value };
+              sendPacket({ to: 'attic', topic: 'set', message });
+            }),
+        ]),
+      ]);
 };
 
+/**
+ * ConduitControls component.
+ *
+ * @returns {HTMLElement}
+ */
 const ConduitControls = () => {
-  const dispatch = useDispatch();
-  const conduitData = useSelector(state => state.conduitData);
+  const conduitState = fab.manageState('AtticControls', 'conduitData', {});
 
-  const setProp = (key, value) => dispatch(setConduitData({ ...conduitData, [key]: value }));
+  const setProp = (key, value) => conduitState.set({ ...conduitState.get(), [key]: value });
 
-  return (
-    <Column>
-      <Row>
-        <TextBox value={conduitData.app}
-          placeholder="App name"
-          style={{ width: '40%' }}
-          onChange={value => setProp('app', value)}/>
-        <TextBox value={conduitData.topic}
-          placeholder="Topic"
-          style={{ width: '60%' }}
-          onChange={value => setProp('topic', value)}/>
-      </Row>
-      <Row>
+  return fab.Column()
+    .withChildren([
+      ControlRow()
+        .withChildren([
+          TextBox({ placeholder: 'App name' })
+            .setText(conduitData.app)
+            .withStyles({ width: '40%' })
+            .onChange(value => setProp('app', value)),
+          TextBox({ placeholder: 'Topic' })
+            .setText(conduitData.topic)
+            .withStyles({ width: '60%' })
+            .onChange(value => setProp('topic', value)),
+        ]),
+
+      <ControlRow>
         <TextBox value={conduitData.message}
           placeholder="{}"
           style={{ width: "100%" }}
           onChange={value => setProp('message', value)}/>
-      </Row>
+      </ControlRow>
       <ButtonBar>
         <TextButton label="Send"
           style={{ width: '100%', borderRadius: '0px 0px 3px 3px' }}
@@ -117,7 +121,7 @@ const ConduitControls = () => {
             sendPacket({ to, topic, message: JSON.parse(message) });
           }}/>
       </ButtonBar>
-    </Column>
+    </ControlColumn>
   );
 };
 
@@ -130,8 +134,8 @@ const VisualsControls = () => {
   const setProp = (key, value) => dispatch(setVisualsData({ ...visualsData, [key]: value }));
 
   return (
-    <Column>
-      <Row>
+    <ControlColumn>
+      <ControlRow>
         {/* <TextBox value={visualsData.index} */}
         {/*   placeholder="index" */}
         {/*   style={{ width: "10%" }} */}
@@ -148,13 +152,13 @@ const VisualsControls = () => {
           placeholder="blue"
           style={{ width: "30%" }}
           onChange={value => setProp('blue', parseInt(value))}/>
-      </Row>
-      <Row>
+      </ControlRow>
+      <ControlRow>
         <TextBox value={visualsData.text}
           placeholder="text"
           style={{ width: "100%" }}
           onChange={value => setProp('text', value)}/>
-      </Row>
+      </ControlRow>
       <ButtonBar>
         <TextButton label="All"
           style={{ width: '20%' }}
@@ -188,7 +192,7 @@ const VisualsControls = () => {
           style={{ width: '20%', borderBottomRightRadius: 3 }}
           onClick={() => sendPacket({ to: 'visuals', topic: 'state' })}/>
       </ButtonBar>
-    </Column>
+    </ControlColumn>
   );
 };
 
