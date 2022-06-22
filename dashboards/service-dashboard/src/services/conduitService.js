@@ -1,5 +1,4 @@
-/** Port to look for conduit apps */
-const CONDUIT_PORT = 5959;
+/* global CONDUIT_PORT */
 
 /**
  * Send a conduit packet.
@@ -7,6 +6,7 @@ const CONDUIT_PORT = 5959;
  * @param {object} packet - Packet to send.
  * @returns {Promise<object|Error>} Response or error encountered.
  */
+// eslint-disable-next-line no-unused-vars
 const sendPacket = async (packet) => {
   const ip = fab.getState('ip');
   const token = fab.getState('token');

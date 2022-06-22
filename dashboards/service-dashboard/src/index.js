@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-/* global LeftColumn MainArea ResponseBar IPTextBox TokenTextBox IconButton FleetItem AppCard sendPacket */
+/* global LeftColumn MainArea ResponseBar TextBox IconButton FleetItem AppCard sendPacket */
 
 const {
   /* Where the fleet list can be found. */
@@ -76,9 +76,7 @@ const parseParams = () => {
 
   // Token
   const tokenVal = params.get('token');
-  if (tokenVal) {
-    fab.updateState('token', () => tokenVal);
-  }
+  if (tokenVal) fab.updateState('token', () => tokenVal);
 };
 
 /**
@@ -91,11 +89,15 @@ const AppNavBar = () => fab.NavBar({
   backgroundColor: Colors.primary,
 })
   .withChildren([
-    IPTextBox()
-      .watchState((el, { ip }) => el.setText(ip), ['ip'])
+    TextBox({ placeholder: 'IP address' })
+      .watchState((el, { ip }) => {
+        el.value = ip;
+      }, ['ip'])
       .onChange((value) => fab.updateState('ip', () => value)),
-    TokenTextBox()
-      .watchState((el, { token }) => el.setText(token), ['token'])
+    TextBox({ placeholder: 'Token' })
+      .watchState((el, { token }) => {
+        el.value = token;
+      }, ['token'])
       .onChange((value) => fab.updateState('token', () => value)),
     IconButton({ iconSrc: '../assets/reload.png' })
       .onClick(async () => {
