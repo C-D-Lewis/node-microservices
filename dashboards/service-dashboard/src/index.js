@@ -132,9 +132,9 @@ const ServiceDashboard = () => fab.Column()
       ]),
   ])
   .watchState((el, newState, key) => {
-    parseParams();
+    if (!key) parseParams();
     if (key === 'ip') loadApps();
-    if (key === 'token') loadFleetList();
-  }, ['ip', 'token']);
+    if (key === 'token' && fab.getState('fleetList').length === 0) loadFleetList();
+  });
 
-fabricate.app(ServiceDashboard(), INITIAL_STATE, { logStateUpdates: true });
+fabricate.app(ServiceDashboard(), INITIAL_STATE);
