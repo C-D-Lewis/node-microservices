@@ -5,7 +5,7 @@
  */
 // eslint-disable-next-line no-unused-vars
 const MainArea = () => fab.Row()
-  .withStyle({
+  .withStyles({
     flex: 5,
     flexWrap: 'wrap',
     width: '100%',

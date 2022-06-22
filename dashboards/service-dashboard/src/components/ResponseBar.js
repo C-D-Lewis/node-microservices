@@ -8,7 +8,7 @@ const HEIGHT = 30;
  */
 // eslint-disable-next-line no-unused-vars
 const ResponseBar = () => fab('div')
-  .withStyle({
+  .withStyles({
     fontFamily: 'monospace',
     position: 'relative',
     bottom: 0,

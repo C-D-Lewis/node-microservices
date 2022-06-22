@@ -9,7 +9,7 @@ const TextBox  = ({ placeholder = '' }) => fab.TextInput({
   placeholder,
   color: 'black',
 })
-  .withStyle({
+  .withStyles({
     height: '30px',
     border: '0',
     borderBottom: '2px solid #0005',

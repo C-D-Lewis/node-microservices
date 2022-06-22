@@ -9,7 +9,7 @@ const IPTextBox = () =>
     color: 'white',
     backgroundColor: '#0003',
   })
-  .withStyle({
+  .withStyles({
     width: '200px',
     height: '30px',
     border: 0,

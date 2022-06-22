@@ -5,7 +5,7 @@
  */
 // eslint-disable-next-line no-unused-vars
 const LeftColumn = () => fab.Column()
-  .withStyle({
+  .withStyles({
     flex: 1,
     backgroundColor: 'white',
     width: '100%',

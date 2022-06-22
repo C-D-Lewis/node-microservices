@@ -9,7 +9,7 @@ const TextButton = () => fab.Button({
   color: 'white',
   backgroundColor: Colors.primary,
 })
-  .withStyle({
+  .withStyles({
     height: '30px',
     fontSize: '1.1rem',
   });

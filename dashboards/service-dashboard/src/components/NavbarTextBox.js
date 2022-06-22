@@ -9,7 +9,7 @@ const NavbarTextBox = ({ placeholder, onChange }) =>
     color: 'white',
     backgroundColor: '#0003',
   })
-  .withStyle({
+  .withStyles({
       height: '30px',
       border: 0,
       borderRadius: '3px',

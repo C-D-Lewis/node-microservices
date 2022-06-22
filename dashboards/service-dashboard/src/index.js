@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-/* global LeftColumn, MainArea, ResponseBar, IPTextBox, TokenTextBox, IconButton, FleetItem, AppCard, sendPacket */
+/* global LeftColumn MainArea ResponseBar IPTextBox TokenTextBox IconButton FleetItem AppCard sendPacket */
 
 const {
   /* Where the fleet list can be found. */

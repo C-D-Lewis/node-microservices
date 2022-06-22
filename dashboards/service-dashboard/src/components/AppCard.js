@@ -6,7 +6,7 @@
  * @returns {HTMLElement}
  */
 const CardContainer = () => fab.Card()
-  .withStyle({
+  .withStyles({
     display: 'flex',
     flexDirection: 'column',
     // width: '375px',
@@ -23,7 +23,7 @@ const CardContainer = () => fab.Card()
  * @returns {HTMLElement}
  */
 const CardTitle = () => fab.Text({ color: 'white' })
-  .withStyle({
+  .withStyles({
     fontSize: '1.2rem',
     flex: 1,
     color: 'white',
@@ -36,7 +36,7 @@ const CardTitle = () => fab.Text({ color: 'white' })
  * @returns {HTMLElement}
  */
 const LEDText = () => fab.Text({ color: Colors.lightGrey })
-  .withStyle({
+  .withStyles({
     fontSize: '0.9rem',
     paddingTop: 1,
   });
@@ -48,7 +48,7 @@ const LEDText = () => fab.Text({ color: Colors.lightGrey })
  * @returns {HTMLElement}
  */
 const LED = () => fab('div')
-  .withStyle({
+  .withStyles({
     backgroundColor: Colors.statusDown,
     width: '15px',
     height: '15px',
@@ -66,7 +66,7 @@ const CardStatus = ({ app }) => {
   const ledText = LEDText();
 
   return fab.Row()
-    .withStyle({
+    .withStyles({
       alignItems: 'center',
       justifyContent: 'flex-end',
       flex: 2,
@@ -88,7 +88,7 @@ const CardStatus = ({ app }) => {
  * @returns {HTMLElement}
  */
 const CardTitleRow = () => fab.Row()
-  .withStyle({
+  .withStyles({
     alignItems: 'center',
     backgroundColor: Colors.veryDarkGrey,
     padding: '5px 15px',

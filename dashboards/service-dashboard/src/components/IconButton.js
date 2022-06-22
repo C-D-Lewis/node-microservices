@@ -10,7 +10,7 @@ const IconButton = ({ iconSrc }) => fab.Image({
   width: '26px',
   height: '26px',
 })
-  .withStyle({
+  .withStyles({
     backgroundColor: '#0003',
     padding: '3px',
     borderRadius: '3px',
