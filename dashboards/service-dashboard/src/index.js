@@ -137,4 +137,4 @@ const ServiceDashboard = () => fab.Column()
     if (key === 'token') loadFleetList();
   }, ['ip', 'token']);
 
-fabricate.app(ServiceDashboard(), INITIAL_STATE);
+fabricate.app(ServiceDashboard(), INITIAL_STATE, { logStateUpdates: true });
