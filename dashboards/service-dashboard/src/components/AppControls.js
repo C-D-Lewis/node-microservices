@@ -20,23 +20,12 @@ const ControlRow = () => fab.Row()
   });
 
 /**
- * ButtonBar component.
- *
- * @returns {HTMLElement}
- */
-const ButtonBar = () => fab.Row()
-  .withStyles({
-    marginTop: '10px',
-    justifyContent: 'initial',
-  });
-
-/**
  * AtticControls component.
  *
  * @returns {HTMLElement}
  */
 const AtticControls = () => {
-  const buttonStyle = { width: '50%' };
+  const buttonStyle = { width: '50%', borderRadius: 0, margin: 0 };
 
   /**
    * Set a property within the app controls state.
@@ -72,7 +61,7 @@ const AtticControls = () => {
             .withStyles({ width: '100%' })
             .onChange((value) => setProp('value', value)),
         ]),
-      ButtonBar()
+      fab.Row()
         .withChildren([
           TextButton()
             .setText('Get')
@@ -101,6 +90,8 @@ const AtticControls = () => {
  * @returns {HTMLElement}
  */
 const ConduitControls = () => {
+  const buttonStyle = { borderRadius: 0, margin: 0 };
+
   /**
    * Set a property within the app controls state.
    *
@@ -135,11 +126,11 @@ const ConduitControls = () => {
             .withStyles({ width: '100%' })
             .onChange((value) => setProp('message', value)),
         ]),
-      ButtonBar()
+      fab.Row()
         .withChildren([
           TextButton()
             .setText('Send')
-            .withStyles({ width: '100%', borderRadius: '0px 0px 3px 3px' })
+            .withStyles({ width: '100%', ...buttonStyle})
             .onClick(() => {
               const { app: to, topic, message } = fab.getState('conduitData');
               sendPacket({ to, topic, message: JSON.parse(message) });
@@ -154,7 +145,7 @@ const ConduitControls = () => {
  * @returns {HTMLElement}
  */
 const VisualsControls = () => {
-  const buttonStyle = { width: '20%' };
+  const buttonStyle = { width: '20%', borderRadius: 0, margin: 0 };
 
   /**
    * Set a property within the app controls state.
@@ -194,11 +185,11 @@ const VisualsControls = () => {
             .withStyles({ width: '100%' })
             .onChange((value) => setProp('text', value)),
         ]),
-      ButtonBar()
+      fab.Row()
         .withChildren([
           TextButton()
             .setText('All')
-            .withStyles({ width: '20%' })
+            .withStyles(buttonStyle)
             .onClick(() => {
               const { red, green, blue } = fab.getState('visualsData');
               const message = { all: [red, green, blue] };
@@ -234,7 +225,7 @@ const VisualsControls = () => {
             }),
           TextButton()
             .setText('State')
-            .withStyles({ width: '20%' })
+            .withStyles(buttonStyle)
             .onClick(() => sendPacket({ to: 'visuals', topic: 'state' })),
         ]),
     ]);
@@ -247,13 +238,13 @@ const VisualsControls = () => {
  * @returns {HTMLElement}
  */
 // eslint-disable-next-line no-unused-vars
-const AppControls = ({ data }) => {
+const AppControls = ({ app }) => {
   const controlsMap = {
     attic: AtticControls,
     conduit: ConduitControls,
     visuals: VisualsControls,
   };
-  const Controls = controlsMap[data.app] || NoControls;
+  const Controls = controlsMap[app] || NoControls;
 
   return Controls();
 };

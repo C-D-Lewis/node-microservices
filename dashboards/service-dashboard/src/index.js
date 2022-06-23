@@ -126,15 +126,15 @@ const ServiceDashboard = () => fab.Column()
             el.clear();
             el.addChildren([
               ResponseBar(),
-              ...apps.map((appData) => AppCard({ appData })),
+              ...apps.map((appData) => AppCard({ app: appData.app })),
             ]);
           }, ['apps']),
       ]),
   ])
   .watchState((el, newState, key) => {
-    if (!key) parseParams();
+    if (key === 'fabricate:init') parseParams();
     if (key === 'ip') loadApps();
-    if (key === 'token' && fab.getState('fleetList').length === 0) loadFleetList();
-  });
+    if (key === 'token') loadFleetList();
+  }, ['fabricate:init', 'ip', 'token']);
 
 fabricate.app(ServiceDashboard(), INITIAL_STATE);

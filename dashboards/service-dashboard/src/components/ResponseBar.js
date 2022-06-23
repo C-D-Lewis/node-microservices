@@ -18,4 +18,5 @@ const ResponseBar = () => fab('div')
     backgroundColor: '#333',
     color: 'white',
     alignItems: 'center',
-  });
+  })
+  .watchState((el, { responseBarText }) => el.setText(responseBarText), ['responseBarText']);

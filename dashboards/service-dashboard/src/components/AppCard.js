@@ -22,11 +22,12 @@ const CardContainer = () => fab.Card()
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const CardTitle = () => fab.Text({ color: 'white' })
+const CardTitle = () => fab.Text()
   .withStyles({
     fontSize: '1.2rem',
     flex: 1,
     color: 'white',
+    margin: '6px 5px 5px 5px',
   });
 
 /**
@@ -35,8 +36,9 @@ const CardTitle = () => fab.Text({ color: 'white' })
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const LEDText = () => fab.Text({ color: Colors.lightGrey })
+const LEDText = () => fab.Text()
   .withStyles({
+    color: Colors.lightGrey,
     fontSize: '0.9rem',
     paddingTop: 1,
   });
