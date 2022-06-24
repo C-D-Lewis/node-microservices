@@ -14,7 +14,6 @@ const NoControls = () => fab('div');
  */
 const ControlRow = () => fab.Row()
   .withStyles({
-    marginTop: '10px',
     justifyContent: 'initial',
     padding: '0px 10px',
   });
@@ -34,9 +33,8 @@ const AtticControls = () => {
    * @param {*} value - Prop value.
    */
   const setProp = (key, value) => {
-    const atticData = fab.getState('atticData');
     fab.updateState('atticData', () => ({
-      ...atticData,
+      ...fab.getState('atticData'),
       [key]: value,
     }));
   };
@@ -48,18 +46,18 @@ const AtticControls = () => {
           TextBox({ placeholder: 'App name' })
             .withStyles({ width: '40%' })
             .watchState((el, { atticData }) => el.setText(atticData.app), ['atticData'])
-            .onChange((value) => setProp('app', value)),
+            .onChange((el, value) => setProp('app', value)),
           TextBox({ placeholder: 'Key' })
             .withStyles({ width: '60%' })
             .watchState((el, { atticData }) => el.setText(atticData.key), ['atticData'])
-            .onChange((value) => setProp('key', value)),
+            .onChange((el, value) => setProp('key', value)),
         ]),
       ControlRow()
         .withChildren([
-          TextBox({ placeholder: '{}' })
+          TextBox({ placeholder: 'Value' })
             .watchState((el, { atticData }) => el.setText(atticData.value), ['atticData'])
             .withStyles({ width: '100%' })
-            .onChange((value) => setProp('value', value)),
+            .onChange((el, value) => setProp('value', value)),
         ]),
       fab.Row()
         .withChildren([
@@ -99,9 +97,8 @@ const ConduitControls = () => {
    * @param {*} value - Prop value.
    */
   const setProp = (key, value) => {
-    const conduitData = fab.getState('conduitData');
     fab.updateState('conduitData', () => ({
-      ...conduitData,
+      ...fab.getState('conduitData'),
       [key]: value,
     }));
   };
@@ -113,24 +110,24 @@ const ConduitControls = () => {
           TextBox({ placeholder: 'App name' })
             .watchState((el, { conduitData }) => el.setText(conduitData.app))
             .withStyles({ width: '40%' })
-            .onChange((value) => setProp('app', value)),
+            .onChange((el, value) => setProp('app', value)),
           TextBox({ placeholder: 'Topic' })
             .watchState((el, { conduitData }) => el.setText(conduitData.topic))
             .withStyles({ width: '60%' })
-            .onChange((value) => setProp('topic', value)),
+            .onChange((el, value) => setProp('topic', value)),
         ]),
       ControlRow()
         .withChildren([
-          TextBox({ placeholder: '{}' })
+          TextBox({ placeholder: 'Message (JSON)' })
             .watchState((el, { conduitData }) => el.setText(conduitData.message))
             .withStyles({ width: '100%' })
-            .onChange((value) => setProp('message', value)),
+            .onChange((el, value) => setProp('message', value)),
         ]),
       fab.Row()
         .withChildren([
           TextButton()
             .setText('Send')
-            .withStyles({ width: '100%', ...buttonStyle})
+            .withStyles({ width: '100%', ...buttonStyle })
             .onClick(() => {
               const { app: to, topic, message } = fab.getState('conduitData');
               sendPacket({ to, topic, message: JSON.parse(message) });
@@ -145,7 +142,9 @@ const ConduitControls = () => {
  * @returns {HTMLElement}
  */
 const VisualsControls = () => {
-  const buttonStyle = { width: '20%', borderRadius: 0, margin: 0 };
+  const buttonStyle = {
+    width: '20%', borderRadius: 0, margin: 0, minWidth: '50px',
+  };
 
   /**
    * Set a property within the app controls state.
@@ -154,9 +153,8 @@ const VisualsControls = () => {
    * @param {*} value - Prop value.
    */
   const setProp = (key, value) => {
-    const visualsData = fab.getState('visualsData');
     fab.updateState('visualsData', () => ({
-      ...visualsData,
+      ...fab.getState('visualsData'),
       [key]: value,
     }));
   };
@@ -168,22 +166,22 @@ const VisualsControls = () => {
           TextBox({ placeholder: 'red' })
             .watchState((el, { visualsData }) => el.setText(visualsData.red))
             .withStyles({ width: '30%' })
-            .onChange((value) => setProp('red', parseInt(value, 10))),
+            .onChange((el, value) => setProp('red', parseInt(value, 10))),
           TextBox({ placeholder: 'green' })
             .watchState((el, { visualsData }) => el.setText(visualsData.green))
             .withStyles({ width: '30%' })
-            .onChange((value) => setProp('green', parseInt(value, 10))),
+            .onChange((el, value) => setProp('green', parseInt(value, 10))),
           TextBox({ placeholder: 'blue' })
             .watchState((el, { visualsData }) => el.setText(visualsData.blue))
             .withStyles({ width: '30%' })
-            .onChange((value) => setProp('blue', parseInt(value, 10))),
+            .onChange((el, value) => setProp('blue', parseInt(value, 10))),
         ]),
       ControlRow()
         .withChildren([
           TextBox({ placeholder: 'text' })
             .watchState((el, { visualsData }) => el.setText(visualsData.text))
             .withStyles({ width: '100%' })
-            .onChange((value) => setProp('text', value)),
+            .onChange((el, value) => setProp('text', value)),
         ]),
       fab.Row()
         .withChildren([

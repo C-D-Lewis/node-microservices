@@ -7,10 +7,9 @@ const ItemName = () => fab('span')
   .withStyles({
     color: 'black',
     fontWeight: 'bold',
-    fontSize: '1rem',
-    padding: '2px',
-    paddingLeft: '15px',
-    backgroundColor: '#eee',
+    fontSize: '1.1rem',
+    padding: '2px 2px 0px 5px',
+    cursor: 'default',
   });
 
 /**
@@ -22,7 +21,7 @@ const ItemIP = () => fab('span')
   .withStyles({
     color: 'lightgrey',
     fontSize: '1rem',
-    paddingLeft: '15px',
+    padding: '2px 15px',
     fontFamily: 'monospace',
     cursor: 'pointer',
   });
@@ -52,6 +51,18 @@ const IpTextButton = ({ deviceName, ip, type }) => {
     .watchState((el) => el.addStyles({ color: isReachable() ? 'black' : 'lightgrey' }), [key])
     .onClick(() => fab.updateState('ip', () => ip));
 };
+
+/**
+ * ItemIcon component.
+ *
+ * @returns {HTMLElement}
+ */
+const ItemIcon = () => fab.Image({
+  src: 'assets/server.png',
+  width: '20px',
+  height: '20px',
+})
+  .withStyles({ margin: '4px' });
 
 /**
  * FleetItem component.
@@ -87,7 +98,12 @@ const FleetItem = ({ itemData }) => {
 
   return ItemContainer()
     .withChildren([
-      ItemName().setText(deviceName),
+      fab.Row()
+        .withStyles({ backgroundColor: '#eee', alignItems: 'center' })
+        .withChildren([
+          ItemIcon(),
+          ItemName().setText(deviceName),
+        ]),
       IpTextButton({
         deviceName,
         ip: publicIp,

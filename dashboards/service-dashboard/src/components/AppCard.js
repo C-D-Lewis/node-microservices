@@ -9,7 +9,7 @@ const CardContainer = () => fab.Card()
   .withStyles({
     display: 'flex',
     flexDirection: 'column',
-    // width: '375px',
+    width: '375px',
     margin: '10px 0px 10px 20px',
     opacity: 0,
     visibility: 'hidden',
@@ -64,8 +64,14 @@ const LED = () => fab('div')
  * @returns {HTMLElement}
  */
 const CardStatus = ({ app }) => {
+  const apps = fab.getState('apps');
+  const { status, port } = apps.find((p) => p.app === app);
+
   const led = LED();
+  led.addStyles({ backgroundColor: status.includes('OK') ? Colors.statusOk : Colors.statusDown });
+
   const ledText = LEDText();
+  ledText.setText(`${status} (${port})`);
 
   return fab.Row()
     .withStyles({
@@ -76,12 +82,7 @@ const CardStatus = ({ app }) => {
     .withChildren([
       led,
       ledText,
-    ])
-    .watchState((el, { apps }) => {
-      const { status, port } = apps.find((p) => p.app === app);
-      led.addStyles({ backgroundColor: status.includes('OK') ? Colors.statusOk : Colors.statusDown });
-      ledText.setText(`${status} (${port})`);
-    }, ['apps']);
+    ]);
 };
 
 /**

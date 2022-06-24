@@ -12,4 +12,5 @@ const LeftColumn = () => fab.Column()
     alignItems: 'flex-start',
     borderRight: 'solid 1px #0004',
     boxShadow: '0px 2px 3px 1px #5557',
+    minWidth: '250px',
   });

@@ -90,15 +90,17 @@ const AppNavBar = () => fab.NavBar({
 })
   .withChildren([
     TextBox({ placeholder: 'IP address' })
+      .withStyles({ margin: '0px 10px 0px 30px' })
       .watchState((el, { ip }) => {
         el.value = ip;
       }, ['ip'])
-      .onChange((value) => fab.updateState('ip', () => value)),
+      .onChange((el, value) => fab.updateState('ip', () => value)),
     TextBox({ placeholder: 'Token' })
+      .withStyles({ margin: '0px 10px' })
       .watchState((el, { token }) => {
         el.value = token;
       }, ['token'])
-      .onChange((value) => fab.updateState('token', () => value)),
+      .onChange((el, value) => fab.updateState('token', () => value)),
     IconButton({ iconSrc: '../assets/reload.png' })
       .onClick(async () => {
         await loadFleetList();
@@ -137,4 +139,4 @@ const ServiceDashboard = () => fab.Column()
     if (key === 'token') loadFleetList();
   }, ['fabricate:init', 'ip', 'token']);
 
-fabricate.app(ServiceDashboard(), INITIAL_STATE);
+fabricate.app(ServiceDashboard(), INITIAL_STATE, { logStateUpdates: false });
