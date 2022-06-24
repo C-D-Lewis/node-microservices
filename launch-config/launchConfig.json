@@ -253,6 +253,10 @@
       {
         "location": "code/node-microservices/dashboards/lighting-dashboard",
         "start": "python3 -m http.server 54448 &"
+      },
+      {
+        "location": "node-microservices/dashboards/service-dashboard",
+        "start": "python3 -m http.server 54449 &"
       }
     ],
     "e-paper-dashboard-witham": [
