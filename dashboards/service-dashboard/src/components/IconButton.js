@@ -5,8 +5,8 @@
  * @returns {HTMLElement}
  */
 // eslint-disable-next-line no-unused-vars
-const IconButton = ({ iconSrc }) => fab.Image({
-  src: iconSrc,
+const IconButton = ({ src }) => fab.Image({
+  src,
   width: '26px',
   height: '26px',
 })

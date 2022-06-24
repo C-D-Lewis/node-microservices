@@ -12,11 +12,7 @@ const NoControls = () => fab('div');
  *
  * @returns {HTMLElement}
  */
-const ControlRow = () => fab.Row()
-  .withStyles({
-    justifyContent: 'initial',
-    padding: '0px 10px',
-  });
+const ControlRow = () => fab.Row().withStyles({ padding: '0px 10px' });
 
 /**
  * AtticControls component.
@@ -29,15 +25,10 @@ const AtticControls = () => {
   /**
    * Set a property within the app controls state.
    *
-   * @param {string} key - Prop key.
-   * @param {*} value - Prop value.
+   * @param {string} k - Prop key.
+   * @param {*} v - Prop value.
    */
-  const setProp = (key, value) => {
-    fab.updateState('atticData', () => ({
-      ...fab.getState('atticData'),
-      [key]: value,
-    }));
-  };
+  const setProp = (k, v) => fab.updateState('atticData', () => ({ ...fab.getState('atticData'), [k]: v }));
 
   return fab.Column()
     .withChildren([
@@ -93,15 +84,10 @@ const ConduitControls = () => {
   /**
    * Set a property within the app controls state.
    *
-   * @param {string} key - Prop key.
-   * @param {*} value - Prop value.
+   * @param {string} k - Prop key.
+   * @param {*} v - Prop value.
    */
-  const setProp = (key, value) => {
-    fab.updateState('conduitData', () => ({
-      ...fab.getState('conduitData'),
-      [key]: value,
-    }));
-  };
+  const setProp = (k, v) => fab.updateState('conduitData', () => ({ ...fab.getState('conduitData'), [k]: v }));
 
   return fab.Column()
     .withChildren([
@@ -143,43 +129,41 @@ const ConduitControls = () => {
  */
 const VisualsControls = () => {
   const buttonStyle = {
-    width: '20%', borderRadius: 0, margin: 0, minWidth: '50px',
+    width: '20%',
+    borderRadius: 0,
+    margin: 0,
+    minWidth: '50px',
   };
 
   /**
    * Set a property within the app controls state.
    *
-   * @param {string} key - Prop key.
-   * @param {*} value - Prop value.
+   * @param {string} k - Prop key.
+   * @param {*} v - Prop value.
    */
-  const setProp = (key, value) => {
-    fab.updateState('visualsData', () => ({
-      ...fab.getState('visualsData'),
-      [key]: value,
-    }));
-  };
+  const setProp = (k, v) => fab.updateState('visualsData', () => ({ ...fab.getState('visualsData'), [k]: v }));
 
   return fab.Column()
     .withChildren([
       ControlRow()
         .withChildren([
           TextBox({ placeholder: 'red' })
-            .watchState((el, { visualsData }) => el.setText(visualsData.red))
+            .watchState((el, { visualsData: { red } }) => el.setText(red))
             .withStyles({ width: '30%' })
             .onChange((el, value) => setProp('red', parseInt(value, 10))),
           TextBox({ placeholder: 'green' })
-            .watchState((el, { visualsData }) => el.setText(visualsData.green))
+            .watchState((el, { visualsData: { green } }) => el.setText(green))
             .withStyles({ width: '30%' })
             .onChange((el, value) => setProp('green', parseInt(value, 10))),
           TextBox({ placeholder: 'blue' })
-            .watchState((el, { visualsData }) => el.setText(visualsData.blue))
+            .watchState((el, { visualsData: { blue } }) => el.setText(blue))
             .withStyles({ width: '30%' })
             .onChange((el, value) => setProp('blue', parseInt(value, 10))),
         ]),
       ControlRow()
         .withChildren([
           TextBox({ placeholder: 'text' })
-            .watchState((el, { visualsData }) => el.setText(visualsData.text))
+            .watchState((el, { visualsData: { text } }) => el.setText(text))
             .withStyles({ width: '100%' })
             .onChange((el, value) => setProp('text', value)),
         ]),
@@ -229,6 +213,12 @@ const VisualsControls = () => {
     ]);
 };
 
+const controlsMap = {
+  attic: AtticControls,
+  conduit: ConduitControls,
+  visuals: VisualsControls,
+};
+
 /**
  * AppControls component.
  *
@@ -237,12 +227,6 @@ const VisualsControls = () => {
  */
 // eslint-disable-next-line no-unused-vars
 const AppControls = ({ app }) => {
-  const controlsMap = {
-    attic: AtticControls,
-    conduit: ConduitControls,
-    visuals: VisualsControls,
-  };
   const Controls = controlsMap[app] || NoControls;
-
   return Controls();
 };

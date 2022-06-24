@@ -1,4 +1,4 @@
-/* global AppControls */
+/* global AppControls Fonts */
 
 /**
  * CardContainer component.
@@ -17,17 +17,18 @@ const CardContainer = () => fab.Card()
   });
 
 /**
- * CardTitle component.
+ * AppName component.
  *
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const CardTitle = () => fab.Text()
+const AppName = () => fab.Text()
   .withStyles({
-    fontSize: '1.2rem',
+    fontSize: '1.1rem',
     flex: 1,
     color: 'white',
     margin: '6px 5px 5px 5px',
+    fontFamily: Fonts.code,
   });
 
 /**
@@ -49,9 +50,9 @@ const LEDText = () => fab.Text()
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const LED = () => fab('div')
+const LED = ({ status }) => fab('div')
   .withStyles({
-    backgroundColor: Colors.statusDown,
+    backgroundColor: status.includes('OK') ? Colors.statusOk : Colors.statusDown,
     width: '15px',
     height: '15px',
     borderRadius: '9px',
@@ -67,12 +68,6 @@ const CardStatus = ({ app }) => {
   const apps = fab.getState('apps');
   const { status, port } = apps.find((p) => p.app === app);
 
-  const led = LED();
-  led.addStyles({ backgroundColor: status.includes('OK') ? Colors.statusOk : Colors.statusDown });
-
-  const ledText = LEDText();
-  ledText.setText(`${status} (${port})`);
-
   return fab.Row()
     .withStyles({
       alignItems: 'center',
@@ -80,8 +75,8 @@ const CardStatus = ({ app }) => {
       flex: 2,
     })
     .withChildren([
-      led,
-      ledText,
+      LED({ status }),
+      LEDText().setText(`${status} (${port})`),
     ]);
 };
 
@@ -94,7 +89,7 @@ const CardTitleRow = () => fab.Row()
   .withStyles({
     alignItems: 'center',
     backgroundColor: Colors.veryDarkGrey,
-    padding: '5px 15px',
+    padding: '5px 10px',
   });
 
 /**
@@ -108,13 +103,13 @@ const AppCard = ({ app }) => {
   const container = CardContainer();
 
   // Become visible shortly after creation
-  setTimeout(() => container.addStyles({ opacity: 1, visibility: 'visible' }), 100);
+  setTimeout(() => container.addStyles({ opacity: 1, visibility: 'visible' }), 50);
 
   return container
     .withChildren([
       CardTitleRow()
         .withChildren([
-          CardTitle().setText(app),
+          AppName().setText(app),
           CardStatus({ app }),
         ]),
       AppControls({ app }),

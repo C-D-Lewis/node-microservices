@@ -1,3 +1,5 @@
+/* global Fonts */
+
 /**
  * ItemName component.
  *
@@ -21,8 +23,8 @@ const ItemIP = () => fab('span')
   .withStyles({
     color: 'lightgrey',
     fontSize: '1rem',
-    padding: '2px 15px',
-    fontFamily: 'monospace',
+    padding: '3px 12px',
+    fontFamily: Fonts.code,
     cursor: 'pointer',
   });
 
@@ -34,7 +36,6 @@ const ItemIP = () => fab('span')
 const ItemContainer = () => fab.Column()
   .withStyles({
     border: '0',
-    margin: '0px 0px 10px 0px',
     width: '100%',
   });
 

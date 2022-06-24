@@ -14,6 +14,7 @@ const TextBox  = ({ placeholder = '' } = {}) => fab.TextInput({
     border: '0',
     borderBottom: '2px solid #0005',
     fontSize: '1.1rem',
-    paddingLeft: '10px',
+    padding: '5px 5px 2px 10px',
     margin: '10px 5px',
+    outline: 'none',
   });

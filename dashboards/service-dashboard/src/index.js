@@ -1,42 +1,11 @@
+/* eslint-disable no-return-assign */
 // eslint-disable-next-line max-len
-/* global LeftColumn MainArea ResponseBar TextBox IconButton FleetItem AppCard sendPacket */
-
-const {
-  /* Where the fleet list can be found. */
-  FLEET_HOST,
-} = window.config;
-
-/** Port to look for conduit apps */
-const CONDUIT_PORT = 5959;
-/** Initial total app state */
-const INITIAL_STATE = {
-  apps: [],
-  fleetList: [],
-  ip: FLEET_HOST,
-  responseBarText: 'Ready',
-  atticData: {
-    app: '',
-    key: '',
-    value: '',
-  },
-  conduitData: {
-    app: '',
-    topic: 'status',
-    message: '{}',
-  },
-  visualsData: {
-    index: 0,
-    red: 128,
-    green: 128,
-    blue: 128,
-    text: '',
-  },
-};
+/* global INITIAL_STATE CONDUIT_PORT LeftColumn MainArea ResponseBar TextBox IconButton FleetItem AppCard sendPacket */
 
 /**
  * Re-load the fleet list data.
  */
-const loadFleetList = async () => {
+const fetchFleetList = async () => {
   fab.updateState('fleetList', () => []);
 
   try {
@@ -45,8 +14,7 @@ const loadFleetList = async () => {
       topic: 'get',
       message: { app: 'conduit', key: 'fleetList' },
     });
-    const fleetList = message.value;
-    fab.updateState('fleetList', () => fleetList);
+    fab.updateState('fleetList', () => message.value);
   } catch (err) {
     console.error(err);
   }
@@ -55,7 +23,7 @@ const loadFleetList = async () => {
 /**
  * Load apps for the selected IP address.
  */
-const loadApps = async () => {
+const fetchApps = async () => {
   fab.updateState('apps', () => []);
 
   try {
@@ -89,23 +57,23 @@ const AppNavBar = () => fab.NavBar({
   backgroundColor: Colors.primary,
 })
   .withChildren([
-    TextBox({ placeholder: 'IP address' })
-      .withStyles({ margin: '0px 10px 0px 30px' })
-      .watchState((el, { ip }) => {
-        el.value = ip;
-      }, ['ip'])
-      .onChange((el, value) => fab.updateState('ip', () => value)),
-    TextBox({ placeholder: 'Token' })
-      .withStyles({ margin: '0px 10px' })
-      .watchState((el, { token }) => {
-        el.value = token;
-      }, ['token'])
-      .onChange((el, value) => fab.updateState('token', () => value)),
-    IconButton({ iconSrc: '../assets/reload.png' })
-      .onClick(async () => {
-        await loadFleetList();
-        await loadApps();
-      }),
+    fab.Row()
+      .withStyles({ justifyContent: 'flex-end', flex: 1 })
+      .withChildren([
+        TextBox({ placeholder: 'IP address' })
+          .withStyles({ margin: '0px 10px 0px 30px' })
+          .watchState((el, { ip }) => (el.value = ip), ['ip'])
+          .onChange((el, value) => fab.updateState('ip', () => value)),
+        TextBox({ placeholder: 'Token' })
+          .withStyles({ margin: '0px 10px' })
+          .watchState((el, { token }) => (el.value = token), ['token'])
+          .onChange((el, value) => fab.updateState('token', () => value)),
+        IconButton({ src: '../assets/reload.png' })
+          .onClick(async () => {
+            await fetchFleetList();
+            await fetchApps();
+          }),
+      ]),
   ]);
 
 /**
@@ -135,8 +103,8 @@ const ServiceDashboard = () => fab.Column()
   ])
   .watchState((el, newState, key) => {
     if (key === 'fabricate:init') parseParams();
-    if (key === 'ip') loadApps();
-    if (key === 'token') loadFleetList();
+    if (key === 'ip') fetchApps();
+    if (key === 'token') fetchFleetList();
   }, ['fabricate:init', 'ip', 'token']);
 
 fabricate.app(ServiceDashboard(), INITIAL_STATE, { logStateUpdates: false });

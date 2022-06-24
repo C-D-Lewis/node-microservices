@@ -1,5 +1,4 @@
-/** Height of the bottom status bar */
-const HEIGHT = 30;
+/* global Fonts */
 
 /**
  * ResponseBar component.
@@ -9,15 +8,20 @@ const HEIGHT = 30;
 // eslint-disable-next-line no-unused-vars
 const ResponseBar = () => fab('div')
   .withStyles({
-    fontFamily: 'monospace',
+    fontFamily: Fonts.code,
     position: 'relative',
     bottom: 0,
     width: '100%',
-    minHeight: HEIGHT,
-    padding: '5px',
+    minHeight: 30,
     backgroundColor: '#333',
     color: 'white',
     alignItems: 'center',
     marginBottom: '10px',
   })
-  .watchState((el, { responseBarText }) => el.setText(responseBarText), ['responseBarText']);
+  .watchState(
+    (el, { responseBarText }) => {
+      el.addStyles({ padding: responseBarText.length ? '5px' : '0px' });
+      el.setText(responseBarText);
+    },
+    ['responseBarText'],
+  );
