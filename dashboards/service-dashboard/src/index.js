@@ -54,7 +54,7 @@ const parseParams = () => {
  */
 const AppNavBar = () => fab.NavBar({
   title: 'Service Dashboard',
-  backgroundColor: Colors.primary,
+  backgroundColor: Colors.primaryDark,
 })
   .withChildren([
     fab.Row()

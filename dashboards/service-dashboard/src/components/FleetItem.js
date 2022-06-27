@@ -7,10 +7,10 @@
  */
 const ItemName = () => fab('span')
   .withStyles({
-    color: 'black',
+    color: 'white',
     fontWeight: 'bold',
     fontSize: '1.1rem',
-    padding: '2px 2px 0px 5px',
+    padding: '2px 2px 0px 2px',
     cursor: 'default',
   });
 
@@ -23,9 +23,11 @@ const ItemIP = () => fab('span')
   .withStyles({
     color: 'lightgrey',
     fontSize: '1rem',
-    padding: '3px 12px',
+    margin: '0px 12px',
+    padding: '3px 0px',
     fontFamily: Fonts.code,
     cursor: 'pointer',
+    borderLeft: '2px solid black',
   });
 
 /**
@@ -36,6 +38,7 @@ const ItemIP = () => fab('span')
 const ItemContainer = () => fab.Column()
   .withStyles({
     border: '0',
+    marginBottom: '5px',
     width: '100%',
   });
 
@@ -48,7 +51,7 @@ const ItemContainer = () => fab.Column()
 const IpTextButton = ({ deviceName, ip, type }) => {
   const { key, get: isReachable } = fab.manageState(`FleetItem[${deviceName}]`, `${type}IpValid`, false);
   return ItemIP()
-    .setText(ip)
+    .setText(`➔${ip}`)
     .watchState((el) => el.addStyles({ color: isReachable() ? 'black' : 'lightgrey' }), [key])
     .onClick(() => fab.updateState('ip', () => ip));
 };
@@ -59,7 +62,7 @@ const IpTextButton = ({ deviceName, ip, type }) => {
  * @returns {HTMLElement}
  */
 const ItemIcon = () => fab.Image({
-  src: 'assets/server.png',
+  src: 'assets/server-white.png',
   width: '20px',
   height: '20px',
 })
@@ -97,10 +100,16 @@ const FleetItem = ({ itemData }) => {
     } catch (err) { /* It isn't available */ }
   };
 
-  return ItemContainer()
+  return fab.Card()
+    .withStyles({ width: '250px', margin: '10px' })
     .withChildren([
       fab.Row()
-        .withStyles({ backgroundColor: '#eee', alignItems: 'center' })
+        .withStyles({
+          backgroundColor: Colors.primary,
+          alignItems: 'center',
+          borderBottom: '2px solid black',
+          height: '40px',
+        })
         .withChildren([
           ItemIcon(),
           ItemName().setText(deviceName),

@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const Colors = {
   primary: '#007bff',
-  primaryDark: '#002da0',
+  primaryDark: 'rgb(0, 90, 187)',
   lightGrey: '#eee',
   darkGrey: '#bbb',
   veryDarkGrey: '#666',
