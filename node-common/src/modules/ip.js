@@ -41,10 +41,10 @@ const getInterfaceAddress = (ifName) => {
  * @returns {string} Local IP address, if one of the tried interfaces has one.
  */
 const getLocal = () => {
-  const address = getInterfaceAddress('wlan0') ||  // WLAN
-    getInterfaceAddress('eth0') ||                 // Ethernet
-    getInterfaceAddress('en0') ||                  // Mac OS WLAN
-    getInterfaceAddress('enp0s3');                 // Ubuntu VM Wired
+  const address = getInterfaceAddress('eth0') ||  // Ethernet
+    getInterfaceAddress('wlan0') ||               // WLAN
+    getInterfaceAddress('en0') ||                 // Mac OS WLAN
+    getInterfaceAddress('enp0s3');                // Ubuntu VM Wired
 
   if (!address) throw new Error('No interface available for ip.getLocal()');
 
