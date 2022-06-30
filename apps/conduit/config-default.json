@@ -2,7 +2,8 @@
   "OPTIONS": {
     "FLEET": {
       "DEVICE_NAME": "",
-      "HOST": ""
+      "HOST": "",
+      "DEVICE_TYPE": ""
     },
     "AUTH_TOKENS": false
   },

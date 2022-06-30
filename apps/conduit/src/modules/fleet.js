@@ -9,10 +9,11 @@ config.requireKeys('fleet.js', {
       required: ['FLEET'],
       properties: {
         FLEET: {
-          required: ['DEVICE_NAME', 'HOST'],
+          required: ['DEVICE_NAME', 'HOST', 'DEVICE_TYPE'],
           properties: {
             DEVICE_NAME: { type: 'string' },
             HOST: { type: 'string' },
+            DEVICE_TYPE: { type: 'string' },
           },
         },
       },
@@ -61,6 +62,7 @@ const checkIn = async () => {
     lastCheckInDate: now.toISOString(),
     publicIp: await ip.getPublic(),
     localIp: await ip.getLocal(),
+    deviceType: FLEET.DEVICE_TYPE,
   };
 
   const fleetList = await attic.get(FLEET_LIST_KEY);
