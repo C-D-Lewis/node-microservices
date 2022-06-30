@@ -13,7 +13,10 @@ config.requireKeys('fleet.js', {
           properties: {
             DEVICE_NAME: { type: 'string' },
             HOST: { type: 'string' },
-            DEVICE_TYPE: { type: 'string' },
+            DEVICE_TYPE: {
+              type: 'string',
+              enum: ['pc', 'server', 'pi', 'other'],
+            },
           },
         },
       },
