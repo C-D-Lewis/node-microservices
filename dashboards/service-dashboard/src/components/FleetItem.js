@@ -27,7 +27,7 @@ const IpTextButton = ({ deviceName, ip, type }) => {
       color: 'lightgrey',
       fontSize: '1rem',
       margin: '0px 12px',
-      padding: '3px 0px',
+      padding: '8px 0px',
       fontFamily: Fonts.code,
       cursor: 'pointer',
       borderLeft: '2px solid black',
@@ -60,7 +60,6 @@ const TypeIcon = ({ deviceType }) => fab.Image({
  */
 // eslint-disable-next-line no-unused-vars
 const FleetItem = ({ itemData }) => {
-  console.log(itemData)
   const { deviceName, publicIp, localIp, deviceType = 'other' } = itemData;
   const { set: setPublicIpValid } = fab.manageState(`FleetItem[${deviceName}]`, 'publicIpValid', false);
   const { set: setLocalIpValid } = fab.manageState(`FleetItem[${deviceName}]`, 'localIpValid', false);
@@ -90,7 +89,7 @@ const FleetItem = ({ itemData }) => {
     .withChildren([
       fab.Row()
         .withStyles({
-          backgroundColor: Colors.primary,
+          backgroundColor: Colors.veryDarkGrey,
           alignItems: 'center',
           borderBottom: '2px solid black',
           height: '30px',

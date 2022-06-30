@@ -77,15 +77,50 @@ const AppNavBar = () => fab.NavBar({
   ]);
 
 /**
+ * FleetTitle component.
+ *
+ * @returns {HTMLElement}
+ */
+ const FleetTitle = () => fab('p')
+  .withStyles({
+    color: Colors.veryDarkGrey,
+    margin: '10px 15px',
+    fontWeight: 'bold',
+  })
+  .setText('Device Fleet');
+
+/**
+ * BackBreadcrumb component.
+ *
+ * @returns {HTMLElement}
+ */
+ const BackBreadcrumb = () => fab('p')
+  .withStyles({
+    color: Colors.veryDarkGrey,
+    margin: '10px 15px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+  })
+  .setText('< Back')
+  .onClick(() => fab.updateState('page', () => 'fleetPage'));
+
+/**
  * FleetPage component.
  *
  * @returns {HTMLElement}
  */
-const FleetPage = () => fab.Row()
-  .withStyles({ flexWrap: 'wrap' })
+const FleetPage = () => fab.Column()
   .watchState((el, { fleetList }) => {
     el.clear();
-    el.addChildren(fleetList.map((itemData) => FleetItem({ itemData })));
+    el.addChildren([
+      FleetTitle(),
+      fab.Row()
+        .withStyles({
+          flexWrap: 'wrap',
+          padding: '10px',
+        })
+        .withChildren(fleetList.map((itemData) => FleetItem({ itemData }))),
+    ]);
   }, ['fleetList']);
 
 /**
@@ -97,6 +132,7 @@ const AppsPage = () => fab.Column()
   .watchState((el, { apps }) => {
     el.clear();
     el.addChildren([
+      BackBreadcrumb(),
       ResponseBar(),
       fab.Row()
         .withStyles({ flexWrap: 'wrap' })
