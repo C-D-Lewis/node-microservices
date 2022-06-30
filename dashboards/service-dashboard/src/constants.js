@@ -31,4 +31,13 @@ const INITIAL_STATE = {
     blue: 128,
     text: '',
   },
+  page: 'fleetPage',
+};
+
+/** Icon type names */
+const ICON_NAMES = {
+  other: 'other',
+  pc: 'pc',
+  pi: 'raspberrypi',
+  server: 'server-white',
 };

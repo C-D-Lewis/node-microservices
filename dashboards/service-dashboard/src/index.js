@@ -1,6 +1,6 @@
 /* eslint-disable no-return-assign */
 // eslint-disable-next-line max-len
-/* global INITIAL_STATE CONDUIT_PORT LeftColumn MainArea ResponseBar TextBox IconButton FleetItem AppCard sendPacket */
+/* global INITIAL_STATE CONDUIT_PORT ResponseBar TextBox IconButton FleetItem AppCard sendPacket */
 
 /**
  * Re-load the fleet list data.
@@ -60,14 +60,14 @@ const AppNavBar = () => fab.NavBar({
     fab.Row()
       .withStyles({ justifyContent: 'flex-end', flex: 1 })
       .withChildren([
-        TextBox({ placeholder: 'IP address' })
-          .withStyles({ margin: '0px 10px 0px 30px' })
-          .watchState((el, { ip }) => (el.value = ip), ['ip'])
-          .onChange((el, value) => fab.updateState('ip', () => value)),
-        TextBox({ placeholder: 'Token' })
-          .withStyles({ margin: '0px 10px' })
-          .watchState((el, { token }) => (el.value = token), ['token'])
-          .onChange((el, value) => fab.updateState('token', () => value)),
+        // TextBox({ placeholder: 'IP address' })
+        //   .withStyles({ margin: '0px 10px 0px 30px' })
+        //   .watchState((el, { ip }) => (el.value = ip), ['ip'])
+        //   .onChange((el, value) => fab.updateState('ip', () => value)),
+        // TextBox({ placeholder: 'Token' })
+        //   .withStyles({ margin: '0px 10px' })
+        //   .watchState((el, { token }) => (el.value = token), ['token'])
+        //   .onChange((el, value) => fab.updateState('token', () => value)),
         IconButton({ src: '../assets/reload.png' })
           .onClick(async () => {
             await fetchFleetList();
@@ -77,6 +77,34 @@ const AppNavBar = () => fab.NavBar({
   ]);
 
 /**
+ * FleetPage component.
+ *
+ * @returns {HTMLElement}
+ */
+const FleetPage = () => fab.Row()
+  .withStyles({ flexWrap: 'wrap' })
+  .watchState((el, { fleetList }) => {
+    el.clear();
+    el.addChildren(fleetList.map((itemData) => FleetItem({ itemData })));
+  }, ['fleetList']);
+
+/**
+ * AppsPage component.
+ *
+ * @returns {HTMLElement}
+ */
+const AppsPage = () => fab.Column()
+  .watchState((el, { apps }) => {
+    el.clear();
+    el.addChildren([
+      ResponseBar(),
+      fab.Row()
+        .withStyles({ flexWrap: 'wrap' })
+        .withChildren([...apps.map((appData) => AppCard({ app: appData.app }))]),
+    ]);
+  }, ['apps']);
+
+/**
  * ServiceDashboard component.
  *
  * @returns {HTMLElement}
@@ -84,22 +112,8 @@ const AppNavBar = () => fab.NavBar({
 const ServiceDashboard = () => fab.Column()
   .withChildren([
     AppNavBar(),
-    fab.Row()
-      .withChildren([
-        LeftColumn()
-          .watchState((el, { fleetList }) => {
-            el.clear();
-            el.addChildren(fleetList.map((itemData) => FleetItem({ itemData })));
-          }, ['fleetList']),
-        MainArea()
-          .watchState((el, { apps }) => {
-            el.clear();
-            el.addChildren([
-              ResponseBar(),
-              ...apps.map((appData) => AppCard({ app: appData.app })),
-            ]);
-          }, ['apps']),
-      ]),
+    fab.when(state => state.page === 'fleetPage', () => FleetPage()),
+    fab.when(state => state.page === 'appsPage', () => AppsPage()),
   ])
   .watchState((el, newState, key) => {
     if (key === 'fabricate:init') parseParams();

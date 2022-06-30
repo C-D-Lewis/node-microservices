@@ -1,68 +1,52 @@
 /* global Fonts */
 
 /**
- * ItemName component.
+ * Name component.
  *
  * @returns {HTMLElement}
  */
-const ItemName = () => fab('span')
+const Name = () => fab('span')
   .withStyles({
     color: 'white',
     fontWeight: 'bold',
-    fontSize: '1.1rem',
+    fontSize: '1rem',
     padding: '2px 2px 0px 2px',
     cursor: 'default',
   });
 
 /**
- * ItemName component.
- *
- * @returns {HTMLElement}
- */
-const ItemIP = () => fab('span')
-  .withStyles({
-    color: 'lightgrey',
-    fontSize: '1rem',
-    margin: '0px 12px',
-    padding: '3px 0px',
-    fontFamily: Fonts.code,
-    cursor: 'pointer',
-    borderLeft: '2px solid black',
-  });
-
-/**
- * ItemContainer component.
- *
- * @returns {HTMLElement}
- */
-const ItemContainer = () => fab.Column()
-  .withStyles({
-    border: '0',
-    marginBottom: '5px',
-    width: '100%',
-  });
-
-/**
- * PublicIpItem component.
+ * IpTextButton component.
  *
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
 const IpTextButton = ({ deviceName, ip, type }) => {
   const { key, get: isReachable } = fab.manageState(`FleetItem[${deviceName}]`, `${type}IpValid`, false);
-  return ItemIP()
-    .setText(`➔${ip}`)
+  return fab('span')
+    .withStyles({
+      color: 'lightgrey',
+      fontSize: '1rem',
+      margin: '0px 12px',
+      padding: '3px 0px',
+      fontFamily: Fonts.code,
+      cursor: 'pointer',
+      borderLeft: '2px solid black',
+    })
+    .setText(`→${ip}`)
     .watchState((el) => el.addStyles({ color: isReachable() ? 'black' : 'lightgrey' }), [key])
-    .onClick(() => fab.updateState('ip', () => ip));
+    .onClick(() => {
+      fab.updateState('ip', () => ip);
+      fab.updateState('page', () => 'appsPage');
+    });
 };
 
 /**
- * ItemIcon component.
+ * TypeIcon component.
  *
  * @returns {HTMLElement}
  */
-const ItemIcon = () => fab.Image({
-  src: 'assets/server-white.png',
+const TypeIcon = ({ deviceType }) => fab.Image({
+  src: `assets/${ICON_NAMES[deviceType]}.png`,
   width: '20px',
   height: '20px',
 })
@@ -76,7 +60,8 @@ const ItemIcon = () => fab.Image({
  */
 // eslint-disable-next-line no-unused-vars
 const FleetItem = ({ itemData }) => {
-  const { deviceName, publicIp, localIp } = itemData;
+  console.log(itemData)
+  const { deviceName, publicIp, localIp, deviceType = 'other' } = itemData;
   const { set: setPublicIpValid } = fab.manageState(`FleetItem[${deviceName}]`, 'publicIpValid', false);
   const { set: setLocalIpValid } = fab.manageState(`FleetItem[${deviceName}]`, 'localIpValid', false);
 
@@ -101,18 +86,18 @@ const FleetItem = ({ itemData }) => {
   };
 
   return fab.Card()
-    .withStyles({ width: '250px', margin: '10px' })
+    .withStyles({ minWidth: '250px', margin: '10px' })
     .withChildren([
       fab.Row()
         .withStyles({
           backgroundColor: Colors.primary,
           alignItems: 'center',
           borderBottom: '2px solid black',
-          height: '40px',
+          height: '30px',
         })
         .withChildren([
-          ItemIcon(),
-          ItemName().setText(deviceName),
+          TypeIcon({ deviceType }),
+          Name().setText(deviceName),
         ]),
       IpTextButton({
         deviceName,

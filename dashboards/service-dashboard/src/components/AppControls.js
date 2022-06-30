@@ -31,6 +31,7 @@ const AtticControls = () => {
   const setProp = (k, v) => fab.updateState('atticData', () => ({ ...fab.getState('atticData'), [k]: v }));
 
   return fab.Column()
+    .withStyles({ backgroundColor: 'white' })
     .withChildren([
       ControlRow()
         .withChildren([
@@ -90,6 +91,7 @@ const ConduitControls = () => {
   const setProp = (k, v) => fab.updateState('conduitData', () => ({ ...fab.getState('conduitData'), [k]: v }));
 
   return fab.Column()
+    .withStyles({ backgroundColor: 'white' })
     .withChildren([
       ControlRow()
         .withChildren([
@@ -144,6 +146,7 @@ const VisualsControls = () => {
   const setProp = (k, v) => fab.updateState('visualsData', () => ({ ...fab.getState('visualsData'), [k]: v }));
 
   return fab.Column()
+    .withStyles({ backgroundColor: 'white' })
     .withChildren([
       ControlRow()
         .withChildren([
