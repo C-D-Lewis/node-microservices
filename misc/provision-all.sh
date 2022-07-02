@@ -37,10 +37,10 @@ npm i -g .
 # Install nms apps
 cd ../../apps/conduit/
 npm ci
-npm start
+npm start &
 cd ../attic/
 npm ci
-npm start
+npm start &
 
 echo 'Some config.json files need manual completion'
 echo 'Complete!'
