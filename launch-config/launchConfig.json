@@ -275,7 +275,7 @@
         "start": "npm start &"
       }
     ],
-    "e-paper-dashboard-home": [
+    "e-paper-home": [
       {
         "location": "code/node-microservices/node-common",
         "install": "git clone https://github.com/c-d-lewis/node-microservices",

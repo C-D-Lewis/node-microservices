@@ -101,4 +101,4 @@ sudo raspi-config
 
 # Startup apps with launch-config
 sudo crontab -e
-@reboot /home/pi/code/node-microservices/launch-config/run.sh /home/pi > /home/pi/cronlog.txt 2>&1
+@reboot /home/pi/code/node-microservices/launch-config/run.sh /home/pi > /home/pi/crontab.log 2>&1
