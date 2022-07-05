@@ -1,4 +1,4 @@
-/* global Fonts */
+/* global Fonts ICON_NAMES */
 
 /**
  * Name component.
@@ -60,7 +60,9 @@ const TypeIcon = ({ deviceType }) => fab.Image({
  */
 // eslint-disable-next-line no-unused-vars
 const FleetItem = ({ itemData }) => {
-  const { deviceName, publicIp, localIp, deviceType = 'other' } = itemData;
+  const {
+    deviceName, publicIp, localIp, deviceType = 'other',
+  } = itemData;
   const { set: setPublicIpValid } = fab.manageState(`FleetItem[${deviceName}]`, 'publicIpValid', false);
   const { set: setLocalIpValid } = fab.manageState(`FleetItem[${deviceName}]`, 'localIpValid', false);
 
