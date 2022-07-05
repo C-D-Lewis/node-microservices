@@ -6,9 +6,8 @@
  * @returns {HTMLElement}
  */
 const CardContainer = () => fab.Card()
+  .asFlex('column')
   .withStyles({
-    display: 'flex',
-    flexDirection: 'column',
     width: '375px',
     margin: '10px 0px 10px 20px',
     opacity: 0,
@@ -33,12 +32,12 @@ const AppName = () => fab.Text()
   });
 
 /**
- * LEDText component.
+ * StatusText component.
  *
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const LEDText = () => fab.Text()
+const StatusText = () => fab.Text()
   .withStyles({
     color: Colors.lightGrey,
     fontSize: '0.9rem',
@@ -46,12 +45,12 @@ const LEDText = () => fab.Text()
   });
 
 /**
- * LED component.
+ * StatusLED component.
  *
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const LED = ({ status }) => fab('div')
+const StatusLED = ({ status }) => fab('div')
   .withStyles({
     backgroundColor: status.includes('OK') ? Colors.statusOk : Colors.statusDown,
     width: '15px',
@@ -76,8 +75,8 @@ const CardStatus = ({ app }) => {
       flex: 2,
     })
     .withChildren([
-      LED({ status }),
-      LEDText().setText(`${status} (${port})`),
+      StatusLED({ status }),
+      StatusText().setText(`${status} (${port})`),
     ]);
 };
 

@@ -1,11 +1,11 @@
 /* global sendPacket TextButton TextBox */
 
 /**
- * NoControls component.
+ * Empty component.
  *
  * @returns {HTMLElement}
  */
-const NoControls = () => fab('div');
+const Empty = () => fab('div');
 
 /**
  * ControlRow component.
@@ -20,7 +20,11 @@ const ControlRow = () => fab.Row().withStyles({ padding: '0px 10px' });
  * @returns {HTMLElement}
  */
 const AtticControls = () => {
-  const buttonStyle = { width: '50%', borderRadius: 0, margin: 0 };
+  const buttonStyle = {
+    width: '50%',
+    borderRadius: 0,
+    margin: 0,
+  };
 
   /**
    * Set a property within the app controls state.
@@ -230,6 +234,6 @@ const controlsMap = {
  */
 // eslint-disable-next-line no-unused-vars
 const AppControls = ({ app }) => {
-  const Controls = controlsMap[app] || NoControls;
+  const Controls = controlsMap[app] || Empty;
   return Controls();
 };

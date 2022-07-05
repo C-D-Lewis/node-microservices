@@ -1,11 +1,11 @@
 /* global Fonts ICON_NAMES */
 
 /**
- * Name component.
+ * DeviceName component.
  *
  * @returns {HTMLElement}
  */
-const Name = () => fab('span')
+const DeviceName = () => fab('span')
   .withStyles({
     color: 'white',
     fontWeight: 'bold',
@@ -22,30 +22,32 @@ const Name = () => fab('span')
  */
 const IpTextButton = ({ deviceName, ip, type }) => {
   const { key, get: isReachable } = fab.manageState(`FleetItem[${deviceName}]`, `${type}IpValid`, false);
+
   return fab('span')
     .withStyles({
       color: 'lightgrey',
       fontSize: '1rem',
       margin: '0px 12px',
-      padding: '8px 0px',
+      padding: '8px 5px',
       fontFamily: Fonts.code,
       cursor: 'pointer',
       borderLeft: '2px solid black',
     })
-    .setText(`→${ip}`)
+    .setText(ip)
     .watchState((el) => el.addStyles({ color: isReachable() ? 'black' : 'lightgrey' }), [key])
     .onClick(() => {
+      // Select device, go to apps page
       fab.updateState('ip', () => ip);
       fab.updateState('page', () => 'appsPage');
     });
 };
 
 /**
- * TypeIcon component.
+ * DeviceIcon component.
  *
  * @returns {HTMLElement}
  */
-const TypeIcon = ({ deviceType }) => fab.Image({
+const DeviceIcon = ({ deviceType }) => fab.Image({
   src: `assets/${ICON_NAMES[deviceType]}.png`,
   width: '20px',
   height: '20px',
@@ -97,8 +99,8 @@ const FleetItem = ({ itemData }) => {
           height: '30px',
         })
         .withChildren([
-          TypeIcon({ deviceType }),
-          Name().setText(deviceName),
+          DeviceIcon({ deviceType }),
+          DeviceName().setText(deviceName),
         ]),
       IpTextButton({
         deviceName,

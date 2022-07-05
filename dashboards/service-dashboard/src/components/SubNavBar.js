@@ -1,13 +1,10 @@
 /**
- * FleetTitle component.
+ * StaticBreadcrumb component.
  *
  * @returns {HTMLElement}
  */
-const FleetTitle = () => fab('p')
-  .withStyles({
-    color: 'black',
-    margin: '10px 15px',
-  })
+const StaticBreadcrumb = () => fab('p')
+  .withStyles({ color: 'black', margin: '10px 15px' })
   .setText('Device Fleet');
 
 /**
@@ -33,17 +30,10 @@ const BackBreadcrumb = () => {
     .onClick(() => fab.updateState('page', () => 'fleetPage'));
 
   const deviceLabel = fab('p')
-    .withStyles({
-      color: 'black',
-      margin: '10px 5px',
-    })
+    .withStyles({ color: 'black', margin: '10px 5px' })
     .setText(`< ${deviceName}`);
 
-  return fab.Row()
-    .withChildren([
-      backButton,
-      deviceLabel,
-    ]);
+  return fab.Row().withChildren([backButton, deviceLabel]);
 };
 
 /**
@@ -58,6 +48,6 @@ const SubNavBar = () => fab.Row()
     paddingLeft: '8px',
   })
   .withChildren([
-    fab.when(({ page }) => page === 'fleetPage', () => FleetTitle()),
+    fab.when(({ page }) => page === 'fleetPage', () => StaticBreadcrumb()),
     fab.when(({ page }) => page === 'appsPage', () => BackBreadcrumb()),
   ]);
