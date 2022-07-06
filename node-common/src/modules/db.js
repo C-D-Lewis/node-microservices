@@ -38,25 +38,25 @@ const loadDbData = () => {
 const saveDbData = () => fs.writeFileSync(DB_PATH, JSON.stringify(dbData, null, 2), 'utf8');
 
 /**
- * Get a value by key.
+ * Get app data by app.
  *
- * @param {string} key - Key to use.
- * @returns {*} Saved value.
+ * @param {string} app - App name to use.
+ * @returns {*} Saved app data.
  */
-const get = (key) => {
+const get = (app) => {
   loadDbData();
-  return dbData[key];
+  return dbData[app];
 };
 
 /**
- * Set a value.
+ * Set app data.
  *
- * @param {string} key - Key to use.
- * @param {*} value - Value to set.
+ * @param {string} app - App name to use.
+ * @param {*} appData - Value to set.
  */
-const set = (key, value) => {
+const set = (app, appData) => {
   loadDbData();
-  dbData[key] = value;
+  dbData[app] = appData;
   saveDbData();
 };
 
@@ -71,13 +71,13 @@ const getTable = () => {
 };
 
 /**
- * Delete a value by key.
+ * Delete app data by app name.
  *
- * @param {string} key - Key to use.
+ * @param {string} app - App name to use.
  */
-const _delete = (key) => {
+const _delete = (app) => {
   loadDbData();
-  delete dbData[key];
+  delete dbData[app];
   saveDbData();
 };
 
@@ -92,9 +92,10 @@ module.exports = {
   /**
    * Check a value exists by key.
    *
-   * @param {string} key - Key to use.
+   * @param {string} app - App name to use.
    * @returns {boolean} true if the value exists.
    */
-  exists: key => get(key) !== undefined,
+  exists: app => get(app) !== undefined,
   delete: _delete,
+  getAppNames: () => Object.keys(getTable()),
 };

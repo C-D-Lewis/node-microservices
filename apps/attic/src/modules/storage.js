@@ -1,7 +1,8 @@
 const {
-  config, db, gistSync, log,
-} = require('../node-common')(['config', 'db', 'gistSync', 'log']);
+  config, db,
+} = require('../node-common')(['config', 'db']);
 const mongo = require('./mongo');
+const gistSync = require('./gistSync');
 
 config.requireKeys('storage.js', {
   required: ['STORAGE_MODE'],
@@ -18,41 +19,43 @@ const {
   STORAGE_MODE,
 } = config;
 
-/**
- * Load the gistSync file.
- */
-const loadGistSyncFile = () => {
-  const data = gistSync.getFile('attic-db.json');
-  if (!data) {
-    log.error('Could get load gistSync file!');
-    return undefined;
-  }
-
-  return data;
-};
-
 /** Implementation of each storage mode using same interface */
 const MODE_HANDLERS = {
   db,
   mongo,
-  gistSync: {
-    init: gistSync.init,
-    exists: (key) => loadGistSyncFile()[key] !== null,
-    get: (key) => loadGistSyncFile()[key],
-    set: (key, value) => {
-      const data = loadGistSyncFile();
-      if (!data) {
-        return;
-      }
-
-      data[key] = value;
-    },
-  },
+  gistSync,
 };
 
 module.exports = {
-  get: (key) => MODE_HANDLERS[STORAGE_MODE].get(key),
-  set: (key, value) => MODE_HANDLERS[STORAGE_MODE].set(key, value),
-  exists: (key) => MODE_HANDLERS[STORAGE_MODE].exists(key),
+  /**
+   * Check an app has data.
+   *
+   * @param {string} app - App name.
+   * @returns {boolean} true if the app has data stored.
+   */
+  exists: (app) => MODE_HANDLERS[STORAGE_MODE].exists(app),
+  /**
+   * Get data for a given app.
+   *
+   * @param {string} app - App name.
+   * @returns {object} App data stored.
+   */
+  get: (app) => MODE_HANDLERS[STORAGE_MODE].get(app),
+  /**
+   * Set data for a given app.
+   *
+   * @param {string} app - App name.
+   * @param {object} appData - App data to store.
+   */
+  set: (app, appData) => MODE_HANDLERS[STORAGE_MODE].set(app, appData),
+  /**
+   * Initialise the data store.
+   */
   init: () => MODE_HANDLERS[STORAGE_MODE].init(),
+  /**
+   * Get all app names that have data stored.
+   *
+   * @returns {Array<string>} List of app names.
+   */
+  getAppNames: () => MODE_HANDLERS[STORAGE_MODE].getAppNames(),
 };

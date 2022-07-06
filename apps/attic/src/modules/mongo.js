@@ -62,4 +62,5 @@ module.exports = {
   exists,
   get,
   set,
+  getAppNames: () => { throw new Error('Not implemented yet'); },
 };

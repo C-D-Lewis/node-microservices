@@ -26,6 +26,7 @@ const setup = async () => {
   await conduit.register();
 
   conduit.on('get', require('../api/get'), NO_VALUE_MESSAGE_SCHEMA);
+  conduit.on('listApps', require('../api/listApps'), {});
   conduit.on('set', require('../api/set'), SET_MESSAGE_SCHEMA);
   conduit.on('increment', require('../api/increment'), NO_VALUE_MESSAGE_SCHEMA);
 };
