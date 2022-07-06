@@ -26,19 +26,16 @@ config.requireKeys('fleet.js', {
 
 /** Attic key for fleet list data */
 const FLEET_LIST_KEY = 'fleetList';
+/** Checking interval */
+const CHECKIN_INTERVAL_MS = 1000 * 60 * 10;
 
 const {
   /** Fleet config data */
   FLEET,
 } = config.OPTIONS;
 
-/**
- * Init the attic module
- */
-const initAtticModule = () => {
-  attic.setAppName('conduit');
-  attic.setHost(FLEET.HOST);
-};
+attic.setAppName('conduit');
+attic.setHost(FLEET.HOST);
 
 /**
  * Sort item by lastCheckIn timestamp.
@@ -53,11 +50,6 @@ const sortByLastCheckIn = (a, b) => (a.lastCheckIn > b.lastCheckIn ? -1 : 1);
  * Send the data to remote Attic to perform the checkin.
  */
 const checkIn = async () => {
-  // Create the remote list if it doesn't already exist
-  if (!(await attic.exists(FLEET_LIST_KEY))) {
-    await attic.set(FLEET_LIST_KEY, []);
-  }
-
   const now = new Date();
   const updatePayload = {
     deviceName: FLEET.DEVICE_NAME,
@@ -82,8 +74,19 @@ const checkIn = async () => {
   log.info(`Fleet list updated: ${JSON.stringify(updatePayload)}`);
 };
 
-initAtticModule();
+/**
+ * Schedule checkins on a regular basis.
+ */
+const scheduleCheckins = async () => {
+  // Create the remote list if it doesn't already exist
+  if (!(await attic.exists(FLEET_LIST_KEY))) {
+    await attic.set(FLEET_LIST_KEY, []);
+  }
+
+  await checkIn();
+  setInterval(checkIn, CHECKIN_INTERVAL_MS);
+};
 
 module.exports = {
-  checkIn,
+  scheduleCheckins,
 };

@@ -1,7 +1,7 @@
 const { log } = require('./node-common')(['log']);
 const api = require('./modules/api');
 const clacksRelay = require('./modules/clacksRelay');
-const { checkIn } = require('./modules/fleet');
+const { scheduleCheckins } = require('./modules/fleet');
 
 /** Time to wait before updating the fleet registry */
 const FLEET_CHECKIN_DELAY_MS = 30000;
@@ -17,7 +17,7 @@ const main = async () => {
   clacksRelay.setup();
 
   // Wait for Attic to come up
-  setTimeout(checkIn, FLEET_CHECKIN_DELAY_MS);
+  setTimeout(scheduleCheckins, FLEET_CHECKIN_DELAY_MS);
 };
 
 main();
