@@ -21,7 +21,7 @@ const ControlRow = () => fab.Row().withStyles({ padding: '0px 10px' });
  */
 const AtticControls = () => {
   const buttonStyle = {
-    width: '50%',
+    width: '33%',
     borderRadius: 0,
     margin: 0,
   };
@@ -73,6 +73,12 @@ const AtticControls = () => {
               const { app, key, value } = fab.getState('atticData');
               const message = { app, key, value };
               sendPacket({ to: 'attic', topic: 'set', message });
+            }),
+          TextButton()
+            .setText('List Apps')
+            .withStyles(buttonStyle)
+            .onClick(() => {
+              sendPacket({ to: 'attic', topic: 'listApps', message: {} });
             }),
         ]),
     ]);
