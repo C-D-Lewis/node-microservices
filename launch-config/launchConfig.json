@@ -259,7 +259,7 @@
         "start": "python3 -m http.server 54449 &"
       }
     ],
-    "e-paper-dashboard-witham": [
+    "e-paper-witham": [
       {
         "location": "code/node-microservices/node-common",
         "install": "git clone https://github.com/c-d-lewis/node-microservices",
