@@ -7,6 +7,7 @@ const Colors = {
   veryDarkGrey: '#666',
   statusOk: '#43D047',
   statusDown: '#DD6E40',
+  instanceHealthy: 'forestgreen',
 };
 
 // eslint-disable-next-line no-unused-vars

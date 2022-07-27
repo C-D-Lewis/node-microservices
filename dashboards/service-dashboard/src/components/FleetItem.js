@@ -28,7 +28,7 @@ const IpTextButton = ({ deviceName, ip, type }) => {
       color: 'lightgrey',
       fontSize: '1rem',
       margin: '0px 12px',
-      padding: '8px 5px',
+      padding: '6px 5px',
       fontFamily: Fonts.code,
       cursor: 'pointer',
       borderLeft: '2px solid black',
@@ -55,6 +55,22 @@ const DeviceIcon = ({ deviceType }) => fab.Image({
   .withStyles({ margin: '4px' });
 
 /**
+ * Last checkin label component.
+ *
+ * @param {object} props - Component props.
+ * @returns {HTMLElement}
+ */
+const LastSeenLabel = ({ minsAgo }) => fab.Text({
+  text: `Last seen: ${minsAgo} mins ago`,
+})
+  .withStyles({
+    color: Colors.darkGrey,
+    fontStyle: 'italic',
+    fontSize: '0.9rem',
+    textAlign: 'end',
+  });
+
+/**
  * FleetItem component.
  *
  * @param {object} props - Component props.
@@ -63,10 +79,13 @@ const DeviceIcon = ({ deviceType }) => fab.Image({
 // eslint-disable-next-line no-unused-vars
 const FleetItem = ({ itemData }) => {
   const {
-    deviceName, publicIp, localIp, deviceType = 'other',
+    deviceName, publicIp, localIp, deviceType = 'other', lastCheckIn,
   } = itemData;
   const { set: setPublicIpValid } = fab.manageState(`FleetItem[${deviceName}]`, 'publicIpValid', false);
   const { set: setLocalIpValid } = fab.manageState(`FleetItem[${deviceName}]`, 'localIpValid', false);
+
+  const minsAgo = Math.round((Date.now() - lastCheckIn) / (1000 * 60));
+  const healthy = minsAgo < 11;  // Based on default checkin interval
 
   /**
    * Test publicIp is reachable.
@@ -93,7 +112,7 @@ const FleetItem = ({ itemData }) => {
     .withChildren([
       fab.Row()
         .withStyles({
-          backgroundColor: Colors.veryDarkGrey,
+          backgroundColor: healthy ? Colors.instanceHealthy : Colors.veryDarkGrey,
           alignItems: 'center',
           borderBottom: '2px solid black',
           height: '30px',
@@ -112,6 +131,7 @@ const FleetItem = ({ itemData }) => {
         ip: localIp,
         type: 'local',
       }),
+      LastSeenLabel({ minsAgo }),
     ])
     .then(() => {
       testPublicIp();

@@ -12,7 +12,7 @@ const ResponseBar = () => fab('div')
     bottom: 0,
     width: '100%',
     minHeight: 30,
-    backgroundColor: '#333',
+    backgroundColor: Colors.veryDarkGrey,
     color: 'white',
     alignItems: 'center',
     marginBottom: '10px',

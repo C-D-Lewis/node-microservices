@@ -17,6 +17,7 @@ const fetchFleetList = async () => {
     fab.updateState('fleetList', () => message.value);
   } catch (err) {
     console.error(err);
+    alert(err);
   }
 };
 

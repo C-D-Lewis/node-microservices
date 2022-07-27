@@ -4,7 +4,11 @@
  * @returns {HTMLElement}
  */
 const StaticBreadcrumb = () => fab('p')
-  .withStyles({ color: 'black', margin: '10px 15px' })
+  .withStyles({
+    color: 'black',
+    margin: '10px 15px',
+    cursor: 'default',
+  })
   .setText('Device Fleet');
 
 /**
@@ -44,8 +48,9 @@ const BackBreadcrumb = () => {
 // eslint-disable-next-line no-unused-vars
 const SubNavBar = () => fab.Row()
   .withStyles({
-    backgroundColor: Colors.darkGrey,
+    backgroundColor: 'white',
     paddingLeft: '8px',
+    boxShadow: '2px 2px 3px 1px #5555',
   })
   .withChildren([
     fab.when(({ page }) => page === 'fleetPage', () => StaticBreadcrumb()),
