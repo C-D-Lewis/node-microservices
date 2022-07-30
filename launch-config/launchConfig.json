@@ -290,6 +290,22 @@
         "location": "code/node-microservices/apps/attic",
         "start": "npm start &"
       }
+    ],
+    "cirroc": [
+      {
+        "location": "code/node-microservices/node-common",
+        "install": "git clone https://github.com/c-d-lewis/node-microservices",
+        "update": "$git-pull",
+        "start": ""
+      },
+      {
+        "location": "code/node-microservices/apps/conduit",
+        "start": "npm start &"
+      },
+      {
+        "location": "code/node-microservices/apps/attic",
+        "start": "npm start &"
+      }
     ]
   }
 }
