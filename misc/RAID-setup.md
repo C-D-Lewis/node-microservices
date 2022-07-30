@@ -58,3 +58,11 @@ sudo nano /etc/fstab
 ```
 sudo hdparm -tT --direct /dev/md0
 ```
+
+# PiOLED monitor
+```
+sudo crontab -e
+```
+  ```
+  @reboot python3 /home/pi/code/node-microservices/tools/raid_stats.py > /home/pi/raid_stats.log
+  ```
