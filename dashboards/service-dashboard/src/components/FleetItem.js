@@ -34,7 +34,10 @@ const IpTextButton = ({ deviceName, ip, type }) => {
       borderLeft: '2px solid black',
     })
     .setText(ip)
-    .watchState((el) => el.addStyles({ color: isReachable() ? 'black' : 'lightgrey' }), [key])
+    .watchState((el) => {
+      // TODO: watchlist of [key] here breaks this for some reason
+      el.addStyles({ color: isReachable() ? 'black' : 'lightgrey' });
+    })
     .onClick(() => {
       // Select device, go to apps page
       fab.updateState('ip', () => ip);
@@ -60,14 +63,25 @@ const DeviceIcon = ({ deviceType }) => fab.Image({
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const LastSeenLabel = ({ minsAgo }) => fab.Text({
-  text: `Last seen: ${minsAgo} mins ago`,
-})
+const LastSeenLabel = ({ minsAgo }) => fab.Text()
   .withStyles({
     color: Colors.darkGrey,
     fontStyle: 'italic',
     fontSize: '0.9rem',
     textAlign: 'end',
+  })
+  .then((el) => {
+    if (minsAgo > (60 * 24)) {
+      el.setText(`Last seen: ${Math.round(minsAgo / (60 * 24))} days ago`);
+      return;
+    }
+
+    if (minsAgo > 60) {
+      el.setText(`Last seen: ${Math.round(minsAgo / 60)} hours ago`);
+      return;
+    }
+
+    el.setText(`Last seen: ${minsAgo} mins ago`);
   });
 
 /**
