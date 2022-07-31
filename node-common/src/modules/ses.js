@@ -13,6 +13,8 @@ config.requireKeys('ses.js', {
   },
 });
 
+const ses = new AWS.SES({ apiVersion: '2010-12-01' });
+
 // Auth?
 // SDK?
 

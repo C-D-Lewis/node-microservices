@@ -71,6 +71,26 @@ const LastSeenLabel = ({ minsAgo }) => fab.Text({
   });
 
 /**
+ * Set if IpTextButton components.
+ *
+ * @param {object} props - Component props.
+ * @returns {HTMLElement}
+ */
+const IpButtons = ({ deviceName, publicIp, localIp }) => fab.Column()
+  .withChildren([
+    IpTextButton({
+      deviceName,
+      ip: publicIp,
+      type: 'public',
+    }),
+    IpTextButton({
+      deviceName,
+      ip: localIp,
+      type: 'local',
+    }),
+  ]);
+
+/**
  * FleetItem component.
  *
  * @param {object} props - Component props.
@@ -81,8 +101,9 @@ const FleetItem = ({ itemData }) => {
   const {
     deviceName, publicIp, localIp, deviceType = 'other', lastCheckIn,
   } = itemData;
-  const { set: setPublicIpValid } = fab.manageState(`FleetItem[${deviceName}]`, 'publicIpValid', false);
-  const { set: setLocalIpValid } = fab.manageState(`FleetItem[${deviceName}]`, 'localIpValid', false);
+  const publicIpValid = fab.manageState(`FleetItem[${deviceName}]`, 'publicIpValid', false);
+  const localIpValid = fab.manageState(`FleetItem[${deviceName}]`, 'localIpValid', false);
+  const isUnreachable = fab.manageState(`FleetItem[${deviceName}]`, 'unreachable', false);
 
   const minsAgo = Math.round((Date.now() - lastCheckIn) / (1000 * 60));
   const healthy = minsAgo < 11;  // Based on default checkin interval
@@ -93,7 +114,7 @@ const FleetItem = ({ itemData }) => {
   const testPublicIp = async () => {
     try {
       await fetch(`http://${publicIp}:5959/apps`);
-      setPublicIpValid(true);
+      publicIpValid.set(true);
     } catch (err) { /* It isn't available */ }
   };
 
@@ -103,9 +124,17 @@ const FleetItem = ({ itemData }) => {
   const testLocalIp = async () => {
     try {
       await fetch(`http://${localIp}:5959/apps`);
-      setLocalIpValid(true);
+      localIpValid.set(true);
     } catch (err) { /* It isn't available */ }
   };
+
+  // Timeout
+  setTimeout(() => {
+    // At least one returned
+    if (localIpValid.get() || publicIpValid.get()) return;
+
+    isUnreachable.set(true);
+  }, 5000);
 
   return fab.Card()
     .withStyles({ minWidth: '250px', margin: '10px' })
@@ -121,16 +150,17 @@ const FleetItem = ({ itemData }) => {
           DeviceIcon({ deviceType }),
           DeviceName().setText(deviceName),
         ]),
-      IpTextButton({
-        deviceName,
-        ip: publicIp,
-        type: 'public',
-      }),
-      IpTextButton({
-        deviceName,
-        ip: localIp,
-        type: 'local',
-      }),
+      fab.when(
+        (state) => state[publicIpValid.key] || state[localIpValid.key],
+        () => IpButtons({ deviceName, publicIp, localIp }),
+      ),
+      fab.when(
+        (state) => (
+          !state[publicIpValid.key] && !state[localIpValid.key] && !state[isUnreachable.key]
+        ),
+        () => fab.Loader().withStyles({ margin: 'auto', marginTop: '10px' }),
+      ),
+      // TODO: fab.until(state, builderBefore, builderAfter)
       LastSeenLabel({ minsAgo }),
     ])
     .then(() => {
