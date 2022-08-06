@@ -1,3 +1,4 @@
+const AWS = require('aws-sdk');
 const config = require('./config');
 const log = require('./log');
 
@@ -5,21 +6,54 @@ config.requireKeys('ses.js', {
   required: ['SES'],
   properties: {
     SES: {
-      required: ['SQS_URL'],
+      required: ['TO_ADDRESS', 'SENDER_ADDRESS', 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY'],
       properties: {
-        SQS_URL: { type: 'string' },
+        TO_ADDRESS: { type: 'string' },
+        SENDER_ADDRESS: { type: 'string' },
+        AWS_ACCESS_KEY_ID: { type: 'string' },
+        AWS_SECRET_ACCESS_KEY: { type: 'string' },
       },
     },
   },
 });
 
-const ses = new AWS.SES({ apiVersion: '2010-12-01' });
+const credentials = new AWS.Credentials({
+  accessKeyId: config.SES.AWS_ACCESS_KEY_ID,
+  secretAccessKey: config.SES.AWS_SECRET_ACCESS_KEY,
+});
+AWS.config.update({
+  region: 'eu-west-2',
+  credentials,
+});
 
-// Auth?
-// SDK?
+/** Subject for emails from node-microservices */
+const SUBJECT = 'nms notification';
 
+const sesApi = new AWS.SES({ apiVersion: '2010-12-01' });
+
+/**
+ * Send a notification email.
+ *
+ * @param {string} msg - Message content.
+ */
 const notify = async (msg) => {
-
+  const res = await sesApi.sendEmail({
+    Source: config.SES.SENDER_ADDRESS,
+    Destination: { ToAddresses: [config.SES.TO_ADDRESS] },
+    Message: {
+      Body: {
+        Text: {
+          Charset: 'UTF-8',
+          Data: msg,
+        },
+      },
+      Subject: {
+        Charset: 'UTF-8',
+        Data: SUBJECT,
+      },
+    },
+  }).promise();
+  log.info(res);
 };
 
 module.exports = {

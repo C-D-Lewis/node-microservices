@@ -151,50 +151,6 @@
         "start": "npm start &"
       }
     ],
-    "ubuntu-512mb-lon1-01": [
-      {
-        "location": "node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/node-microservices",
-        "update": "$git-pull",
-        "start": ""
-      },
-      {
-        "location": "node-microservices/apps/clacks",
-        "start": "npm start &"
-      },
-      {
-        "location": "node-microservices/apps/conduit",
-        "start": "npm start &"
-      },
-      {
-        "location": "node-microservices/apps/attic",
-        "start": "npm start &"
-      },
-      {
-        "location": "node-microservices/apps/guestlist",
-        "start": "npm start &"
-      },
-      {
-        "location": "node-microservices/apps/visuals",
-        "start": "npm start &"
-      },
-      {
-        "location": "node-microservices/apps/concierge",
-        "start": "npm start &"
-      },
-      {
-        "location": "node-microservices/apps/monitor",
-        "start": "npm start &"
-      },
-      {
-        "location": "node-microservices/dashboards/lighting-dashboard",
-        "start": "http-server -p 54448 &"
-      },
-      {
-        "location": "node-microservices/dashboards/service-dashboard",
-        "start": "npm start &"
-      }
-    ],
     "peter-pi": [
       {
         "location": "code/node-microservices/node-common",

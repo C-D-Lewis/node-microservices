@@ -37,5 +37,11 @@
     "SERVER": "localhost",
     "PORT": 7777,
     "HOSTNAME": "TEST_HOSTNAME"
+  },
+  "SES": {
+    "TO_ADDRESS": "",
+    "SENDER_ADDRESS": "",
+    "AWS_ACCESS_KEY_ID": "",
+    "AWS_SECRET_ACCESS_KEY": ""
   }
 }
