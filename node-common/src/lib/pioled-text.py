@@ -14,8 +14,8 @@ sudo python setup.py install
 test: sudo python examples/stats.py
 '''
 
-# Parameterise this to allow multiple clients
-# Parameterise clear at start
+# TODO: Parameterise this to allow multiple clients to write lines
+# TODO: Parameterise clear at start option
 
 import sys
 import platform
@@ -29,18 +29,20 @@ if 'arm' not in platform.machine():
   print(lines)
   sys.exit(0)
 
-import Adafruit_GPIO.SPI as SPI
-import Adafruit_SSD1306
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageFont
+from board import SCL, SDA
+from PIL import Image, ImageDraw, ImageFont
+import busio
+import adafruit_ssd1306
 
-# 128x32 display with hardware I2C:
-disp = Adafruit_SSD1306.SSD1306_128_32(rst=None)
-disp.begin()
-disp.clear()
-disp.display()
+# Create the I2C interface.
+i2c = busio.I2C(SCL, SDA)
 
+# Create the SSD1306 OLED class.
+disp = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c)
+disp.fill(0)
+disp.show()
+
+# Setup drawing
 width = disp.width
 height = disp.height
 image = Image.new('1', (width, height))
