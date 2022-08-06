@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const os = require('os');
 const config = require('./config');
 const log = require('./log');
 
@@ -37,6 +38,13 @@ const sesApi = new AWS.SES({ apiVersion: '2010-12-01' });
  * @param {string} msg - Message content.
  */
 const notify = async (msg) => {
+  const finalMsg = `--------------------------------
+from: ${os.hostname()}
+
+${msg}
+--------------------------------
+`;
+
   const res = await sesApi.sendEmail({
     Source: config.SES.SENDER_ADDRESS,
     Destination: { ToAddresses: [config.SES.TO_ADDRESS] },
@@ -44,7 +52,7 @@ const notify = async (msg) => {
       Body: {
         Text: {
           Charset: 'UTF-8',
-          Data: msg,
+          Data: finalMsg,
         },
       },
       Subject: {
@@ -53,7 +61,7 @@ const notify = async (msg) => {
       },
     },
   }).promise();
-  log.info(res);
+  log.info(`ses: Sent email ${res.MessageId}`);
 };
 
 module.exports = {

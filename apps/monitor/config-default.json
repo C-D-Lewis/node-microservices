@@ -1,25 +1,6 @@
 {
   "PLUGINS": [
     {
-      "FILE_NAME": "delays.js",
-      "EVERY": 15,
-      "ARGS": {
-        "LED": 5
-      }
-    },
-    {
-      "FILE_NAME": "weather.js",
-      "EVERY": 10,
-      "ARGS": {
-        "DARKSKY_KEY": "",
-        "LATITUDE": "",
-        "LONGITUDE": "",
-        "TEMP_HOT": 21,
-        "TEMP_COLD": 8,
-        "LED": 6
-      }
-    },
-    {
       "FILE_NAME": "services.js",
       "EVERY": 10,
       "ARGS": {
@@ -61,5 +42,11 @@
     "HOST": "localhost",
     "PORT": 5959,
     "APP": "monitor"
+  },
+  "SES": {
+    "TO_ADDRESS": "",
+    "SENDER_ADDRESS": "",
+    "AWS_ACCESS_KEY_ID": "",
+    "AWS_SECRET_ACCESS_KEY": ""
   }
 }

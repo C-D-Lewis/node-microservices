@@ -1,6 +1,6 @@
 const {
-  config, log, requestAsync,
-} = require('../node-common')(['config', 'log', 'requestAsync']);
+  config, log, requestAsync, ses,
+} = require('../node-common')(['config', 'log', 'requestAsync', 'ses']);
 const display = require('../modules/display');
 
 config.requireKeys('services.js', {
@@ -54,8 +54,7 @@ module.exports = async (args) => {
 
   // Was OK, not anymore
   if (lastState && !stateNow) {
-    // TODO: Some other notification mechanism in the future
-    // await .post('Monitor', 'monitor', `Services not OK: ${downApps.join(', ')}`);
+    await ses.notify(`Services not OK: ${downApps.join(', ')}`);
   }
 
   // Same as before

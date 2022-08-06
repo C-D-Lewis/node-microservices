@@ -1,13 +1,15 @@
 const { execSync } = require('child_process');
-const { log } = require('../node-common')(['log']);
+const { log, ses } = require('../node-common')(['log', 'ses']);
 
 /** Command to execute */
 const CMD = 'cat /proc/mdstat';
 
+let notified = false;
+
 /**
  * Check disk state of RAID device (assume just 1)
  */
-module.exports = () => {
+module.exports = async () => {
   const [, nameLine, blocksLine, line3] = execSync(CMD).toString().split('\n');
   const [arrayName] = nameLine.split(' ');
   const [, diskState] = blocksLine.split('[');
@@ -26,5 +28,14 @@ module.exports = () => {
     arrayName, desired, current, degraded, recoveryPercent,
   });
 
-  // TODO - send alert if degraded:true
+  // Send notification once
+  if (degraded && !notified) {
+    await ses.notify('RAID array is in degraded state!');
+    notified = true;
+  }
+
+  // Reset if recovers
+  if (!degraded && notified) {
+    notified = false;
+  }
 };
