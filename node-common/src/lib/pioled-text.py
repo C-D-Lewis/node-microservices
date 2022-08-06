@@ -18,8 +18,6 @@ test: sudo python examples/stats.py
 # Parameterise clear at start
 
 import sys
-import time
-import subprocess
 import platform
 
 # Parameters
@@ -28,7 +26,7 @@ lines = sys.argv[1:5]
 
 # Handle non Pi for testing
 if 'arm' not in platform.machine():
-  print lines
+  print(lines)
   sys.exit(0)
 
 import Adafruit_GPIO.SPI as SPI
@@ -38,8 +36,7 @@ from PIL import ImageDraw
 from PIL import ImageFont
 
 # 128x32 display with hardware I2C:
-RST = None
-disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST)
+disp = Adafruit_SSD1306.SSD1306_128_32(rst=None)
 disp.begin()
 disp.clear()
 disp.display()
