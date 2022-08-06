@@ -86,7 +86,9 @@ const loadAll = () => {
     // Verify plugin config
     log.assert(!(plugin.EVERY && plugin.AT), 'Plugin must have only EVERY or AT, not both', true);
     log.assert(!(plugin.FILE_NAME && plugin.USE), 'Plugin must have only FILE_NAME or USE, not both', true);
-    if (!plugin.ENABLED) return;
+
+    // Enabled is 'true' by default if included in PLUGINS list
+    if (plugin.ENABLED === false) return;
 
     // Load plugins and register timers
     const pluginFunc = (plugin.FILE_NAME)

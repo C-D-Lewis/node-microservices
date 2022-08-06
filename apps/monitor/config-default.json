@@ -1,10 +1,6 @@
 {
-  "OPTIONS": {
-    "DISPLAY_DRIVER": "leds"
-  },
   "PLUGINS": [
     {
-      "ENABLED": false,
       "FILE_NAME": "delays.js",
       "EVERY": 15,
       "ARGS": {
@@ -12,7 +8,6 @@
       }
     },
     {
-      "ENABLED": false,
       "FILE_NAME": "weather.js",
       "EVERY": 10,
       "ARGS": {
@@ -25,7 +20,6 @@
       }
     },
     {
-      "ENABLED": false,
       "FILE_NAME": "services.js",
       "EVERY": 10,
       "ARGS": {
@@ -34,7 +28,6 @@
       }
     },
     {
-      "ENABLED": false,
       "FILE_NAME": "fan-control.js",
       "EVERY": 1,
       "ARGS": {
@@ -43,7 +36,6 @@
       }
     },
     {
-      "ENABLED": false,
       "FILE_NAME": "visuals-scheduler.js",
       "EVERY": 1,
       "ARGS": {
@@ -69,10 +61,5 @@
     "HOST": "localhost",
     "PORT": 5959,
     "APP": "monitor"
-  },
-  "GIST_SYNC": {
-    "URL": "",
-    "DIR": "gist",
-    "SYNC_INTERVAL_M": 15
   }
 }
