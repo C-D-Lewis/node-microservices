@@ -59,4 +59,4 @@ for line in lines:
 
 # Display image.
 disp.image(image)
-disp.display()
+disp.show()
