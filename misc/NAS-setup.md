@@ -81,4 +81,20 @@ sudo smbpasswd -a pi
 ```
 
 # Reboot Sambda
+```
 sudo systemctl restart smbd
+```
+
+# If issues with USB/SATA disconnecting (in dmesg)
+
+Enable quirks mode (seems to help) over using UAS mode:
+
+```
+sudo nano /boot/cmdline.txt
+```
+  ```
+  usb-storage.quirks=aaaa:bbbb:u
+  ```
+
+Where `aaaa` is the `idVendor` for your device and `bbbb` is the `idProduct`,
+added to the start of the file.

@@ -8,8 +8,7 @@
       "FILE_NAME": "delays.js",
       "EVERY": 15,
       "ARGS": {
-        "LED": 5,
-        "DISPLAY_LINE": 0
+        "LED": 5
       }
     },
     {
@@ -22,8 +21,7 @@
         "LONGITUDE": "",
         "TEMP_HOT": 21,
         "TEMP_COLD": 8,
-        "LED": 6,
-        "DISPLAY_LINE": 1
+        "LED": 6
       }
     },
     {
@@ -32,7 +30,6 @@
       "EVERY": 10,
       "ARGS": {
         "LED": 0,
-        "DISPLAY_LINE": 2,
         "HOST": "localhost"
       }
     },
