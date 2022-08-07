@@ -29,26 +29,22 @@ x = 0
 font = ImageFont.load_default()
 
 while True:
-    # Draw a black filled box to clear the image.
-    draw.rectangle((0, 0, width, height), outline=0, fill=0)
+  # Draw a black filled box to clear the image.
+  draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
-    # Shell scripts for system monitoring from here:
-    # https://unix.stackexchange.com/questions/119126/command-to-display-memory-usage-disk-usage-and-cpu-load
-    cmd = "hostname -I | cut -d' ' -f1"
-    IP = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    cmd = 'cut -f 1 -d " " /proc/loadavg'
-    CPU = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    cmd = "free -m | awk 'NR==2{printf \"%s/%s MB %.1f%%\", $3,$2,$3*100/$2 }'"
-    MemUsage = subprocess.check_output(cmd, shell=True).decode("utf-8")
-    cmd = 'df -h | awk \'$NF=="/mnt/raid1"{printf "%d/%d GB %s", $3,$2,$5}\''
-    DiskUsage = subprocess.check_output(cmd, shell=True).decode("utf-8")
+  cmd = 'cut -f 1 -d " " /proc/loadavg'
+  cpuUsage = subprocess.check_output(cmd, shell=True).decode("utf-8")
+  cmd = 'df -h | awk \'$NF=="/mnt/raid1"{printf "%d/%d GB %s", $3,$2,$5}\''
+  diskUsage = subprocess.check_output(cmd, shell=True).decode("utf-8")
+  cmd = 'cut -f 11 -d " " /proc/mdstat | grep \'\[\''
+  devices = subprocess.check_output(cmd, shell=True).decode("utf-8")
 
-    draw.text((x, top + 0),  "IP  |" + IP, font=font, fill=255)
-    draw.text((x, top + 8),  "CPU |" + CPU, font=font, fill=255)
-    draw.text((x, top + 16), "RAM |" + MemUsage, font=font, fill=255)
-    draw.text((x, top + 25), "Disk|" + DiskUsage, font=font, fill=255)
+  draw.text((x, top),      "CPU |" + cpuUsage, font=font, fill=255)
+  draw.text((x, top + 8),  "Disk|" + diskUsage, font=font, fill=255)
+  draw.text((x, top + 16), "RAID|" + RAID, font=font, fill=255)
+  draw.text((x, top + 25),  "", font=font, fill=255)
 
-    # Display image.
-    disp.image(image)
-    disp.show()
-    time.sleep(1)
+  # Display image.
+  disp.image(image)
+  disp.show()
+  time.sleep(5)
