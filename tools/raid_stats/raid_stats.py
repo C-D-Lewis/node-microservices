@@ -21,7 +21,7 @@ disp.show()
 width = disp.width
 height = disp.height
 image = Image.new("1", (width, height))
-draw = ImageDraw.Draw(image)
+image_draw = ImageDraw.Draw(image)
 
 # First define some constants to allow easy resizing of shapes.
 padding = -2
@@ -33,27 +33,38 @@ x = 0
 font = ImageFont.load_default()
 icon_healthy = Image.open(os.path.join(DIR, 'cloud_healthy.bmp'))
 icon_unhealthy = Image.open(os.path.join(DIR, 'alert.bmp'))
+icon_bg = Image.open(os.path.join(DIR, 'cloud.bmp'))
 
 while True:
-  draw.rectangle((0, 0, width, height), outline=0, fill=0)
+  image_draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
   cmd = 'cut -f 1 -d " " /proc/loadavg'
   cpuUsage = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
   cmd = 'df -h | awk \'$NF=="/mnt/raid1"{printf "%d/%d", $3,$2}\''
   diskUsage = subprocess.check_output(cmd, shell=True).decode("utf-8")
+  cmd = 'df -h | awk \'$NF=="/mnt/raid1"{printf "%s", $5}\''
+  diskPercent = subprocess.check_output(cmd, shell=True).decode("utf-8").replace('%', '').strip()
   cmd = 'cut -f 11 -d " " /proc/mdstat | grep \'\[\''
   devices = subprocess.check_output(cmd, shell=True).decode("utf-8").replace('[', '').replace(']', '')
 
-  draw.text((x, top),      "CPU | " + cpuUsage, font=font, fill=255)
-  draw.text((x, top + 8),  "Disk| " + diskUsage, font=font, fill=255)
-  draw.text((x, top + 16), "RAID| " + devices, font=font, fill=255)
-  draw.text((x, top + 25),  "", font=font, fill=255)
+  image_draw.text((x, top),      "CPU | " + cpuUsage, font=font, fill=255)
+  image_draw.text((x, top + 8),  "Disk| " + diskUsage, font=font, fill=255)
+  image_draw.text((x, top + 16), "RAID| " + devices, font=font, fill=255)
+  image_draw.text((x, top + 25),  "", font=font, fill=255)
 
   # Healthy if 2/2
   healthy = devices[0] == devices[2]
 
   # Icon
-  image.paste(icon_healthy if healthy else icon_unhealthy, (94, 0))
+  if healthy:
+    # BG, inverse bar, outer
+    image.paste(icon_bg, (94, 0))
+    x = round((int(diskPercent) / 100) * 32)
+    w = 32 - x
+    image_draw.rectangle([x, 0, 94 + 32, 32], fill = 0)
+    image.paste(icon_healthy, (94, 0))
+  else:
+    image.paste(icon_unhealthy, (94, 0))
 
   # Display image
   disp.image(image)
