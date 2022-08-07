@@ -39,9 +39,9 @@ while True:
   cmd = 'cut -f 11 -d " " /proc/mdstat | grep \'\[\''
   devices = subprocess.check_output(cmd, shell=True).decode("utf-8")
 
-  draw.text((x, top),      "CPU |" + cpuUsage, font=font, fill=255)
-  draw.text((x, top + 8),  "Disk|" + diskUsage, font=font, fill=255)
-  draw.text((x, top + 16), "RAID|" + devices, font=font, fill=255)
+  draw.text((x, top),      "CPU | " + cpuUsage, font=font, fill=255)
+  draw.text((x, top + 8),  "Disk| " + diskUsage, font=font, fill=255)
+  draw.text((x, top + 16), "RAID| " + devices, font=font, fill=255)
   draw.text((x, top + 25),  "", font=font, fill=255)
 
   # Display image.
