@@ -6,6 +6,8 @@ import busio
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
 
+DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), '.')
+
 # Create the I2C interface.
 i2c = busio.I2C(SCL, SDA)
 
@@ -25,7 +27,10 @@ padding = -2
 top = padding
 bottom = height - padding
 x = 0
+
+# Resources
 font = ImageFont.load_default()
+icon_up = Image.open('cloud_up.png')
 
 while True:
   draw.rectangle((0, 0, width, height), outline=0, fill=0)
@@ -43,7 +48,6 @@ while True:
   draw.text((x, top + 25),  "", font=font, fill=255)
 
   # Icon
-  icon_up = Image.open('cloud_up.png')
   image.paste(icon_up, (100, 5))
 
   # Display image
