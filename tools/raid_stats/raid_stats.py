@@ -31,13 +31,14 @@ x = 0
 
 # Resources
 font = ImageFont.load_default()
-icon_up = Image.open(os.path.join(DIR, 'cloud_up.bmp'))
+icon_healthy = Image.open(os.path.join(DIR, 'cloud_healthy.bmp'))
+icon_unhealthy = Image.open(os.path.join(DIR, 'alert.bmp'))
 
 while True:
   draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
   cmd = 'cut -f 1 -d " " /proc/loadavg'
-  cpuUsage = str(round(float(subprocess.check_output(cmd, shell=True).decode("utf-8").strip()) * 100))
+  cpuUsage = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
   cmd = 'df -h | awk \'$NF=="/mnt/raid1"{printf "%d/%d", $3,$2}\''
   diskUsage = subprocess.check_output(cmd, shell=True).decode("utf-8")
   cmd = 'cut -f 11 -d " " /proc/mdstat | grep \'\[\''
@@ -48,8 +49,11 @@ while True:
   draw.text((x, top + 16), "RAID| " + devices, font=font, fill=255)
   draw.text((x, top + 25),  "", font=font, fill=255)
 
+  # Healthy if 2/2
+  healthy = devices[0] == devices[2]
+
   # Icon
-  image.paste(icon_up, (94, 0))
+  image.paste(icon_healthy if healthy else icon_unhealthy, (94, 0))
 
   # Display image
   disp.image(image)
