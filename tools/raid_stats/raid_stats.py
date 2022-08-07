@@ -20,7 +20,6 @@ height = disp.height
 image = Image.new("1", (width, height))
 draw = ImageDraw.Draw(image)
 
-# Draw some shapes.
 # First define some constants to allow easy resizing of shapes.
 padding = -2
 top = padding
@@ -29,22 +28,25 @@ x = 0
 font = ImageFont.load_default()
 
 while True:
-  # Draw a black filled box to clear the image.
   draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
   cmd = 'cut -f 1 -d " " /proc/loadavg'
-  cpuUsage = subprocess.check_output(cmd, shell=True).decode("utf-8")
-  cmd = 'df -h | awk \'$NF=="/mnt/raid1"{printf "%d/%d GB %s", $3,$2,$5}\''
+  cpuUsage = str(round(float(subprocess.check_output(cmd, shell=True).decode("utf-8").strip()) * 100))
+  cmd = 'df -h | awk \'$NF=="/mnt/raid1"{printf "%d/%d", $3,$2}\''
   diskUsage = subprocess.check_output(cmd, shell=True).decode("utf-8")
   cmd = 'cut -f 11 -d " " /proc/mdstat | grep \'\[\''
-  devices = subprocess.check_output(cmd, shell=True).decode("utf-8")
+  devices = subprocess.check_output(cmd, shell=True).decode("utf-8").replace('[', '').replace(']', '')
 
   draw.text((x, top),      "CPU | " + cpuUsage, font=font, fill=255)
   draw.text((x, top + 8),  "Disk| " + diskUsage, font=font, fill=255)
   draw.text((x, top + 16), "RAID| " + devices, font=font, fill=255)
   draw.text((x, top + 25),  "", font=font, fill=255)
 
-  # Display image.
+  # Icon
+  icon_up = Image.open('cloud_up.png')
+  image.paste(icon_up, (100, 5))
+
+  # Display image
   disp.image(image)
   disp.show()
   time.sleep(5)
