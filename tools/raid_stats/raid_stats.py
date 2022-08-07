@@ -49,7 +49,7 @@ while True:
   draw.text((x, top + 25),  "", font=font, fill=255)
 
   # Icon
-  image.paste(icon_up, (90, 1))
+  image.paste(icon_up, (94, 0))
 
   # Display image
   disp.image(image)
