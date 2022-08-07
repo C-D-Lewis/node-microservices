@@ -57,14 +57,17 @@ while True:
 
   # Icon
   if healthy:
+    root_x = 94
+    size = 32
+
     # BG, inverse bar, outer
-    image.paste(icon_bg, (94, 0))
-    x = round((int(diskPercent) / 100) * 32)
-    w = 32 - x
-    image_draw.rectangle([x, 0, 94 + 32, 32], fill = 0)
-    image.paste(icon_healthy, (94, 0))
+    image.paste(icon_bg, (root_x, 0))
+    x = round((int(diskPercent) / 100) * size)
+    w = size - x
+    image_draw.rectangle([root_x + x, 0, root_x + size, size], fill = 0)
+    image.paste(icon_healthy, (root_x, 0))
   else:
-    image.paste(icon_unhealthy, (94, 0))
+    image.paste(icon_unhealthy, (root_x, 0))
 
   # Display image
   disp.image(image)
