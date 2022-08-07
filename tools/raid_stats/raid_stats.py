@@ -64,7 +64,7 @@ while True:
     image.paste(icon_bg, (root_x, 0))
     bar_x = round((int(diskPercent) / 100) * size)
     image_draw.rectangle([root_x + bar_x, 0, root_x + size, size], fill = 0)
-    # image.paste(icon_healthy, (root_x, 0))
+    image.paste(icon_healthy, (root_x, 0), icon_healthy)
   else:
     image.paste(icon_unhealthy, (root_x, 0))
 
