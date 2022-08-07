@@ -31,7 +31,7 @@ x = 0
 
 # Resources
 font = ImageFont.load_default()
-icon_up = Image.open('cloud_up.png')
+icon_up = Image.open(os.path.join(DIR, 'cloud_up.bmp'))
 
 while True:
   draw.rectangle((0, 0, width, height), outline=0, fill=0)
