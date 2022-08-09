@@ -4,7 +4,7 @@ import os
 
 from board import SCL, SDA
 import busio
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 import adafruit_ssd1306
 
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), '.')
@@ -56,8 +56,8 @@ while True:
   healthy = devices[0] == devices[2]
 
   # Icon
+  root_x = 94
   if healthy:
-    root_x = 94
     size = 32
 
     # BG, inverse bar, outer
@@ -69,6 +69,6 @@ while True:
     image.paste(icon_unhealthy, (root_x, 0))
 
   # Display image
-  disp.image(image)
+  disp.image(ImageOps.mirror(ImageOps.flip(image)))
   disp.show()
   time.sleep(5)
