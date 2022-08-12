@@ -1,13 +1,12 @@
 const printTable = require('../functions/printTable');
+const switches = require('../modules/switches');
 const { send } = require('./conduit');
 
 /**
  * Fetch and display fleet members.
- * TODO: Support --host flag to override host
- *
- * @param {string} host - Host to use.
  */
-const list = async (host) => {
+const list = async () => {
+  const token = switches.TOKEN;
   const packet = {
     to: 'attic',
     topic: 'get',
@@ -15,8 +14,9 @@ const list = async (host) => {
       app: 'conduit',
       key: 'fleetList',
     },
+    auth: token,
   };
-  const json = await send({ packet, host });
+  const json = await send({ packet });
 
   // Display the fleet
   const fleetList = json.message.value;
@@ -34,11 +34,10 @@ module.exports = {
       /**
        * List fleet members from the 'mothership' host.
        *
-       * @param {Array<string>} args - Command args.
        * @returns {Promise<void>}
        */
-      execute: async ([host]) => list(host),
-      pattern: '$host list',
+      execute: async () => list(),
+      pattern: 'list',
     },
   },
 };

@@ -6,6 +6,12 @@ const SWITCH_LIST = [
     constant: 'HOST',
     valueLabel: '<url>',
   },
+  {
+    name: '--token',
+    about: 'Specify an auth token if required.',
+    constant: 'TOKEN',
+    valueLabel: '<token>',
+  },
 ];
 
 /**
