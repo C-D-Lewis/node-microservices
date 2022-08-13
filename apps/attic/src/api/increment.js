@@ -9,9 +9,15 @@ const { get, set } = require('../modules/storage');
  */
 const handleIncrementPacket = async (packet, res) => {
   const { app, key } = packet.message;
-  const appData = await get(app);
+  let appData = await get(app);
   if (!appData || !appData[key]) {
-    conduit.respond(res, { status: 404, error: `app ${app} or key ${key} not found` });
+    // Initialise to 0
+    if (!appData) {
+      appData = {};
+    }
+    appData[key] = { timestamp: Date.now(), value: 0 };
+    await set(app, appData);
+    conduit.respond(res, { status: 200, message: { content: 'OK' } });
     return;
   }
 
