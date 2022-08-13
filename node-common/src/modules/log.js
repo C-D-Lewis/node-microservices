@@ -36,9 +36,18 @@ const FILE_PATH = `${config.getInstallPath()}/${config.LOG.APP_NAME.split(' ').j
  * @returns {string} Simple time string.
  */
 const getTimeString = () => {
-  const str = new Date().toISOString();
-  return str.substring(str.indexOf('T') + 1, str.indexOf('.'));
+  const [date, time] = new Date().toISOString().split('T');
+  const [finalTime] = time.split('.');
+  return `${date} ${finalTime}`;
 };
+
+/**
+ * Build log line prefix.
+ *
+ * @param {string} level - Log level.
+ * @returns {string} Formatted log line prefix.
+ */
+const buildPrefix = (level) => `[${getTimeString()} ${process.pid} ${config.LOG.APP_NAME} ${TAGS[level]}]`;
 
 /**
  * Write a log line to file.
@@ -49,7 +58,7 @@ const writeToFile = (msg) => {
   let stream;
   if (!fs.existsSync(FILE_PATH)) {
     stream = fs.createWriteStream(FILE_PATH, { flags: 'w' });
-    stream.end(`[${getTimeString()}] New log file!\n`);
+    stream.end(`${buildPrefix('info')} New log file!\n`);
   }
 
   stream = fs.createWriteStream(FILE_PATH, { flags: 'a' });
@@ -95,7 +104,7 @@ const log = (level, msg) => {
   }
 
   // Write to all outputs
-  const logLine = `[${TAGS[level]} ${getTimeString()} ${process.pid} ${config.LOG.APP_NAME}] ${msg}`;
+  const logLine = `${buildPrefix(level)} ${msg}`;
   writeToFile(logLine);
   console.log(logLine);
 
@@ -122,13 +131,24 @@ const printDecor = () => {
 };
 
 /**
+ * Get logfile size in MB.
+ *
+ * @returns {number} Logfile size. 
+ */
+const getLogfileSizeMb = () => {
+  try {
+    const { size } = fs.statSync(FILE_PATH);
+    return Math.round(size / (1024*1024));
+  } catch (e) {}
+};
+
+/**
  * Monitor the log size, and erase if it gets too big.
  */
 const monitorLogSize = () => {
   setInterval(() => {
-    const { size } = fs.statSync(FILE_PATH);
-    const sizeMb = size / (1024*1024);
-    info(`Logfile size: ${Math.round(sizeMb * 100) / 100} MB`);
+    const sizeMb = getLogfileSizeMb();
+    info(`Logfile size: ${sizeMb} MB`);
 
     if (sizeMb < MAX_SIZE_MB) return;
 
@@ -136,7 +156,7 @@ const monitorLogSize = () => {
     fs.unlinkSync(FILE_PATH);
     info('Log file exceeded max size and was restarted');
   }, MONITOR_INTERVAL_MS);
-  info(`Monitoring logfile size`);
+  info(`Monitoring logfile size (currently ${getLogfileSizeMb()} MB)`);
 };
 
 /**
