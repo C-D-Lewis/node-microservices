@@ -1,5 +1,11 @@
 /* global sendPacket TextButton TextBox */
 
+const buttonStyle = {
+  borderRadius: 0,
+  margin: 0,
+  minWidth: '50px',
+};
+
 /**
  * Empty component.
  *
@@ -20,12 +26,6 @@ const ControlRow = () => fab.Row().withStyles({ padding: '0px 10px' });
  * @returns {HTMLElement}
  */
 const AtticControls = () => {
-  const buttonStyle = {
-    width: '33%',
-    borderRadius: 0,
-    margin: 0,
-  };
-
   /**
    * Set a property within the app controls state.
    *
@@ -59,7 +59,7 @@ const AtticControls = () => {
         .withChildren([
           TextButton()
             .setText('Get')
-            .withStyles(buttonStyle)
+            .withStyles({ ...buttonStyle, width: '33%' })
             .onClick(async () => {
               const { app, key } = fab.getState('atticData');
               const message = { app, key };
@@ -68,7 +68,7 @@ const AtticControls = () => {
             }),
           TextButton()
             .setText('Set')
-            .withStyles(buttonStyle)
+            .withStyles({ ...buttonStyle, width: '33%' })
             .onClick(() => {
               const { app, key, value } = fab.getState('atticData');
               const message = { app, key, value };
@@ -76,7 +76,7 @@ const AtticControls = () => {
             }),
           TextButton()
             .setText('List Apps')
-            .withStyles(buttonStyle)
+            .withStyles({ ...buttonStyle, width: '33%' })
             .onClick(() => {
               sendPacket({ to: 'attic', topic: 'listApps', message: {} });
             }),
@@ -90,8 +90,6 @@ const AtticControls = () => {
  * @returns {HTMLElement}
  */
 const ConduitControls = () => {
-  const buttonStyle = { borderRadius: 0, margin: 0 };
-
   /**
    * Set a property within the app controls state.
    *
@@ -125,7 +123,7 @@ const ConduitControls = () => {
         .withChildren([
           TextButton()
             .setText('Send')
-            .withStyles({ width: '100%', ...buttonStyle })
+            .withStyles({ ...buttonStyle, width: '100%' })
             .onClick(() => {
               const { app: to, topic, message } = fab.getState('conduitData');
               sendPacket({ to, topic, message: JSON.parse(message) });
@@ -140,13 +138,6 @@ const ConduitControls = () => {
  * @returns {HTMLElement}
  */
 const VisualsControls = () => {
-  const buttonStyle = {
-    width: '20%',
-    borderRadius: 0,
-    margin: 0,
-    minWidth: '50px',
-  };
-
   /**
    * Set a property within the app controls state.
    *
@@ -160,15 +151,15 @@ const VisualsControls = () => {
     .withChildren([
       ControlRow()
         .withChildren([
-          TextBox({ placeholder: 'red' })
+          TextBox({ placeholder: 'Red' })
             .watchState((el, { visualsData: { red } }) => el.setText(red))
             .withStyles({ width: '30%' })
             .onChange((el, value) => setProp('red', parseInt(value, 10))),
-          TextBox({ placeholder: 'green' })
+          TextBox({ placeholder: 'Green' })
             .watchState((el, { visualsData: { green } }) => el.setText(green))
             .withStyles({ width: '30%' })
             .onChange((el, value) => setProp('green', parseInt(value, 10))),
-          TextBox({ placeholder: 'blue' })
+          TextBox({ placeholder: 'Blue' })
             .watchState((el, { visualsData: { blue } }) => el.setText(blue))
             .withStyles({ width: '30%' })
             .onChange((el, value) => setProp('blue', parseInt(value, 10))),
@@ -184,7 +175,7 @@ const VisualsControls = () => {
         .withChildren([
           TextButton()
             .setText('All')
-            .withStyles(buttonStyle)
+            .withStyles({ ...buttonStyle, width: '20%' })
             .onClick(() => {
               const { red, green, blue } = fab.getState('visualsData');
               const message = { all: [red, green, blue] };
@@ -192,7 +183,7 @@ const VisualsControls = () => {
             }),
           TextButton()
             .setText('Pixel')
-            .withStyles(buttonStyle)
+            .withStyles({ ...buttonStyle, width: '20%' })
             .onClick(() => {
               const {
                 index, red, green, blue,
@@ -202,7 +193,7 @@ const VisualsControls = () => {
             }),
           TextButton()
             .setText('Blink')
-            .withStyles(buttonStyle)
+            .withStyles({ ...buttonStyle, width: '20%' })
             .onClick(() => {
               const {
                 index, red, green, blue,
@@ -212,7 +203,7 @@ const VisualsControls = () => {
             }),
           TextButton()
             .setText('Text')
-            .withStyles(buttonStyle)
+            .withStyles({ ...buttonStyle, width: '20%' })
             .onClick(() => {
               const { text } = fab.getState('visualsData');
               const message = { lines: [text] };
@@ -220,8 +211,69 @@ const VisualsControls = () => {
             }),
           TextButton()
             .setText('State')
-            .withStyles(buttonStyle)
+            .withStyles({ ...buttonStyle, width: '20%' })
             .onClick(() => sendPacket({ to: 'visuals', topic: 'state' })),
+        ]),
+    ]);
+};
+
+/**
+ * GuestlistControls component.
+ *
+ * @returns {HTMLElement}
+ */
+const GuestlistControls = () => {
+  /**
+   * Set a property within the app controls state.
+   *
+   * @param {string} k - Prop key.
+   * @param {*} v - Prop value.
+   */
+  const setProp = (k, v) => fab.updateState('guestlistData', () => ({ ...fab.getState('guestlistData'), [k]: v }));
+
+  return fab.Column()
+    .withStyles({ backgroundColor: 'white' })
+    .withChildren([
+      ControlRow()
+        .withChildren([
+          TextBox({ placeholder: 'Name' })
+            .watchState((el, { guestlistData: { name } }) => el.setText(name))
+            .withStyles({ width: '30%' })
+            .onChange((el, value) => setProp('name', value)),
+          TextBox({ placeholder: 'Apps' })
+            .watchState((el, { guestlistData: { apps } }) => el.setText(apps))
+            .withStyles({ width: '30%' })
+            .onChange((el, value) => setProp('apps', value)),
+          TextBox({ placeholder: 'Topics' })
+            .watchState((el, { guestlistData: { topics } }) => el.setText(topics))
+            .withStyles({ width: '30%' })
+            .onChange((el, value) => setProp('topics', value)),
+      ]),
+      ControlRow()
+        .withChildren([
+          TextBox({ placeholder: 'Admin password' })
+            .watchState((el, { guestlistData: { adminPassword } }) => el.setText(adminPassword))
+            .withStyles({ width: '100%' })
+            .onChange((el, value) => setProp('adminPassword', value)),
+      ]),
+      fab.Row()
+        .withChildren([
+          TextButton()
+            .setText('List Users')
+            .withStyles({ ...buttonStyle, width: '50%' })
+            .onClick(() => sendPacket({ to: 'guestlist', topic: 'getAll' })),
+          TextButton()
+            .setText('Create User')
+            .withStyles({ ...buttonStyle, width: '50%' })
+            .onClick(() => {
+              const { name, apps, topics, adminPassword } = fab.getState('guestlistData');
+              const message = {
+                name,
+                apps: apps.split(','),
+                topics: topics.split(','),
+              };
+              sendPacket({ to: 'guestlist', topic: 'create', message }, adminPassword);
+            }),
         ]),
     ]);
 };
@@ -230,6 +282,10 @@ const controlsMap = {
   attic: AtticControls,
   conduit: ConduitControls,
   visuals: VisualsControls,
+  // clacks: list devices, most recent messages, and send messages
+  // concierge: list hooks
+  guestlist: GuestlistControls,
+  // polaris: show current record IP? Needs conduit API
 };
 
 /**

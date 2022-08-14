@@ -31,7 +31,13 @@ const INITIAL_STATE = {
     blue: 128,
     text: '',
   },
-  page: 'fleetPage',
+  guestlistData: {
+    adminPassword: '',
+    name: '',
+    apps: '',
+    topics: '',
+  },
+  page: 'FleetPage',
 };
 
 /** Icon type names */

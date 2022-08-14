@@ -86,8 +86,8 @@ const ServiceDashboard = () => fab.Column()
   .withChildren([
     AppNavBar(),
     SubNavBar(),
-    fab.when(({ page }) => page === 'fleetPage', () => FleetPage()),
-    fab.when(({ page }) => page === 'appsPage', () => AppsPage()),
+    fab.when(({ page }) => page === 'FleetPage', () => FleetPage()),
+    fab.when(({ page }) => page === 'AppsPage', () => AppsPage()),
   ])
   .watchState((el, newState, key) => {
     if (key === 'fabricate:init') parseParams();

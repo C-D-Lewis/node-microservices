@@ -18,8 +18,10 @@ const chance = new Chance();
  * @param {object} res - Express response object.
  */
 const handleCreatePacket = async (packet, res) => {
-  const { auth, message } = packet;
-  const { name, apps, topics } = message;
+  const { message } = packet;
+  const {
+    name, apps, topics, adminPassword: inputPassword,
+  } = message;
 
   // Only the administrator can create users (for now)
   const password = adminPassword.get();
@@ -27,7 +29,7 @@ const handleCreatePacket = async (packet, res) => {
     conduit.respond(res, { status: 500, error: 'Authorizing app not authorized' });
     return;
   }
-  if (!auth || auth !== password) {
+  if (!inputPassword || inputPassword !== password) {
     conduit.respond(res, { status: 401, error: 'Unauthorized' });
     return;
   }

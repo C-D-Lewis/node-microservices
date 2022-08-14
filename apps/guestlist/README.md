@@ -32,9 +32,9 @@ admin password that must be specified when creating other users. This file
 should be installed when connecting to the machine locally:
 
 ```bash
-npm ci && npm start &
-
 echo 'MyAdminPassword' > ./password
+
+npm ci && npm start
 ```
 
 This will then be picked up immediately and used to validate all `create`
@@ -46,18 +46,18 @@ requests.
 > Users represent real users, or devices, and so should have all the permissions
 > they need to talk to all the apps they will talk to.
 
-New users are created with `conduit` messages where `auth` is the admin
+New users are created with `conduit` messages where `adminPassword` is the admin
 password:
 
 ```json
 {
   "to": "guestlist",
   "topic": "create",
-  "auth": "MyAdminPassword",
   "message": {
     "name": "BacklightUser",
     "apps": ["ambience"],
-    "topics": ["set", "fade", "off"]
+    "topics": ["set", "fade", "off"],
+    "adminPassword": "MyAdminPassword",
   }
 }
 ```

@@ -21,7 +21,8 @@
   "eslintConfig": {
     "extends": "eslint-config-airbnb-base",
     "env": {
-      "node": true
+      "node": true,
+      "mocha": true
     },
     "rules": {
       "no-multi-spaces": 0,
