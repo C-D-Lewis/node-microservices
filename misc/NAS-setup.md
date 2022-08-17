@@ -15,22 +15,23 @@ sudo parted /dev/sda
   ```
   mklabel gpt
   mkpart
-  DRIVE_NAME
+  raid1
   ext4
   0%
   100%
   quit
   ```
+> `raid1` is the drive name, here and after
 
 # Make partition (1 on sda as example)
 ```
 sudo mkfs.ext4 /dev/sda1
-sudo e2label /dev/sda1 DRIVE_NAME
+sudo e2label /dev/sda1 raid1
 ```
 
 # Prepare mount point
 ```
-sudo mkdir -p /mnt/usb/DRIVE_NAME
+sudo mkdir -p /mnt/usb/raid1
 ```
 
 ## Get UUID and TYPE
@@ -43,13 +44,13 @@ sudo blkid /dev/sda1
 sudo nano /etc/fstab
 ```
   ```
-  UUID= /mnt/usb/DRIVE_NAME ext4 defaults,auto,users,rw,nofail 0 0
+  UUID= /mnt/usb/raid1 ext4 defaults,auto,users,rw,nofail 0 0
   ```
 
 # First mount
 ```
-sudo mount -t ext4 /dev/sda1 /mnt/usb/DRIVE_NAME
-sudo chown -R pi /mnt/usb/DRIVE_NAME
+sudo mount -t ext4 /dev/sda1 /mnt/usb/raid1
+sudo chown -R pi /mnt/usb/raid1
 ```
 
 # Reboot
@@ -67,8 +68,8 @@ sudo apt install -y samba samba-common
 sudo nano /etc/samba/smb.conf
 ```
   ```
-  [DRIVE_NAME]
-  path = /mnt/usb/DRIVE_NAME/
+  [raid1]
+  path = /mnt/usb/raid1/
   writeable = yes
   create mask = 0775
   directory mask = 0775
