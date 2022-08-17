@@ -75,7 +75,7 @@ curl https://get.pimoroni.com/motephat | bash
 # PiOLED?
 sudo apt-get install python3-pip
 sudo pip3 install adafruit-circuitpython-ssd1306
-sudo apt-get install -y python3-pil python-smbus i2c-tools
+sudo apt-get install -y python3-pil python3-smbus i2c-tools
 sudo raspi-config
 > enable I2C interface
 sudo reboot

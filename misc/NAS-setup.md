@@ -48,7 +48,7 @@ sudo nano /etc/fstab
 
 # First mount
 ```
-mount -t ext4 /dev/sda1 /mnt/usb/DRIVE_NAME
+sudo mount -t ext4 /dev/sda1 /mnt/usb/DRIVE_NAME
 sudo chown -R pi /mnt/usb/DRIVE_NAME
 ```
 
