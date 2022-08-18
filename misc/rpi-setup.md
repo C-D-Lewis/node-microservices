@@ -90,7 +90,7 @@ git clone https://github.com/c-d-lewis/node-microservices
 > setup config.json for apps/*
 
 # Fan control?
-> Prevent  Command failed: /opt/vc/bin/vcgencmd measure_temp VCHI initialization failed
+> Prevent  Command failed: vcgencmd measure_temp VCHI initialization failed
 ```
 sudo usermod -aG video pi
 ```
