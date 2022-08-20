@@ -1,7 +1,6 @@
 {
   "OPTIONS": {
     "FLEET": {
-      "DEVICE_NAME": "",
       "HOST": "",
       "DEVICE_TYPE": ""
     },

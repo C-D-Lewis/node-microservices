@@ -1,3 +1,4 @@
+const { hostname } = require('os');
 const {
   config, attic, ip, log,
 } = require('../node-common')(['config', 'attic', 'ip', 'log']);
@@ -9,9 +10,8 @@ config.requireKeys('fleet.js', {
       required: ['FLEET'],
       properties: {
         FLEET: {
-          required: ['DEVICE_NAME', 'HOST', 'DEVICE_TYPE'],
+          required: ['HOST', 'DEVICE_TYPE'],
           properties: {
-            DEVICE_NAME: { type: 'string' },
             HOST: { type: 'string' },
             DEVICE_TYPE: {
               type: 'string',
@@ -52,7 +52,7 @@ const sortByLastCheckIn = (a, b) => (a.lastCheckIn > b.lastCheckIn ? -1 : 1);
 const checkIn = async () => {
   const now = new Date();
   const updatePayload = {
-    deviceName: FLEET.DEVICE_NAME,
+    deviceName: hostname(),
     lastCheckIn: now.getTime(),
     lastCheckInDate: now.toISOString(),
     publicIp: await ip.getPublic(),
@@ -61,7 +61,7 @@ const checkIn = async () => {
   };
 
   const fleetList = await attic.get(FLEET_LIST_KEY);
-  const found = fleetList.find((p) => p.deviceName === FLEET.DEVICE_NAME);
+  const found = fleetList.find((p) => p.deviceName === hostname());
   if (!found) {
     // Add a new entry
     fleetList.push(updatePayload);
@@ -70,8 +70,12 @@ const checkIn = async () => {
     Object.assign(found, updatePayload);
   }
 
-  await attic.set(FLEET_LIST_KEY, fleetList.sort(sortByLastCheckIn));
-  log.info(`Fleet list updated: ${JSON.stringify(updatePayload)}`);
+  try {
+    await attic.set(FLEET_LIST_KEY, fleetList.sort(sortByLastCheckIn));
+    log.info(`Fleet list updated: ${JSON.stringify(updatePayload)}`);
+  } catch (e) {
+    log.error(`Failed to check in: ${e.stack}`);
+  }
 };
 
 /**

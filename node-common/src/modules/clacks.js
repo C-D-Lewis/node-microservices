@@ -1,4 +1,5 @@
-const { WebSocket } = require('ws')
+const { WebSocket } = require('ws');
+const { hostname } = require('os');
 const log = require('./log');
 const config = require('./config');
 const ip = require('./ip');
@@ -7,7 +8,7 @@ config.requireKeys('clacks.js', {
   required: ['CLACKS'],
   properties: {
     CLACKS: {
-      required: ['SERVER', 'PORT', 'HOSTNAME'],
+      required: ['SERVER', 'PORT'],
       properties: {
         SERVER: {
           type: 'string',
@@ -17,17 +18,13 @@ config.requireKeys('clacks.js', {
           type: 'number',
           description: 'WebSocket port to connect to',
         },
-        HOSTNAME: {
-          type: 'string',
-          description: 'Device unique name to respond to /global/getHostnames'
-        },
       },
     },
   },
 });
 
 const {
-  CLACKS: { SERVER, PORT, HOSTNAME },
+  CLACKS: { SERVER, PORT },
 } = config;
 
 /** Get hostnames topic */
@@ -49,7 +46,7 @@ let heartbeatHandle;
  * Start heartbeat loop.
  */
 const startHeartbeat = () => {
-  const thisDeviceTopic = `/devices/${HOSTNAME}/heartbeat`;
+  const thisDeviceTopic = `/devices/${hostname()}/heartbeat`;
 
   clearInterval(heartbeatHandle);
   heartbeatHandle = setInterval(() => {
@@ -163,7 +160,7 @@ const requestHostnames = () => send(TOPIC_GLOBAL_GET_HOSTNAMES);
 subscriptions[TOPIC_GLOBAL_GET_HOSTNAMES] = async () =>
   send(
     TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE,
-    { hostname: HOSTNAME, localIp: ip.getLocal() },
+    { hostname: hostname(), localIp: ip.getLocal() },
   );
 
 module.exports = {
