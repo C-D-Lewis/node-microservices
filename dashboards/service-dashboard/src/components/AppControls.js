@@ -248,14 +248,14 @@ const GuestlistControls = () => {
             .watchState((el, { guestlistData: { topics } }) => el.setText(topics))
             .withStyles({ width: '30%' })
             .onChange((el, value) => setProp('topics', value)),
-      ]),
+        ]),
       ControlRow()
         .withChildren([
           TextBox({ placeholder: 'Admin password' })
             .watchState((el, { guestlistData: { adminPassword } }) => el.setText(adminPassword))
             .withStyles({ width: '100%' })
             .onChange((el, value) => setProp('adminPassword', value)),
-      ]),
+        ]),
       fab.Row()
         .withChildren([
           TextButton()
@@ -266,13 +266,16 @@ const GuestlistControls = () => {
             .setText('Create User')
             .withStyles({ ...buttonStyle, width: '50%' })
             .onClick(() => {
-              const { name, apps, topics, adminPassword } = fab.getState('guestlistData');
+              const {
+                name, apps, topics, adminPassword,
+              } = fab.getState('guestlistData');
               const message = {
                 name,
                 apps: apps.split(','),
                 topics: topics.split(','),
+                adminPassword,
               };
-              sendPacket({ to: 'guestlist', topic: 'create', message }, adminPassword);
+              sendPacket({ to: 'guestlist', topic: 'create', message });
             }),
         ]),
     ]);

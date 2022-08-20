@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { testing, attic } = require('../src/node-common')(['testing']);
+const { testing } = require('../src/node-common')(['testing']);
 const adminPassword = require('../src/modules/adminPassword');
 
 /** Test user name */
