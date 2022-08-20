@@ -50,27 +50,27 @@ const sortByLastCheckIn = (a, b) => (a.lastCheckIn > b.lastCheckIn ? -1 : 1);
  * Send the data to remote Attic to perform the checkin.
  */
 const checkIn = async () => {
-  const now = new Date();
-  const updatePayload = {
-    deviceName: hostname(),
-    lastCheckIn: now.getTime(),
-    lastCheckInDate: now.toISOString(),
-    publicIp: await ip.getPublic(),
-    localIp: await ip.getLocal(),
-    deviceType: FLEET.DEVICE_TYPE,
-  };
-
-  const fleetList = await attic.get(FLEET_LIST_KEY);
-  const found = fleetList.find((p) => p.deviceName === hostname());
-  if (!found) {
-    // Add a new entry
-    fleetList.push(updatePayload);
-  } else {
-    // Update found extry in place
-    Object.assign(found, updatePayload);
-  }
-
   try {
+    const now = new Date();
+    const updatePayload = {
+      deviceName: hostname(),
+      lastCheckIn: now.getTime(),
+      lastCheckInDate: now.toISOString(),
+      publicIp: await ip.getPublic(),
+      localIp: await ip.getLocal(),
+      deviceType: FLEET.DEVICE_TYPE,
+    };
+
+    const fleetList = await attic.get(FLEET_LIST_KEY);
+    const found = fleetList.find((p) => p.deviceName === hostname());
+    if (!found) {
+      // Add a new entry
+      fleetList.push(updatePayload);
+    } else {
+      // Update found extry in place
+      Object.assign(found, updatePayload);
+    }
+
     await attic.set(FLEET_LIST_KEY, fleetList.sort(sortByLastCheckIn));
     log.info(`Fleet list updated: ${JSON.stringify(updatePayload)}`);
   } catch (e) {
