@@ -32,8 +32,9 @@ const create = async (name, apps, topics, adminPassword) => {
   const packet = {
     to: 'guestlist',
     topic: 'create',
-    message: { name, apps, topics },
-    auth: adminPassword,
+    message: {
+      name, apps, topics, adminPassword,
+    },
   };
   const res = await send({ packet });
   if (res.status !== 201) throw new Error(JSON.stringify(res));
@@ -48,12 +49,11 @@ const create = async (name, apps, topics, adminPassword) => {
  * @param {string} name - User name.
  * @param {string} adminPassword - Admin password for user creation.
  */
-const _delete = async (name, adminPassword) => {
+const deleteUser = async (name, adminPassword) => {
   const packet = {
     to: 'guestlist',
     topic: 'delete',
-    message: { name },
-    auth: adminPassword,
+    message: { name, adminPassword },
   };
   const res = await send({ packet });
   if (res.status !== 200) throw new Error(JSON.stringify(res));
@@ -91,7 +91,7 @@ module.exports = {
        * @param {Array<string>} args - Command args.
        * @returns {Promise<void>}
        */
-      execute: async ([, name, adminPassword]) => _delete(name, adminPassword),
+      execute: async ([, name, adminPassword]) => deleteUser(name, adminPassword),
       pattern: 'delete $name $adminPassword',
     },
   },

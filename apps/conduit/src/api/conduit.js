@@ -78,7 +78,7 @@ const handlePacketRequest = async (req, res) => {
       message: {
         to,
         topic,
-        token: auth,
+        auth,
       },
     });
     if (authCheckRes.error) {

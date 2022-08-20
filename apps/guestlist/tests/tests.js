@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { testing } = require('../src/node-common')(['testing']);
+const { testing, attic } = require('../src/node-common')(['testing']);
 const adminPassword = require('../src/modules/adminPassword');
 
 /** Test user name */
@@ -9,12 +9,22 @@ let inputPassword;
 let token;
 
 describe('API', () => {
-  before(() => {
+  before(async () => {
     console.log('Waiting for read of adminPassword...');
     adminPassword.waitForFile();
     while (!inputPassword) {
       inputPassword = adminPassword.get();
     }
+
+    // Delete test user if they exist
+    await testing.sendConduitPacket({
+      to: 'guestlist',
+      topic: 'delete',
+      message: {
+        name: TEST_USER_NAME,
+        adminPassword: inputPassword,
+      },
+    });
   });
 
   describe('Conduit topic: status', () => {
@@ -78,7 +88,7 @@ describe('API', () => {
         message: {
           to: 'attic',
           topic: 'get',
-          token,
+          auth: token,
         },
       });
 
@@ -94,7 +104,7 @@ describe('API', () => {
         message: {
           to: 'attic',
           topic: 'get',
-          token: 'badtokenbadbadtoken',
+          auth: 'badtokenbadbadtoken',
         },
       });
 
@@ -110,7 +120,7 @@ describe('API', () => {
         message: {
           to: 'ambience',
           topic: 'off',
-          token,
+          auth: token,
         },
       });
 
@@ -126,7 +136,7 @@ describe('API', () => {
         message: {
           to: 'attic',
           topic: 'set',
-          token,
+          auth: token,
         },
       });
 
@@ -138,7 +148,7 @@ describe('API', () => {
 
   describe('Conduit topic: delete', () => {
     it('should return 200 / OK', async () => {
-      const payload = { name: TEST_USER_NAME, adminPassword };
+      const payload = { name: TEST_USER_NAME, adminPassword: inputPassword };
       const response = await testing.sendConduitPacket({
         to: 'guestlist',
         topic: 'delete',

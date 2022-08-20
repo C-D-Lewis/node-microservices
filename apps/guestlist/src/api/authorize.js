@@ -8,7 +8,7 @@ const { ATTIC_KEY_USERS } = require('../constants');
  * @param {object} res - Express response object.
  */
 const handleAuthorizePacket = async (packet, res) => {
-  const { token, to, topic } = packet.message;
+  const { auth, to, topic } = packet.message;
 
   // Fetch user list
   const list = (await attic.exists(ATTIC_KEY_USERS))
@@ -16,7 +16,7 @@ const handleAuthorizePacket = async (packet, res) => {
     : [];
 
   // Check it exists
-  const user = list.find((p) => p.token === token);
+  const user = list.find((p) => p.token === auth);
   if (!user) {
     conduit.respond(res, { status: 404, error: 'User does not exist' });
     return;
