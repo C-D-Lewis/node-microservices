@@ -27,11 +27,12 @@ const IpTextButton = ({ deviceName, ip, type }) => {
     .withStyles({
       color: 'lightgrey',
       fontSize: '1rem',
-      margin: '0px 12px',
-      padding: '6px 5px',
+      margin: '0px 75px 0px 12px',
+      padding: '8px 0px 2px 5px',
       fontFamily: Fonts.code,
       cursor: 'pointer',
       borderLeft: '2px solid black',
+      borderBottom: '2px solid black',
     })
     .setText(ip)
     .watchState((el) => {
@@ -69,6 +70,7 @@ const LastSeenLabel = ({ minsAgo }) => fab.Text()
     fontStyle: 'italic',
     fontSize: '0.9rem',
     textAlign: 'end',
+    margin: '8px',
   })
   .then((el) => {
     if (minsAgo > (60 * 24)) {
@@ -157,7 +159,7 @@ const FleetItem = ({ itemData }) => {
         .withStyles({
           backgroundColor: healthy ? Colors.instanceHealthy : Colors.veryDarkGrey,
           alignItems: 'center',
-          borderBottom: '2px solid black',
+          borderBottom: '3px solid black',
           height: '30px',
         })
         .withChildren([
