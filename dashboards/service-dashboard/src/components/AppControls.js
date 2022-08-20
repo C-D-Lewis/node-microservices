@@ -260,11 +260,11 @@ const GuestlistControls = () => {
         .withChildren([
           TextButton()
             .setText('List Users')
-            .withStyles({ ...buttonStyle, width: '50%' })
+            .withStyles({ ...buttonStyle, width: '33%' })
             .onClick(() => sendPacket({ to: 'guestlist', topic: 'getAll' })),
           TextButton()
             .setText('Create User')
-            .withStyles({ ...buttonStyle, width: '50%' })
+            .withStyles({ ...buttonStyle, width: '33%' })
             .onClick(() => {
               const {
                 name, apps, topics, adminPassword,
@@ -276,6 +276,19 @@ const GuestlistControls = () => {
                 adminPassword,
               };
               sendPacket({ to: 'guestlist', topic: 'create', message });
+            }),
+          TextButton()
+            .setText('Delete User')
+            .withStyles({ ...buttonStyle, width: '33%' })
+            .onClick(() => {
+              const {
+                name, adminPassword,
+              } = fab.getState('guestlistData');
+              const message = {
+                name,
+                adminPassword,
+              };
+              sendPacket({ to: 'guestlist', topic: 'delete', message });
             }),
         ]),
     ]);

@@ -19,7 +19,11 @@ const ResponseBar = () => fab('div')
   })
   .watchState(
     (el, { responseBarText }) => {
-      el.addStyles({ padding: responseBarText.length ? '5px' : '0px' });
+      const wasError = responseBarText.includes('"error"');
+      el.addStyles({
+        padding: responseBarText.length ? '5px' : '0px',
+        backgroundColor: wasError ? Colors.statusDown : Colors.veryDarkGrey,
+      });
       el.setText(responseBarText);
     },
     ['responseBarText'],
