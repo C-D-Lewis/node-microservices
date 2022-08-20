@@ -6,7 +6,7 @@ const { execSync } = require('child_process');
  * @returns {number} Temperature in degrees C.
  */
 const get = () => {
-  const stdout = execSync('/opt/vc/bin/vcgencmd measure_temp').toString();
+  const stdout = execSync('vcgencmd measure_temp').toString();
   if (!stdout.includes('temp=')) {
     throw new Error(`Temperature unavailable: ${stdout}`);
   }

@@ -41,7 +41,7 @@ const IpTextButton = ({ deviceName, ip, type }) => {
     .onClick(() => {
       // Select device, go to apps page
       fab.updateState('ip', () => ip);
-      fab.updateState('page', () => 'appsPage');
+      fab.updateState('page', () => 'AppsPage');
     });
 };
 

@@ -8,8 +8,14 @@ const log = require('./log');
  * @returns {Promise<string>} Public IP address.
  */
 const getPublic = async () => {
-  const { body } = await requestAsync('https://api.ipify.org?format=json');
-  return JSON.parse(body).ip;
+  try {
+    const { body } = await requestAsync('https://api.ipify.org?format=json');
+    return JSON.parse(body).ip;
+  } catch(e) {
+    log.error('Failed to get public IP');
+    log.error(e);
+    return 'unknown';
+  }
 };
 
 /**

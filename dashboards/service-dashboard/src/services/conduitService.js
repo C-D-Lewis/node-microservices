@@ -4,10 +4,11 @@
  * Send a conduit packet.
  *
  * @param {object} packet - Packet to send.
+ * @param {string} [tokenOverride] - Override auth token sent.
  * @returns {Promise<object|Error>} Response or error encountered.
  */
 // eslint-disable-next-line no-unused-vars
-const sendPacket = async (packet) => {
+const sendPacket = async (packet, tokenOverride) => {
   const ip = fab.getState('ip');
   const token = fab.getState('token');
 
@@ -19,7 +20,7 @@ const sendPacket = async (packet) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         ...packet,
-        auth: token || '',
+        auth: tokenOverride || token || '',
       }),
     });
     const json = await res.json();

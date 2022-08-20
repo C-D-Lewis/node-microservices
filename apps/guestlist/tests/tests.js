@@ -5,15 +5,15 @@ const adminPassword = require('../src/modules/adminPassword');
 /** Test user name */
 const TEST_USER_NAME = 'TestUser';
 
-let auth;
+let inputPassword;
 let token;
 
 describe('API', () => {
   before(() => {
     console.log('Waiting for read of adminPassword...');
     adminPassword.waitForFile();
-    while (!auth) {
-      auth = adminPassword.get();
+    while (!inputPassword) {
+      inputPassword = adminPassword.get();
     }
   });
 
@@ -21,8 +21,8 @@ describe('API', () => {
     it('should return 200 / OK', async () => {
       const response = await testing.sendConduitPacket({ to: 'guestlist', topic: 'status' });
 
-      expect(response.status).to.equal(200);
       expect(response.message.content).to.equal('OK');
+      expect(response.status).to.equal(200);
     });
   });
 
@@ -32,21 +32,21 @@ describe('API', () => {
         name: TEST_USER_NAME,
         apps: ['attic'],
         topics: ['get'],
+        adminPassword: inputPassword,
       };
       const response = await testing.sendConduitPacket({
         to: 'guestlist',
         topic: 'create',
         message: payload,
-        auth,
       });
 
       const { status, message } = response;
-      expect(status).to.equal(201);
       expect(message.name).to.equal(payload.name);
       expect(message.password).to.equal(undefined);
       expect(message.apps).to.deep.equal(payload.apps);
       expect(message.topics).to.deep.equal(payload.topics);
       expect(message.token).to.be.a('string');
+      expect(status).to.equal(201);
 
       token = message.token;
     });
@@ -62,11 +62,11 @@ describe('API', () => {
       });
 
       const { status, message } = response;
-      expect(status).to.equal(200);
       expect(message.name).to.equal(payload.name);
       expect(message.token).to.equal(undefined);
       expect(message.apps).to.be.an('array');
       expect(message.topics).to.be.an('array');
+      expect(status).to.equal(200);
     });
   });
 
@@ -83,8 +83,8 @@ describe('API', () => {
       });
 
       const { status, message } = response;
-      expect(status).to.equal(200);
       expect(message.content).to.equal('OK');
+      expect(status).to.equal(200);
     });
 
     it('should return 404 / Not found', async () => {
@@ -99,8 +99,8 @@ describe('API', () => {
       });
 
       const { status, error } = response;
-      expect(status).to.equal(404);
       expect(error).to.equal('User does not exist');
+      expect(status).to.equal(404);
     });
 
     it('should return 401 / Not Authorized for invalid app', async () => {
@@ -115,8 +115,8 @@ describe('API', () => {
       });
 
       const { status, error } = response;
-      expect(status).to.equal(401);
       expect(error).to.equal('User is not permitted for app ambience');
+      expect(status).to.equal(401);
     });
 
     it('should return 401 / Not Authorized for invalid topic', async () => {
@@ -131,24 +131,23 @@ describe('API', () => {
       });
 
       const { status, error } = response;
-      expect(status).to.equal(401);
       expect(error).to.equal('User is not permitted for topic set');
+      expect(status).to.equal(401);
     });
   });
 
   describe('Conduit topic: delete', () => {
     it('should return 200 / OK', async () => {
-      const payload = { name: TEST_USER_NAME };
+      const payload = { name: TEST_USER_NAME, adminPassword };
       const response = await testing.sendConduitPacket({
         to: 'guestlist',
         topic: 'delete',
         message: payload,
-        auth,
       });
 
       const { status, message } = response;
-      expect(status).to.equal(200);
       expect(message.content).to.equal('Deleted');
+      expect(status).to.equal(200);
     });
   });
 });

@@ -4,13 +4,13 @@ const adminPassword = require('../modules/adminPassword');
 
 /**
  * Handle a 'delete' topic packet.
- * Requires 'auth' Conduit field containing 'adminPassword'.
  *
  * @param {object} packet - The conduit packet request.
  * @param {object} res - Express response object.
  */
 const handleDeletePacket = async (packet, res) => {
-  const { auth, message } = packet;
+  const { message } = packet;
+  const { name, adminPassword: inputPassword } = message;
 
   // Only the administrator can delete users (for now)
   const password = adminPassword.get();
@@ -18,7 +18,7 @@ const handleDeletePacket = async (packet, res) => {
     conduit.respond(res, { status: 500, error: 'Authorizing app not authorized' });
     return;
   }
-  if (!auth || auth !== password) {
+  if (!inputPassword || inputPassword !== password) {
     conduit.respond(res, { status: 401, error: 'Unauthorized' });
     return;
   }
@@ -29,7 +29,7 @@ const handleDeletePacket = async (packet, res) => {
     : [];
 
   // Find existing user
-  const existing = list.find((p) => p.name === message.name);
+  const existing = list.find((p) => p.name === name);
   if (!existing) {
     conduit.respond(res, { status: 404, error: 'User does not exist' });
     return;
