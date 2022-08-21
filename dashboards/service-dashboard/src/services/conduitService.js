@@ -12,7 +12,7 @@ const sendPacket = async (packet, tokenOverride) => {
   const ip = fab.getState('ip');
   const token = fab.getState('token');
 
-  fab.updateState('responseBarText', () => 'Sending...');
+  fab.updateState('logEntries', ({ logEntries }) => [...logEntries, 'Sending...']);
 
   try {
     const res = await fetch(`http://${ip}:${CONDUIT_PORT}/conduit`, {
@@ -24,10 +24,10 @@ const sendPacket = async (packet, tokenOverride) => {
       }),
     });
     const json = await res.json();
-    fab.updateState('responseBarText', () => JSON.stringify(json));
+    fab.updateState('logEntries', ({ logEntries }) => [...logEntries, JSON.stringify(json)]);
     return json;
   } catch (error) {
-    fab.updateState('responseBarText', () => error.message);
+    fab.updateState('logEntries', ({ logEntries }) => [...logEntries, error.message]);
     throw error;
   }
 };

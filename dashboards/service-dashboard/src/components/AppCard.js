@@ -42,6 +42,7 @@ const StatusText = () => fab.Text()
     color: Colors.lightGrey,
     fontSize: '0.9rem',
     paddingTop: 1,
+    marginBottom: '2px',
   });
 
 /**

@@ -10,10 +10,11 @@ const CONDUIT_PORT = 5959;
 /** Initial total app state */
 // eslint-disable-next-line no-unused-vars
 const INITIAL_STATE = {
+  page: 'FleetPage',
   apps: [],
   fleetList: [],
   ip: FLEET_HOST,
-  responseBarText: 'Ready',
+  logEntries: ['Ready'],
   atticData: {
     app: '',
     key: '',
@@ -37,10 +38,14 @@ const INITIAL_STATE = {
     apps: '',
     topics: '',
   },
-  page: 'FleetPage',
+  clacksData: {
+    topic: '',
+    message: '',
+  },
 };
 
 /** Icon type names */
+// eslint-disable-next-line no-unused-vars
 const ICON_NAMES = {
   other: 'other',
   pc: 'pc',

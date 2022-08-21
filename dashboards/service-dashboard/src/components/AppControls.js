@@ -1,4 +1,4 @@
-/* global sendPacket TextButton TextBox */
+/* global sendPacket TextButton TextBox clacksConnect clacksDisconnect, sendClacksMessage */
 
 const buttonStyle = {
   borderRadius: 0,
@@ -166,7 +166,7 @@ const VisualsControls = () => {
         ]),
       ControlRow()
         .withChildren([
-          TextBox({ placeholder: 'text' })
+          TextBox({ placeholder: 'Text' })
             .watchState((el, { visualsData: { text } }) => el.setText(text))
             .withStyles({ width: '100%' })
             .onChange((el, value) => setProp('text', value)),
@@ -294,11 +294,74 @@ const GuestlistControls = () => {
     ]);
 };
 
+/**
+ * ClacksControls component.
+ *
+ * @returns {HTMLElement}
+ */
+const ClacksControls = () => {
+  // list devices, most recent messages, and send messages
+
+  /**
+   * Set a property within the app controls state.
+   *
+   * @param {string} k - Prop key.
+   * @param {*} v - Prop value.
+   */
+  const setProp = (k, v) => fab.updateState('clacksData', () => ({ ...fab.getState('clacksData'), [k]: v }));
+
+  // Try and connect if not connected
+  const clacksData = fab.getState('clacksData');
+  if (clacksData.connected) clacksDisconnect();
+  setTimeout(clacksConnect, 500);
+
+  return fab.Column()
+    .withStyles({ backgroundColor: 'white' })
+    .withChildren([
+      ControlRow()
+        .withChildren([
+          TextBox({ placeholder: 'Topic' })
+            .watchState((el, { clacksData: { topic } }) => el.setText(topic))
+            .withStyles({ width: '100%' })
+            .onChange((el, value) => setProp('topic', value)),
+        ]),
+      ControlRow()
+        .withChildren([
+          TextBox({ placeholder: 'Message' })
+            .watchState((el, { clacksData: { message } }) => el.setText(message))
+            .withStyles({ width: '100%' })
+            .onChange((el, value) => setProp('message', value)),
+        ]),
+      fab.Row()
+        .withChildren([
+          TextButton()
+            .setText('Send')
+            .withStyles({ ...buttonStyle, width: '50%', backgroundColor: Colors.darkGrey })
+            .onClick(() => {
+              const { topic, message } = fab.getState('clacksData');
+              sendClacksMessage(topic, message);
+            })
+            .watchState((el, { clacksData: { connected } }) => el.addStyles({
+              backgroundColor: connected ? Colors.primary : Colors.darkGrey,
+            })),
+          TextButton()
+            .setText('Subscribe')
+            .withStyles({ ...buttonStyle, width: '50%', backgroundColor: Colors.darkGrey })
+            .onClick(() => {
+              // websocket subscribe
+            })
+            .watchState((el, { clacksData: { connected } }) => el.addStyles({
+              backgroundColor: connected ? Colors.primary : Colors.darkGrey,
+            })),
+        ]),
+    ]);
+};
+
 const controlsMap = {
   attic: AtticControls,
   conduit: ConduitControls,
   visuals: VisualsControls,
-  // clacks: list devices, most recent messages, and send messages
+  clacks: ClacksControls,
   // concierge: list hooks
   guestlist: GuestlistControls,
   // polaris: show current record IP? Needs conduit API

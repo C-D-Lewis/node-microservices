@@ -47,8 +47,8 @@ const websocketSendPacket = (device, packet) => {
 };
 
 /**
-   * Start heartbeat loop.
-   */
+ * Start heartbeat loop.
+ */
 const startHeartbeat = () => {
   const thisDeviceTopic = '/lighting-dashboard/heartbeat';
 
