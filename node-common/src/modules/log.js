@@ -26,7 +26,7 @@ const TAGS = {
 /** Time between log size evaluations */
 const MONITOR_INTERVAL_MS = 60 * 60 * 1000;
 /** Max log size */
-const MAX_SIZE_MB = 50;
+const MAX_SIZE_MB = 10;
 /** Log path */
 const FILE_PATH = `${config.getInstallPath()}/${config.LOG.APP_NAME.split(' ').join('-')}.log`;
 

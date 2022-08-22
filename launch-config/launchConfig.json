@@ -1,21 +1,5 @@
 {
   "hosts": {
-    "Marvin": [
-      {
-        "location": "code/node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/node-microservices",
-        "update": "$git-pull",
-        "start": ""
-      },
-      {
-        "location": "code/node-microservices/apps/conduit",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/attic",
-        "start": "npm start &"
-      }
-    ],
     "tv-mote-pi": [
       {
         "location": "node-microservices/node-common",
@@ -72,6 +56,10 @@
         "start": ""
       },
       {
+        "location": "code/node-microservices/apps/clacks",
+        "start": "npm start &"
+      },
+      {
         "location": "code/node-microservices/apps/conduit",
         "start": "npm start &"
       },
@@ -82,6 +70,18 @@
       {
         "location": "code/node-microservices/apps/guestlist",
         "start": "npm start &"
+      },
+      {
+        "location": "code/node-microservices/apps/concierge",
+        "start": "npm start &"
+      },
+      {
+        "location": "code/node-microservices/dashboards/lighting-dashboard",
+        "start": "http-server -p 54448 &"
+      },
+      {
+        "location": "code/node-microservices/dashboards/service-dashboard",
+        "start": "http-server -p 54449 &"
       },
       {
         "location": "code/blog",
@@ -192,10 +192,6 @@
       },
       {
         "location": "code/node-microservices/apps/attic",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/visuals",
         "start": "npm start &"
       },
       {
