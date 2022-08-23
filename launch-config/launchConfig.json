@@ -2,12 +2,6 @@
   "hosts": {
     "tv-mote-pi": [
       {
-        "location": "code/node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/node-microservices",
-        "update": "$git-pull",
-        "start": ""
-      },
-      {
         "location": "code/node-microservices/apps/conduit",
         "start": "npm start &"
       },
@@ -26,12 +20,6 @@
     ],
     "bedroom-pi": [
       {
-        "location": "code/node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/node-microservices",
-        "update": "$git-pull",
-        "start": ""
-      },
-      {
         "location": "code/node-microservices/apps/conduit",
         "start": "npm start &"
       },
@@ -49,12 +37,6 @@
       }
     ],
     "stack-ext": [
-      {
-        "location": "code/node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/node-microservices",
-        "update": "$git-pull",
-        "start": ""
-      },
       {
         "location": "code/node-microservices/apps/clacks",
         "start": "npm start &"
@@ -92,12 +74,6 @@
     ],
     "stack-int": [
       {
-        "location": "code/node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/node-microservices",
-        "update": "$git-pull",
-        "start": ""
-      },
-      {
         "location": "code/node-microservices/apps/conduit",
         "start": "npm start &"
       },
@@ -119,8 +95,7 @@
       {
         "location": "code/node-microservices/node-common",
         "install": "git clone https://github.com/c-d-lewis/code/node-microservices",
-        "update": "$git-pull",
-        "start": ""
+        "update": "$git-pull"
       },
       {
         "location": "code/node-microservices/apps/conduit",
@@ -137,12 +112,6 @@
     ],
     "blackbox": [
       {
-        "location": "code/node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/node-microservices",
-        "update": "$git-pull",
-        "start": ""
-      },
-      {
         "location": "code/node-microservices/apps/conduit",
         "start": "npm start &"
       },
@@ -152,12 +121,6 @@
       }
     ],
     "peter-pi": [
-      {
-        "location": "code/node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/node-microservices",
-        "update": "$git-pull",
-        "start": ""
-      },
       {
         "location": "code/node-microservices/apps/conduit",
         "start": "npm start &"
@@ -176,12 +139,6 @@
       }
     ],
     "aws-conduit": [
-      {
-        "location": "code/node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/node-microservices",
-        "update": "$git-pull",
-        "start": ""
-      },
       {
         "location": "code/node-microservices/apps/clacks",
         "start": "npm start &"
@@ -213,12 +170,6 @@
     ],
     "e-paper-witham": [
       {
-        "location": "code/node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/node-microservices",
-        "update": "$git-pull",
-        "start": ""
-      },
-      {
         "location": "code/node-microservices/apps/conduit",
         "start": "npm start &"
       },
@@ -229,12 +180,6 @@
     ],
     "e-paper-home": [
       {
-        "location": "code/node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/node-microservices",
-        "update": "$git-pull",
-        "start": ""
-      },
-      {
         "location": "code/node-microservices/apps/conduit",
         "start": "npm start &"
       },
@@ -244,12 +189,6 @@
       }
     ],
     "cirroc": [
-      {
-        "location": "code/node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/node-microservices",
-        "update": "$git-pull",
-        "start": ""
-      },
       {
         "location": "code/node-microservices/apps/conduit",
         "start": "npm start &"

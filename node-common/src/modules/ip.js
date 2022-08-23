@@ -49,6 +49,7 @@ const getInterfaceAddress = (ifName) => {
 const getLocal = () => {
   const address = getInterfaceAddress('eth0') ||  // Ethernet
     getInterfaceAddress('wlan0') ||               // WLAN
+    getInterfaceAddress('wlan1') ||               // WLAN
     getInterfaceAddress('en0') ||                 // Mac OS WLAN
     getInterfaceAddress('enp0s3');                // Ubuntu VM Wired
 

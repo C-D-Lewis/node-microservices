@@ -14,6 +14,10 @@ WAIT_S=15
 # HACK - allow access to gpiomem on Raspberry Pi
 sudo chmod a+rwX /dev/gpiomem || true
 
+# Repo update
+cd "$HOME/code/node-microservices"
+git pull origin master
+
 # Fetch the launch config and extract for this host
 HOSTNAME=$(hostname)
 printf "\n>> Hostname: $HOSTNAME\n"
@@ -32,7 +36,7 @@ echo $HOST_CONFIG | jq -c '.[]' | while read i; do
   START=$(echo $i | jq -r '.start')
   UPDATE=$(echo $i | jq -r '.update')
 
-  # Check LOCATION exists, INSTALL if it doesn't
+  # Check LOCATION dir exists, INSTALL if it doesn't
   if [[ ! $LOCATION =~ null ]]; then
     if [ ! -d "$LOCATION" ]; then
       printf "\n>> Installing: $INSTALL\n"
@@ -56,13 +60,9 @@ echo $HOST_CONFIG | jq -c '.[]' | while read i; do
     fi
   fi
 
-  # START task in background
+  # START task
   printf "\n>> Start: $START\n"
-
-  # Built-in npm start
-  if [[ $START =~ '$npm-ci-start' ]]; then
-    npm ci && npm start &
-  else
+  if [[ ! $START =~ null ]]; then
     eval "$START"
   fi
 
