@@ -14,6 +14,7 @@ const CardContainer = () => fab.Card()
     visibility: 'hidden',
     transition: '0.6s',
     backgroundColor: Colors.veryDarkGrey,
+    boxShadow: '2px 2px 3px 1px #0004',
   });
 
 /**

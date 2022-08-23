@@ -153,7 +153,11 @@ const FleetItem = ({ itemData }) => {
   }, 5000);
 
   return fab.Card()
-    .withStyles({ minWidth: '250px', margin: '10px' })
+    .withStyles({
+      minWidth: '250px',
+      margin: '10px',
+      boxShadow: '2px 2px 3px 1px #0004',
+    })
     .withChildren([
       fab.Row()
         .withStyles({

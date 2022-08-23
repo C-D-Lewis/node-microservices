@@ -1,6 +1,6 @@
 /* eslint-disable no-return-assign */
 // eslint-disable-next-line max-len
-/* global INITIAL_STATE CONDUIT_PORT IconButton SubNavBar AppsPage FleetPage sendPacket */
+/* global INITIAL_STATE CONDUIT_PORT SubNavBar AppsPage FleetPage sendPacket */
 
 /**
  * Re-load the fleet list data.
@@ -61,19 +61,11 @@ const AppNavBar = () => fab.NavBar({
     fab.Row()
       .withStyles({ justifyContent: 'flex-end', flex: 1 })
       .withChildren([
-        // TextBox({ placeholder: 'IP address' })
-        //   .withStyles({ margin: '0px 10px 0px 30px' })
-        //   .watchState((el, { ip }) => (el.value = ip), ['ip'])
-        //   .onChange((el, value) => fab.updateState('ip', () => value)),
-        // TextBox({ placeholder: 'Token' })
-        //   .withStyles({ margin: '0px 10px' })
-        //   .watchState((el, { token }) => (el.value = token), ['token'])
-        //   .onChange((el, value) => fab.updateState('token', () => value)),
-        IconButton({ src: '../assets/reload.png' })
-          .onClick(async () => {
-            await fetchFleetList();
-            await fetchApps();
-          }),
+        // IconButton({ src: '../assets/reload.png' })
+        //   .onClick(async () => {
+        //     await fetchFleetList();
+        //     await fetchApps();
+        //   }),
       ]),
   ]);
 

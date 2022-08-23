@@ -5,7 +5,7 @@
  */
 const StaticBreadcrumb = () => fab('p')
   .withStyles({
-    color: 'black',
+    color: 'white',
     margin: '10px 15px',
     cursor: 'default',
   })
@@ -25,7 +25,7 @@ const BackBreadcrumb = () => {
 
   const backButton = fab('p')
     .withStyles({
-      color: 'black',
+      color: 'white',
       margin: '10px 5px 10px 15px',
       cursor: 'pointer',
       textDecoration: 'underline',
@@ -33,11 +33,11 @@ const BackBreadcrumb = () => {
     .setText('All Devices')
     .onClick(() => fab.updateState('page', () => 'FleetPage'));
 
-  const deviceLabel = fab('p')
-    .withStyles({ color: 'black', margin: '10px 5px' })
+  const deviceSegment = fab('p')
+    .withStyles({ color: 'white', margin: '10px 5px' })
     .setText(`< ${deviceName}`);
 
-  return fab.Row().withChildren([backButton, deviceLabel]);
+  return fab.Row().withChildren([backButton, deviceSegment]);
 };
 
 /**
@@ -48,9 +48,9 @@ const BackBreadcrumb = () => {
 // eslint-disable-next-line no-unused-vars
 const SubNavBar = () => fab.Row()
   .withStyles({
-    backgroundColor: 'white',
+    backgroundColor: '#666',
     paddingLeft: '8px',
-    boxShadow: '2px 2px 3px 1px #5555',
+    boxShadow: '2px 2px 3px 1px #0004',
   })
   .withChildren([
     fab.when(({ page }) => page === 'FleetPage', () => StaticBreadcrumb()),

@@ -22,6 +22,7 @@ const LogEntry = ({ text }) => {
       fontSize: '0.8rem',
       backgroundColor: wasError ? Colors.statusDown : Colors.consoleGrey,
       margin: 0,
+      padding: '2px',
     })
     .setText(finalText);
 };
