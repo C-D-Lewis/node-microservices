@@ -96,7 +96,7 @@ const refreshCredentials = async (spotifyApi) => {
  * Should be done if authorization fails.
  */
 const updateRemoteAuthCode = async () => {
-  // Fetch credentials
+  // Fetch credentials - stored by conduit as conduit relay
   const res = await conduit.send({
     to: 'attic',
     topic: 'get',
