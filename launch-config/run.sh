@@ -2,34 +2,36 @@
 
 set -eu
 
+CONFIG_PATH="$HOME/code/node-microservices/launch-config/launchConfig.json"
+WAIT_S=15
+
 # Wait for network access
 echo "Waiting for network..."
 until ping -c 1 -W 1 8.8.8.8; do sleep 1; done
-
-# HOME is platform dependent
-HOME=$1
-CONFIG_PATH="$HOME/code/node-microservices/launch-config/launchConfig.json"
-WAIT_S=15
+echo ""
 
 # HACK - allow access to gpiomem on Raspberry Pi
 sudo chmod a+rwX /dev/gpiomem || true
 
-# Repo update
+# Repo update - assume ~/code/ dir
 cd "$HOME/code/node-microservices"
 git pull origin master
+echo ""
 
 # Fetch the launch config and extract for this host
 HOSTNAME=$(hostname)
-printf "\n>> Hostname: $HOSTNAME\n"
+printf ">> Hostname: $HOSTNAME\n"
 HOST_CONFIG=$(cat $CONFIG_PATH | jq -r ".hosts[\"$HOSTNAME\"]")
 if [[ $HOST_CONFIG =~ null ]]; then
-  printf "\nNo launch config for $HOSTNAME\n"
+  printf "No launch config for $HOSTNAME\n"
   exit 1
 fi
 
 # All paths relative to home directory
 cd $HOME
 echo $HOST_CONFIG | jq -c '.[]' | while read i; do
+  echo ""
+
   # Get commands for this task
   LOCATION=$(echo $i | jq -r '.location')
   INSTALL=$(echo $i | jq -r '.install')
@@ -39,18 +41,18 @@ echo $HOST_CONFIG | jq -c '.[]' | while read i; do
   # Check LOCATION dir exists, INSTALL if it doesn't
   if [[ ! $LOCATION =~ null ]]; then
     if [ ! -d "$LOCATION" ]; then
-      printf "\n>> Installing: $INSTALL\n"
+      printf ">> Installing: $INSTALL\n"
       eval "$INSTALL"
     fi
   fi
 
   # Go to LOCATION
   cd $LOCATION
-  printf "\n>> Location: $LOCATION\n"
+  printf ">> Location: $LOCATION\n"
 
   # Do any UPDATE
   if [[ ! $UPDATE =~ null ]]; then
-    printf "\n>> Update: $UPDATE\n"
+    printf ">> Update: $UPDATE\n"
 
     # Built-in git pull
     if [[ $UPDATE =~ '$git-pull' ]]; then
@@ -61,13 +63,13 @@ echo $HOST_CONFIG | jq -c '.[]' | while read i; do
   fi
 
   # START task
-  printf "\n>> Start: $START\n"
+  printf ">> Start: $START\n"
   if [[ ! $START =~ null ]]; then
     eval "$START"
   fi
 
   # Prepare for next
-  printf "\n>> Sleep $WAIT_S s\n"
+  printf ">> Sleep $WAIT_S s\n"
   sleep $WAIT_S
   cd ~
 done
