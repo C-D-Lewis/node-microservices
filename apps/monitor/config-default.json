@@ -22,12 +22,12 @@
       "ARGS": {
         "EVENTS": [{
           "NAME": "Wakeup glow",
-          "ON": "06:50",
-          "OFF": "08:30",
+          "ON": "07:30",
+          "OFF": "08:15",
           "COLOR": [255, 184, 10]
         }, {
           "NAME": "Nightlight glow",
-          "ON": "19:00",
+          "ON": "23:00",
           "OFF": "00:00",
           "COLOR": [64, 64, 64]
         }]
