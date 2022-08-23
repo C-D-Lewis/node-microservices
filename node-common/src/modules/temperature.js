@@ -6,12 +6,9 @@ const { execSync } = require('child_process');
  * @returns {number} Temperature in degrees C.
  */
 const get = () => {
-  const stdout = execSync('vcgencmd measure_temp').toString();
-  if (!stdout.includes('temp=')) {
-    throw new Error(`Temperature unavailable: ${stdout}`);
-  }
+  const stdout = execSync('cat /sys/class/thermal/thermal_zone0/temp').toString();
 
-  return parseFloat(stdout.split('=')[1].split('\'')[0]);
+  return Math.round(parseInt(stdout, 10) / 1000);
 };
 
 module.exports = {
