@@ -8,19 +8,16 @@ until ping -c 1 -W 1 8.8.8.8; do sleep 1; done
 
 # HOME is platform dependent
 HOME=$1
-
-LC_URL=https://s3.amazonaws.com/public-files.chrislewis.me.uk/launchConfig.json
 WAIT_S=15
+CONFIG_PATH="$PWD/launchConfig.json"
 
 # HACK - allow access to gpiomem on Raspberry Pi
 sudo chmod a+rwX /dev/gpiomem || true
 
-printf "\n>> Hostname: $HOSTNAME\n"
-HOSTNAME=$(hostname)
-
 # Fetch the launch config and extract for this host
-CONFIG=$(curl -s $LC_URL)
-HOST_CONFIG=$(echo $CONFIG | jq -r ".hosts[\"$HOSTNAME\"]")
+HOSTNAME=$(hostname)
+printf "\n>> Hostname: $HOSTNAME\n"
+HOST_CONFIG=$(cat $CONFIG_PATH | jq -r ".hosts[\"$HOSTNAME\"]")
 if [[ $HOST_CONFIG =~ null ]]; then
   printf "\nNo launch config for $HOSTNAME\n"
   exit 1
@@ -28,8 +25,7 @@ fi
 
 # All paths relative to home directory
 cd $HOME
-echo $HOST_CONFIG > hostConfig.json
-jq -c '.[]' hostConfig.json | while read i; do
+echo $HOST_CONFIG | jq -c '.[]' | while read i; do
   # Get commands for this task
   LOCATION=$(echo $i | jq -r '.location')
   INSTALL=$(echo $i | jq -r '.install')
@@ -75,6 +71,5 @@ jq -c '.[]' hostConfig.json | while read i; do
   sleep $WAIT_S
   cd ~
 done
-rm hostConfig.json
 
 printf "\n>>> Launch complete!\n"
