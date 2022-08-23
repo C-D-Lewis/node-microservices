@@ -8,8 +8,8 @@ until ping -c 1 -W 1 8.8.8.8; do sleep 1; done
 
 # HOME is platform dependent
 HOME=$1
+CONFIG_PATH="$HOME/code/node-microservices/launch-config/launchConfig.json"
 WAIT_S=15
-CONFIG_PATH="$PWD/launchConfig.json"
 
 # HACK - allow access to gpiomem on Raspberry Pi
 sudo chmod a+rwX /dev/gpiomem || true
