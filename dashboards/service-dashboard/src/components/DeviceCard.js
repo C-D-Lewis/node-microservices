@@ -21,7 +21,7 @@ const DeviceName = () => fab('span')
  * @returns {HTMLElement}
  */
 const IpTextButton = ({ deviceName, ip, type }) => {
-  const { key, get: isReachable } = fab.manageState(`FleetItem[${deviceName}]`, `${type}IpValid`, false);
+  const { get: isReachable } = fab.manageState(`DeviceCard[${deviceName}]`, `${type}IpValid`, false);
 
   return fab('span')
     .withStyles({
@@ -66,7 +66,7 @@ const DeviceIcon = ({ deviceType }) => fab.Image({
  */
 const LastSeenLabel = ({ minsAgo }) => fab.Text()
   .withStyles({
-    color: Colors.darkGrey,
+    color: Colors.AppCard.lastSeen,
     fontStyle: 'italic',
     fontSize: '0.9rem',
     textAlign: 'end',
@@ -107,22 +107,37 @@ const IpButtons = ({ deviceName, publicIp, localIp }) => fab.Column()
   ]);
 
 /**
- * FleetItem component.
+ * CardTitle component.
+ *
+ * @param {object} props - Component props.
+ * @param {boolean} props.isHealthy - If the device is recently updated and presumed to be alive.
+ * @returns {HTMLElement}
+ */
+const CardTitle = ({ isHealthy }) => fab.Row()
+  .withStyles({
+    backgroundColor: isHealthy ? Colors.instanceHealthy : Colors.AppCard.titleBar,
+    alignItems: 'center',
+    borderBottom: '3px solid black',
+    height: '30px',
+  });
+
+/**
+ * DeviceCard component.
  *
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
 // eslint-disable-next-line no-unused-vars
-const FleetItem = ({ itemData }) => {
+const DeviceCard = ({ itemData }) => {
   const {
     deviceName, publicIp, localIp, deviceType = 'other', lastCheckIn,
   } = itemData;
-  const publicIpValid = fab.manageState(`FleetItem[${deviceName}]`, 'publicIpValid', false);
-  const localIpValid = fab.manageState(`FleetItem[${deviceName}]`, 'localIpValid', false);
-  const isUnreachable = fab.manageState(`FleetItem[${deviceName}]`, 'unreachable', false);
+  const publicIpValid = fab.manageState(`DeviceCard[${deviceName}]`, 'publicIpValid', false);
+  const localIpValid = fab.manageState(`DeviceCard[${deviceName}]`, 'localIpValid', false);
+  const isUnreachable = fab.manageState(`DeviceCard[${deviceName}]`, 'unreachable', false);
 
   const minsAgo = Math.round((Date.now() - lastCheckIn) / (1000 * 60));
-  const healthy = minsAgo < 11;  // Based on default checkin interval
+  const isHealthy = minsAgo < 11;  // Based on default checkin interval
 
   /**
    * Test publicIp is reachable.
@@ -159,13 +174,7 @@ const FleetItem = ({ itemData }) => {
       boxShadow: '2px 2px 3px 1px #0004',
     })
     .withChildren([
-      fab.Row()
-        .withStyles({
-          backgroundColor: healthy ? Colors.instanceHealthy : Colors.veryDarkGrey,
-          alignItems: 'center',
-          borderBottom: '3px solid black',
-          height: '30px',
-        })
+      CardTitle({ isHealthy })
         .withChildren([
           DeviceIcon({ deviceType }),
           DeviceName().setText(deviceName),

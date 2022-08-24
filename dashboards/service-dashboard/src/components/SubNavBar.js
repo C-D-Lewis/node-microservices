@@ -48,7 +48,7 @@ const BackBreadcrumb = () => {
 // eslint-disable-next-line no-unused-vars
 const SubNavBar = () => fab.Row()
   .withStyles({
-    backgroundColor: '#666',
+    backgroundColor: Colors.SubNavBar.background,
     paddingLeft: '8px',
     boxShadow: '2px 2px 3px 1px #0004',
   })

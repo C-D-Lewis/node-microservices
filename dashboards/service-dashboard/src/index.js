@@ -55,19 +55,8 @@ const parseParams = () => {
  */
 const AppNavBar = () => fab.NavBar({
   title: 'Service Dashboard',
-  backgroundColor: Colors.primaryDark,
-})
-  .withChildren([
-    fab.Row()
-      .withStyles({ justifyContent: 'flex-end', flex: 1 })
-      .withChildren([
-        // IconButton({ src: '../assets/reload.png' })
-        //   .onClick(async () => {
-        //     await fetchFleetList();
-        //     await fetchApps();
-        //   }),
-      ]),
-  ]);
+  backgroundColor: Colors.AppNavBar.background,
+});
 
 /**
  * ServiceDashboard component.

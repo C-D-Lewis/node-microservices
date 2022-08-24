@@ -20,9 +20,10 @@ const LogEntry = ({ text }) => {
       fontFamily: Fonts.code,
       color: 'white',
       fontSize: '0.8rem',
-      backgroundColor: wasError ? Colors.statusDown : Colors.consoleGrey,
+      backgroundColor: wasError ? Colors.status.down : Colors.consoleGrey,
       margin: 0,
       padding: '2px',
+      borderTop: 'solid 1px #444',
     })
     .setText(finalText);
 };

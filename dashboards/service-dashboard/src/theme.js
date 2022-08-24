@@ -1,13 +1,25 @@
 // eslint-disable-next-line no-unused-vars
 const Colors = {
-  primary: '#007bff',
-  primaryDark: 'rgb(0, 90, 187)',
-  lightGrey: '#eee',
-  darkGrey: '#bbb',
-  veryDarkGrey: '#666',
-  statusOk: '#43D047',
-  statusDown: '#DD6E40',
-  instanceHealthy: 'forestgreen',
+  primary: '#303F9F',
+  AppNavBar: {
+    background: '#333',
+  },
+  SubNavBar: {
+    background: '#555',
+  },
+  AppCard: {
+    titleBar: '#666',
+    status: '#eee',
+    lastSeen: '#bbb',
+  },
+  AppControls: {
+    background: '#444',
+  },
+  status: {
+    ok: '#43D047',
+    down: '#DD6E40',
+  },
+  instanceHealthy: '#007800',
   consoleGrey: '#222',
 };
 

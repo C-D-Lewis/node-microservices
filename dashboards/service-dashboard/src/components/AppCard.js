@@ -13,7 +13,7 @@ const CardContainer = () => fab.Card()
     opacity: 0,
     visibility: 'hidden',
     transition: '0.6s',
-    backgroundColor: Colors.veryDarkGrey,
+    backgroundColor: Colors.AppCardTitle,
     boxShadow: '2px 2px 3px 1px #0004',
   });
 
@@ -40,7 +40,7 @@ const AppName = () => fab.Text()
  */
 const StatusText = () => fab.Text()
   .withStyles({
-    color: Colors.lightGrey,
+    color: Colors.AppCard.status,
     fontSize: '0.9rem',
     paddingTop: 1,
     marginBottom: '2px',
@@ -54,7 +54,7 @@ const StatusText = () => fab.Text()
  */
 const StatusLED = ({ status }) => fab('div')
   .withStyles({
-    backgroundColor: status.includes('OK') ? Colors.statusOk : Colors.statusDown,
+    backgroundColor: status.includes('OK') ? Colors.status.ok : Colors.status.down,
     width: '15px',
     height: '15px',
     borderRadius: '9px',
@@ -90,7 +90,7 @@ const CardStatus = ({ app }) => {
 const CardTitleRow = () => fab.Row()
   .withStyles({
     alignItems: 'center',
-    backgroundColor: Colors.veryDarkGrey,
+    backgroundColor: Colors.AppCard.titleBar,
     padding: '5px 10px',
   });
 

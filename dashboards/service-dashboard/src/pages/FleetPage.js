@@ -1,4 +1,4 @@
-/* global FleetItem */
+/* global DeviceCard */
 
 /**
  * FleetPage component.
@@ -12,6 +12,6 @@ const FleetPage = () => fab.Column()
     el.addChildren([
       fab.Row()
         .withStyles({ flexWrap: 'wrap', padding: '10px' })
-        .withChildren(fleetList.map((itemData) => FleetItem({ itemData }))),
+        .withChildren(fleetList.map((itemData) => DeviceCard({ itemData }))),
     ]);
   }, ['fleetList']);

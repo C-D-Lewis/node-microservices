@@ -21,6 +21,14 @@ const Empty = () => fab('div');
 const ControlRow = () => fab.Row().withStyles({ padding: '0px 10px' });
 
 /**
+ * Control container component.
+ *
+ * @returns {HTMLElement}
+ */
+const ControlContainer = () => fab.Column()
+  .withStyles({ backgroundColor: Colors.AppControls.background });
+
+/**
  * AtticControls component.
  *
  * @returns {HTMLElement}
@@ -34,8 +42,7 @@ const AtticControls = () => {
    */
   const setProp = (k, v) => fab.updateState('atticData', () => ({ ...fab.getState('atticData'), [k]: v }));
 
-  return fab.Column()
-    .withStyles({ backgroundColor: 'white' })
+  return ControlContainer()
     .withChildren([
       ControlRow()
         .withChildren([
@@ -98,8 +105,7 @@ const ConduitControls = () => {
    */
   const setProp = (k, v) => fab.updateState('conduitData', () => ({ ...fab.getState('conduitData'), [k]: v }));
 
-  return fab.Column()
-    .withStyles({ backgroundColor: 'white' })
+  return ControlContainer()
     .withChildren([
       ControlRow()
         .withChildren([
@@ -146,8 +152,7 @@ const VisualsControls = () => {
    */
   const setProp = (k, v) => fab.updateState('visualsData', () => ({ ...fab.getState('visualsData'), [k]: v }));
 
-  return fab.Column()
-    .withStyles({ backgroundColor: 'white' })
+  return ControlContainer()
     .withChildren([
       ControlRow()
         .withChildren([
@@ -231,8 +236,7 @@ const GuestlistControls = () => {
    */
   const setProp = (k, v) => fab.updateState('guestlistData', () => ({ ...fab.getState('guestlistData'), [k]: v }));
 
-  return fab.Column()
-    .withStyles({ backgroundColor: 'white' })
+  return ControlContainer()
     .withChildren([
       ControlRow()
         .withChildren([
@@ -315,8 +319,7 @@ const ClacksControls = () => {
   if (clacksData.connected) clacksDisconnect();
   setTimeout(clacksConnect, 500);
 
-  return fab.Column()
-    .withStyles({ backgroundColor: 'white' })
+  return ControlContainer()
     .withChildren([
       ControlRow()
         .withChildren([
