@@ -22,8 +22,10 @@ const LogEntry = ({ text }) => {
       fontSize: '0.8rem',
       backgroundColor: wasError ? Colors.status.down : Colors.consoleGrey,
       margin: 0,
-      padding: '2px',
-      borderTop: 'solid 1px #444',
+      padding: '5px 15px',
+      borderTop: 'solid 1px #555',
+      borderBottom: 'solid 2px #111',
+      marginBottom: '3px',
     })
     .setText(finalText);
 };
@@ -36,10 +38,10 @@ const LogEntry = ({ text }) => {
 const ResponseLog = () => fab.Column()
   .withStyles({
     backgroundColor: Colors.consoleGrey,
-    width: '800px',
+    minWidth: '600px',
     height: '100%',
-    flex: '0 0 auto',
-    padding: '10px',
+    flex: 1,
+    padding: '10px 0px',
     overflowY: 'scroll',
   })
   .watchState(
@@ -47,13 +49,15 @@ const ResponseLog = () => fab.Column()
       // TODO: Only add new items based on content or timestamp, not all
       el.clear();
 
-      el.addChildren(logEntries.reverse().map((text) => LogEntry({ text })));
+      const reversed = logEntries.slice().reverse();
+      el.addChildren(reversed.map((text) => LogEntry({ text })));
     },
     ['logEntries'],
   )
   .then((el) => {
     const logEntries = fab.getState('logEntries');
-    el.addChildren(logEntries.reverse().map((text) => LogEntry({ text })));
+    const reversed = logEntries.slice().reverse();
+    el.addChildren(reversed.map((text) => LogEntry({ text })));
   });
 
 /**
@@ -66,7 +70,7 @@ const AppsPage = () => fab.Row()
   .withStyles({ height: '100vh', alignItems: 'flex-start' })
   .withChildren([
     fab.Row()
-      .withStyles({ flexWrap: 'wrap', paddingTop: '15px' })
+      .withStyles({ flexWrap: 'wrap', paddingTop: '15px', flex: 2 })
       .watchState((el, { apps }) => {
         el.clear();
         el.addChildren([...apps.map(({ app }) => AppCard({ app }))]);
