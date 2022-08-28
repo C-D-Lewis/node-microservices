@@ -13,7 +13,7 @@ const CardContainer = () => fab.Card()
     opacity: 0,
     visibility: 'hidden',
     transition: '0.6s',
-    backgroundColor: Colors.AppCardTitle,
+    backgroundColor: Colors.AppCard.titleBar,
     boxShadow: '2px 2px 3px 1px #0004',
   });
 

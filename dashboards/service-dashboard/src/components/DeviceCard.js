@@ -27,7 +27,7 @@ const IpTextButton = ({ deviceName, ip, type }) => {
     .withStyles({
       color: 'lightgrey',
       fontSize: '1rem',
-      margin: '0px 75px 0px 12px',
+      margin: '0px 120px 0px 12px',
       padding: '8px 0px 2px 5px',
       fontFamily: Fonts.code,
       cursor: 'pointer',
@@ -71,6 +71,7 @@ const LastSeenLabel = ({ minsAgo }) => fab.Text()
     fontSize: '0.9rem',
     textAlign: 'end',
     margin: '8px',
+    marginTop: 'auto',
   })
   .then((el) => {
     if (minsAgo > (60 * 24)) {
@@ -122,6 +123,19 @@ const CardTitle = ({ isHealthy }) => fab.Row()
   });
 
 /**
+ * DeviceCardContainer component.
+ *
+ * @returns {HTMLElement}
+ */
+const DeviceCardContainer = () => fab.Card()
+  .withStyles({
+    minWidth: '300px',
+    minHeight: '150px',
+    margin: '10px',
+    boxShadow: '2px 2px 3px 1px #0004',
+  });
+
+/**
  * DeviceCard component.
  *
  * @param {object} props - Component props.
@@ -167,12 +181,7 @@ const DeviceCard = ({ itemData }) => {
     isUnreachable.set(true);
   }, 5000);
 
-  return fab.Card()
-    .withStyles({
-      minWidth: '250px',
-      margin: '10px',
-      boxShadow: '2px 2px 3px 1px #0004',
-    })
+  return DeviceCardContainer()
     .withChildren([
       CardTitle({ isHealthy })
         .withChildren([
