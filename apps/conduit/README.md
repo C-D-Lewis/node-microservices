@@ -105,6 +105,6 @@ When using `node-common`, this is as simple as:
 await conduit.register();
 ```
 
-### `POST /upgrade`
+### `POST /reboot`
 
-Ask the host to `git pull` and `reboot` to apply changes without logging in.
+Ask the host to `reboot` without logging in.

@@ -12,15 +12,16 @@ const DELAY_MS = 10000;
  */
 const handleUpgradeRequest = async (req, res) => {
   try {
-    execSync('git checkout ../..');
-    execSync('git reset --hard HEAD');
-    execSync('git pull origin master');
+    // Now, git pull is in launchConfig setup
+    // execSync('git checkout ../..');
+    // execSync('git reset --hard HEAD');
+    // execSync('git pull origin master');
 
     setTimeout(() => execSync('sudo reboot'), DELAY_MS);
 
     res.status(200).json({ content: `Restarting in ${DELAY_MS / 1000} seconds` });
   } catch (e) {
-    const error = `Error performing upgrade: ${e.stack}`;
+    const error = `Error performing reboot: ${e.stack}`;
     log.error(error);
     res.status(500).send({ error });
   }

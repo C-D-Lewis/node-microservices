@@ -23,6 +23,22 @@ const BackBreadcrumb = () => {
     deviceName,
   } = fleetList.find(({ publicIp, localIp }) => ip === publicIp || localIp === ip);
 
+  /**
+   * Reboot this device.
+   */
+  const rebootDevice = async () => {
+    if (!confirm('Caution: If devices share an IP this might not be the actual device - continue?')) return;
+
+    try {
+      // Public, then local
+      await fetch(`http://${ip}:5959/reboot`, { method: 'POST' });
+      fab.updateState('logEntries', ({ logEntries }) => [...logEntries, `Device ${deviceName} is rebooting now`]);
+    } catch (e) {
+      alert(e);
+      console.log(e);
+    }
+  };
+
   const backButton = fab('p')
     .withStyles({
       color: 'white',
@@ -35,9 +51,19 @@ const BackBreadcrumb = () => {
 
   const deviceSegment = fab('p')
     .withStyles({ color: 'white', margin: '10px 5px' })
-    .setText(`< ${deviceName}`);
+    .setText(`< ${deviceName} (${ip})`);
 
-  return fab.Row().withChildren([backButton, deviceSegment]);
+  const rebootButton = IconButton({ src: 'assets/restart.png' })
+    .withStyles({ width: '18px', height: '18px' })
+    .onClick(rebootDevice);
+
+  return fab.Row()
+    .withStyles({ alignItems: 'center' })
+    .withChildren([
+      backButton,
+      deviceSegment,
+      rebootButton,
+    ]);
 };
 
 /**
