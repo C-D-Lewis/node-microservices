@@ -1,7 +1,7 @@
 /** WebSocket server port */
 const WS_PORT = 7777;
 /** Heartbeat interval */
-const HEARTBEAT_INTERVAL_MS = 10000;
+const HEARTBEAT_INTERVAL_MS = 30000;
 
 let socket;
 let heartbeatHandle;

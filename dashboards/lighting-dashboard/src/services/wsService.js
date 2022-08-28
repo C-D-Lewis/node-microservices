@@ -9,7 +9,7 @@ const TOPIC_GLOBAL_GET_HOSTNAMES = '/global/getHostnames';
 /** Get hostnames response topic */
 const TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE = '/global/getHostnamesResponse';
 /** Heartbeat interval */
-const HEARTBEAT_INTERVAL_MS = 10000;
+const HEARTBEAT_INTERVAL_MS = 30000;
 
 let socket;
 let heartbeatHandle;
