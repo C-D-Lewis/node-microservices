@@ -51,6 +51,9 @@ const sortByLastCheckIn = (a, b) => (a.lastCheckIn > b.lastCheckIn ? -1 : 1);
  */
 const checkIn = async () => {
   try {
+    // Create the remote list if it doesn't already exist
+    if (!(await attic.exists(FLEET_LIST_KEY))) await attic.set(FLEET_LIST_KEY, []);
+
     const now = new Date();
     const updatePayload = {
       deviceName: hostname(),
@@ -62,13 +65,13 @@ const checkIn = async () => {
     };
 
     const fleetList = await attic.get(FLEET_LIST_KEY);
-    const found = fleetList.find((p) => p.deviceName === hostname());
-    if (!found) {
+    const me = fleetList.find((p) => p.deviceName === hostname());
+    if (!me) {
       // Add a new entry
       fleetList.push(updatePayload);
     } else {
-      // Update found extry in place
-      Object.assign(found, updatePayload);
+      // Update me in place
+      Object.assign(me, updatePayload);
     }
 
     await attic.set(FLEET_LIST_KEY, fleetList.sort(sortByLastCheckIn));
@@ -82,13 +85,10 @@ const checkIn = async () => {
  * Schedule checkins on a regular basis.
  */
 const scheduleCheckins = async () => {
-  // Create the remote list if it doesn't already exist
-  if (!(await attic.exists(FLEET_LIST_KEY))) {
-    await attic.set(FLEET_LIST_KEY, []);
-  }
-
-  await checkIn();
   setInterval(checkIn, CHECKIN_INTERVAL_MS);
+
+  // First checkin now
+  await checkIn();
 };
 
 module.exports = {
