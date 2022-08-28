@@ -31,8 +31,12 @@ const BackBreadcrumb = () => {
 
     try {
       // Public, then local
-      await fetch(`http://${ip}:5959/reboot`, { method: 'POST' });
-      fab.updateState('logEntries', ({ logEntries }) => [...logEntries, `Device ${deviceName} is rebooting now`]);
+      const { content, error } = await fetch(`http://${ip}:5959/reboot`, { method: 'POST' }).then(r => r.json());
+
+      if (content)
+        fab.updateState('logEntries', ({ logEntries }) => [...logEntries, `Device ${deviceName} is rebooting now`]);
+      else
+        throw new Error(error);
     } catch (e) {
       alert(e);
       console.log(e);
