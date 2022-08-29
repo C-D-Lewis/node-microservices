@@ -40,7 +40,7 @@ const INITIAL_STATE = {
   },
   clacksData: {
     topic: '',
-    message: '',
+    message: '{}',
   },
 };
 

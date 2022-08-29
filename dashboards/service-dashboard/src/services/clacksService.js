@@ -79,12 +79,11 @@ const clacksDisconnect = () => socket.close();
  * Send a clacks WebSocket message.
  *
  * @param {string} topic - Topic to use.
- * @param {string} message - Message to send.
+ * @param {string} message - Message to send, must be JSON
  */
 // eslint-disable-next-line no-unused-vars
 const sendClacksMessage = (topic, message) => {
-  socket.send(JSON.stringify({
-    topic,
-    data: message,
-  }));
+  const payload = { topic, data: JSON.parse(message) };
+  socket.send(JSON.stringify(payload));
+  fab.updateState('logEntries', ({ logEntries }) => [...logEntries, `Sent: ${JSON.stringify(payload)}`]);
 };

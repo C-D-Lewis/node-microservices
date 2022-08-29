@@ -333,25 +333,20 @@ const ClacksControls = () => {
           TextBox({ placeholder: 'Message' })
             .watchState((el, { clacksData: { message } }) => el.setText(message))
             .withStyles({ width: '100%' })
-            .onChange((el, value) => setProp('message', value)),
+            .onChange((el, value) => setProp('message', value))
+            .then((el) => {
+              // Default value
+              el.value = '{}';
+            }),
         ]),
       fab.Row()
         .withChildren([
           TextButton()
             .setText('Send')
-            .withStyles({ ...buttonStyle, width: '50%', backgroundColor: Colors.darkGrey })
+            .withStyles({ ...buttonStyle, width: '100%', backgroundColor: Colors.darkGrey })
             .onClick(() => {
               const { topic, message } = fab.getState('clacksData');
               sendClacksMessage(topic, message);
-            })
-            .watchState((el, { clacksData: { connected } }) => el.addStyles({
-              backgroundColor: connected ? Colors.primary : Colors.darkGrey,
-            })),
-          TextButton()
-            .setText('Subscribe')
-            .withStyles({ ...buttonStyle, width: '50%', backgroundColor: Colors.darkGrey })
-            .onClick(() => {
-              // websocket subscribe
             })
             .watchState((el, { clacksData: { connected } }) => el.addStyles({
               backgroundColor: connected ? Colors.primary : Colors.darkGrey,
