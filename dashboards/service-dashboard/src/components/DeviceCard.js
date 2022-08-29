@@ -15,6 +15,18 @@ const DeviceName = () => fab('span')
   });
 
 /**
+ * ConnectionIcon component.
+ *
+ * @returns {HTMLElement}
+ */
+const ConnectionIcon = () => fab.Image({
+  src: 'assets/plug-off.png',
+  width: '18px',
+  height: '18px',
+})
+  .withStyles({ margin: '8px' });
+
+/**
  * IpTextButton component.
  *
  * @param {object} props - Component props.
@@ -23,27 +35,34 @@ const DeviceName = () => fab('span')
 const IpTextButton = ({ deviceName, ip, type }) => {
   const { get: isReachable } = fab.manageState(`DeviceCard[${deviceName}]`, `${type}IpValid`, false);
 
-  return fab('span')
-    .withStyles({
-      color: 'lightgrey',
-      fontSize: '1rem',
-      margin: '0px 120px 0px 12px',
-      padding: '8px 0px 2px 5px',
-      fontFamily: Fonts.code,
-      cursor: 'pointer',
-      borderLeft: '2px solid black',
-      borderBottom: '2px solid black',
-    })
-    .setText(ip)
-    .watchState((el) => {
-      // TODO: watchlist of [key] here breaks this for some reason
-      el.addStyles({ color: isReachable() ? 'black' : 'lightgrey' });
-    })
-    .onClick(() => {
-      // Select device, go to apps page
-      fab.updateState('ip', () => ip);
-      fab.updateState('page', () => 'AppsPage');
-    });
+  const icon = ConnectionIcon({ isReachable: false });
+
+  return fab.Row()
+    .withStyles({ alignItems: 'center', borderBottom: `solid 2px ${Colors.consoleGrey}` })
+    .withChildren([
+      icon,
+      fab('span')
+        .withStyles({
+          color: 'lightgrey',
+          fontSize: '1rem',
+          margin: '5px 0px',
+          fontFamily: Fonts.code,
+          cursor: 'pointer',
+        })
+        .setText(ip)
+        .watchState((el) => {
+          // TODO: watchlist of [key] here breaks this for some reason
+          el.addStyles({
+            color: isReachable() ? Colors.IpTextButton.reachable : Colors.IpTextButton.unreachable,
+          });
+          icon.addAttributes({ src: `assets/plug${isReachable() ? '' : '-off'}.png` });
+        })
+        .onClick(() => {
+          // Select device, go to apps page
+          fab.updateState('ip', () => ip);
+          fab.updateState('page', () => 'AppsPage');
+        }),
+    ]);
 };
 
 /**
@@ -56,7 +75,7 @@ const DeviceIcon = ({ deviceType }) => fab.Image({
   width: '20px',
   height: '20px',
 })
-  .withStyles({ margin: '4px' });
+  .withStyles({ margin: '4px 4px 4px 8px' });
 
 /**
  * Last checkin label component.
@@ -118,8 +137,8 @@ const CardTitle = ({ isHealthy }) => fab.Row()
   .withStyles({
     backgroundColor: isHealthy ? Colors.instanceHealthy : Colors.AppCard.titleBar,
     alignItems: 'center',
-    borderBottom: '3px solid black',
-    height: '30px',
+    height: '35px',
+    boxShadow: '2px 2px 3px 1px #0006',
   });
 
 /**
@@ -133,6 +152,7 @@ const DeviceCardContainer = () => fab.Card()
     minHeight: '150px',
     margin: '10px',
     boxShadow: '2px 2px 3px 1px #0004',
+    backgroundColor: Colors.DeviceCard.background,
   });
 
 /**

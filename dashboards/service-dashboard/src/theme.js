@@ -15,6 +15,13 @@ const Colors = {
   AppControls: {
     background: '#444',
   },
+  DeviceCard: {
+    background: '#555',
+  },
+  IpTextButton: {
+    reachable: 'white',
+    unreachable: '#444',
+  },
   status: {
     ok: '#43D047',
     down: '#DD6E40',
