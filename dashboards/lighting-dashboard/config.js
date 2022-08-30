@@ -1,11 +1,11 @@
 window.Config = {
-  wsServer: 'conduit.chrislewis.me.uk',
+  wsServer: 'polaris.chrislewis.me.uk',
   ignoreHosts: [
-    'DigitalOceanDroplet',
-    'AWSConduit',
-    'e-paper-dashboard-witham',
     'stack-ext',
     'stack-int',
     'stack-util',
+    'cirroc',
+    'e-paper-home',
+    'e-paper-witham'
   ],
 };
