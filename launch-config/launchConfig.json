@@ -68,12 +68,6 @@
       {
         "location": "code/node-microservices/dashboards/service-dashboard",
         "start": "http-server -p 54449 &"
-      },
-      {
-        "location": "code/blog",
-        "install": "git clone https://github.com/c-d-lewis/blog",
-        "update": "$git-pull",
-        "start": "sudo http-server -p 80 &"
       }
     ],
     "stack-int": [
