@@ -68,6 +68,10 @@
       {
         "location": "code/node-microservices/dashboards/service-dashboard",
         "start": "http-server -p 54449 &"
+      },
+      {
+        "location": "code/microdiary",
+        "start": "http-server -p 34279 &"
       }
     ],
     "stack-int": [
