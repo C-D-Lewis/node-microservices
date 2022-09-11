@@ -25,8 +25,8 @@ const DEMO_COLORS = [
  */
 const ButtonBar = ({ align } = {}) => fabricate.Row()
   .withStyles({
-    margin: '7px',
-    marginTop: '10px',
+    margin: '0px 7px',
+    marginBottom: '10px',
     justifyContent: align === 'right' ? 'flex-end' : 'initial',
   });
 
@@ -40,27 +40,24 @@ const ButtonBar = ({ align } = {}) => fabricate.Row()
 const SwatchesBar = ({ device }) => {
   const row1Colors = DEMO_COLORS.slice(0, 5);
   const row2Colors = DEMO_COLORS.slice(6, 11);
+  const row3Colors = [[255, 255, 255]];
 
   const buttonBarStyles = { marginLeft: '10px', marginRight: '10px' };
+
+  const buildButton = (p) => SwatchButton({ backgroundColor: `rgb(${p[0]},${p[1]},${p[2]}` })
+    .onClick(() => websocketSendPacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } }));
 
   return fabricate.Column()
     .addChildren([
       ButtonBar()
         .withStyles(buttonBarStyles)
-        .addChildren(row1Colors.map(
-          (p) => SwatchButton({ backgroundColor: `rgb(${p[0]},${p[1]},${p[2]}` })
-            .onClick(() => {
-              websocketSendPacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } });
-            }),
-        )),
+        .addChildren(row1Colors.map(buildButton)),
       ButtonBar()
         .withStyles(buttonBarStyles)
-        .addChildren(row2Colors.map(
-          (p) => SwatchButton({ backgroundColor: `rgb(${p[0]},${p[1]},${p[2]}` })
-            .onClick(() => {
-              websocketSendPacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } });
-            }),
-        )),
+        .addChildren(row2Colors.map(buildButton)),
+      ButtonBar()
+        .withStyles(buttonBarStyles)
+        .addChildren(row3Colors.map(buildButton)),
     ]);
 };
 
