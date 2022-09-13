@@ -1,5 +1,3 @@
-/* global DeviceControls LED */
-
 /**
  * CardContainer component.
  *
@@ -57,7 +55,7 @@ const CardStatus = ({ device }) => fabricate.Row()
   })
   .addChildren([
     CardSubtitle({ text: device.localIp || '' }),
-    LED().then((el) => el.setConnected(true)),
+    fabricate('LED').then((el) => el.setConnected(true)),
   ]);
 
 /**
@@ -76,13 +74,8 @@ const CardTitleRow = () => fabricate.Row()
 
 /**
  * DeviceCard component.
- *
- * @param {object} props - Component props.
- * @param {object} props.device - Device object.
- * @returns {HTMLElement}
  */
-// eslint-disable-next-line no-unused-vars
-const DeviceCard = ({ device }) => fabricate.Fader()
+fabricate.declare('DeviceCard', ({ device }) => fabricate.Fader()
   .addChildren([
     CardContainer()
       .addChildren([
@@ -91,6 +84,6 @@ const DeviceCard = ({ device }) => fabricate.Fader()
             CardTitle({ text: device.hostname }),
             CardStatus({ device }),
           ]),
-        DeviceControls({ device }),
+        fabricate('DeviceControls', { device }),
       ]),
-  ]);
+  ]));

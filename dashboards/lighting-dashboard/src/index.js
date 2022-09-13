@@ -1,4 +1,4 @@
-/* global DeviceCard websocketConnect LED */
+/* global WsService */
 
 /**
  * AppNavBar component.
@@ -16,7 +16,7 @@ const AppNavBar = () => fabricate.NavBar({
         color: Theme.Colors.lightGrey,
         cursor: 'default',
       }),
-    LED()
+    fabricate('LED')
       .watchState((el, state) => el.setConnected(state.connected)),
   ]);
 
@@ -32,7 +32,7 @@ const DeviceList = () => fabricate.Column()
 
     const deviceCards = state.devices
       .filter((p) => !window.Config.ignoreHosts.includes(p.hostname))
-      .map((d) => DeviceCard({ device: d }));
+      .map((d) => fabricate('DeviceCard', { device: d }));
 
     const noDevicesText = fabricate.Text({ text: 'No devices are connected' })
       .withStyles({
@@ -65,4 +65,4 @@ const initialState = {
 fabricate.app(LightingDashboard(), initialState);
 
 // Connect WebSocket server
-websocketConnect();
+WsService.connect();

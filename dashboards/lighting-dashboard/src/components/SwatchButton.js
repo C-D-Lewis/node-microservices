@@ -1,12 +1,7 @@
 /**
  * SwatchButton component.
- *
- * @param {object} props - Component props.
- * @param {string} props.backgroundColor - Background color.
- * @returns {HTMLElement}
  */
-// eslint-disable-next-line no-unused-vars
-const SwatchButton = ({ backgroundColor }) => fabricate('div')
+fabricate.declare('SwatchButton', ({ backgroundColor }) => fabricate('div')
   .asFlex('row')
   .withStyles({
     minWidth: '30px',
@@ -16,4 +11,4 @@ const SwatchButton = ({ backgroundColor }) => fabricate('div')
     margin: '3px',
     borderRadius: '5px',
     cursor: 'pointer',
-  });
+  }));

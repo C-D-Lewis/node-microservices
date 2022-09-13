@@ -1,4 +1,4 @@
-/* global websocketSendPacket TextButton SwatchButton */
+/* global WsService */
 
 /** Colors for demo */
 const DEMO_COLORS = [
@@ -44,8 +44,8 @@ const SwatchesBar = ({ device }) => {
 
   const buttonBarStyles = { marginLeft: '10px', marginRight: '10px' };
 
-  const buildButton = (p) => SwatchButton({ backgroundColor: `rgb(${p[0]},${p[1]},${p[2]}` })
-    .onClick(() => websocketSendPacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } }));
+  const buildButton = (p) => fabricate('SwatchButton', { backgroundColor: `rgb(${p[0]},${p[1]},${p[2]}` })
+    .onClick(() => WsService.sendPacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } }));
 
   return fabricate.Column()
     .addChildren([
@@ -75,28 +75,28 @@ const FunctionsBar = ({ device }) => {
     .addChildren([
       ButtonBar()
         .addChildren([
-          TextButton({
+          fabricate('TextButton', {
             label: 'Off',
             backgroundColor: 'black',
             color: 'white',
           })
             .withStyles(buttonStyle)
-            .onClick(() => websocketSendPacket(device, { to: 'visuals', topic: 'off' })),
-          TextButton({
+            .onClick(() => WsService.sendPacket(device, { to: 'visuals', topic: 'off' })),
+          fabricate('TextButton', {
             label: 'Spotify',
             backgroundColor: '#1DB954',
             color: 'white',
           })
             .withStyles(buttonStyle)
-            .onClick(() => websocketSendPacket(device, { to: 'visuals', topic: 'spotify' })),
-          TextButton({
+            .onClick(() => WsService.sendPacket(device, { to: 'visuals', topic: 'spotify' })),
+          fabricate('TextButton', {
             label: 'Demo',
             backgroundColor: Theme.Colors.primary,
             color: 'white',
           })
             .withStyles(buttonStyle)
-            .onClick(() => websocketSendPacket(device, { to: 'visuals', topic: 'demo' })),
-          TextButton({
+            .onClick(() => WsService.sendPacket(device, { to: 'visuals', topic: 'demo' })),
+          fabricate('TextButton', {
             label: 'Night',
             backgroundColor: '#aaa',
             color: 'black',
@@ -104,7 +104,7 @@ const FunctionsBar = ({ device }) => {
             .withStyles(buttonStyle)
             .onClick(() => {
               const message = { all: [64, 64, 64] };
-              websocketSendPacket(device, { to: 'visuals', topic: 'setAll', message });
+              WsService.sendPacket(device, { to: 'visuals', topic: 'setAll', message });
             }),
         ]),
     ]);
@@ -112,15 +112,10 @@ const FunctionsBar = ({ device }) => {
 
 /**
  * DeviceControls component.
- *
- * @param {object} props - Component props.
- * @param {object} props.device - Device object.
- * @returns {HTMLElement}
  */
-// eslint-disable-next-line no-unused-vars
-const DeviceControls = ({ device }) => fabricate.Column()
+fabricate.declare('DeviceControls', ({ device }) => fabricate.Column()
   .withStyles({ width: '100%' })
   .addChildren([
     SwatchesBar({ device }),
     FunctionsBar({ device }),
-  ]);
+  ]));

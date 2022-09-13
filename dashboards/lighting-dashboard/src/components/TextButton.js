@@ -1,14 +1,7 @@
 /**
  * TextButton component.
- *
- * @param {object} props - Component props.
- * @param {string} props.label - Button text label.
- * @param {string} props.color - Button text and border color.
- * @param {string} props.backgroundColor - Button background color.
- * @returns {HTMLElement}
  */
-// eslint-disable-next-line no-unused-vars
-const TextButton = ({
+fabricate.declare('TextButton', ({
   label,
   color,
   backgroundColor,
@@ -26,4 +19,4 @@ const TextButton = ({
     borderRadius: '5px',
     textAlign: 'center',
     justifyContent: 'center',
-  });
+  }));
