@@ -7,13 +7,13 @@
  */
 const AppNavBar = () => fabricate.NavBar({
   title: 'Lighting Dashboard',
-  backgroundColor: Theme.Colors.primary,
+  backgroundColor: Theme.colors.primary,
 })
   .withChildren([
     fabricate.Text({ text: 'Server' })
       .withStyles({
         marginLeft: 'auto',
-        color: Theme.Colors.lightGrey,
+        color: Theme.colors.lightGrey,
         cursor: 'default',
       }),
     fabricate('LED')
@@ -36,7 +36,7 @@ const DeviceList = () => fabricate.Column()
 
     const noDevicesText = fabricate.Text({ text: 'No devices are connected' })
       .withStyles({
-        color: Theme.Colors.lightGrey,
+        color: Theme.colors.lightGrey,
         marginTop: '25px',
       });
 

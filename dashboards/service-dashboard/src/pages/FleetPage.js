@@ -1,17 +1,12 @@
-/* global DeviceCard */
-
 /**
  * FleetPage component.
- *
- * @returns {HTMLElement}
  */
-// eslint-disable-next-line no-unused-vars
-const FleetPage = () => fab.Column()
+fabricate.declare('FleetPage', () => fabricate.Column()
   .watchState((el, { fleetList }) => {
     el.clear();
     el.addChildren([
-      fab.Row()
+      fabricate.Row()
         .withStyles({ flexWrap: 'wrap', padding: '10px' })
-        .withChildren(fleetList.map((itemData) => DeviceCard({ itemData }))),
+        .withChildren(fleetList.map((itemData) => fabricate('DeviceCard', { itemData }))),
     ]);
-  }, ['fleetList']);
+  }, ['fleetList']));

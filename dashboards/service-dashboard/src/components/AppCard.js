@@ -1,11 +1,11 @@
-/* global AppControls Fonts */
+/* global Theme */
 
 /**
  * CardContainer component.
  *
  * @returns {HTMLElement}
  */
-const CardContainer = () => fab.Card()
+const CardContainer = () => fabricate.Card()
   .asFlex('column')
   .withStyles({
     width: '375px',
@@ -13,7 +13,7 @@ const CardContainer = () => fab.Card()
     opacity: 0,
     visibility: 'hidden',
     transition: '0.6s',
-    backgroundColor: Colors.AppCard.titleBar,
+    backgroundColor: Theme.colors.AppCard.titleBar,
     boxShadow: '2px 2px 3px 1px #0004',
   });
 
@@ -23,13 +23,13 @@ const CardContainer = () => fab.Card()
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const AppName = () => fab.Text()
+const AppName = () => fabricate.Text()
   .withStyles({
     fontSize: '1.1rem',
     flex: 1,
     color: 'white',
     margin: '6px 5px 5px 5px',
-    fontFamily: Fonts.code,
+    fontFamily: Theme.fonts.code,
   });
 
 /**
@@ -38,9 +38,9 @@ const AppName = () => fab.Text()
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const StatusText = () => fab.Text()
+const StatusText = () => fabricate.Text()
   .withStyles({
-    color: Colors.AppCard.status,
+    color: Theme.colors.AppCard.status,
     fontSize: '0.9rem',
     paddingTop: 1,
     marginBottom: '2px',
@@ -52,9 +52,9 @@ const StatusText = () => fab.Text()
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const StatusLED = ({ status }) => fab('div')
+const StatusLED = ({ status }) => fabricate('div')
   .withStyles({
-    backgroundColor: status.includes('OK') ? Colors.status.ok : Colors.status.down,
+    backgroundColor: status.includes('OK') ? Theme.colors.status.ok : Theme.colors.status.down,
     width: '15px',
     height: '15px',
     borderRadius: '9px',
@@ -66,31 +66,30 @@ const StatusLED = ({ status }) => fab('div')
  *
  * @returns {HTMLElement}
  */
-const CardStatus = ({ app }) => {
-  const apps = fab.getState('apps');
-  const { status, port } = apps.find((p) => p.app === app);
-
-  return fab.Row()
-    .withStyles({
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-      flex: 2,
-    })
-    .withChildren([
-      StatusLED({ status }),
-      StatusText().setText(`${status} (${port})`),
-    ]);
-};
+const CardStatus = ({ app }) => fabricate.Row()
+  .withStyles({
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    flex: 2,
+  })
+  .withChildren([
+    StatusLED({ status }),
+    StatusText()
+      .then((el, { apps }) => {
+        const { status, port } = apps.find((p) => p.app === app);
+        el.setText(`${status} (${port})`);
+      }),
+  ]);
 
 /**
  * CardTitleRow component.
  *
  * @returns {HTMLElement}
  */
-const CardTitleRow = () => fab.Row()
+const CardTitleRow = () => fabricate.Row()
   .withStyles({
     alignItems: 'center',
-    backgroundColor: Colors.AppCard.titleBar,
+    backgroundColor: Theme.colors.AppCard.titleBar,
     padding: '5px 10px',
   });
 
@@ -100,8 +99,7 @@ const CardTitleRow = () => fab.Row()
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-// eslint-disable-next-line no-unused-vars
-const AppCard = ({ app }) => {
+fabricate.declare('AppCard', ({ app }) => {
   const container = CardContainer();
 
   // Become visible shortly after creation
@@ -114,6 +112,6 @@ const AppCard = ({ app }) => {
           AppName().setText(app),
           CardStatus({ app }),
         ]),
-      AppControls({ app }),
+      fabricate('AppControls', { app }),
     ]);
-};
+});

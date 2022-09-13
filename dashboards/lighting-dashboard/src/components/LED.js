@@ -11,6 +11,6 @@ fabricate.declare('LED', () => fabricate('div')
   })
   .then((el) => {
     el.setConnected = (connected) => {
-      el.style.backgroundColor = connected ? Theme.Colors.statusOk : Theme.Colors.statusDown;
+      el.style.backgroundColor = connected ? Theme.colors.statusOk : Theme.colors.statusDown;
     };
   }));

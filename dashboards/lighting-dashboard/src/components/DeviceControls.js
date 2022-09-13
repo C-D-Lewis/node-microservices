@@ -91,7 +91,7 @@ const FunctionsBar = ({ device }) => {
             .onClick(() => WsService.sendPacket(device, { to: 'visuals', topic: 'spotify' })),
           fabricate('TextButton', {
             label: 'Demo',
-            backgroundColor: Theme.Colors.primary,
+            backgroundColor: Theme.colors.primary,
             color: 'white',
           })
             .withStyles(buttonStyle)

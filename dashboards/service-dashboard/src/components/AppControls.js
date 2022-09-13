@@ -1,4 +1,4 @@
-/* global sendPacket TextButton TextBox clacksConnect clacksDisconnect, sendClacksMessage */
+/* global Theme ClacksService ConduitService */
 
 const buttonStyle = {
   borderRadius: 0,
@@ -11,22 +11,22 @@ const buttonStyle = {
  *
  * @returns {HTMLElement}
  */
-const Empty = () => fab('div');
+const Empty = () => fabricate('div');
 
 /**
  * ControlRow component.
  *
  * @returns {HTMLElement}
  */
-const ControlRow = () => fab.Row().withStyles({ padding: '0px 10px' });
+const ControlRow = () => fabricate.Row().withStyles({ padding: '0px 10px' });
 
 /**
  * Control container component.
  *
  * @returns {HTMLElement}
  */
-const ControlContainer = () => fab.Column()
-  .withStyles({ backgroundColor: Colors.AppControls.background });
+const ControlContainer = () => fabricate.Column()
+  .withStyles({ backgroundColor: Theme.colors.AppControls.background });
 
 /**
  * AtticControls component.
@@ -40,52 +40,52 @@ const AtticControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fab.updateState('atticData', () => ({ ...fab.getState('atticData'), [k]: v }));
+  const setProp = (k, v) => fabricate.updateState('atticData', () => ({ ...fabricate.getState('atticData'), [k]: v }));
 
   return ControlContainer()
     .withChildren([
       ControlRow()
         .withChildren([
-          TextBox({ placeholder: 'App name' })
+          fabricate('TextBox', { placeholder: 'App name' })
             .withStyles({ width: '40%' })
             .watchState((el, { atticData }) => el.setText(atticData.app), ['atticData'])
             .onChange((el, value) => setProp('app', value)),
-          TextBox({ placeholder: 'Key' })
+          fabricate('TextBox', { placeholder: 'Key' })
             .withStyles({ width: '60%' })
             .watchState((el, { atticData }) => el.setText(atticData.key), ['atticData'])
             .onChange((el, value) => setProp('key', value)),
         ]),
       ControlRow()
         .withChildren([
-          TextBox({ placeholder: 'Value' })
+          fabricate('TextBox', { placeholder: 'Value' })
             .watchState((el, { atticData }) => el.setText(atticData.value), ['atticData'])
             .withStyles({ width: '100%' })
             .onChange((el, value) => setProp('value', value)),
         ]),
-      fab.Row()
+      fabricate.Row()
         .withChildren([
-          TextButton()
+          fabricate('TextButton')
             .setText('Get')
             .withStyles({ ...buttonStyle, width: '33%' })
             .onClick(async () => {
-              const { app, key } = fab.getState('atticData');
+              const { app, key } = fabricate.getState('atticData');
               const message = { app, key };
-              const res = await sendPacket({ to: 'attic', topic: 'get', message });
+              const res = await ConduitService.sendPacket({ to: 'attic', topic: 'get', message });
               setProp('value', JSON.stringify(res.message.value));
             }),
-          TextButton()
+          fabricate('TextButton')
             .setText('Set')
             .withStyles({ ...buttonStyle, width: '33%' })
             .onClick(() => {
-              const { app, key, value } = fab.getState('atticData');
+              const { app, key, value } = fabricate.getState('atticData');
               const message = { app, key, value };
-              sendPacket({ to: 'attic', topic: 'set', message });
+              ConduitService.sendPacket({ to: 'attic', topic: 'set', message });
             }),
-          TextButton()
+          fabricate('TextButton')
             .setText('List Apps')
             .withStyles({ ...buttonStyle, width: '33%' })
             .onClick(() => {
-              sendPacket({ to: 'attic', topic: 'listApps', message: {} });
+              ConduitService.sendPacket({ to: 'attic', topic: 'listApps', message: {} });
             }),
         ]),
     ]);
@@ -103,36 +103,36 @@ const ConduitControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fab.updateState('conduitData', () => ({ ...fab.getState('conduitData'), [k]: v }));
+  const setProp = (k, v) => fabricate.updateState('conduitData', () => ({ ...fabricate.getState('conduitData'), [k]: v }));
 
   return ControlContainer()
     .withChildren([
       ControlRow()
         .withChildren([
-          TextBox({ placeholder: 'App name' })
+          fabricate('TextBox', { placeholder: 'App name' })
             .watchState((el, { conduitData }) => el.setText(conduitData.app))
             .withStyles({ width: '40%' })
             .onChange((el, value) => setProp('app', value)),
-          TextBox({ placeholder: 'Topic' })
+          fabricate('TextBox', { placeholder: 'Topic' })
             .watchState((el, { conduitData }) => el.setText(conduitData.topic))
             .withStyles({ width: '60%' })
             .onChange((el, value) => setProp('topic', value)),
         ]),
       ControlRow()
         .withChildren([
-          TextBox({ placeholder: 'Message (JSON)' })
+          fabricate('TextBox', { placeholder: 'Message (JSON)' })
             .watchState((el, { conduitData }) => el.setText(conduitData.message))
             .withStyles({ width: '100%' })
             .onChange((el, value) => setProp('message', value)),
         ]),
-      fab.Row()
+      fabricate.Row()
         .withChildren([
-          TextButton()
+          fabricate('TextButton')
             .setText('Send')
             .withStyles({ ...buttonStyle, width: '100%' })
             .onClick(() => {
-              const { app: to, topic, message } = fab.getState('conduitData');
-              sendPacket({ to, topic, message: JSON.parse(message) });
+              const { app: to, topic, message } = fabricate.getState('conduitData');
+              ConduitService.sendPacket({ to, topic, message: JSON.parse(message) });
             }),
         ]),
     ]);
@@ -150,74 +150,74 @@ const VisualsControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fab.updateState('visualsData', () => ({ ...fab.getState('visualsData'), [k]: v }));
+  const setProp = (k, v) => fabricate.updateState('visualsData', () => ({ ...fabricate.getState('visualsData'), [k]: v }));
 
   return ControlContainer()
     .withChildren([
       ControlRow()
         .withChildren([
-          TextBox({ placeholder: 'Red' })
+          fabricate('TextBox', { placeholder: 'Red' })
             .watchState((el, { visualsData: { red } }) => el.setText(red))
             .withStyles({ width: '30%' })
             .onChange((el, value) => setProp('red', parseInt(value, 10))),
-          TextBox({ placeholder: 'Green' })
+          fabricate('TextBox', { placeholder: 'Green' })
             .watchState((el, { visualsData: { green } }) => el.setText(green))
             .withStyles({ width: '30%' })
             .onChange((el, value) => setProp('green', parseInt(value, 10))),
-          TextBox({ placeholder: 'Blue' })
+          fabricate('TextBox', { placeholder: 'Blue' })
             .watchState((el, { visualsData: { blue } }) => el.setText(blue))
             .withStyles({ width: '30%' })
             .onChange((el, value) => setProp('blue', parseInt(value, 10))),
         ]),
       ControlRow()
         .withChildren([
-          TextBox({ placeholder: 'Text' })
+          fabricate('TextBox', { placeholder: 'Text' })
             .watchState((el, { visualsData: { text } }) => el.setText(text))
             .withStyles({ width: '100%' })
             .onChange((el, value) => setProp('text', value)),
         ]),
-      fab.Row()
+      fabricate.Row()
         .withChildren([
-          TextButton()
+          fabricate('TextButton')
             .setText('All')
             .withStyles({ ...buttonStyle, width: '20%' })
             .onClick(() => {
-              const { red, green, blue } = fab.getState('visualsData');
+              const { red, green, blue } = fabricate.getState('visualsData');
               const message = { all: [red, green, blue] };
-              sendPacket({ to: 'visuals', topic: 'setAll', message });
+              ConduitService.sendPacket({ to: 'visuals', topic: 'setAll', message });
             }),
-          TextButton()
+          fabricate('TextButton')
             .setText('Pixel')
             .withStyles({ ...buttonStyle, width: '20%' })
             .onClick(() => {
               const {
                 index, red, green, blue,
-              } = fab.getState('visualsData');
+              } = fabricate.getState('visualsData');
               const message = { [index]: [red, green, blue] };
-              sendPacket({ to: 'visuals', topic: 'setPixel', message });
+              ConduitService.sendPacket({ to: 'visuals', topic: 'setPixel', message });
             }),
-          TextButton()
+          fabricate('TextButton')
             .setText('Blink')
             .withStyles({ ...buttonStyle, width: '20%' })
             .onClick(() => {
               const {
                 index, red, green, blue,
-              } = fab.getState('visualsData');
+              } = fabricate.getState('visualsData');
               const message = { [index]: [red, green, blue] };
-              sendPacket({ to: 'visuals', topic: 'blink', message });
+              ConduitService.sendPacket({ to: 'visuals', topic: 'blink', message });
             }),
-          TextButton()
+          fabricate('TextButton')
             .setText('Text')
             .withStyles({ ...buttonStyle, width: '20%' })
             .onClick(() => {
-              const { text } = fab.getState('visualsData');
+              const { text } = fabricate.getState('visualsData');
               const message = { lines: [text] };
-              sendPacket({ to: 'visuals', topic: 'setText', message });
+              ConduitService.sendPacket({ to: 'visuals', topic: 'setText', message });
             }),
-          TextButton()
+          fabricate('TextButton')
             .setText('State')
             .withStyles({ ...buttonStyle, width: '20%' })
-            .onClick(() => sendPacket({ to: 'visuals', topic: 'state' })),
+            .onClick(() => ConduitService.sendPacket({ to: 'visuals', topic: 'state' })),
         ]),
     ]);
 };
@@ -234,65 +234,65 @@ const GuestlistControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fab.updateState('guestlistData', () => ({ ...fab.getState('guestlistData'), [k]: v }));
+  const setProp = (k, v) => fabricate.updateState('guestlistData', () => ({ ...fabricate.getState('guestlistData'), [k]: v }));
 
   return ControlContainer()
     .withChildren([
       ControlRow()
         .withChildren([
-          TextBox({ placeholder: 'Name' })
+          fabricate('TextBox', { placeholder: 'Name' })
             .watchState((el, { guestlistData: { name } }) => el.setText(name))
             .withStyles({ width: '30%' })
             .onChange((el, value) => setProp('name', value)),
-          TextBox({ placeholder: 'Apps' })
+          fabricate('TextBox', { placeholder: 'Apps' })
             .watchState((el, { guestlistData: { apps } }) => el.setText(apps))
             .withStyles({ width: '30%' })
             .onChange((el, value) => setProp('apps', value)),
-          TextBox({ placeholder: 'Topics' })
+          fabricate('TextBox', { placeholder: 'Topics' })
             .watchState((el, { guestlistData: { topics } }) => el.setText(topics))
             .withStyles({ width: '30%' })
             .onChange((el, value) => setProp('topics', value)),
         ]),
       ControlRow()
         .withChildren([
-          TextBox({ placeholder: 'Admin password' })
+          fabricate('TextBox', { placeholder: 'Admin password' })
             .watchState((el, { guestlistData: { adminPassword } }) => el.setText(adminPassword))
             .withStyles({ width: '100%' })
             .onChange((el, value) => setProp('adminPassword', value)),
         ]),
-      fab.Row()
+      fabricate.Row()
         .withChildren([
-          TextButton()
+          fabricate('TextButton')
             .setText('List Users')
             .withStyles({ ...buttonStyle, width: '33%' })
-            .onClick(() => sendPacket({ to: 'guestlist', topic: 'getAll' })),
-          TextButton()
+            .onClick(() => ConduitService.sendPacket({ to: 'guestlist', topic: 'getAll' })),
+          fabricate('TextButton')
             .setText('Create User')
             .withStyles({ ...buttonStyle, width: '33%' })
             .onClick(() => {
               const {
                 name, apps, topics, adminPassword,
-              } = fab.getState('guestlistData');
+              } = fabricate.getState('guestlistData');
               const message = {
                 name,
                 apps: apps.split(','),
                 topics: topics.split(','),
                 adminPassword,
               };
-              sendPacket({ to: 'guestlist', topic: 'create', message });
+              ConduitService.sendPacket({ to: 'guestlist', topic: 'create', message });
             }),
-          TextButton()
+          fabricate('TextButton')
             .setText('Delete User')
             .withStyles({ ...buttonStyle, width: '33%' })
             .onClick(() => {
               const {
                 name, adminPassword,
-              } = fab.getState('guestlistData');
+              } = fabricate.getState('guestlistData');
               const message = {
                 name,
                 adminPassword,
               };
-              sendPacket({ to: 'guestlist', topic: 'delete', message });
+              ConduitService.sendPacket({ to: 'guestlist', topic: 'delete', message });
             }),
         ]),
     ]);
@@ -312,25 +312,25 @@ const ClacksControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fab.updateState('clacksData', () => ({ ...fab.getState('clacksData'), [k]: v }));
+  const setProp = (k, v) => fabricate.updateState('clacksData', () => ({ ...fabricate.getState('clacksData'), [k]: v }));
 
   // Try and connect if not connected
-  const clacksData = fab.getState('clacksData');
-  if (clacksData.connected) clacksDisconnect();
-  setTimeout(clacksConnect, 500);
+  const clacksData = fabricate.getState('clacksData');
+  if (clacksData.connected) ClacksService.disconnect();
+  setTimeout(ClacksService.connect, 500);
 
   return ControlContainer()
     .withChildren([
       ControlRow()
         .withChildren([
-          TextBox({ placeholder: 'Topic' })
+          fabricate('TextBox', { placeholder: 'Topic' })
             .watchState((el, { clacksData: { topic } }) => el.setText(topic))
             .withStyles({ width: '100%' })
             .onChange((el, value) => setProp('topic', value)),
         ]),
       ControlRow()
         .withChildren([
-          TextBox({ placeholder: 'Message' })
+          fabricate('TextBox', { placeholder: 'Message' })
             .watchState((el, { clacksData: { message } }) => el.setText(message))
             .withStyles({ width: '100%' })
             .onChange((el, value) => setProp('message', value))
@@ -339,17 +339,17 @@ const ClacksControls = () => {
               el.value = '{}';
             }),
         ]),
-      fab.Row()
+      fabricate.Row()
         .withChildren([
-          TextButton()
+          fabricate('TextButton')
             .setText('Send')
-            .withStyles({ ...buttonStyle, width: '100%', backgroundColor: Colors.darkGrey })
+            .withStyles({ ...buttonStyle, width: '100%', backgroundColor: Theme.colors.darkGrey })
             .onClick(() => {
-              const { topic, message } = fab.getState('clacksData');
-              sendClacksMessage(topic, message);
+              const { topic, message } = fabricate.getState('clacksData');
+              ClacksService.sendMessage(topic, message);
             })
             .watchState((el, { clacksData: { connected } }) => el.addStyles({
-              backgroundColor: connected ? Colors.primary : Colors.darkGrey,
+              backgroundColor: connected ? Theme.colors.primary : Theme.colors.darkGrey,
             })),
         ]),
     ]);
@@ -360,7 +360,7 @@ const controlsMap = {
   conduit: ConduitControls,
   visuals: VisualsControls,
   clacks: ClacksControls,
-  // concierge: list hooks
+  // concierge: list hooks?
   guestlist: GuestlistControls,
   // polaris: show current record IP? Needs conduit API
 };
@@ -371,8 +371,7 @@ const controlsMap = {
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-// eslint-disable-next-line no-unused-vars
-const AppControls = ({ app }) => {
+fabricate.declare('AppControls', ({ app }) => {
   const Controls = controlsMap[app] || Empty;
   return Controls();
-};
+});

@@ -6,12 +6,14 @@ const HEARTBEAT_INTERVAL_MS = 30000;
 let socket;
 let heartbeatHandle;
 
+const ClacksService = {};
+
 /**
  * Set the connected state.
  *
  * @param {boolean} connected - true if now connected.
  */
-const setConnectedState = (connected) => fab.updateState('clacksData', () => ({ ...fab.getState('clacksData'), connected }));
+const setConnectedState = (connected) => fabricate.updateState('clacksData', () => ({ ...fabricate.getState('clacksData'), connected }));
 
 /**
  * When a message is received.
@@ -20,7 +22,7 @@ const setConnectedState = (connected) => fab.updateState('clacksData', () => ({ 
  * @param {object} data - Message data.
  */
 const onClacksMessage = (topic, data) => {
-  fab.updateState('logEntries', ({ logEntries }) => [...logEntries, JSON.stringify({ topic, data })]);
+  fabricate.updateState('logEntries', ({ logEntries }) => [...logEntries, JSON.stringify({ topic, data })]);
 };
 
 /**
@@ -40,9 +42,8 @@ const startHeartbeat = () => {
  *
  * @returns {Promise<void>}
  */
-// eslint-disable-next-line no-unused-vars
-const clacksConnect = () => new Promise((resolve) => {
-  const ip = fab.getState('ip');
+ClacksService.connect = () => new Promise((resolve) => {
+  const ip = fabricate.getState('ip');
   socket = new WebSocket(`ws://${ip}:${WS_PORT}`);
 
   socket.onopen = () => {
@@ -60,7 +61,7 @@ const clacksConnect = () => new Promise((resolve) => {
 
   socket.onclose = () => {
     setConnectedState(false);
-    setTimeout(clacksConnect, 5000);
+    setTimeout(ClacksService.connect, 5000);
   };
 
   socket.onerror = (err) => {
@@ -72,8 +73,7 @@ const clacksConnect = () => new Promise((resolve) => {
 /**
  * Disconnect from server.
  */
-// eslint-disable-next-line no-unused-vars
-const clacksDisconnect = () => socket.close();
+ClacksService.disconnect = () => socket.close();
 
 /**
  * Send a clacks WebSocket message.
@@ -81,9 +81,8 @@ const clacksDisconnect = () => socket.close();
  * @param {string} topic - Topic to use.
  * @param {string} message - Message to send, must be JSON
  */
-// eslint-disable-next-line no-unused-vars
-const sendClacksMessage = (topic, message) => {
+ClacksService.sendMessage = (topic, message) => {
   const payload = { topic, data: JSON.parse(message) };
   socket.send(JSON.stringify(payload));
-  fab.updateState('logEntries', ({ logEntries }) => [...logEntries, `Sent: ${JSON.stringify(payload)}`]);
+  fabricate.updateState('logEntries', ({ logEntries }) => [...logEntries, `Sent: ${JSON.stringify(payload)}`]);
 };

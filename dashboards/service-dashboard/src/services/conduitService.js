@@ -1,4 +1,6 @@
-/* global CONDUIT_PORT */
+/* global Constants */
+
+const ConduitService = {};
 
 /**
  * Send a conduit packet.
@@ -7,15 +9,14 @@
  * @param {string} [tokenOverride] - Override auth token sent.
  * @returns {Promise<object|Error>} Response or error encountered.
  */
-// eslint-disable-next-line no-unused-vars
-const sendPacket = async (packet, tokenOverride) => {
-  const ip = fab.getState('ip');
-  const token = fab.getState('token');
+ConduitService.sendPacket = async (packet, tokenOverride) => {
+  const ip = fabricate.getState('ip');
+  const token = fabricate.getState('token');
 
-  fab.updateState('logEntries', ({ logEntries }) => [...logEntries, 'Sending...']);
+  fabricate.updateState('logEntries', ({ logEntries }) => [...logEntries, 'Sending...']);
 
   try {
-    const res = await fetch(`http://${ip}:${CONDUIT_PORT}/conduit`, {
+    const res = await fetch(`http://${ip}:${Constants.CONDUIT_PORT}/conduit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -24,10 +25,10 @@ const sendPacket = async (packet, tokenOverride) => {
       }),
     });
     const json = await res.json();
-    fab.updateState('logEntries', ({ logEntries }) => [...logEntries, JSON.stringify(json)]);
+    fabricate.updateState('logEntries', ({ logEntries }) => [...logEntries, JSON.stringify(json)]);
     return json;
   } catch (error) {
-    fab.updateState('logEntries', ({ logEntries }) => [...logEntries, error.message]);
+    fabricate.updateState('logEntries', ({ logEntries }) => [...logEntries, error.message]);
     throw error;
   }
 };

@@ -1,5 +1,7 @@
-// eslint-disable-next-line no-unused-vars
-const Colors = {
+const Theme = {};
+
+/** App colors */
+Theme.colors = {
   primary: '#303F9F',
   AppNavBar: {
     background: '#333',
@@ -30,8 +32,8 @@ const Colors = {
   consoleGrey: '#222',
 };
 
-// eslint-disable-next-line no-unused-vars
-const Fonts = {
+/** App fonts */
+Theme.fonts = {
   body: 'sans-serif',
   code: 'monospace',
 };

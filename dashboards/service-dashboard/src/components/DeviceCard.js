@@ -1,11 +1,11 @@
-/* global Fonts ICON_NAMES */
+/* global Theme Constants */
 
 /**
  * DeviceName component.
  *
  * @returns {HTMLElement}
  */
-const DeviceName = () => fab('span')
+const DeviceName = () => fabricate('span')
   .withStyles({
     color: 'white',
     fontWeight: 'bold',
@@ -19,7 +19,7 @@ const DeviceName = () => fab('span')
  *
  * @returns {HTMLElement}
  */
-const ConnectionIcon = () => fab.Image({
+const ConnectionIcon = () => fabricate.Image({
   src: 'assets/plug-off.png',
   width: '18px',
   height: '18px',
@@ -33,35 +33,39 @@ const ConnectionIcon = () => fab.Image({
  * @returns {HTMLElement}
  */
 const IpTextButton = ({ deviceName, ip, type }) => {
-  const { get: isReachable } = fab.manageState(`DeviceCard[${deviceName}]`, `${type}IpValid`, false);
+  const { get: isReachable } = fabricate.manageState(`DeviceCard[${deviceName}]`, `${type}IpValid`, false);
 
   const icon = ConnectionIcon({ isReachable: false });
 
-  return fab.Row()
-    .withStyles({ alignItems: 'center', borderBottom: `solid 2px ${Colors.consoleGrey}` })
+  const textButton = fabricate('span')
+    .withStyles({
+      color: 'lightgrey',
+      fontSize: '1rem',
+      margin: '5px 0px',
+      fontFamily: Theme.fonts.code,
+      cursor: 'pointer',
+    })
+    .setText(ip)
+    .watchState((el) => {
+      // TODO: watchlist of [key] here breaks this for some reason
+      el.addStyles({
+        color: isReachable()
+          ? Theme.colors.IpTextButton.reachable
+          : Theme.colors.IpTextButton.unreachable,
+      });
+      icon.addAttributes({ src: `assets/plug${isReachable() ? '' : '-off'}.png` });
+    })
+    .onClick(() => {
+      // Select device, go to apps page
+      fabricate.updateState('ip', () => ip);
+      fabricate.updateState('page', () => 'AppsPage');
+    });
+
+  return fabricate.Row()
+    .withStyles({ alignItems: 'center', borderBottom: `solid 2px ${Theme.colors.consoleGrey}` })
     .withChildren([
       icon,
-      fab('span')
-        .withStyles({
-          color: 'lightgrey',
-          fontSize: '1rem',
-          margin: '5px 0px',
-          fontFamily: Fonts.code,
-          cursor: 'pointer',
-        })
-        .setText(ip)
-        .watchState((el) => {
-          // TODO: watchlist of [key] here breaks this for some reason
-          el.addStyles({
-            color: isReachable() ? Colors.IpTextButton.reachable : Colors.IpTextButton.unreachable,
-          });
-          icon.addAttributes({ src: `assets/plug${isReachable() ? '' : '-off'}.png` });
-        })
-        .onClick(() => {
-          // Select device, go to apps page
-          fab.updateState('ip', () => ip);
-          fab.updateState('page', () => 'AppsPage');
-        }),
+      textButton,
     ]);
 };
 
@@ -70,8 +74,8 @@ const IpTextButton = ({ deviceName, ip, type }) => {
  *
  * @returns {HTMLElement}
  */
-const DeviceIcon = ({ deviceType }) => fab.Image({
-  src: `assets/${ICON_NAMES[deviceType]}.png`,
+const DeviceIcon = ({ deviceType }) => fabricate.Image({
+  src: `assets/${Constants.ICON_NAMES[deviceType]}.png`,
   width: '20px',
   height: '20px',
 })
@@ -83,9 +87,9 @@ const DeviceIcon = ({ deviceType }) => fab.Image({
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const LastSeenLabel = ({ minsAgo }) => fab.Text()
+const LastSeenLabel = ({ minsAgo }) => fabricate.Text()
   .withStyles({
-    color: Colors.AppCard.lastSeen,
+    color: Theme.colors.AppCard.lastSeen,
     fontStyle: 'italic',
     fontSize: '0.9rem',
     textAlign: 'end',
@@ -112,7 +116,7 @@ const LastSeenLabel = ({ minsAgo }) => fab.Text()
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const IpButtons = ({ deviceName, publicIp, localIp }) => fab.Column()
+const IpButtons = ({ deviceName, publicIp, localIp }) => fabricate.Column()
   .withChildren([
     IpTextButton({
       deviceName,
@@ -133,9 +137,9 @@ const IpButtons = ({ deviceName, publicIp, localIp }) => fab.Column()
  * @param {boolean} props.isHealthy - If the device is recently updated and presumed to be alive.
  * @returns {HTMLElement}
  */
-const CardTitle = ({ isHealthy }) => fab.Row()
+const CardTitle = ({ isHealthy }) => fabricate.Row()
   .withStyles({
-    backgroundColor: isHealthy ? Colors.instanceHealthy : Colors.AppCard.titleBar,
+    backgroundColor: isHealthy ? Theme.colors.instanceHealthy : Theme.colors.AppCard.titleBar,
     alignItems: 'center',
     height: '35px',
     boxShadow: '2px 2px 3px 1px #0006',
@@ -146,13 +150,13 @@ const CardTitle = ({ isHealthy }) => fab.Row()
  *
  * @returns {HTMLElement}
  */
-const DeviceCardContainer = () => fab.Card()
+const DeviceCardContainer = () => fabricate.Card()
   .withStyles({
     minWidth: '300px',
     minHeight: '150px',
     margin: '10px',
     boxShadow: '2px 2px 3px 1px #0004',
-    backgroundColor: Colors.DeviceCard.background,
+    backgroundColor: Theme.colors.DeviceCard.background,
   });
 
 /**
@@ -161,14 +165,13 @@ const DeviceCardContainer = () => fab.Card()
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-// eslint-disable-next-line no-unused-vars
-const DeviceCard = ({ itemData }) => {
+fabricate.declare('DeviceCard', ({ itemData }) => {
   const {
     deviceName, publicIp, localIp, deviceType = 'other', lastCheckIn,
   } = itemData;
-  const publicIpValid = fab.manageState(`DeviceCard[${deviceName}]`, 'publicIpValid', false);
-  const localIpValid = fab.manageState(`DeviceCard[${deviceName}]`, 'localIpValid', false);
-  const isUnreachable = fab.manageState(`DeviceCard[${deviceName}]`, 'unreachable', false);
+  const publicIpValid = fabricate.manageState(`DeviceCard[${deviceName}]`, 'publicIpValid', false);
+  const localIpValid = fabricate.manageState(`DeviceCard[${deviceName}]`, 'localIpValid', false);
+  const isUnreachable = fabricate.manageState(`DeviceCard[${deviceName}]`, 'unreachable', false);
 
   const minsAgo = Math.round((Date.now() - lastCheckIn) / (1000 * 60));
   const isHealthy = minsAgo < 11;  // Based on default checkin interval
@@ -208,21 +211,21 @@ const DeviceCard = ({ itemData }) => {
           DeviceIcon({ deviceType }),
           DeviceName().setText(deviceName),
         ]),
-      fab.when(
+      fabricate.when(
         (state) => state[publicIpValid.key] || state[localIpValid.key],
         () => IpButtons({ deviceName, publicIp, localIp }),
       ),
-      fab.when(
+      fabricate.when(
         (state) => (
           !state[publicIpValid.key] && !state[localIpValid.key] && !state[isUnreachable.key]
         ),
-        () => fab.Loader().withStyles({ margin: 'auto', marginTop: '10px' }),
+        () => fabricate.Loader().withStyles({ margin: 'auto', marginTop: '10px' }),
       ),
-      // TODO: fab.until(state, builderBefore, builderAfter)
+      // TODO: fabricate.until(state, builderBefore, builderAfter)
       LastSeenLabel({ minsAgo }),
     ])
     .then(() => {
       testPublicIp();
       testLocalIp();
     });
-};
+});

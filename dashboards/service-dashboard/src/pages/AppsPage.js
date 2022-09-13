@@ -1,19 +1,14 @@
-/* global AppCard ResponseLog */
-
 /**
  * AppsPage component.
- *
- * @returns {HTMLElement}
  */
-// eslint-disable-next-line no-unused-vars
-const AppsPage = () => fab.Row()
+fabricate.declare('AppsPage', () => fabricate.Row()
   .withStyles({ height: '100vh', alignItems: 'flex-start' })
   .withChildren([
-    fab.Row()
+    fabricate.Row()
       .withStyles({ flexWrap: 'wrap', paddingTop: '15px', flex: 2 })
       .watchState((el, { apps }) => {
         el.clear();
-        el.addChildren([...apps.map(({ app }) => AppCard({ app }))]);
+        el.addChildren([...apps.map(({ app }) => fabricate('AppCard', { app }))]);
       }, ['apps']),
-    ResponseLog(),
-  ]);
+    fabricate('ResponseLog'),
+  ]));

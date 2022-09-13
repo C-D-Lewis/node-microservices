@@ -29,9 +29,7 @@
     },
     "globals": {
       "fabricate": "readonly",
-      "fab": "readonly",
-      "Theme": "readonly",
-      "Colors": "readonly"
+      "confirm": "readonly"
     }
   }
 }

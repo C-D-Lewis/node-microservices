@@ -3,13 +3,13 @@ const {
   FLEET_HOST = 'localhost',
 } = window.config;
 
+const Constants = {};
+
 /** Port to look for conduit apps */
-// eslint-disable-next-line no-unused-vars
-const CONDUIT_PORT = 5959;
+Constants.CONDUIT_PORT = 5959;
 
 /** Initial total app state */
-// eslint-disable-next-line no-unused-vars
-const INITIAL_STATE = {
+Constants.INITIAL_STATE = {
   page: 'FleetPage',
   apps: [],
   fleetList: [],
@@ -45,8 +45,7 @@ const INITIAL_STATE = {
 };
 
 /** Icon type names */
-// eslint-disable-next-line no-unused-vars
-const ICON_NAMES = {
+Constants.ICON_NAMES = {
   other: 'other',
   pc: 'pc',
   pi: 'raspberrypi',

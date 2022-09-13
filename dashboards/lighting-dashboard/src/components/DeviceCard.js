@@ -9,7 +9,7 @@ const CardContainer = () => fabricate.Column()
   .withStyles({
     width: '375px',
     margin: '20px 0px 10px 0px',
-    backgroundColor: Theme.Colors.darkGrey,
+    backgroundColor: Theme.colors.darkGrey,
     borderRadius: '5px',
     overflow: 'hidden',
   });
@@ -34,7 +34,7 @@ const CardTitle = ({ text }) => fabricate.Text({ text })
  */
 const CardSubtitle = ({ text }) => fabricate.Text({ text })
   .withStyles({
-    color: Theme.Colors.lightGrey,
+    color: Theme.colors.lightGrey,
     paddingRight: '5px',
     paddingTop: '2px',
     cursor: 'default',
@@ -66,7 +66,7 @@ const CardStatus = ({ device }) => fabricate.Row()
 const CardTitleRow = () => fabricate.Row()
   .withStyles({
     alignItems: 'center',
-    backgroundColor: Theme.Colors.veryDarkGrey,
+    backgroundColor: Theme.colors.veryDarkGrey,
     padding: '10px 15px',
     borderTopLeftRadius: '3px',
     borderTopRightRadius: '3px',

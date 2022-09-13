@@ -1,4 +1,4 @@
-/* global Fonts */
+/* global Theme */
 
 /**
  * LogEntry component.
@@ -15,12 +15,12 @@ const LogEntry = ({ text }) => {
     finalText = JSON.stringify(JSON.parse(text), null, 2);
   } catch (e) { /** Not JSON */ }
 
-  return fab('pre')
+  return fabricate('pre')
     .withStyles({
-      fontFamily: Fonts.code,
+      fontFamily: Theme.fonts.code,
       color: 'white',
       fontSize: '0.8rem',
-      backgroundColor: wasError ? Colors.status.down : Colors.consoleGrey,
+      backgroundColor: wasError ? Theme.colors.status.down : Theme.colors.consoleGrey,
       margin: 0,
       padding: '5px 15px',
       borderTop: 'solid 2px #555',
@@ -35,10 +35,9 @@ const LogEntry = ({ text }) => {
  *
  * @returns {HTMLElement}
  */
-// eslint-disable-next-line no-unused-vars
-const ResponseLog = () => fab.Column()
+fabricate.declare('ResponseLog', () => fabricate.Column()
   .withStyles({
-    backgroundColor: Colors.consoleGrey,
+    backgroundColor: Theme.colors.consoleGrey,
     minWidth: '600px',
     height: '100%',
     flex: 1,
@@ -56,7 +55,7 @@ const ResponseLog = () => fab.Column()
     ['logEntries'],
   )
   .then((el) => {
-    const logEntries = fab.getState('logEntries');
+    const logEntries = fabricate.getState('logEntries');
     const reversed = logEntries.slice().reverse();
     el.addChildren(reversed.map((text) => LogEntry({ text })));
-  });
+  }));
