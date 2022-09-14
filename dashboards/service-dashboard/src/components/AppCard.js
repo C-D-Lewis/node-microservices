@@ -52,13 +52,18 @@ const StatusText = () => fabricate.Text()
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const StatusLED = ({ status }) => fabricate('div')
+const StatusLED = ({ app }) => fabricate('div')
   .withStyles({
-    backgroundColor: status.includes('OK') ? Theme.colors.status.ok : Theme.colors.status.down,
     width: '15px',
     height: '15px',
     borderRadius: '9px',
     marginRight: '5px',
+  })
+  .then((el, { apps }) => {
+    const { status } = apps.find((p) => p.app === app);
+    el.addStyles({
+      backgroundColor: status.includes('OK') ? Theme.colors.status.ok : Theme.colors.status.down,
+    });
   });
 
 /**
@@ -73,7 +78,7 @@ const CardStatus = ({ app }) => fabricate.Row()
     flex: 2,
   })
   .withChildren([
-    StatusLED({ status }),
+    StatusLED({ app }),
     StatusText()
       .then((el, { apps }) => {
         const { status, port } = apps.find((p) => p.app === app);

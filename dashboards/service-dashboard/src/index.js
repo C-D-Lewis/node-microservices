@@ -2,12 +2,15 @@
 
 /**
  * Re-load the fleet list data.
+ *
+ * @param {HTMLElement} el - This element.
+ * @param {object} state - App state.
  */
-const fetchFleetList = async () => {
+const fetchFleetList = async (el, state) => {
   fabricate.updateState('fleetList', () => []);
 
   try {
-    const { message } = await ConduitService.sendPacket({
+    const { message } = await ConduitService.sendPacket(state, {
       to: 'attic',
       topic: 'get',
       message: { app: 'conduit', key: 'fleetList' },
@@ -21,6 +24,9 @@ const fetchFleetList = async () => {
 
 /**
  * Load apps for the selected IP address.
+ *
+ * @param {HTMLElement} el - This element.
+ * @param {object} state - App state.
  */
 const fetchApps = async (el, state) => {
   fabricate.updateState('apps', () => []);

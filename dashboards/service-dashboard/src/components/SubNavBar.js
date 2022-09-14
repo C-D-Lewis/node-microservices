@@ -19,18 +19,16 @@ const StaticBreadcrumb = () => fabricate('p')
  * @returns {HTMLElement}
  */
 const BackBreadcrumb = () => {
-  const fleetList = fabricate.getState('fleetList');
-  const ip = fabricate.getState('ip');
-  const {
-    deviceName,
-  } = fleetList.find(({ publicIp, localIp }) => ip === publicIp || localIp === ip);
-
   /**
    * Reboot this device.
    */
-  const rebootDevice = async () => {
+  const rebootDevice = async (el, { fleetList, ip }) => {
     // eslint-disable-next-line no-restricted-globals
     if (!confirm('Caution: If devices share an IP this might not be the actual device - continue?')) return;
+
+    const {
+      deviceName,
+    } = fleetList.find(({ publicIp, localIp }) => ip === publicIp || localIp === ip);
 
     try {
       // Public, then local
@@ -58,8 +56,7 @@ const BackBreadcrumb = () => {
     .onClick(() => fabricate.updateState('page', () => 'FleetPage'));
 
   const deviceSegment = fabricate('p')
-    .withStyles({ color: 'white', margin: '10px 5px' })
-    .setText(`< ${deviceName} (${ip})`);
+    .withStyles({ color: 'white', margin: '10px 5px' });
 
   const rebootButton = fabricate('IconButton', { src: 'assets/restart.png' })
     .withStyles({ width: '18px', height: '18px' })
@@ -71,7 +68,13 @@ const BackBreadcrumb = () => {
       backButton,
       deviceSegment,
       rebootButton,
-    ]);
+    ])
+    .then((el, { fleetList, ip }) => {
+      const {
+        deviceName,
+      } = fleetList.find(({ publicIp, localIp }) => ip === publicIp || localIp === ip);
+      deviceSegment.setText(`< ${deviceName} (${ip})`);
+    });
 };
 
 /**

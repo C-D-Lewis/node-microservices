@@ -40,7 +40,7 @@ const AtticControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fabricate.updateState('atticData', () => ({ ...fabricate.getState('atticData'), [k]: v }));
+  const setProp = (k, v) => fabricate.updateState('atticData', ({ atticData }) => ({ ...atticData, [k]: v }));
 
   return ControlContainer()
     .withChildren([
@@ -67,25 +67,25 @@ const AtticControls = () => {
           fabricate('TextButton')
             .setText('Get')
             .withStyles({ ...buttonStyle, width: '33%' })
-            .onClick(async () => {
-              const { app, key } = fabricate.getState('atticData');
-              const message = { app, key };
-              const res = await ConduitService.sendPacket({ to: 'attic', topic: 'get', message });
+            .onClick(async (el, state) => {
+              const { atticData } = state;
+              const { app, key } = atticData;
+              const res = await ConduitService.sendPacket(state, { to: 'attic', topic: 'get', message: { app, key } });
               setProp('value', JSON.stringify(res.message.value));
             }),
           fabricate('TextButton')
             .setText('Set')
             .withStyles({ ...buttonStyle, width: '33%' })
-            .onClick(() => {
-              const { app, key, value } = fabricate.getState('atticData');
-              const message = { app, key, value };
-              ConduitService.sendPacket({ to: 'attic', topic: 'set', message });
+            .onClick((el, state) => {
+              const { atticData } = state;
+              const { app, key, value } = atticData;
+              ConduitService.sendPacket(state, { to: 'attic', topic: 'set', message: { app, key, value } });
             }),
           fabricate('TextButton')
             .setText('List Apps')
             .withStyles({ ...buttonStyle, width: '33%' })
-            .onClick(() => {
-              ConduitService.sendPacket({ to: 'attic', topic: 'listApps', message: {} });
+            .onClick((el, state) => {
+              ConduitService.sendPacket(state, { to: 'attic', topic: 'listApps', message: {} });
             }),
         ]),
     ]);
@@ -103,7 +103,7 @@ const ConduitControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fabricate.updateState('conduitData', () => ({ ...fabricate.getState('conduitData'), [k]: v }));
+  const setProp = (k, v) => fabricate.updateState('conduitData', ({ conduitData }) => ({ ...conduitData, [k]: v }));
 
   return ControlContainer()
     .withChildren([
@@ -130,9 +130,10 @@ const ConduitControls = () => {
           fabricate('TextButton')
             .setText('Send')
             .withStyles({ ...buttonStyle, width: '100%' })
-            .onClick(() => {
-              const { app: to, topic, message } = fabricate.getState('conduitData');
-              ConduitService.sendPacket({ to, topic, message: JSON.parse(message) });
+            .onClick((el, state) => {
+              const { conduitData } = state;
+              const { app: to, topic, message } = conduitData;
+              ConduitService.sendPacket(state, { to, topic, message: JSON.parse(message) });
             }),
         ]),
     ]);
@@ -150,7 +151,7 @@ const VisualsControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fabricate.updateState('visualsData', () => ({ ...fabricate.getState('visualsData'), [k]: v }));
+  const setProp = (k, v) => fabricate.updateState('visualsData', ({ visualsData }) => ({ ...visualsData, [k]: v }));
 
   return ControlContainer()
     .withChildren([
@@ -181,43 +182,47 @@ const VisualsControls = () => {
           fabricate('TextButton')
             .setText('All')
             .withStyles({ ...buttonStyle, width: '20%' })
-            .onClick(() => {
-              const { red, green, blue } = fabricate.getState('visualsData');
+            .onClick((el, state) => {
+              const { visualsData } = state;
+              const { red, green, blue } = visualsData;
               const message = { all: [red, green, blue] };
-              ConduitService.sendPacket({ to: 'visuals', topic: 'setAll', message });
+              ConduitService.sendPacket(state, { to: 'visuals', topic: 'setAll', message });
             }),
           fabricate('TextButton')
             .setText('Pixel')
             .withStyles({ ...buttonStyle, width: '20%' })
-            .onClick(() => {
+            .onClick((el, state) => {
+              const { visualsData } = state;
               const {
                 index, red, green, blue,
-              } = fabricate.getState('visualsData');
+              } = visualsData;
               const message = { [index]: [red, green, blue] };
-              ConduitService.sendPacket({ to: 'visuals', topic: 'setPixel', message });
+              ConduitService.sendPacket(state, { to: 'visuals', topic: 'setPixel', message });
             }),
           fabricate('TextButton')
             .setText('Blink')
             .withStyles({ ...buttonStyle, width: '20%' })
-            .onClick(() => {
+            .onClick((el, state) => {
+              const { visualsData } = state;
               const {
                 index, red, green, blue,
-              } = fabricate.getState('visualsData');
+              } = visualsData;
               const message = { [index]: [red, green, blue] };
-              ConduitService.sendPacket({ to: 'visuals', topic: 'blink', message });
+              ConduitService.sendPacket(state, { to: 'visuals', topic: 'blink', message });
             }),
           fabricate('TextButton')
             .setText('Text')
             .withStyles({ ...buttonStyle, width: '20%' })
-            .onClick(() => {
-              const { text } = fabricate.getState('visualsData');
+            .onClick((el, state) => {
+              const { visualsData } = state;
+              const { text } = visualsData;
               const message = { lines: [text] };
-              ConduitService.sendPacket({ to: 'visuals', topic: 'setText', message });
+              ConduitService.sendPacket(state, { to: 'visuals', topic: 'setText', message });
             }),
           fabricate('TextButton')
             .setText('State')
             .withStyles({ ...buttonStyle, width: '20%' })
-            .onClick(() => ConduitService.sendPacket({ to: 'visuals', topic: 'state' })),
+            .onClick((el, state) => ConduitService.sendPacket(state, { to: 'visuals', topic: 'state' })),
         ]),
     ]);
 };
@@ -234,7 +239,7 @@ const GuestlistControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fabricate.updateState('guestlistData', () => ({ ...fabricate.getState('guestlistData'), [k]: v }));
+  const setProp = (k, v) => fabricate.updateState('guestlistData', ({ guestlistData }) => ({ ...guestlistData, [k]: v }));
 
   return ControlContainer()
     .withChildren([
@@ -265,34 +270,36 @@ const GuestlistControls = () => {
           fabricate('TextButton')
             .setText('List Users')
             .withStyles({ ...buttonStyle, width: '33%' })
-            .onClick(() => ConduitService.sendPacket({ to: 'guestlist', topic: 'getAll' })),
+            .onClick((el, state) => ConduitService.sendPacket(state, { to: 'guestlist', topic: 'getAll' })),
           fabricate('TextButton')
             .setText('Create User')
             .withStyles({ ...buttonStyle, width: '33%' })
-            .onClick(() => {
+            .onClick((el, state) => {
+              const { guestlistData } = state;
               const {
                 name, apps, topics, adminPassword,
-              } = fabricate.getState('guestlistData');
+              } = guestlistData;
               const message = {
                 name,
                 apps: apps.split(','),
                 topics: topics.split(','),
                 adminPassword,
               };
-              ConduitService.sendPacket({ to: 'guestlist', topic: 'create', message });
+              ConduitService.sendPacket(state, { to: 'guestlist', topic: 'create', message });
             }),
           fabricate('TextButton')
             .setText('Delete User')
             .withStyles({ ...buttonStyle, width: '33%' })
-            .onClick(() => {
+            .onClick((el, state) => {
+              const { guestlistData } = state;
               const {
                 name, adminPassword,
-              } = fabricate.getState('guestlistData');
+              } = guestlistData;
               const message = {
                 name,
                 adminPassword,
               };
-              ConduitService.sendPacket({ to: 'guestlist', topic: 'delete', message });
+              ConduitService.sendPacket(state, { to: 'guestlist', topic: 'delete', message });
             }),
         ]),
     ]);
@@ -312,12 +319,7 @@ const ClacksControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fabricate.updateState('clacksData', () => ({ ...fabricate.getState('clacksData'), [k]: v }));
-
-  // Try and connect if not connected
-  const clacksData = fabricate.getState('clacksData');
-  if (clacksData.connected) ClacksService.disconnect();
-  setTimeout(ClacksService.connect, 500);
+  const setProp = (k, v) => fabricate.updateState('clacksData', ({ clacksData }) => ({ ...clacksData, [k]: v }));
 
   return ControlContainer()
     .withChildren([
@@ -344,15 +346,20 @@ const ClacksControls = () => {
           fabricate('TextButton')
             .setText('Send')
             .withStyles({ ...buttonStyle, width: '100%', backgroundColor: Theme.colors.darkGrey })
-            .onClick(() => {
-              const { topic, message } = fabricate.getState('clacksData');
+            .onClick((el, { clacksData }) => {
+              const { topic, message } = clacksData;
               ClacksService.sendMessage(topic, message);
             })
             .watchState((el, { clacksData: { connected } }) => el.addStyles({
               backgroundColor: connected ? Theme.colors.primary : Theme.colors.darkGrey,
             })),
         ]),
-    ]);
+    ])
+    .then((el, { clacksData, ip }) => {
+      // Try and connect if not connected
+      if (clacksData.connected) ClacksService.disconnect();
+      setTimeout(() => ClacksService.connect(ip), 500);
+    });
 };
 
 const controlsMap = {

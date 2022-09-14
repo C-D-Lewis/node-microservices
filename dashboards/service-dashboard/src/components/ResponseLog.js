@@ -54,8 +54,8 @@ fabricate.declare('ResponseLog', () => fabricate.Column()
     },
     ['logEntries'],
   )
-  .then((el) => {
-    const logEntries = fabricate.getState('logEntries');
+  .then((el, { logEntries }) => {
+    // Show what's already there
     const reversed = logEntries.slice().reverse();
     el.addChildren(reversed.map((text) => LogEntry({ text })));
   }));

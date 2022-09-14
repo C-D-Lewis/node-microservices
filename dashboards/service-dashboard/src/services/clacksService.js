@@ -13,7 +13,7 @@ const ClacksService = {};
  *
  * @param {boolean} connected - true if now connected.
  */
-const setConnectedState = (connected) => fabricate.updateState('clacksData', () => ({ ...fabricate.getState('clacksData'), connected }));
+const setConnectedState = (connected) => fabricate.updateState('clacksData', ({ clacksData }) => ({ ...clacksData, connected }));
 
 /**
  * When a message is received.
@@ -40,10 +40,10 @@ const startHeartbeat = () => {
 /**
  * Connect websocket server.
  *
+ * @param {string} ip - IP to connect to.
  * @returns {Promise<void>}
  */
-ClacksService.connect = () => new Promise((resolve) => {
-  const ip = fabricate.getState('ip');
+ClacksService.connect = (ip) => new Promise((resolve) => {
   socket = new WebSocket(`ws://${ip}:${WS_PORT}`);
 
   socket.onopen = () => {
