@@ -213,6 +213,12 @@
         "location": "code/node-microservices/apps/visuals",
         "start": "npm start &"
       }
+    ],
+    "ad-blocker-home": [
+      {
+        "location": "code/node-microservices/apps/conduit",
+        "start": "npm start &"
+      }
     ]
   }
 }
