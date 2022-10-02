@@ -58,7 +58,7 @@ sudo apt install jq
 ```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 ```
-> Use tools/install-node-14-armv6l.sh for armv6l (Zero)
+> Use tools/install-node-*.sh for armv6l (Zero)
 ```
 npm i -g npm@^7
 ```
@@ -87,6 +87,7 @@ cd code
 git clone https://github.com/c-d-lewis/node-microservices
 ```
 > install node-common and apps/* dependencies
+
 > setup config.json for apps/*
 
 # Fan control?

@@ -1,49 +1,49 @@
-/* global WsService */
-
 /**
  * AppNavBar component.
  *
  * @returns {HTMLElement}
  */
-const AppNavBar = () => fabricate.NavBar({
+const AppNavBar = () => fabricate('NavBar', {
   title: 'Lighting Dashboard',
   backgroundColor: Theme.colors.primary,
 })
-  .withChildren([
-    fabricate.Text({ text: 'Server' })
-      .withStyles({
+  .addChildren([
+    fabricate('Text')
+      .setStyles({
         marginLeft: 'auto',
         color: Theme.colors.lightGrey,
         cursor: 'default',
-      }),
+      })
+      .setText('Server'),
     fabricate('LED')
-      .watchState((el, state) => el.setConnected(state.connected)),
+      .onUpdate((el, { connected }) => el.setConnected(connected), ['connected']),
   ]);
+
+/**
+ * NoDevicesText component.
+ *
+ * @returns {HTMLElement}
+ */
+const NoDevicesText = () => fabricate('Text')
+  .setStyles({ color: Theme.colors.lightGrey, marginTop: '25px' })
+  .setText('No devices are connected');
 
 /**
  * DeviceList component.
  *
  * @returns {HTMLElement}
  */
-const DeviceList = () => fabricate.Column()
-  .withStyles({ alignItems: 'center' })
-  .watchState((el, state) => {
-    el.clear();
-
+const DeviceList = () => fabricate('Column')
+  .setStyles({ alignItems: 'center' })
+  .onUpdate((el, state) => {
     const deviceCards = state.devices
       .filter((p) => !window.Config.ignoreHosts.includes(p.hostname))
-      .map((d) => fabricate('DeviceCard', { device: d }));
+      .map((device) => fabricate('DeviceCard', { device }));
 
-    const noDevicesText = fabricate.Text({ text: 'No devices are connected' })
-      .withStyles({
-        color: Theme.colors.lightGrey,
-        marginTop: '25px',
-      });
-
-    el.addChildren(
+    el.setChildren(
       deviceCards.length > 0
         ? deviceCards
-        : [noDevicesText],
+        : [NoDevicesText()],
     );
   });
 
@@ -52,15 +52,16 @@ const DeviceList = () => fabricate.Column()
  *
  * @returns {HTMLElement}
  */
-const LightingDashboard = () => fabricate.Column()
-  .withStyles({ width: '100%' })
-  .withChildren([
+const LightingDashboard = () => fabricate('Column')
+  .setStyles({ width: '100%' })
+  .setChildren([
     AppNavBar(),
     DeviceList(),
   ]);
 
 const initialState = {
   devices: [],
+  connected: false,
 };
 fabricate.app(LightingDashboard(), initialState);
 

@@ -27,7 +27,7 @@ const onMessage = (topic, data) => {
   if (topic === TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE) {
     const { hostname } = data;
 
-    fabricate.updateState('devices', ({ devices }) => {
+    fabricate.update('devices', ({ devices }) => {
       // Already known
       if (devices.find((p) => p.hostname === hostname)) return devices;
 
@@ -76,7 +76,7 @@ WsService.connect = () => new Promise((resolve) => {
     socket.send(JSON.stringify({ topic: TOPIC_GLOBAL_GET_HOSTNAMES, data: {} }));
 
     console.log('Connected');
-    fabricate.updateState('connected', () => true);
+    fabricate.update({ connected: true });
     startHeartbeat();
     resolve();
   };
@@ -88,7 +88,7 @@ WsService.connect = () => new Promise((resolve) => {
   };
 
   socket.onclose = () => {
-    fabricate.updateState('connected', () => false);
+    fabricate.update({ connected: false });
     setTimeout(WsService.connect, 5000);
   };
 

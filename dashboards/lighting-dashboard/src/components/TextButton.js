@@ -5,13 +5,13 @@ fabricate.declare('TextButton', ({
   label,
   color,
   backgroundColor,
-} = {}) => fabricate.Button({
+} = {}) => fabricate('Button', {
   text: label,
   color,
   backgroundColor,
   highlight: false,
 })
-  .withStyles({
+  .setStyles({
     minWidth: '10px',
     height: '30px',
     padding: '5px',

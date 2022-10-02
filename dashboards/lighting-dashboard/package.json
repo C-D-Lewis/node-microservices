@@ -29,7 +29,8 @@
     },
     "globals": {
       "fabricate": "readonly",
-      "Theme": "readonly"
+      "Theme": "readonly",
+      "WsService": "readonly"
     }
   }
 }

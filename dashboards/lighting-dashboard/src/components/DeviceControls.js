@@ -1,5 +1,3 @@
-/* global WsService */
-
 /** Colors for demo */
 const DEMO_COLORS = [
   [255, 0, 0],    // Red
@@ -19,16 +17,10 @@ const DEMO_COLORS = [
 /**
  * ButtonBar component.
  *
- * @param {object} props - Component props.
- * @param {string} props.align - Alignment.
  * @returns {HTMLElement}
  */
-const ButtonBar = ({ align } = {}) => fabricate.Row()
-  .withStyles({
-    margin: '0px 7px',
-    marginBottom: '10px',
-    justifyContent: align === 'right' ? 'flex-end' : 'initial',
-  });
+const ButtonBar = () => fabricate('Row')
+  .setStyles({ margin: '0px 7px', marginBottom: '10px' });
 
 /**
  * SwatchesBar component.
@@ -47,17 +39,17 @@ const SwatchesBar = ({ device }) => {
   const buildButton = (p) => fabricate('SwatchButton', { backgroundColor: `rgb(${p[0]},${p[1]},${p[2]}` })
     .onClick(() => WsService.sendPacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } }));
 
-  return fabricate.Column()
-    .addChildren([
+  return fabricate('Column')
+    .setChildren([
       ButtonBar()
-        .withStyles(buttonBarStyles)
-        .addChildren(row1Colors.map(buildButton)),
+        .setStyles(buttonBarStyles)
+        .setChildren(row1Colors.map(buildButton)),
       ButtonBar()
-        .withStyles(buttonBarStyles)
-        .addChildren(row2Colors.map(buildButton)),
+        .setStyles(buttonBarStyles)
+        .setChildren(row2Colors.map(buildButton)),
       ButtonBar()
-        .withStyles(buttonBarStyles)
-        .addChildren(row3Colors.map(buildButton)),
+        .setStyles(buttonBarStyles)
+        .setChildren(row3Colors.map(buildButton)),
     ]);
 };
 
@@ -71,51 +63,48 @@ const SwatchesBar = ({ device }) => {
 const FunctionsBar = ({ device }) => {
   const buttonStyle = { flex: 1 };
 
-  return fabricate.Column()
-    .addChildren([
-      ButtonBar()
-        .addChildren([
-          fabricate('TextButton', {
-            label: 'Off',
-            backgroundColor: 'black',
-            color: 'white',
-          })
-            .withStyles(buttonStyle)
-            .onClick(() => WsService.sendPacket(device, { to: 'visuals', topic: 'off' })),
-          fabricate('TextButton', {
-            label: 'Spotify',
-            backgroundColor: '#1DB954',
-            color: 'white',
-          })
-            .withStyles(buttonStyle)
-            .onClick(() => WsService.sendPacket(device, { to: 'visuals', topic: 'spotify' })),
-          fabricate('TextButton', {
-            label: 'Demo',
-            backgroundColor: Theme.colors.primary,
-            color: 'white',
-          })
-            .withStyles(buttonStyle)
-            .onClick(() => WsService.sendPacket(device, { to: 'visuals', topic: 'demo' })),
-          fabricate('TextButton', {
-            label: 'Night',
-            backgroundColor: '#aaa',
-            color: 'black',
-          })
-            .withStyles(buttonStyle)
-            .onClick(() => {
-              const message = { all: [64, 64, 64] };
-              WsService.sendPacket(device, { to: 'visuals', topic: 'setAll', message });
-            }),
-        ]),
+  return ButtonBar()
+    .setChildren([
+      fabricate('TextButton', {
+        label: 'Off',
+        backgroundColor: 'black',
+        color: 'white',
+      })
+        .setStyles(buttonStyle)
+        .onClick(() => WsService.sendPacket(device, { to: 'visuals', topic: 'off' })),
+      fabricate('TextButton', {
+        label: 'Spotify',
+        backgroundColor: '#1DB954',
+        color: 'white',
+      })
+        .setStyles(buttonStyle)
+        .onClick(() => WsService.sendPacket(device, { to: 'visuals', topic: 'spotify' })),
+      fabricate('TextButton', {
+        label: 'Demo',
+        backgroundColor: Theme.colors.primary,
+        color: 'white',
+      })
+        .setStyles(buttonStyle)
+        .onClick(() => WsService.sendPacket(device, { to: 'visuals', topic: 'demo' })),
+      fabricate('TextButton', {
+        label: 'Night',
+        backgroundColor: '#aaa',
+        color: 'black',
+      })
+        .setStyles(buttonStyle)
+        .onClick(() => {
+          const message = { all: [64, 64, 64] };
+          WsService.sendPacket(device, { to: 'visuals', topic: 'setAll', message });
+        }),
     ]);
 };
 
 /**
  * DeviceControls component.
  */
-fabricate.declare('DeviceControls', ({ device }) => fabricate.Column()
-  .withStyles({ width: '100%' })
-  .addChildren([
+fabricate.declare('DeviceControls', ({ device }) => fabricate('Column')
+  .setStyles({ width: '100%' })
+  .setChildren([
     SwatchesBar({ device }),
     FunctionsBar({ device }),
   ]));

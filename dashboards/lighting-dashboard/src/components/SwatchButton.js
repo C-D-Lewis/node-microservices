@@ -1,9 +1,8 @@
 /**
  * SwatchButton component.
  */
-fabricate.declare('SwatchButton', ({ backgroundColor }) => fabricate('div')
-  .asFlex('row')
-  .withStyles({
+fabricate.declare('SwatchButton', ({ backgroundColor }) => fabricate('Row')
+  .setStyles({
     minWidth: '30px',
     height: '30px',
     flex: 1,

@@ -6,6 +6,6 @@ window.Config = {
     'stack-util',
     'cirroc',
     'e-paper-home',
-    'e-paper-witham'
+    'e-paper-witham',
   ],
 };
