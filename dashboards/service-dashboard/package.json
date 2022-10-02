@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "Web application providing specialised interaction UI for the APIs presented by the node-microservices apps",
   "scripts": {
-    "start": "python3 -m http.server"
+    "start": "http-server"
   },
   "devDependencies": {
     "eslint": "^8.3.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.25.3"
+    "eslint-plugin-import": "^2.25.3",
+    "http-server": "^14.1.1"
   },
   "eslintConfig": {
     "extends": "eslint-config-airbnb-base",
@@ -24,7 +25,9 @@
       "no-alert": 0,
       "no-param-reassign": [
         "error",
-        { "props": false }
+        {
+          "props": false
+        }
       ]
     },
     "globals": {
