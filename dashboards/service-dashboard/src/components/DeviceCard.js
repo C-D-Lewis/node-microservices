@@ -1,12 +1,10 @@
-/* global Theme Constants */
-
 /**
  * DeviceName component.
  *
  * @returns {HTMLElement}
  */
 const DeviceName = () => fabricate('span')
-  .withStyles({
+  .setStyles({
     color: 'white',
     fontWeight: 'bold',
     fontSize: '1rem',
@@ -19,12 +17,12 @@ const DeviceName = () => fabricate('span')
  *
  * @returns {HTMLElement}
  */
-const ConnectionIcon = () => fabricate.Image({
-  src: 'assets/plug-off.png',
-  width: '18px',
-  height: '18px',
-})
-  .withStyles({ margin: '8px' });
+const ConnectionIcon = () => fabricate('Image', { src: 'assets/plug-off.png' })
+  .setStyles({
+    width: '18px',
+    height: '18px',
+    margin: '8px',
+  });
 
 /**
  * IpTextButton component.
@@ -33,12 +31,12 @@ const ConnectionIcon = () => fabricate.Image({
  * @returns {HTMLElement}
  */
 const IpTextButton = ({ deviceName, ip, type }) => {
-  const { get: isReachable } = fabricate.manageState(`DeviceCard[${deviceName}]`, `${type}IpValid`, false);
+  const isReachableKey = Utils.isReachableKey(deviceName, type);
 
   const icon = ConnectionIcon({ isReachable: false });
 
   const textButton = fabricate('span')
-    .withStyles({
+    .setStyles({
       color: 'lightgrey',
       fontSize: '1rem',
       margin: '5px 0px',
@@ -46,27 +44,25 @@ const IpTextButton = ({ deviceName, ip, type }) => {
       cursor: 'pointer',
     })
     .setText(ip)
-    .watchState((el) => {
+    .onUpdate((el, state) => {
+      const isReachable = state[isReachableKey];
+
       // TODO: watchlist of [key] here breaks this for some reason
-      el.addStyles({
-        color: isReachable()
+      el.setStyles({
+        color: isReachable
           ? Theme.colors.IpTextButton.reachable
           : Theme.colors.IpTextButton.unreachable,
       });
-      icon.addAttributes({ src: `assets/plug${isReachable() ? '' : '-off'}.png` });
+      icon.setAttributes({ src: `assets/plug${isReachable ? '' : '-off'}.png` });
     })
     .onClick(() => {
       // Select device, go to apps page
-      fabricate.updateState('ip', () => ip);
-      fabricate.updateState('page', () => 'AppsPage');
+      fabricate.update({ ip, page: 'AppsPage' });
     });
 
-  return fabricate.Row()
-    .withStyles({ alignItems: 'center', borderBottom: `solid 2px ${Theme.colors.consoleGrey}` })
-    .withChildren([
-      icon,
-      textButton,
-    ]);
+  return fabricate('Row')
+    .setStyles({ alignItems: 'center', borderBottom: `solid 2px ${Theme.colors.consoleGrey}` })
+    .setChildren([icon, textButton]);
 };
 
 /**
@@ -74,12 +70,12 @@ const IpTextButton = ({ deviceName, ip, type }) => {
  *
  * @returns {HTMLElement}
  */
-const DeviceIcon = ({ deviceType }) => fabricate.Image({
-  src: `assets/${Constants.ICON_NAMES[deviceType]}.png`,
-  width: '20px',
-  height: '20px',
-})
-  .withStyles({ margin: '4px 4px 4px 8px' });
+const DeviceIcon = ({ deviceType }) => fabricate('Image', { src: `assets/${Constants.ICON_NAMES[deviceType]}.png` })
+  .setStyles({
+    margin: '4px 4px 4px 8px',
+    width: '20px',
+    height: '20px',
+  });
 
 /**
  * Last checkin label component.
@@ -87,8 +83,8 @@ const DeviceIcon = ({ deviceType }) => fabricate.Image({
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const LastSeenLabel = ({ minsAgo }) => fabricate.Text()
-  .withStyles({
+const LastSeenLabel = ({ minsAgo }) => fabricate('Text')
+  .setStyles({
     color: Theme.colors.AppCard.lastSeen,
     fontStyle: 'italic',
     fontSize: '0.9rem',
@@ -96,7 +92,7 @@ const LastSeenLabel = ({ minsAgo }) => fabricate.Text()
     margin: '8px',
     marginTop: 'auto',
   })
-  .then((el) => {
+  .onCreate((el) => {
     if (minsAgo > (60 * 24)) {
       el.setText(`Last seen: ${Math.round(minsAgo / (60 * 24))} days ago`);
       return;
@@ -116,8 +112,8 @@ const LastSeenLabel = ({ minsAgo }) => fabricate.Text()
  * @param {object} props - Component props.
  * @returns {HTMLElement}
  */
-const IpButtons = ({ deviceName, publicIp, localIp }) => fabricate.Column()
-  .withChildren([
+const IpButtons = ({ deviceName, publicIp, localIp }) => fabricate('Column')
+  .setChildren([
     IpTextButton({
       deviceName,
       ip: publicIp,
@@ -137,8 +133,8 @@ const IpButtons = ({ deviceName, publicIp, localIp }) => fabricate.Column()
  * @param {boolean} props.isHealthy - If the device is recently updated and presumed to be alive.
  * @returns {HTMLElement}
  */
-const CardTitle = ({ isHealthy }) => fabricate.Row()
-  .withStyles({
+const CardTitle = ({ isHealthy }) => fabricate('Row')
+  .setStyles({
     backgroundColor: isHealthy ? Theme.colors.instanceHealthy : Theme.colors.AppCard.titleBar,
     alignItems: 'center',
     height: '35px',
@@ -150,8 +146,8 @@ const CardTitle = ({ isHealthy }) => fabricate.Row()
  *
  * @returns {HTMLElement}
  */
-const DeviceCardContainer = () => fabricate.Card()
-  .withStyles({
+const DeviceCardContainer = () => fabricate('Card')
+  .setStyles({
     minWidth: '300px',
     minHeight: '150px',
     margin: '10px',
@@ -169,9 +165,9 @@ fabricate.declare('DeviceCard', ({ itemData }) => {
   const {
     deviceName, publicIp, localIp, deviceType = 'other', lastCheckIn,
   } = itemData;
-  const publicIpValid = fabricate.manageState(`DeviceCard[${deviceName}]`, 'publicIpValid', false);
-  const localIpValid = fabricate.manageState(`DeviceCard[${deviceName}]`, 'localIpValid', false);
-  const isUnreachable = fabricate.manageState(`DeviceCard[${deviceName}]`, 'unreachable', false);
+  const publicIpValidKey = Utils.isReachableKey(deviceName, 'public');
+  const localIpValidKey = Utils.isReachableKey(deviceName, 'local');
+  const isUnreachableKey = Utils.isReachableKey(deviceName, 'isUnreachable');
 
   const minsAgo = Math.round((Date.now() - lastCheckIn) / (1000 * 60));
   const isHealthy = minsAgo < 11;  // Based on default checkin interval
@@ -182,7 +178,7 @@ fabricate.declare('DeviceCard', ({ itemData }) => {
   const testPublicIp = async () => {
     try {
       await fetch(`http://${publicIp}:5959/apps`);
-      publicIpValid.set(true);
+      fabricate.update(publicIpValidKey, true);
     } catch (err) { /* It isn't available */ }
   };
 
@@ -192,7 +188,7 @@ fabricate.declare('DeviceCard', ({ itemData }) => {
   const testLocalIp = async () => {
     try {
       await fetch(`http://${localIp}:5959/apps`);
-      localIpValid.set(true);
+      fabricate.update(localIpValidKey, true);
     } catch (err) { /* It isn't available */ }
   };
 
@@ -205,9 +201,9 @@ fabricate.declare('DeviceCard', ({ itemData }) => {
   }, 5000);
 
   return DeviceCardContainer()
-    .withChildren([
+    .setChildren([
       CardTitle({ isHealthy })
-        .withChildren([
+        .setChildren([
           DeviceIcon({ deviceType }),
           DeviceName().setText(deviceName),
         ]),
@@ -219,7 +215,7 @@ fabricate.declare('DeviceCard', ({ itemData }) => {
         (state) => (
           !state[publicIpValid.key] && !state[localIpValid.key] && !state[isUnreachable.key]
         ),
-        () => fabricate.Loader().withStyles({ margin: 'auto', marginTop: '10px' }),
+        () => fabricate.Loader().setStyles({ margin: 'auto', marginTop: '10px' }),
       ),
       // TODO: fabricate.until(state, builderBefore, builderAfter)
       LastSeenLabel({ minsAgo }),

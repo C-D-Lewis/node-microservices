@@ -13,7 +13,7 @@ const ClacksService = {};
  *
  * @param {boolean} connected - true if now connected.
  */
-const setConnectedState = (connected) => fabricate.updateState('clacksData', ({ clacksData }) => ({ ...clacksData, connected }));
+const setConnectedState = (connected) => fabricate.update('clacksData', ({ clacksData }) => ({ ...clacksData, connected }));
 
 /**
  * When a message is received.
@@ -22,7 +22,7 @@ const setConnectedState = (connected) => fabricate.updateState('clacksData', ({ 
  * @param {object} data - Message data.
  */
 const onClacksMessage = (topic, data) => {
-  fabricate.updateState('logEntries', ({ logEntries }) => [...logEntries, JSON.stringify({ topic, data })]);
+  fabricate.update('logEntries', ({ logEntries }) => [...logEntries, JSON.stringify({ topic, data })]);
 };
 
 /**
@@ -84,5 +84,5 @@ ClacksService.disconnect = () => socket.close();
 ClacksService.sendMessage = (topic, message) => {
   const payload = { topic, data: JSON.parse(message) };
   socket.send(JSON.stringify(payload));
-  fabricate.updateState('logEntries', ({ logEntries }) => [...logEntries, `Sent: ${JSON.stringify(payload)}`]);
+  fabricate.update('logEntries', ({ logEntries }) => [...logEntries, `Sent: ${JSON.stringify(payload)}`]);
 };

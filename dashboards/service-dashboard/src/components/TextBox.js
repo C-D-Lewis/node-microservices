@@ -1,8 +1,8 @@
 /**
  * TextBox component.
  */
-fabricate.declare('TextBox', ({ placeholder = '' } = {}) => fabricate.TextInput({ placeholder, color: 'black' })
-  .withStyles({
+fabricate.declare('TextBox', ({ placeholder = '' } = {}) => fabricate('TextInput', { placeholder, color: 'black' })
+  .setStyles({
     height: '25px',
     border: '0',
     borderBottom: '2px solid #0005',

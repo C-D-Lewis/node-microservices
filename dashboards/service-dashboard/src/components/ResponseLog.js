@@ -1,5 +1,3 @@
-/* global Theme */
-
 /**
  * LogEntry component.
  *
@@ -16,7 +14,7 @@ const LogEntry = ({ text }) => {
   } catch (e) { /** Not JSON */ }
 
   return fabricate('pre')
-    .withStyles({
+    .setStyles({
       fontFamily: Theme.fonts.code,
       color: 'white',
       fontSize: '0.8rem',
@@ -35,8 +33,8 @@ const LogEntry = ({ text }) => {
  *
  * @returns {HTMLElement}
  */
-fabricate.declare('ResponseLog', () => fabricate.Column()
-  .withStyles({
+fabricate.declare('ResponseLog', () => fabricate('Column')
+  .setStyles({
     backgroundColor: Theme.colors.consoleGrey,
     minWidth: '600px',
     height: '100%',
@@ -44,18 +42,16 @@ fabricate.declare('ResponseLog', () => fabricate.Column()
     padding: '10px 0px',
     overflowY: 'scroll',
   })
-  .watchState(
+  .onUpdate(
     (el, { logEntries }) => {
       // TODO: Only add new items based on content or timestamp, not all
-      el.clear();
-
       const reversed = logEntries.slice().reverse();
-      el.addChildren(reversed.map((text) => LogEntry({ text })));
+      el.setChildren(reversed.map((text) => LogEntry({ text })));
     },
     ['logEntries'],
   )
-  .then((el, { logEntries }) => {
+  .onCreate((el, { logEntries }) => {
     // Show what's already there
     const reversed = logEntries.slice().reverse();
-    el.addChildren(reversed.map((text) => LogEntry({ text })));
+    el.setChildren(reversed.map((text) => LogEntry({ text })));
   }));

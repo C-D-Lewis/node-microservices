@@ -32,7 +32,11 @@
     },
     "globals": {
       "fabricate": "readonly",
-      "confirm": "readonly"
+      "confirm": "readonly",
+      "Constants": "readonly",
+      "Theme": "readonly",
+      "ConduitService": "readonly",
+      "Utils": "readonly"
     }
   }
 }

@@ -1,7 +1,7 @@
 const {
   /* Where the fleet list can be found. */
   FLEET_HOST = 'localhost',
-} = window.config;
+} = window.Config;
 
 const Constants = {};
 

@@ -1,5 +1,3 @@
-/* global Constants ConduitService Theme */
-
 /**
  * Re-load the fleet list data.
  *
@@ -7,7 +5,7 @@
  * @param {object} state - App state.
  */
 const fetchFleetList = async (el, state) => {
-  fabricate.updateState('fleetList', () => []);
+  fabricate.update({ fleetList: [] });
 
   try {
     const { message } = await ConduitService.sendPacket(state, {
@@ -15,7 +13,7 @@ const fetchFleetList = async (el, state) => {
       topic: 'get',
       message: { app: 'conduit', key: 'fleetList' },
     });
-    fabricate.updateState('fleetList', () => message.value);
+    fabricate.update({ fleetList: message.value });
   } catch (err) {
     console.error(err);
     alert(err);
@@ -29,13 +27,13 @@ const fetchFleetList = async (el, state) => {
  * @param {object} state - App state.
  */
 const fetchApps = async (el, state) => {
-  fabricate.updateState('apps', () => []);
+  fabricate.update({ apps: [] });
 
   try {
     const res = await fetch(`http://${state.ip}:${Constants.CONDUIT_PORT}/apps`);
     const json = await res.json();
     const apps =  json.sort((a, b) => (a.app < b.app ? -1 : 1));
-    fabricate.updateState('apps', () => apps);
+    fabricate.update({ apps });
   } catch (err) {
     console.error(err);
   }
@@ -48,8 +46,8 @@ const parseParams = () => {
   const params = new URLSearchParams(window.location.search);
 
   // Token
-  const tokenVal = params.get('token');
-  if (tokenVal) fabricate.updateState('token', () => tokenVal);
+  const token = params.get('token');
+  if (token) fabricate.update({ token });
 };
 
 /**
@@ -57,7 +55,7 @@ const parseParams = () => {
  *
  * @returns {HTMLElement}
  */
-const AppNavBar = () => fabricate.NavBar({
+const AppNavBar = () => fabricate('NavBar', {
   title: 'Service Dashboard',
   backgroundColor: Theme.colors.AppNavBar.background,
 });
@@ -67,15 +65,15 @@ const AppNavBar = () => fabricate.NavBar({
  *
  * @returns {HTMLElement}
  */
-const ServiceDashboard = () => fabricate.Column()
-  .withChildren([
+const ServiceDashboard = () => fabricate('Column')
+  .setChildren([
     AppNavBar(),
     fabricate('SubNavBar'),
-    fabricate.when(({ page }) => page === 'FleetPage', () => fabricate('FleetPage')),
-    fabricate.when(({ page }) => page === 'AppsPage', () => fabricate('AppsPage')),
+    fabricate('FleetPage').when(({ page }) => page === 'FleetPage'),
+    fabricate('AppsPage').when(({ page }) => page === 'AppsPage'),
   ])
-  .watchState(parseParams, ['fabricate:init'])
-  .watchState(fetchApps, ['ip'])
-  .watchState(fetchFleetList, ['token']);
+  .onUpdate(parseParams, ['fabricate:init'])
+  .onUpdate(fetchApps, ['ip'])
+  .onUpdate(fetchFleetList, ['token']);
 
-fabricate.app(ServiceDashboard(), Constants.INITIAL_STATE, { logStateUpdates: false });
+fabricate.app(ServiceDashboard(), Constants.INITIAL_STATE);

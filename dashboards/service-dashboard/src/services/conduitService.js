@@ -1,5 +1,3 @@
-/* global Constants */
-
 const ConduitService = {};
 
 /**
@@ -8,10 +6,11 @@ const ConduitService = {};
  * @param {object} state - App state.
  * @param {object} packet - Packet to send.
  * @param {string} [tokenOverride] - Override auth token sent.
- * @returns {Promise<object|Error>} Response or error encountered.
+ * @returns {Promise<object>} Response.
+ * @throws {Error} Any error encountered.
  */
 ConduitService.sendPacket = async (state, packet, tokenOverride) => {
-  fabricate.updateState('logEntries', ({ logEntries }) => [...logEntries, 'Sending...']);
+  fabricate.update('logEntries', ({ logEntries }) => [...logEntries, 'Sending...']);
 
   try {
     const { ip, token } = state;
@@ -24,10 +23,10 @@ ConduitService.sendPacket = async (state, packet, tokenOverride) => {
       }),
     });
     const json = await res.json();
-    fabricate.updateState('logEntries', ({ logEntries }) => [...logEntries, JSON.stringify(json)]);
+    fabricate.update('logEntries', ({ logEntries }) => [...logEntries, JSON.stringify(json)]);
     return json;
   } catch (error) {
-    fabricate.updateState('logEntries', ({ logEntries }) => [...logEntries, error.message]);
+    fabricate.update('logEntries', ({ logEntries }) => [...logEntries, error.message]);
     throw error;
   }
 };
