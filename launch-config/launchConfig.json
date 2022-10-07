@@ -72,6 +72,10 @@
       {
         "location": "code/microdiary",
         "start": "http-server -p 34279 &"
+      },
+      {
+        "location": "code/discord-bot-hom",
+        "start": "npm start &"
       }
     ],
     "stack-int": [
