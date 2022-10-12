@@ -72,12 +72,12 @@ const BackBreadcrumb = () => {
       deviceSegment,
       RebootButton(),
     ])
-    .onCreate((el, { fleetList, ip }) => {
-      const {
-        deviceName,
-      } = fleetList.find(({ publicIp, localIp }) => ip === publicIp || localIp === ip);
-      deviceSegment.setText(`< ${deviceName} (${ip})`);
-    });
+    .onUpdate((el, { fleetList, ip }) => {
+      // const {
+      //   deviceName,
+      // } = [].find(({ publicIp, localIp }) => ip === publicIp || localIp === ip);
+      // deviceSegment.setText(`< ${deviceName} (${ip})`);
+    }, ['fleetList', 'ip']);
 };
 
 /**

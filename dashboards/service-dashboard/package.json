@@ -36,7 +36,8 @@
       "Constants": "readonly",
       "Theme": "readonly",
       "ConduitService": "readonly",
-      "Utils": "readonly"
+      "Utils": "readonly",
+      "ClacksService": "readonly"
     }
   }
 }

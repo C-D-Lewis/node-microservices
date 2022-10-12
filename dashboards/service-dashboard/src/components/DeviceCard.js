@@ -193,12 +193,13 @@ fabricate.declare('DeviceCard', ({ itemData }) => {
   };
 
   // Timeout
-  setTimeout(() => {
-    // At least one returned
-    if (localIpValid.get() || publicIpValid.get()) return;
+  // async state access?
+  // setTimeout(() => {
+  //   // At least one returned
+  //   if (localIpValid.get() || publicIpValid.get()) return;
 
-    isUnreachable.set(true);
-  }, 5000);
+  //   isUnreachable.set(true);
+  // }, 5000);
 
   return DeviceCardContainer()
     .setChildren([
@@ -207,20 +208,16 @@ fabricate.declare('DeviceCard', ({ itemData }) => {
           DeviceIcon({ deviceType }),
           DeviceName().setText(deviceName),
         ]),
-      fabricate.when(
-        (state) => state[publicIpValid.key] || state[localIpValid.key],
-        () => IpButtons({ deviceName, publicIp, localIp }),
-      ),
-      fabricate.when(
-        (state) => (
-          !state[publicIpValid.key] && !state[localIpValid.key] && !state[isUnreachable.key]
-        ),
-        () => fabricate.Loader().setStyles({ margin: 'auto', marginTop: '10px' }),
-      ),
-      // TODO: fabricate.until(state, builderBefore, builderAfter)
+      IpButtons({ deviceName, publicIp, localIp })
+        .when((state) => state[publicIpValidKey] || state[localIpValidKey]),
+      fabricate('Loader')
+        .setStyles({ margin: 'auto', marginTop: '10px' })
+        .when((state) => (
+          !state[publicIpValidKey] && !state[localIpValidKey] && !state[isUnreachableKey]
+        )),
       LastSeenLabel({ minsAgo }),
     ])
-    .then(() => {
+    .onCreate(() => {
       testPublicIp();
       testLocalIp();
     });

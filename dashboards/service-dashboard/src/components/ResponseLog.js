@@ -49,9 +49,4 @@ fabricate.declare('ResponseLog', () => fabricate('Column')
       el.setChildren(reversed.map((text) => LogEntry({ text })));
     },
     ['logEntries'],
-  )
-  .onCreate((el, { logEntries }) => {
-    // Show what's already there
-    const reversed = logEntries.slice().reverse();
-    el.setChildren(reversed.map((text) => LogEntry({ text })));
-  }));
+  ));

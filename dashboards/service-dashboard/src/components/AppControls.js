@@ -1,5 +1,3 @@
-/* global Theme ClacksService ConduitService */
-
 const buttonStyle = {
   borderRadius: 0,
   margin: 0,
@@ -18,15 +16,15 @@ const Empty = () => fabricate('div');
  *
  * @returns {HTMLElement}
  */
-const ControlRow = () => fabricate.Row().withStyles({ padding: '0px 10px' });
+const ControlRow = () => fabricate('Row').setStyles({ padding: '0px 10px' });
 
 /**
  * Control container component.
  *
  * @returns {HTMLElement}
  */
-const ControlContainer = () => fabricate.Column()
-  .withStyles({ backgroundColor: Theme.colors.AppControls.background });
+const ControlContainer = () => fabricate('Column')
+  .setStyles({ backgroundColor: Theme.colors.AppControls.background });
 
 /**
  * AtticControls component.
@@ -40,33 +38,33 @@ const AtticControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fabricate.updateState('atticData', ({ atticData }) => ({ ...atticData, [k]: v }));
+  const setProp = (k, v) => fabricate.update('atticData', ({ atticData }) => ({ ...atticData, [k]: v }));
 
   return ControlContainer()
-    .withChildren([
+    .setChildren([
       ControlRow()
-        .withChildren([
+        .setChildren([
           fabricate('TextBox', { placeholder: 'App name' })
-            .withStyles({ width: '40%' })
-            .watchState((el, { atticData }) => el.setText(atticData.app), ['atticData'])
-            .onChange((el, value) => setProp('app', value)),
+            .setStyles({ width: '40%' })
+            .onUpdate((el, { atticData }) => el.setText(atticData.app), ['atticData'])
+            .onChange((el, state, value) => setProp('app', value)),
           fabricate('TextBox', { placeholder: 'Key' })
-            .withStyles({ width: '60%' })
-            .watchState((el, { atticData }) => el.setText(atticData.key), ['atticData'])
-            .onChange((el, value) => setProp('key', value)),
+            .setStyles({ width: '60%' })
+            .onUpdate((el, { atticData }) => el.setText(atticData.key), ['atticData'])
+            .onChange((el, state, value) => setProp('key', value)),
         ]),
       ControlRow()
-        .withChildren([
+        .setChildren([
           fabricate('TextBox', { placeholder: 'Value' })
-            .watchState((el, { atticData }) => el.setText(atticData.value), ['atticData'])
-            .withStyles({ width: '100%' })
-            .onChange((el, value) => setProp('value', value)),
+            .onUpdate((el, { atticData }) => el.setText(atticData.value), ['atticData'])
+            .setStyles({ width: '100%' })
+            .onChange((el, state, value) => setProp('value', value)),
         ]),
-      fabricate.Row()
-        .withChildren([
+      fabricate('Row')
+        .setChildren([
           fabricate('TextButton')
             .setText('Get')
-            .withStyles({ ...buttonStyle, width: '33%' })
+            .setStyles({ ...buttonStyle, width: '33%' })
             .onClick(async (el, state) => {
               const { atticData } = state;
               const { app, key } = atticData;
@@ -75,7 +73,7 @@ const AtticControls = () => {
             }),
           fabricate('TextButton')
             .setText('Set')
-            .withStyles({ ...buttonStyle, width: '33%' })
+            .setStyles({ ...buttonStyle, width: '33%' })
             .onClick((el, state) => {
               const { atticData } = state;
               const { app, key, value } = atticData;
@@ -83,7 +81,7 @@ const AtticControls = () => {
             }),
           fabricate('TextButton')
             .setText('List Apps')
-            .withStyles({ ...buttonStyle, width: '33%' })
+            .setStyles({ ...buttonStyle, width: '33%' })
             .onClick((el, state) => {
               ConduitService.sendPacket(state, { to: 'attic', topic: 'listApps', message: {} });
             }),
@@ -103,33 +101,33 @@ const ConduitControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fabricate.updateState('conduitData', ({ conduitData }) => ({ ...conduitData, [k]: v }));
+  const setProp = (k, v) => fabricate.update('conduitData', ({ conduitData }) => ({ ...conduitData, [k]: v }));
 
   return ControlContainer()
-    .withChildren([
+    .setChildren([
       ControlRow()
-        .withChildren([
+        .setChildren([
           fabricate('TextBox', { placeholder: 'App name' })
-            .watchState((el, { conduitData }) => el.setText(conduitData.app))
-            .withStyles({ width: '40%' })
-            .onChange((el, value) => setProp('app', value)),
+            .onUpdate((el, { conduitData }) => el.setText(conduitData.app))
+            .setStyles({ width: '40%' })
+            .onChange((el, state, value) => setProp('app', value)),
           fabricate('TextBox', { placeholder: 'Topic' })
-            .watchState((el, { conduitData }) => el.setText(conduitData.topic))
-            .withStyles({ width: '60%' })
-            .onChange((el, value) => setProp('topic', value)),
+            .onUpdate((el, { conduitData }) => el.setText(conduitData.topic))
+            .setStyles({ width: '60%' })
+            .onChange((el, state, value) => setProp('topic', value)),
         ]),
       ControlRow()
-        .withChildren([
+        .setChildren([
           fabricate('TextBox', { placeholder: 'Message (JSON)' })
-            .watchState((el, { conduitData }) => el.setText(conduitData.message))
-            .withStyles({ width: '100%' })
-            .onChange((el, value) => setProp('message', value)),
+            .onUpdate((el, { conduitData }) => el.setText(conduitData.message))
+            .setStyles({ width: '100%' })
+            .onChange((el, state, value) => setProp('message', value)),
         ]),
-      fabricate.Row()
-        .withChildren([
+      fabricate('Row')
+        .setChildren([
           fabricate('TextButton')
             .setText('Send')
-            .withStyles({ ...buttonStyle, width: '100%' })
+            .setStyles({ ...buttonStyle, width: '100%' })
             .onClick((el, state) => {
               const { conduitData } = state;
               const { app: to, topic, message } = conduitData;
@@ -151,37 +149,37 @@ const VisualsControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fabricate.updateState('visualsData', ({ visualsData }) => ({ ...visualsData, [k]: v }));
+  const setProp = (k, v) => fabricate.update('visualsData', ({ visualsData }) => ({ ...visualsData, [k]: v }));
 
   return ControlContainer()
-    .withChildren([
+    .setChildren([
       ControlRow()
-        .withChildren([
+        .setChildren([
           fabricate('TextBox', { placeholder: 'Red' })
-            .watchState((el, { visualsData: { red } }) => el.setText(red))
-            .withStyles({ width: '30%' })
-            .onChange((el, value) => setProp('red', parseInt(value, 10))),
+            .onUpdate((el, { visualsData: { red } }) => el.setText(red))
+            .setStyles({ width: '30%' })
+            .onChange((el, state, value) => setProp('red', parseInt(value, 10))),
           fabricate('TextBox', { placeholder: 'Green' })
-            .watchState((el, { visualsData: { green } }) => el.setText(green))
-            .withStyles({ width: '30%' })
-            .onChange((el, value) => setProp('green', parseInt(value, 10))),
+            .onUpdate((el, { visualsData: { green } }) => el.setText(green))
+            .setStyles({ width: '30%' })
+            .onChange((el, state, value) => setProp('green', parseInt(value, 10))),
           fabricate('TextBox', { placeholder: 'Blue' })
-            .watchState((el, { visualsData: { blue } }) => el.setText(blue))
-            .withStyles({ width: '30%' })
-            .onChange((el, value) => setProp('blue', parseInt(value, 10))),
+            .onUpdate((el, { visualsData: { blue } }) => el.setText(blue))
+            .setStyles({ width: '30%' })
+            .onChange((el, state, value) => setProp('blue', parseInt(value, 10))),
         ]),
       ControlRow()
-        .withChildren([
+        .setChildren([
           fabricate('TextBox', { placeholder: 'Text' })
-            .watchState((el, { visualsData: { text } }) => el.setText(text))
-            .withStyles({ width: '100%' })
-            .onChange((el, value) => setProp('text', value)),
+            .onUpdate((el, { visualsData: { text } }) => el.setText(text))
+            .setStyles({ width: '100%' })
+            .onChange((el, state, value) => setProp('text', value)),
         ]),
-      fabricate.Row()
-        .withChildren([
+      fabricate('Row')
+        .setChildren([
           fabricate('TextButton')
             .setText('All')
-            .withStyles({ ...buttonStyle, width: '20%' })
+            .setStyles({ ...buttonStyle, width: '20%' })
             .onClick((el, state) => {
               const { visualsData } = state;
               const { red, green, blue } = visualsData;
@@ -190,7 +188,7 @@ const VisualsControls = () => {
             }),
           fabricate('TextButton')
             .setText('Pixel')
-            .withStyles({ ...buttonStyle, width: '20%' })
+            .setStyles({ ...buttonStyle, width: '20%' })
             .onClick((el, state) => {
               const { visualsData } = state;
               const {
@@ -201,7 +199,7 @@ const VisualsControls = () => {
             }),
           fabricate('TextButton')
             .setText('Blink')
-            .withStyles({ ...buttonStyle, width: '20%' })
+            .setStyles({ ...buttonStyle, width: '20%' })
             .onClick((el, state) => {
               const { visualsData } = state;
               const {
@@ -212,7 +210,7 @@ const VisualsControls = () => {
             }),
           fabricate('TextButton')
             .setText('Text')
-            .withStyles({ ...buttonStyle, width: '20%' })
+            .setStyles({ ...buttonStyle, width: '20%' })
             .onClick((el, state) => {
               const { visualsData } = state;
               const { text } = visualsData;
@@ -221,7 +219,7 @@ const VisualsControls = () => {
             }),
           fabricate('TextButton')
             .setText('State')
-            .withStyles({ ...buttonStyle, width: '20%' })
+            .setStyles({ ...buttonStyle, width: '20%' })
             .onClick((el, state) => ConduitService.sendPacket(state, { to: 'visuals', topic: 'state' })),
         ]),
     ]);
@@ -239,41 +237,41 @@ const GuestlistControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fabricate.updateState('guestlistData', ({ guestlistData }) => ({ ...guestlistData, [k]: v }));
+  const setProp = (k, v) => fabricate.update('guestlistData', ({ guestlistData }) => ({ ...guestlistData, [k]: v }));
 
   return ControlContainer()
-    .withChildren([
+    .setChildren([
       ControlRow()
-        .withChildren([
+        .setChildren([
           fabricate('TextBox', { placeholder: 'Name' })
-            .watchState((el, { guestlistData: { name } }) => el.setText(name))
-            .withStyles({ width: '30%' })
-            .onChange((el, value) => setProp('name', value)),
+            .onUpdate((el, { guestlistData: { name } }) => el.setText(name))
+            .setStyles({ width: '30%' })
+            .onChange((el, state, value) => setProp('name', value)),
           fabricate('TextBox', { placeholder: 'Apps' })
-            .watchState((el, { guestlistData: { apps } }) => el.setText(apps))
-            .withStyles({ width: '30%' })
-            .onChange((el, value) => setProp('apps', value)),
+            .onUpdate((el, { guestlistData: { apps } }) => el.setText(apps))
+            .setStyles({ width: '30%' })
+            .onChange((el, state, value) => setProp('apps', value)),
           fabricate('TextBox', { placeholder: 'Topics' })
-            .watchState((el, { guestlistData: { topics } }) => el.setText(topics))
-            .withStyles({ width: '30%' })
-            .onChange((el, value) => setProp('topics', value)),
+            .onUpdate((el, { guestlistData: { topics } }) => el.setText(topics))
+            .setStyles({ width: '30%' })
+            .onChange((el, state, value) => setProp('topics', value)),
         ]),
       ControlRow()
-        .withChildren([
+        .setChildren([
           fabricate('TextBox', { placeholder: 'Admin password' })
-            .watchState((el, { guestlistData: { adminPassword } }) => el.setText(adminPassword))
-            .withStyles({ width: '100%' })
-            .onChange((el, value) => setProp('adminPassword', value)),
+            .onUpdate((el, { guestlistData: { adminPassword } }) => el.setText(adminPassword))
+            .setStyles({ width: '100%' })
+            .onChange((el, state, value) => setProp('adminPassword', value)),
         ]),
-      fabricate.Row()
-        .withChildren([
+      fabricate('Row')
+        .setChildren([
           fabricate('TextButton')
             .setText('List Users')
-            .withStyles({ ...buttonStyle, width: '33%' })
+            .setStyles({ ...buttonStyle, width: '33%' })
             .onClick((el, state) => ConduitService.sendPacket(state, { to: 'guestlist', topic: 'getAll' })),
           fabricate('TextButton')
             .setText('Create User')
-            .withStyles({ ...buttonStyle, width: '33%' })
+            .setStyles({ ...buttonStyle, width: '33%' })
             .onClick((el, state) => {
               const { guestlistData } = state;
               const {
@@ -289,7 +287,7 @@ const GuestlistControls = () => {
             }),
           fabricate('TextButton')
             .setText('Delete User')
-            .withStyles({ ...buttonStyle, width: '33%' })
+            .setStyles({ ...buttonStyle, width: '33%' })
             .onClick((el, state) => {
               const { guestlistData } = state;
               const {
@@ -319,43 +317,43 @@ const ClacksControls = () => {
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
    */
-  const setProp = (k, v) => fabricate.updateState('clacksData', ({ clacksData }) => ({ ...clacksData, [k]: v }));
+  const setProp = (k, v) => fabricate.update('clacksData', ({ clacksData }) => ({ ...clacksData, [k]: v }));
 
   return ControlContainer()
-    .withChildren([
+    .setChildren([
       ControlRow()
-        .withChildren([
+        .setChildren([
           fabricate('TextBox', { placeholder: 'Topic' })
-            .watchState((el, { clacksData: { topic } }) => el.setText(topic))
-            .withStyles({ width: '100%' })
-            .onChange((el, value) => setProp('topic', value)),
+            .onUpdate((el, { clacksData: { topic } }) => el.setText(topic))
+            .setStyles({ width: '100%' })
+            .onChange((el, state, value) => setProp('topic', value)),
         ]),
       ControlRow()
-        .withChildren([
+        .setChildren([
           fabricate('TextBox', { placeholder: 'Message' })
-            .watchState((el, { clacksData: { message } }) => el.setText(message))
-            .withStyles({ width: '100%' })
-            .onChange((el, value) => setProp('message', value))
-            .then((el) => {
+            .onUpdate((el, { clacksData: { message } }) => el.setText(message))
+            .setStyles({ width: '100%' })
+            .onChange((el, state, value) => setProp('message', value))
+            .onCreate((el) => {
               // Default value
               el.value = '{}';
             }),
         ]),
-      fabricate.Row()
-        .withChildren([
+      fabricate('Row')
+        .setChildren([
           fabricate('TextButton')
             .setText('Send')
-            .withStyles({ ...buttonStyle, width: '100%', backgroundColor: Theme.colors.darkGrey })
+            .setStyles({ ...buttonStyle, width: '100%', backgroundColor: Theme.colors.darkGrey })
             .onClick((el, { clacksData }) => {
               const { topic, message } = clacksData;
               ClacksService.sendMessage(topic, message);
             })
-            .watchState((el, { clacksData: { connected } }) => el.addStyles({
+            .onUpdate((el, { clacksData: { connected } }) => el.setStyles({
               backgroundColor: connected ? Theme.colors.primary : Theme.colors.darkGrey,
             })),
         ]),
     ])
-    .then((el, { clacksData, ip }) => {
+    .onCreate((el, { clacksData, ip }) => {
       // Try and connect if not connected
       if (clacksData.connected) ClacksService.disconnect();
       setTimeout(() => ClacksService.connect(ip), 500);
