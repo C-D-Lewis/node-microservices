@@ -74,7 +74,7 @@
         "start": "http-server -p 34279 &"
       },
       {
-        "location": "code/discord-bot-hom",
+        "location": "code/discord-bot-norren",
         "start": "npm start &"
       }
     ],
