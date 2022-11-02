@@ -107,7 +107,7 @@ cd node-common && npm i node-blinkt
 curl https://get.pimoroni.com/motephat | bash
 ```
 
-# PiOLED?
+# PiOLED hat?
 ```
 sudo apt-get install -y python3-pip
 sudo pip3 install adafruit-circuitpython-ssd1306
@@ -146,6 +146,26 @@ sudo pip3 install RPi.GPIO spidev
 sudo raspi-config
 ```
 > enable SPI interface
+
+# 128x32 (SSD1306 based)
+
+```
+sudo raspi-config
+```
+> enable I2C interface
+```
+sudo reboot
+sudo i2cdetect -y 1
+```
+Dependencies:
+```
+sudo apt install -y python3-dev python-smbus i2c-tools python3-pil python3-pip python3-setuptools python3-rpi.gpio
+```
+Examples:
+```
+git clone https://github.com/adafruit/Adafruit_Python_SSD1306.git
+sudo python3 setup.py install
+```
 
 # Startup apps with launch-config
 ```
