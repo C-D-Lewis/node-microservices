@@ -1,12 +1,13 @@
 const { execSync } = require('child_process');
 const os = require('os');
 const config = require('./config');
-const log = require('./log');
 
 /** Supported OLED/text compatible boards */
-const SUPPORTED_BOARDS = ['pioled'];
-/** Path to the Python lib */
+const SUPPORTED_BOARDS = ['pioled', 'ssd1306'];
+/** Path to supporting Python script */
 const PIOLED_LIB_PATH = `${__dirname}/../lib/pioled-text.py`;
+/** Path to supporting Python script */
+const SSD1306_LIB_PATH = `${__dirname}/../lib/ssd1306.py`;
 
 config.requireKeys('textDisplay.js', {
   required: ['TEXT_DISPLAY'],
@@ -24,6 +25,7 @@ config.requireKeys('textDisplay.js', {
 /** Maximum number of lines of text supported */
 const NUM_LINES = {
   pioled: 4,
+  ssd1306: 4,
 }[config.TEXT_DISPLAY.HARDWARE_TYPE];
 
 const linesState = [];
@@ -34,12 +36,15 @@ let initialised;
  */
 const init = () => {
   // Begin state
-  for (let i = 0; i < NUM_LINES; i++) {
-    linesState.push('');
-  }
+  for (let i = 0; i < NUM_LINES; i += 1) linesState.push('');
 
   // PiOLED
   if (config.TEXT_DISPLAY.HARDWARE_TYPE === 'pioled') {
+    // No other initialisation necessary
+  }
+
+  // PiOLED
+  if (config.TEXT_DISPLAY.HARDWARE_TYPE === 'ssd1306') {
     // No other initialisation necessary
   }
 
@@ -83,18 +88,33 @@ const setLine = (index, message) => {
     return;
   }
 
+  if (config.TEXT_DISPLAY.HARDWARE_TYPE === 'ssd1306') {
+    // Update all lines using state, including the new one
+    let cmd = `python3 ${SSD1306_LIB_PATH}`;
+    linesState.forEach((p) => {
+      cmd += ` "${p}"`;
+    });
+
+    execSync(cmd);
+    return;
+  }
+
   // Other types...
+  throw new Error('Unsupported hardware types');
 };
 
 /**
  * Set multiple lines at once, starting from the top line.
  *
  * @param {Array<string>} lines - Lines of text to set.
+ * @returns {void}
  */
 const setLines = (lines) => lines.forEach((p, i) => setLine(i, p));
 
 /**
  * Clear all lines.
+ *
+ * @returns {void}
  */
 const clearLines = () => setLines(' '.repeat(NUM_LINES).split(''));
 
@@ -102,6 +122,16 @@ module.exports = {
   setLine,
   setLines,
   clearLines,
+  /**
+   * Getter for linesState.
+   *
+   * @returns {Array<string>} linesState
+   */
   getLinesState: () => linesState,
+  /**
+   * Getter for NUM_LINES.
+   *
+   * @returns {number} NUM_LINES
+   */
   getNumLines: () => NUM_LINES,
 };
