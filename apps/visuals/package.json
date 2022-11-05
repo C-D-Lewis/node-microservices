@@ -13,22 +13,11 @@
     "spotify-web-api-node": "^5.0.0"
   },
   "devDependencies": {
+    "@chris-lewis/eslint-config": "^1.0.3",
     "chai": "^4.1.2",
-    "eslint": "^7.2.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1",
     "mocha": "^8.2.1"
   },
   "eslintConfig": {
-    "extends": "eslint-config-airbnb-base",
-    "env": {
-      "node": true
-    },
-    "rules": {
-      "no-multi-spaces": 0,
-      "global-require": 0,
-      "import/no-dynamic-require": 0,
-      "no-await-in-loop": 0
-    }
+    "extends": "@chris-lewis/eslint-config"
   }
 }

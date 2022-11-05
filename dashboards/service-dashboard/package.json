@@ -6,30 +6,11 @@
     "start": "http-server"
   },
   "devDependencies": {
-    "eslint": "^8.3.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.25.3",
+    "@chris-lewis/eslint-config": "^1.0.3",
     "http-server": "^14.1.1"
   },
   "eslintConfig": {
-    "extends": "eslint-config-airbnb-base",
-    "env": {
-      "browser": true
-    },
-    "rules": {
-      "no-multi-spaces": 0,
-      "global-require": 0,
-      "import/no-dynamic-require": 0,
-      "no-await-in-loop": 0,
-      "no-console": 0,
-      "no-alert": 0,
-      "no-param-reassign": [
-        "error",
-        {
-          "props": false
-        }
-      ]
-    },
+    "extends": "@chris-lewis/eslint-config",
     "globals": {
       "fabricate": "readonly",
       "confirm": "readonly",

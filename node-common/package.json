@@ -17,7 +17,11 @@
     "ws": "^8.2.3"
   },
   "devDependencies": {
+    "@chris-lewis/eslint-config": "^1.0.3",
     "chai": "^4.2.0",
     "mocha": "^8.3.2"
+  },
+  "eslintConfig": {
+    "extends": "@chris-lewis/eslint-config"
   }
 }
