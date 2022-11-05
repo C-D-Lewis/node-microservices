@@ -95,7 +95,6 @@
         "location": "code/node-microservices/dashboards/lighting-dashboard",
         "start": "http-server -p 54448 &"
       }
-
     ],
     "stack-util": [
       {
@@ -221,6 +220,20 @@
     "ad-blocker-home": [
       {
         "location": "code/node-microservices/apps/conduit",
+        "start": "npm start &"
+      }
+    ],
+    "test-blade": [
+      {
+        "location": "code/node-microservices/apps/conduit",
+        "start": "npm start &"
+      },
+      {
+        "location": "code/node-microservices/apps/attic",
+        "start": "npm start &"
+      },
+      {
+        "location": "code/node-microservices/apps/monitor",
         "start": "npm start &"
       }
     ]

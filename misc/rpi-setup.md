@@ -147,7 +147,7 @@ sudo raspi-config
 ```
 > enable SPI interface
 
-# 128x32 (SSD1306 based)
+# 128x32 OLED (SSD1306 based)
 
 ```
 sudo raspi-config
