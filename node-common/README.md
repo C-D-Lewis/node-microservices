@@ -18,3 +18,5 @@ testing.
 
 Tests run in `test` with `npm test`. Some are stubbed when not running on ARM
 (on a Pi), but should still handle this situation and all pass on Linux/Mac.
+
+At least `conduit`, `attic`, and `visuals` must be running.

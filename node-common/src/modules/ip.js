@@ -11,7 +11,7 @@ const getPublic = async () => {
   try {
     const { body } = await requestAsync('https://api.ipify.org?format=json');
     return JSON.parse(body).ip;
-  } catch(e) {
+  } catch (e) {
     log.error('Failed to get public IP');
     log.error(e);
     return 'unknown';
@@ -29,13 +29,13 @@ const getInterfaceAddress = (ifName) => {
   const iface = interfaces[ifName];
   if (!iface) {
     log.debug(`Interface ${ifName} not available`);
-    return;
+    return undefined;
   }
 
-  const v4 = iface.find(p => p.family === 'IPv4');
+  const v4 = iface.find((p) => p.family === 'IPv4');
   if (!v4) {
     log.debug(`No IPv4 for ${ifName}`);
-    return;
+    return undefined;
   }
 
   return v4.address;
@@ -47,12 +47,11 @@ const getInterfaceAddress = (ifName) => {
  * @returns {string} Local IP address, if one of the tried interfaces has one.
  */
 const getLocal = () => {
-  const address = getInterfaceAddress('eth0') ||  // Ethernet
-    getInterfaceAddress('wlan0') ||               // WLAN
-    getInterfaceAddress('wlan1') ||               // WLAN
-    getInterfaceAddress('en0') ||                 // Mac OS WLAN
-    getInterfaceAddress('enp0s3');                // Ubuntu VM Wired
-
+  const address = getInterfaceAddress('eth0') // Ethernet
+    || getInterfaceAddress('wlan0')           // WLAN
+    || getInterfaceAddress('wlan1')           // WLAN (dongle)
+    || getInterfaceAddress('en0')             // Mac OS WLAN
+    || getInterfaceAddress('enp0s3');         // Ubuntu VM Wired
   if (!address) throw new Error('No interface available for ip.getLocal()');
 
   return address;

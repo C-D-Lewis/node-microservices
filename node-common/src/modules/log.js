@@ -75,9 +75,10 @@ const writeToFile = (msg) => {
  */
 const assert = (condition, msg, strict = false) => {
   if (!condition) {
-    msg = `Assertion failed: ${msg}`;
+    const finalMsg = `Assertion failed: ${msg}`;
+    // eslint-disable-next-line no-use-before-define
     const func = strict ? fatal : error;
-    func(msg);
+    func(finalMsg);
   }
 
   return condition;
@@ -95,16 +96,16 @@ const log = (level, msg) => {
   if (!(config.LOG.LEVEL.includes(level) || ['error', 'fatal'].includes(level))) return;
 
   // Message must be something
-  if (!assert(msg, `log 'msg' must not be undefined`, false))
-    throw new Error('log \'msg\' was undefined');
+  if (!assert(msg, 'log \'msg\' must not be undefined', false)) { throw new Error('log \'msg\' was undefined'); }
 
   // Handle Error or JSON object
+  let finalMsg = msg;
   if (typeof msg === 'object') {
-    msg = msg.message || JSON.stringify(msg);
+    finalMsg = msg.message || JSON.stringify(msg);
   }
 
   // Write to all outputs
-  const logLine = `${buildPrefix(level)} ${msg}`;
+  const logLine = `${buildPrefix(level)} ${finalMsg}`;
   writeToFile(logLine);
   console.log(logLine);
 
@@ -112,11 +113,37 @@ const log = (level, msg) => {
   if (level === 'fatal') process.exit(1);
 };
 
-// Helper aliases
-const info = msg => log('info', msg);
-const debug = msg => log('debug', msg);
-const error = msg => log('error', msg);
-const fatal = msg => log('fatal', msg);
+/**
+ * Helper for info level.
+ *
+ * @param {*} msg - Log content.
+ * @returns {void}
+ */
+const info = (msg) => log('info', msg);
+
+/**
+ * Helper for debug level.
+ *
+ * @param {*} msg - Log content.
+ * @returns {void}
+ */
+const debug = (msg) => log('debug', msg);
+
+/**
+ * Helper for error level.
+ *
+ * @param {*} msg - Log content.
+ * @returns {void}
+ */
+const error = (msg) => log('error', msg);
+
+/**
+ * Helper for fatal level.
+ *
+ * @param {*} msg - Log content.
+ * @returns {void}
+ */
+const fatal = (msg) => log('fatal', msg);
 
 /**
  * Print fancy decor when app starts.
@@ -133,13 +160,16 @@ const printDecor = () => {
 /**
  * Get logfile size in MB.
  *
- * @returns {number} Logfile size. 
+ * @returns {number} Logfile size.
  */
 const getLogfileSizeMb = () => {
   try {
     const { size } = fs.statSync(FILE_PATH);
-    return Math.round(size / (1024*1024));
-  } catch (e) {}
+    return Math.round(size / (1024 * 1024));
+  } catch (e) {
+    // OK, not there yet
+    return undefined;
+  }
 };
 
 /**
