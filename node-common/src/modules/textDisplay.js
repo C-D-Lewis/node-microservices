@@ -28,29 +28,18 @@ const NUM_LINES = {
   ssd1306: 4,
 }[config.TEXT_DISPLAY.HARDWARE_TYPE];
 
-const linesState = [];
-let initialised;
+let linesState = ''.repeat(NUM_LINES);
 
 /**
  * Initialise module state and hardware.
  */
 const init = () => {
   // Begin state
-  for (let i = 0; i < NUM_LINES; i += 1) linesState.push('');
+  linesState = ''.repeat(NUM_LINES);
 
-  // PiOLED
-  if (config.TEXT_DISPLAY.HARDWARE_TYPE === 'pioled') {
-    // No other initialisation necessary
-  }
-
-  // PiOLED
-  if (config.TEXT_DISPLAY.HARDWARE_TYPE === 'ssd1306') {
-    // No other initialisation necessary
-  }
-
-  // Other types...
-
-  initialised = true;
+  // PiOLED - No other initialisation necessary
+  // SSD1306 - No other initialisation necessary
+  // Other types?
 };
 
 /**
@@ -58,58 +47,32 @@ const init = () => {
  *
  * @returns {boolean} true if the current platform is supported.
  */
-const hardwareAvailable = () => {
-  // Not Pi (ARM) or disabled
-  if (!os.arch().includes('arm') || !config.TEXT_DISPLAY.USE_HARDWARE) return false;
-
-  if (!initialised) init();
-  return true;
-};
+const hardwareAvailable = () => (os.arch().includes('arm') && config.TEXT_DISPLAY.USE_HARDWARE);
 
 /**
  * Set a given line of text.
  *
- * @param {number} index - Index of line to set.
- * @param {string} message - Line text content.
+ * @param {Array<string>} lines - Lines of text to set.
  */
-const setLine = (index, message) => {
-  linesState[index] = message;
+const setLines = (lines) => {
+  linesState = [...lines];
   if (!hardwareAvailable()) return;
 
   // PiOLED
   if (config.TEXT_DISPLAY.HARDWARE_TYPE === 'pioled') {
-    // Update all lines using state, including the new one
-    let cmd = `python3 ${PIOLED_LIB_PATH}`;
-    linesState.forEach((p) => {
-      cmd += ` "${p}"`;
-    });
-
-    execSync(cmd);
+    execSync(`python3 ${PIOLED_LIB_PATH} ${linesState.map((p) => `"${p}"`).join(' ')}`);
     return;
   }
 
+  // SSD1306 module
   if (config.TEXT_DISPLAY.HARDWARE_TYPE === 'ssd1306') {
-    // Update all lines using state, including the new one
-    let cmd = `python3 ${SSD1306_LIB_PATH}`;
-    linesState.forEach((p) => {
-      cmd += ` "${p}"`;
-    });
-
-    execSync(cmd);
+    execSync(`python3 ${SSD1306_LIB_PATH} ${linesState.map((p) => `"${p}"`).join(' ')}`);
     return;
   }
 
   // Other types...
   throw new Error('Unsupported hardware types');
 };
-
-/**
- * Set multiple lines at once, starting from the top line.
- *
- * @param {Array<string>} lines - Lines of text to set.
- * @returns {void}
- */
-const setLines = (lines) => lines.forEach((p, i) => setLine(i, p));
 
 /**
  * Clear all lines.
@@ -119,7 +82,6 @@ const setLines = (lines) => lines.forEach((p, i) => setLine(i, p));
 const clearLines = () => setLines(' '.repeat(NUM_LINES).split(''));
 
 module.exports = {
-  setLine,
   setLines,
   clearLines,
   /**
