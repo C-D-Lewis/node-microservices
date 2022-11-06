@@ -44,6 +44,9 @@ const hardwareAvailable = () => (os.arch().includes('arm') && config.TEXT_DISPLA
  */
 const setLines = (lines) => {
   linesState = [...lines];
+
+  // Fill to expected number
+  while (linesState.length < NUM_LINES) linesState.push('');
   if (!hardwareAvailable()) return;
 
   // PiOLED

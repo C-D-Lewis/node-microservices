@@ -65,7 +65,8 @@ const handleAt = async (pluginName, plugin, pluginFunc) => {
  * @param {object} plugin - The plugin object.
  * @param {Function} pluginFunc - Function to call to call the plugin's code.
  */
-const handleEvery = (pluginName, plugin, pluginFunc) => {
+const handleEvery = async (pluginName, plugin, pluginFunc) => {
+  // Regular runs
   setInterval(async () => {
     log.info(`Running ${pluginName}`);
     try {
@@ -75,6 +76,16 @@ const handleEvery = (pluginName, plugin, pluginFunc) => {
       log.error(e);
     }
   }, plugin.EVERY * 60 * 1000);
+
+  // First interval is now
+  // TODO: DRY
+  try {
+    await pluginFunc(plugin.ARGS);
+  } catch (e) {
+    log.error(`Failed to run plugin function: ${pluginName}`);
+    log.error(e);
+  }
+
   log.info(`EVERY ${plugin.EVERY}: ${JSON.stringify(plugin)}`);
 };
 

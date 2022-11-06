@@ -29,10 +29,10 @@ font = ImageFont.load_default()
 draw.rectangle((0,0,width,height), outline=0, fill=0)
 
 # Write lines of text.
-draw.text((0, top), lines[0] or '', font=font, fill=255)
-draw.text((0, top + 8), lines[1] or '', font=font, fill=255)
-draw.text((0, top + 16), lines[2] or '', font=font, fill=255)
-draw.text((0, top + 25), lines[3] or '', font=font, fill=255)
+draw.text((0, top), lines[0], font=font, fill=255)
+draw.text((0, top + 8), lines[1], font=font, fill=255)
+draw.text((0, top + 16), lines[2], font=font, fill=255)
+draw.text((0, top + 25), lines[3], font=font, fill=255)
 
 disp.image(image)
 disp.display()
