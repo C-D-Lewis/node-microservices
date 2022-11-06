@@ -15,7 +15,7 @@ module.exports = async () => {
   const memoryPerc = 100 - (Math.round((freeMemory * 100) / totalMemory));
 
   const lines = [
-    `${hostname} (${ipLastTwoOctets})`,
+    `${hostname} (.${ipLastTwoOctets})`,
     `${cpuMinute}% / ${memoryPerc}%`,
   ];
   log.debug(lines);
