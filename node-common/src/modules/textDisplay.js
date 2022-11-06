@@ -31,18 +31,6 @@ const NUM_LINES = {
 let linesState = ''.repeat(NUM_LINES);
 
 /**
- * Initialise module state and hardware.
- */
-const init = () => {
-  // Begin state
-  linesState = ''.repeat(NUM_LINES);
-
-  // PiOLED - No other initialisation necessary
-  // SSD1306 - No other initialisation necessary
-  // Other types?
-};
-
-/**
  * Test if hardware is available on this platform.
  *
  * @returns {boolean} true if the current platform is supported.

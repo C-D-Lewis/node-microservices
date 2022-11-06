@@ -18,4 +18,5 @@ require('./motePhat.spec');
 require('./requestAsync.spec');
 require('./schema.spec');
 require('./server.spec');
-// require('./textDisplay.spec');
+require('./ses.spec');
+require('./textDisplay.spec');

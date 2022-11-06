@@ -17,7 +17,8 @@
   },
   "GIST_SYNC": {
     "URL": "",
-    "DIR": "gist"
+    "DIR": "gist",
+    "SYNC_INTERVAL_M": 5
   },
   "LEDS": {
     "ATTENUATION_FACTOR": 0.1,
