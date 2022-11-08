@@ -20,14 +20,14 @@ module.exports = async () => {
   const [, time] =  new Date().toISOString().split('T');
   const timeNow = time.split(':').slice(0, 2).join(':');
 
-  const apps = await fetch('http://localhost:5959/apps').then(r => r.json());
-  const servicesUp = apps.filter(p => p.status === 'OK').length;
+  const apps = await fetch('http://localhost:5959/apps').then((r) => r.json());
+  const appsUp = apps.filter((p) => p.status === 'OK').length;
 
   const lines = [
     `${hostname} (.${ipLastTwoOctets})`,
-    `Up ${uptimeStr} hrs (${timeNow})`,
-    `CPU ${cpuMinute} / RAM ${memoryPerc}%`,
-    `${servicesUp}/${apps.length} services`,
+    `${timeNow} (Up ${uptimeStr} hrs)`,
+    `C:${cpuMinute} / M:${memoryPerc} / A:${appsUp}/${apps.length}`,
+    '',
   ];
   log.debug(lines);
   await display.setText(lines);

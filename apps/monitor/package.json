@@ -14,5 +14,8 @@
   },
   "eslintConfig": {
     "extends": "@chris-lewis/eslint-config"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
   }
 }
