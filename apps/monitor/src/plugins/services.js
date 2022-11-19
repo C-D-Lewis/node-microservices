@@ -1,7 +1,7 @@
 const {
   config, log, requestAsync, ses,
 } = require('../node-common')(['config', 'log', 'requestAsync', 'ses']);
-const display = require('../modules/display');
+const visuals = require('../modules/visuals');
 
 config.requireKeys('services.js', {
   required: ['CONDUIT'],
@@ -46,7 +46,7 @@ module.exports = async (args) => {
   const stateNow = downApps.length === 0;
   const serviceList = json.map((p) => p.app).join(', ');
   log.info(`Services up: ${stateNow} (${serviceList})`);
-  display.setLed(
+  visuals.setLed(
     args.LED,
     stateNow ? LED_STATE_OK : LED_STATE_DOWN,
   );

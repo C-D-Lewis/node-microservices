@@ -2,7 +2,7 @@ const {
   hostname, loadavg, freemem, totalmem, uptime,
 } = require('os');
 const fetch = require('node-fetch');
-const display = require('../modules/display');
+const visuals = require('../modules/visuals');
 const { ip, log } = require('../node-common')(['ip', 'log']);
 
 /**
@@ -30,5 +30,5 @@ module.exports = async () => {
     '',
   ];
   log.debug(lines);
-  await display.setText(lines);
+  await visuals.setText(lines);
 };

@@ -1,7 +1,7 @@
 const {
   requestAsync, log, extract,
 } = require('../node-common')(['requestAsync', 'config', 'log', 'extract']);
-const display = require('../modules/display');
+const visuals = require('../modules/visuals');
 
 /** LED state for OK */
 const LED_STATE_OK = [0, 255, 0];
@@ -88,13 +88,13 @@ module.exports = async (args) => {
   try {
     // const gaOk = await checkDelays(GREATER_ANGLIA);
     const tflOk = await checkDelays(TFL_RAIL);
-    display.setLed(
+    visuals.setLed(
       args.LED,
       (/* gaOk && */tflOk) ? LED_STATE_OK : LED_STATE_DOWN,
     );
   } catch (e) {
     log.error(e);
 
-    display.setLed(args.LED, LED_STATE_DOWN);
+    visuals.setLed(args.LED, LED_STATE_DOWN);
   }
 };

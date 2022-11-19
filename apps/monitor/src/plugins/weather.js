@@ -1,5 +1,5 @@
 const { requestAsync, log } = require('../node-common')(['requestAsync', 'log']);
-const display = require('../modules/display');
+const visuals = require('../modules/visuals');
 
 /** LED state for OK */
 const LED_STATE_OK = [0, 255, 0];
@@ -44,10 +44,10 @@ const checkWeather = async (args) => {
 module.exports = async (args) => {
   try {
     const state = await checkWeather(args);
-    display.setLed(args.LED, state);
+    visuals.setLed(args.LED, state);
   } catch (e) {
     log.error(e);
 
-    display.setLed(args.LED, LED_STATE_DOWN);
+    visuals.setLed(args.LED, LED_STATE_DOWN);
   }
 };

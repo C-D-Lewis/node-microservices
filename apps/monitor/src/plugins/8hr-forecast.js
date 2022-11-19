@@ -1,5 +1,5 @@
 const { requestAsync, log } = require('../node-common')(['requestAsync', 'log']);
-const display = require('../modules/display');
+const visuals = require('../modules/visuals');
 
 /** LED state for DOWN */
 const LED_STATE_DOWN = [255, 0, 0];
@@ -62,11 +62,11 @@ module.exports = async (args) => {
   try {
     const ledStates = await getForecastLedStates(args);
     for (let i = 0; i < ledStates.length; i += 1) {
-      await display.setLed(i, ledStates[i]);
+      await visuals.setLed(i, ledStates[i]);
     }
   } catch (e) {
     log.error(e);
 
-    display.setLed(args.LED, LED_STATE_DOWN);
+    visuals.setLed(args.LED, LED_STATE_DOWN);
   }
 };
