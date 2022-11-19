@@ -29,7 +29,6 @@ let lastState = true;
  */
 module.exports = async (args) => {
   const host = args.HOST || 'localhost';
-  log.debug(`services host=${host}`);
 
   // Read apps list
   const { body } = await requestAsync(`http://${host}:${config.CONDUIT.PORT}/apps`);
