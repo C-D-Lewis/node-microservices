@@ -47,7 +47,7 @@ const start = async (appName) => {
     }
 
     console.log(`App ${found} failed to launch - check app logs for info`);
-  }, 5000);
+  }, 8000);
 };
 
 /**
@@ -63,10 +63,15 @@ const stop = async (appName) => {
 
   const finalHost = switches.HOST || 'localhost';
   const { port } = found;
-  const res = await fetch(`http://${finalHost}:${port}/kill`, { method: 'POST' }).then((r) => r.json());
-  if (!res.stop) throw new Error(`Failed to stop app: ${res}`);
 
-  console.log(`Stopped ${appName}`);
+  try {
+    const res = await fetch(`http://${finalHost}:${port}/kill`, { method: 'POST' }).then((r) => r.json());
+    if (!res.stop) throw new Error(`Failed to stop app: ${res}`);
+    console.log(`Stopped ${appName}`);
+  } catch (e) {
+    console.log(`Problem stopping ${appName}`);
+    console.log(e);
+  }
 };
 
 /**
@@ -91,14 +96,19 @@ const stopAll = async () => {
  * List running apps.
  */
 const list = async () => {
-  const apps = await fetchRunningApps();
+  try {
+    const apps = await fetchRunningApps();
 
-  const headers = ['name', 'port', 'pid', 'status'];
-  const rows = apps.reduce(
-    (acc, p) => ([...acc, [p.app, p.port, p.pid, p.status.slice(0, 64)]]),
-    [],
-  );
-  printTable(headers, rows);
+    const headers = ['name', 'port', 'pid', 'status'];
+    const rows = apps.reduce(
+      (acc, p) => ([...acc, [p.app, p.port, p.pid, p.status.slice(0, 64)]]),
+      [],
+    );
+    printTable(headers, rows);
+  } catch (e) {
+    console.log(e);
+    console.log('Failed to list apps - is conduit itself running?');
+  }
 };
 
 module.exports = {

@@ -12,10 +12,6 @@
   "DB": {
     "FILE":  "./db.json"
   },
-  "EVT_DB": {
-    "THNG_ID": "",
-    "DEVICE_API_KEY": ""
-  },
   "CONDUIT": {
     "HOST": "localhost",
     "PORT": 5959,

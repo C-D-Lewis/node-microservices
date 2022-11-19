@@ -11,10 +11,6 @@
     "APP": "NodeCommon",
     "PORT": 5959
   },
-  "EVT_DB": {
-    "THNG_ID": "",
-    "DEVICE_API_KEY": ""
-  },
   "GIST_SYNC": {
     "URL": "",
     "DIR": "gist",
