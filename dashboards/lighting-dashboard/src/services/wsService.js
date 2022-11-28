@@ -57,10 +57,7 @@ const startHeartbeat = () => {
  */
 WsService.sendPacket = (device, packet) => {
   const topic = `/devices/${device.hostname}/conduit`;
-  socket.send(JSON.stringify({
-    topic,
-    data: packet,
-  }));
+  socket.send(JSON.stringify({ topic, data: packet }));
 };
 
 /**
@@ -71,6 +68,9 @@ WsService.sendPacket = (device, packet) => {
 WsService.connect = () => new Promise((resolve) => {
   socket = new WebSocket(`ws://${wsServer}:${WS_PORT}`);
 
+  /**
+   * When the socket is opened.
+   */
   socket.onopen = () => {
     // Request hostnames
     socket.send(JSON.stringify({ topic: TOPIC_GLOBAL_GET_HOSTNAMES, data: {} }));
@@ -81,17 +81,30 @@ WsService.connect = () => new Promise((resolve) => {
     resolve();
   };
 
+  /**
+   * When the socket receives a message.
+   *
+   * @param {*} event - Socket event.
+   */
   socket.onmessage = async (event) => {
     const str = await event.data.text();
     const { topic, data } = JSON.parse(str);
     onMessage(topic, data);
   };
 
+  /**
+   * When the socket closes.
+   */
   socket.onclose = () => {
     fabricate.update({ connected: false });
     setTimeout(WsService.connect, 5000);
   };
 
+  /**
+   * When a socket has an error.
+   *
+   * @param {*} err - Error.
+   */
   socket.onerror = (err) => {
     console.log(err);
     socket.close();

@@ -7,5 +7,6 @@ window.Config = {
     'cirroc',
     'e-paper-home',
     'e-paper-witham',
+    'ad-blocker-home',
   ],
 };
