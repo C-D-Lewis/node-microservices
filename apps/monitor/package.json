@@ -16,6 +16,7 @@
     "extends": "@chris-lewis/eslint-config"
   },
   "dependencies": {
+    "jsonpath": "^1.1.1",
     "node-fetch": "^2.6.7"
   }
 }
