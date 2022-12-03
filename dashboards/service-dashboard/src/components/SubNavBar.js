@@ -73,10 +73,10 @@ const BackBreadcrumb = () => {
       RebootButton(),
     ])
     .onUpdate((el, { fleetList, ip }) => {
-      // const {
-      //   deviceName,
-      // } = [].find(({ publicIp, localIp }) => ip === publicIp || localIp === ip);
-      // deviceSegment.setText(`< ${deviceName} (${ip})`);
+      const [found] = fleetList.filter(
+        ({ publicIp, localIp }) => ip === publicIp || localIp === ip,
+      );
+      if (found) deviceSegment.setText(`< ${found.deviceName} (${ip})`);
     }, ['fleetList', 'ip']);
 };
 

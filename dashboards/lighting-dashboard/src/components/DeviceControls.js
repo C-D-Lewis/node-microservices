@@ -13,11 +13,13 @@ const DEMO_COLORS = [
   [255, 0, 255],  // Pink
   [255, 0, 127],  // Hot pink
 ];
+/** Minimal white color */
+const COLOR_LOW_WHITE = [64, 64, 64];
 
 /**
  * ButtonBar component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const ButtonBar = () => fabricate('Row')
   .setStyles({ margin: '0px 7px', marginBottom: '10px' });
@@ -27,7 +29,7 @@ const ButtonBar = () => fabricate('Row')
  *
  * @param {object} props - Component props.
  * @param {object} props.device - Device object.
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const SwatchesBar = ({ device }) => {
   const row1Colors = DEMO_COLORS.slice(0, 5);
@@ -36,6 +38,12 @@ const SwatchesBar = ({ device }) => {
 
   const buttonBarStyles = { marginLeft: '10px', marginRight: '10px' };
 
+  /**
+   * Build a sawtch button from a color.
+   *
+   * @param {Array<number>} p - Color.
+   * @returns {HTMLElement} Fabricate component.
+   */
   const buildButton = (p) => fabricate('SwatchButton', { backgroundColor: `rgb(${p[0]},${p[1]},${p[2]}` })
     .onClick(() => WsService.sendPacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } }));
 
@@ -58,7 +66,7 @@ const SwatchesBar = ({ device }) => {
  *
  * @param {object} props - Component props.
  * @param {object} props.device - Device object.
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const FunctionsBar = ({ device }) => {
   const buttonStyle = { flex: 1 };
@@ -93,8 +101,8 @@ const FunctionsBar = ({ device }) => {
       })
         .setStyles(buttonStyle)
         .onClick(() => {
-          const message = { all: [64, 64, 64] };
-          WsService.sendPacket(device, { to: 'visuals', topic: 'setAll', message });
+          const message = { 0: COLOR_LOW_WHITE, 1: COLOR_LOW_WHITE, 2: COLOR_LOW_WHITE };
+          WsService.sendPacket(device, { to: 'visuals', topic: 'setPixel', message });
         }),
     ]);
 };
