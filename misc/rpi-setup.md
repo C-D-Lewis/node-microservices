@@ -161,10 +161,27 @@ Dependencies:
 ```
 sudo apt install -y python3-dev python-smbus i2c-tools python3-pil python3-pip python3-setuptools python3-rpi.gpio
 ```
-Examples:
+Test with an example:
 ```
 git clone https://github.com/adafruit/Adafruit_Python_SSD1306.git
 sudo python3 setup.py install
+```
+Configure so crontab/root can access:
+```
+sudo groupadd i2c
+sudo chown :i2c /dev/i2c-1
+sudo chmod g+rw /dev/i2c-1
+sudo usermod -aG i2c root
+sudo usermod -aG i2c pi
+```
+Add udev rule (/etc/udev/rules.d/local.rules`):
+```
+ACTION=="add", KERNEL=="spidev0.0", MODE="0666"
+ACTION=="add", KERNEL=="i2c-[0-1]*", MODE="0666"
+ACTION=="add", KERNEL=="dialout", MODE="0666"
+ACTION=="add", KERNEL=="ttyACM0", MODE="0666"
+ACTION=="add", KERNEL=="ttyAMA0", MODE="0666"
+ACTION=="add", KERNEL=="gpio", MODE="0666"
 ```
 
 # Startup apps with launch-config
