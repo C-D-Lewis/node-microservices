@@ -8,15 +8,11 @@ config.requireKeys('clacks.js', {
   required: ['CLACKS'],
   properties: {
     CLACKS: {
-      required: ['SERVER', 'PORT'],
+      required: ['SERVER'],
       properties: {
         SERVER: {
           type: 'string',
           description: 'Clacks server to connect to',
-        },
-        PORT: {
-          type: 'number',
-          description: 'WebSocket port to connect to',
         },
       },
     },
@@ -24,33 +20,36 @@ config.requireKeys('clacks.js', {
 });
 
 const {
-  CLACKS: { SERVER, PORT },
+  CLACKS: { SERVER },
 } = config;
 
 /** Get hostnames topic */
 const TOPIC_GLOBAL_GET_HOSTNAMES = '/global/getHostnames';
 /** Get hostnames response topic */
 const TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE = '/global/getHostnamesResponse';
+/** Topic for this device heartbeat */
+const TOPIC_THIS_DEVICE_HEARTBEAT = `/devices/${hostname()}/heartbeat`;
 /** Heartbeat interval */
 const HEARTBEAT_INTERVAL_MS = 30000;
+/** Fixed clacks port */
+const PORT = 7777;
 
 // Map of topic to callback
 const subscriptions = {};
 
 let socket;
 let connected;
-let disconnected = false;
+let disconnectRequested = false;
 let heartbeatHandle;
 
 /**
  * Start heartbeat loop.
  */
 const startHeartbeat = () => {
-  const thisDeviceTopic = `/devices/${hostname()}/heartbeat`;
-
   clearInterval(heartbeatHandle);
   heartbeatHandle = setInterval(() => {
-    socket.send(JSON.stringify({ topic: thisDeviceTopic, data: {} }));
+    const message = { topic: TOPIC_THIS_DEVICE_HEARTBEAT, data: {} };
+    socket.send(JSON.stringify(message));
   }, HEARTBEAT_INTERVAL_MS);
 };
 
@@ -59,45 +58,49 @@ const startHeartbeat = () => {
  *
  * @returns {Promise<void>}
  */
-const connect = async () => new Promise(resolve => {
+const connect = async () => new Promise((resolve) => {
   // Already connected?
   if (connected) {
     log.error('Warning: Already connected to clacks');
     return;
   }
 
-  disconnected = false;
+  disconnectRequested = false;
   socket = new WebSocket(`ws://${SERVER}:${PORT}`);
 
+  // When connection established
   socket.on('open', () => {
-    log.debug('clacks: connected');
+    log.debug('clacks.js: connected');
     connected = true;
 
     startHeartbeat();
     resolve();
   });
 
+  // When a message is received
   socket.on('message', (buffer) => {
     const { topic, data } = JSON.parse(buffer.toString());
     log.debug(`clacks << ${topic} ${JSON.stringify(data)}`);
 
+    // Ignore if nobody is listening locally
     if (!subscriptions[topic]) return;
 
     // Pass to the application
     subscriptions[topic](data);
   });
 
+  // When connection is closed
   socket.on('close', () => {
     connected = false;
-    log.debug('clacks: closed');
+    log.debug('clacks.js: closed');
 
     // Retry unless explicitly disconnected
-    if (!disconnected) setTimeout(connect, 5000);
+    if (!disconnectRequested) setTimeout(connect, 5000);
   });
 
   socket.on('error', (err) => {
     log.error(err);
-    log.debug('clacks: errored - closing');
+    log.debug('clacks.js: errored - closing');
     socket.close();
   });
 });
@@ -106,22 +109,22 @@ const connect = async () => new Promise(resolve => {
  * Close the connection.
  */
 const disconnect = () => {
-  disconnected = true;
-  if (!connected) throw new Error('clacks: not yet connected');
+  disconnectRequested = true;
+  if (!connected) throw new Error('clacks.js: not yet connected');
 
   socket.close();
   connected = false;
-  log.debug('clacks: Closed');
+  log.debug('clacks.js: Closed');
 };
 
 /**
  * Subscribe to a message topic.
  *
  * @param {string} topic - Topic to listen to.
- * @param {function} onTopicMessage - Callback when a message with the matching topic is received.
+ * @param {Function} onTopicMessage - Callback when a message with the matching topic is received.
  */
 const subscribeTopic = (topic, onTopicMessage) => {
-  if (!connected) throw new Error('clacks: not yet connected');
+  if (!connected) throw new Error('clacks.js: not yet connected');
 
   subscriptions[topic] = onTopicMessage;
 };
@@ -131,10 +134,11 @@ const subscribeTopic = (topic, onTopicMessage) => {
  *
  * @param {string} topic - Topic to broadcast on.
  * @param {object} data - Data to send.
+ * @returns {void}
  */
 const send = (topic, data = {}) => {
-  if (!connected) throw new Error('clacks: not yet connected');
-  
+  if (!connected) throw new Error('clacks.js: not yet connected');
+
   const message = { topic, data };
   log.debug(`clacks >> ${JSON.stringify(message)}`);
   socket.send(JSON.stringify(message));
@@ -143,25 +147,29 @@ const send = (topic, data = {}) => {
 /**
  * Subscribe for hostnames received from other devices.
  *
- * @param {function} onHostnameResponse - When a hostname response message arrives.
+ * @param {Function} onHostnameResponse - When a hostname response message arrives.
+ * @returns {void}
  */
-const subscribeHostnames = (onHostnameResponse) =>
-  subscribeTopic(
-    TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE,
-    (data) => onHostnameResponse(data.hostname)
-  );
+const subscribeHostnames = (onHostnameResponse) => subscribeTopic(
+  TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE,
+  (data) => onHostnameResponse(data.hostname),
+);
 
 /**
  * Request devices to send hostnames.
+ *
+ * @returns {void}
  */
 const requestHostnames = () => send(TOPIC_GLOBAL_GET_HOSTNAMES);
 
 // Remote host discoverability
-subscriptions[TOPIC_GLOBAL_GET_HOSTNAMES] = async () =>
-  send(
-    TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE,
-    { hostname: hostname(), localIp: ip.getLocal() },
-  );
+/**
+ * Built-in topic to respond to hostname requests
+ */
+subscriptions[TOPIC_GLOBAL_GET_HOSTNAMES] = async () => send(
+  TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE,
+  { hostname: hostname(), localIp: ip.getLocal() },
+);
 
 module.exports = {
   connect,

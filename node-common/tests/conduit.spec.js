@@ -18,7 +18,7 @@ describe('conduit.js', () => {
   });
 
   it('should send a status packet and get 200', async () => {
-    const packet = { to: 'NodeCommon', topic: 'status' };
+    const packet = { to: 'node-common', topic: 'status' };
     const res = await conduit.send(packet);
 
     expect(res.status).to.equal(200);
@@ -26,7 +26,7 @@ describe('conduit.js', () => {
 
   it('should respond to an incoming packet', (done) => {
     setTimeout(async () => {
-      const packet = { to: 'NodeCommon', topic: 'bar' };
+      const packet = { to: 'node-common', topic: 'bar' };
       const res = await conduit.send(packet);
 
       expect(res.message.content).to.equal('OK');

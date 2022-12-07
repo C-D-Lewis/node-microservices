@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 const bodyParser = require('body-parser');
 const express = require('express');
 const config = require('./config');
@@ -9,10 +11,9 @@ config.requireKeys('conduit.js', {
   required: ['CONDUIT'],
   properties: {
     CONDUIT: {
-      required: ['HOST', 'PORT', 'APP'],
+      required: ['HOST', 'APP'],
       properties: {
         HOST: { type: 'string' },
-        PORT: { type: 'number' },
         APP: { type: 'string' },
         TOKEN: { type: 'string' },
       },
@@ -20,6 +21,8 @@ config.requireKeys('conduit.js', {
   },
 });
 
+/** Fixed conduit port */
+const PORT = 5959;
 /** Status message schema */
 const STATUS_MESSAGE_SCHEMA = { type: 'object' };
 /** Response message schema */
@@ -45,8 +48,7 @@ let server;
  * @throws {Error} If packet to send does not conform to the schema.
  */
 const respond = async (res, packet) => {
-  if (!schema(RESPONSE_MESSAGE_SCHEMA, packet))
-    throw new Error(`conduit: respond() packet from ${config.CONDUIT.APP} had schema errors`);
+  if (!schema(RESPONSE_MESSAGE_SCHEMA, packet)) { throw new Error(`conduit.js: respond() packet from ${config.CONDUIT.APP} had schema errors`); }
 
   res.status(packet.status).send(packet);
 };
@@ -59,21 +61,21 @@ const respond = async (res, packet) => {
  * @throws {Error} If not yet registered with the conduit app.
  */
 const send = async (packet) => {
-  if (!server) throw new Error('conduit: Not yet registered');
+  if (!server) throw new Error('conduit.js: Not yet registered');
 
   // Patch extras in
   packet.from = config.CONDUIT.APP;
   packet.auth = config.CONDUIT.TOKEN || '';
 
   // Send the data
-  log.debug(`conduit: >> ${JSON.stringify(packet)}`);
+  log.debug(`conduit.js: >> ${JSON.stringify(packet)}`);
   const { body } = await requestAsync({
-    url: `http://${config.CONDUIT.HOST}:${config.CONDUIT.PORT}/conduit`,
+    url: `http://${config.CONDUIT.HOST}:${PORT}/conduit`,
     method: 'post',
     json: packet,
   });
 
-  log.debug(`conduit: << ${JSON.stringify(body)}`);
+  log.debug(`conduit.js: << ${JSON.stringify(body)}`);
   return body;
 };
 
@@ -88,7 +90,7 @@ const onMessage = (req, res) => {
   log.debug(`<< ${topic} ${JSON.stringify(message)}`);
 
   // Check if this app cares about the packet
-  const route = registeredRoutes.find(item => item.topic === topic);
+  const route = registeredRoutes.find((item) => item.topic === topic);
   if (!route) {
     respond(res, { status: 404, error: `Topic '${topic}' not found` });
     return;
@@ -96,7 +98,7 @@ const onMessage = (req, res) => {
 
   // Not expected format
   if (!schema(message, route.schema)) {
-    respond(res, { status: 400, error: `Bad Request: data:${JSON.stringify(message)} schema:${JSON.stringify(route.schema)}` });
+    respond(res, { status: 400, error: `Bad Request: ${topic} data:${JSON.stringify(message)} schema:${JSON.stringify(route.schema)}` });
     return;
   }
 
@@ -111,10 +113,10 @@ const onMessage = (req, res) => {
  * @param {object} res - Express response object.
  */
 const onKill = (req, res) => {
-  log.info(`Proces kill requested, shutting down`);
+  log.info('Process exit requested, shutting down in 3s');
   res.status(200).send({ stop: true });
 
-  setTimeout(() => process.exit(), 1000);
+  setTimeout(() => process.exit(), 3000);
 };
 
 /**
@@ -122,8 +124,23 @@ const onKill = (req, res) => {
  *
  * @param {object} packet - Conduit packet (unused).
  * @param {object} res - Express response object.
+ * @returns {void}
  */
 const onStatus = (packet, res) => respond(res, { status: 200, message: { content: 'OK' } });
+
+/**
+ * Register a conduit topic to be handled by this app.
+ *
+ * @param {string} topic - Topic name.
+ * @param {Function} callback - Callback to handle messages on this topic.
+ * @param {object} schm - Topic acceptable message JSON Schema.
+ * @throws {Error} If this topic is already registered.
+ */
+const on = (topic, callback, schm) => {
+  if (registeredRoutes.find((item) => item.topic === topic)) { throw new Error(`Topic '${topic}' already registered!`); }
+
+  registeredRoutes.push({ topic, callback, schema: schm });
+};
 
 /**
  * Register this app with the local conduit instance.
@@ -132,11 +149,11 @@ const onStatus = (packet, res) => respond(res, { status: 200, message: { content
  */
 const register = async () => {
   // Already connected
-  if (server) return;
+  if (server) return undefined;
 
   // Request a random port to be known by
   const { body } = await requestAsync({
-    url: `http://${config.CONDUIT.HOST}:${config.CONDUIT.PORT}/port`,
+    url: `http://${config.CONDUIT.HOST}:${PORT}/port`,
     json: { app: config.CONDUIT.APP, pid: process.pid },
   });
 
@@ -151,25 +168,10 @@ const register = async () => {
       // Register all apps to report their status
       on('status', onStatus, STATUS_MESSAGE_SCHEMA);
 
-      log.debug(`conduit: Registered with Conduit on ${body.port}`);
+      log.debug(`conduit.js: Registered with Conduit on ${body.port}`);
       resolve();
     });
   });
-};
-
-/**
- * Register a conduit topic to be handled by this app.
- *
- * @param {string} topic - Topic name.
- * @param {function} callback - Callback to handle messages on this topic.
- * @param {object} schema - Topic acceptable message JSON Schema.
- * @throws {Error} If this topic is already registered.
- */
-const on = (topic, callback, schema) => {
-  if (registeredRoutes.find(item => item.topic === topic))
-    throw new Error(`Topic '${topic}' already registered!`);
-
-  registeredRoutes.push({ topic, callback, schema });
 };
 
 module.exports = {

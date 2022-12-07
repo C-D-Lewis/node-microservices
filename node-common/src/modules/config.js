@@ -39,7 +39,12 @@ const ensureConfigFile = () => {
 ensureConfigFile();
 config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
 
-// Allow modules to require certain keys in config.json
+/**
+ * Allow modules to require certain keys in config.json.
+ *
+ * @param {string} name - Module name.
+ * @param {object} partialSchema - Partial JSON schema for the module's config spec.
+ */
 config.requireKeys = (name, partialSchema) => {
   if (!schema(config, partialSchema)) {
     console.log(`Module ${name} is missing some configuration keys.`);

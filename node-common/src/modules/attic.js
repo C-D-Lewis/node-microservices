@@ -26,7 +26,8 @@ let appName = config.CONDUIT.APP || 'Unknown';
  * @param {object} packet - Packet to send.
  * @returns {object} Response body.
  */
-const conduitSend = async packet => {
+const conduitSend = async (packet) => {
+  // eslint-disable-next-line no-param-reassign
   packet.auth = config.CONDUIT.TOKEN || '';
 
   const { body } = await requestAsync({
@@ -34,7 +35,6 @@ const conduitSend = async packet => {
     method: 'post',
     json: packet,
   });
-
   return body;
 };
 
@@ -43,14 +43,18 @@ const conduitSend = async packet => {
  *
  * @param {string} newHost - New host name.
  */
-const setHost = (newHost) => (host = newHost);
+const setHost = (newHost) => {
+  host = newHost;
+};
 
 /**
  * Set the local app name.
  *
  * @param {string} newAppName - New app name.
  */
-const setAppName = (newAppName) => (appName = newAppName);
+const setAppName = (newAppName) => {
+  appName = newAppName;
+};
 
 /**
  * Set a value in the local attic app DB.
@@ -87,7 +91,7 @@ const get = async (key) => {
   });
 
   // Not connected, not found etc.
-  if(res.error) throw new Error(res.error);
+  if (res.error) throw new Error(res.error);
 
   return res.message.value;
 };

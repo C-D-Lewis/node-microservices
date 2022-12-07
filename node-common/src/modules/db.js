@@ -19,6 +19,13 @@ const DB_PATH = `${config.getInstallPath()}/${config.DB.FILE}`;
 let dbData;
 
 /**
+ * Save the DB data to file.
+ *
+ * @returns {void}
+ */
+const saveDbData = () => fs.writeFileSync(DB_PATH, JSON.stringify(dbData, null, 2), 'utf8');
+
+/**
  * Load the DB file data.
  */
 const loadDbData = () => {
@@ -31,11 +38,6 @@ const loadDbData = () => {
 
   dbData = require(DB_PATH);
 };
-
-/**
- * Save the DB data to file.
- */
-const saveDbData = () => fs.writeFileSync(DB_PATH, JSON.stringify(dbData, null, 2), 'utf8');
 
 /**
  * Get app data by app.
@@ -75,7 +77,7 @@ const getTable = () => {
  *
  * @param {string} app - App name to use.
  */
-const _delete = (app) => {
+const deleteAppData = (app) => {
   loadDbData();
   delete dbData[app];
   saveDbData();
@@ -95,7 +97,12 @@ module.exports = {
    * @param {string} app - App name to use.
    * @returns {boolean} true if the value exists.
    */
-  exists: app => get(app) !== undefined,
-  delete: _delete,
+  exists: (app) => get(app) !== undefined,
+  delete: deleteAppData,
+  /**
+   * Get all app names storing data.
+   *
+   * @returns {Array<string>} List of app names.
+   */
   getAppNames: () => Object.keys(getTable()),
 };

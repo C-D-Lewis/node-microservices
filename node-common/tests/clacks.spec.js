@@ -26,7 +26,7 @@ describe('clacks.js', () => {
       });
   });
 
-  it('should respond with hostname', (done) => {
+  it('should respond with own hostname', (done) => {
     // Wait for responses
     clacks.subscribeHostnames((name) => {
       // Only one expected

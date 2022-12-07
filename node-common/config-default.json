@@ -8,8 +8,7 @@
   },
   "CONDUIT": {
     "HOST": "localhost",
-    "APP": "NodeCommon",
-    "PORT": 5959
+    "APP": "node-common"
   },
   "GIST_SYNC": {
     "URL": "",
@@ -20,8 +19,7 @@
     "ATTENUATION_FACTOR": 0.1,
     "BRIGHTNESS": 0.1,
     "USE_HARDWARE": false,
-    "HARDWARE_TYPE": "blinkt",
-    "USE_SERVER": false
+    "HARDWARE_TYPE": "blinkt"
   },
   "SERVER": {
     "PORT": 8989
@@ -31,9 +29,7 @@
     "HARDWARE_TYPE": "pioled"
   },
   "CLACKS": {
-    "SERVER": "localhost",
-    "PORT": 7777,
-    "HOSTNAME": "TEST_HOSTNAME"
+    "SERVER": "localhost"
   },
   "SES": {
     "TO_ADDRESS": "",
