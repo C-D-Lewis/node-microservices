@@ -20,31 +20,46 @@ config.requireKeys('gist-sync.js', {
   },
 });
 
+/** Directory to clone gist */
 const GIST_DIR = `${config.getInstallPath()}/${config.GIST_SYNC.DIR}`;
+/** Context for git commands */
 const GIT_CONTEXT = { cwd: GIST_DIR };
 
 let jsonFiles;  // { name, content (JSON) }
 
-// Assumes all files are JSON data files
-const loadFiles = () => jsonFiles = fs.readdirSync(GIST_DIR)
-  .filter(p => !p.startsWith('.'))
-  .map(name => ({ name, content: require(`${GIST_DIR}/${name}`) }));
+/**
+ * Load files from the Gist as JSON files.
+ */
+const loadFiles = () => {
+  jsonFiles = fs.readdirSync(GIST_DIR)
+    .filter((p) => !p.startsWith('.'))
+    .map((name) => ({ name, content: require(`${GIST_DIR}/${name}`) }));
+};
 
+/**
+ * Save loaded files to disk.
+ *
+ * @returns {void}
+ */
 const saveFiles = () => jsonFiles.forEach((jsonFile) => {
   const str = JSON.stringify(jsonFile.content, null, 2);
   fs.writeFileSync(`${GIST_DIR}/${jsonFile.name}`, str, 'utf8');
 });
 
+/**
+ * Init the Gist and optionally set up scheduled sync.
+ */
 const init = () => {
   if (jsonFiles) return;
 
+  // Optionally sync
   if (config.GIST_SYNC.SYNC_INTERVAL_M) {
     log.info(`Setting gistSync to sync every ${config.GIST_SYNC.SYNC_INTERVAL_M} minutes.`);
     setInterval(sync, 1000 * 60 * config.GIST_SYNC.SYNC_INTERVAL_M);
   }
 
   // Prevent erasing the whole project
-  if (!config.GIST_SYNC.DIR) throw new Error(`DIR not set`);
+  if (!config.GIST_SYNC.DIR) throw new Error('DIR not set');
 
   execSync(`rm -rf "${GIST_DIR}"`);
   execSync(`git clone ${config.GIST_SYNC.URL} "${GIST_DIR}"`);
@@ -52,6 +67,9 @@ const init = () => {
   log.debug('gistSync: init completed');
 };
 
+/**
+ *
+ */
 const sync = () => {
   init();
   saveFiles();
@@ -70,9 +88,15 @@ const sync = () => {
   log.debug('gistSync: sync completed');
 };
 
+/**
+ * Get a file by name.
+ *
+ * @param {string} name - File to get.
+ * @returns {object|undefined} Found file.
+ */
 const getFile = (name) => {
   log.assert(jsonFiles !== null, 'gist-sync.js init() must be called first', true);
-  return jsonFiles.find(p => p.name === name).content;
+  return jsonFiles.find((p) => p.name === name).content;
 };
 
 module.exports = {

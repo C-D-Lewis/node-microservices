@@ -4,7 +4,7 @@ const topics = {};
  * Subscribe to event topic.
  *
  * @param {string} name - Topic name.
- * @param {function} cb - Callback when a matching event is broadcast.
+ * @param {Function} cb - Callback when a matching event is broadcast.
  */
 const subscribe = (name, cb) => {
   if (!topics[name]) {
@@ -18,7 +18,7 @@ const subscribe = (name, cb) => {
  * Unsubscribe from a topic.
  *
  * @param {string} name - Topic name.
- * @param {function} cb - Callback when a matching event is broadcast.
+ * @param {Function} cb - Callback when a matching event is broadcast.
  */
 const unsubscribe = (name, cb) => {
   // Already unsubscribed or never was
@@ -37,7 +37,7 @@ const broadcast = (name, params) => {
   // Topic not used
   if (!topics[name]) return;
 
-  topics[name].forEach(cb => cb(params));
+  topics[name].forEach((cb) => cb(params));
 };
 
 module.exports = {
