@@ -11,6 +11,4 @@ const get = () => {
   return Math.round(parseInt(stdout, 10) / 1000);
 };
 
-module.exports = {
-  get,
-};
+module.exports = { get };

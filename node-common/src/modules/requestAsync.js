@@ -1,8 +1,14 @@
-// TODO: Upgrade to node-fetch - what opts are needed?
-
 const request = require('request');
 
-module.exports = opts => new Promise((resolve, reject) => {
+/**
+ * Generic request function.
+ *
+ * FIXME: Replace with fetch
+ *
+ * @param {object} opts - Request options.
+ * @returns {object} Request result.
+ */
+module.exports = (opts) => new Promise((resolve, reject) => {
   request(opts, (err, response, body) => {
     if (err) {
       reject(err);

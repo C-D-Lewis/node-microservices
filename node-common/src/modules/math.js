@@ -3,10 +3,8 @@
  *
  * @param {number} min - Minimum value.
  * @param {number} max - Maximum value.
- * @returns {number}
+ * @returns {number} The integer.
  */
 const randomInt = (min, max) => Math.floor(Math.random() * (max - min)) + min;
 
-module.exports = {
-  randomInt,
-};
+module.exports = { randomInt };

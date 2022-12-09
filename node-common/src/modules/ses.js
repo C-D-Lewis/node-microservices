@@ -22,6 +22,7 @@ const credentials = new AWS.Credentials({
   accessKeyId: config.SES.AWS_ACCESS_KEY_ID,
   secretAccessKey: config.SES.AWS_SECRET_ACCESS_KEY,
 });
+
 AWS.config.update({
   region: 'eu-west-2',
   credentials,

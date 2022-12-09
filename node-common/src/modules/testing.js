@@ -7,7 +7,9 @@ module.exports = {
    * @param {number} ms - Number of milliseconds.
    * @returns {Promise} Promise that resolves when the time has elapsed.
    */
-  sleepAsync: async ms => new Promise(resolve => setTimeout(resolve, ms)),
+  sleepAsync: async (ms) => new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  }),
 
   /**
    * Send a Conduit packet.
@@ -15,7 +17,7 @@ module.exports = {
    * @param {object} json - The packet to send.
    * @returns {Promise} Promise that resolves with the response.
    */
-  sendConduitPacket: async json => requestAsync({
+  sendConduitPacket: async (json) => requestAsync({
     url: 'http://localhost:5959/conduit',
     method: 'post',
     json,

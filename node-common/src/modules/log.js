@@ -5,10 +5,9 @@ config.requireKeys('log.js', {
   required: ['LOG'],
   properties: {
     LOG: {
-      required: ['APP_NAME', 'LEVEL'],
+      required: ['APP_NAME'],
       properties: {
         APP_NAME: { type: 'string' },
-        LEVEL: { type: 'string' },
       },
     },
   },
@@ -92,9 +91,6 @@ const assert = (condition, msg, strict = false) => {
  * @returns {undefined}
  */
 const log = (level, msg) => {
-  // If the log level includes it, or its an important error
-  if (!(config.LOG.LEVEL.includes(level) || ['error', 'fatal'].includes(level))) return;
-
   // Message must be something
   if (!assert(msg, 'log \'msg\' must not be undefined', false)) { throw new Error('log \'msg\' was undefined'); }
 

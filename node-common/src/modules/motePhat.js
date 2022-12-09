@@ -1,8 +1,7 @@
-const { execSync, spawn } = require('child_process');
-const requestAsync = require('./requestAsync');
+const { execSync } = require('child_process');
 const log = require('./log');
 
-const MOTE_PHAT_SERVER_POST = 35275;
+// const MOTE_PHAT_SERVER_POST = 35275;
 
 /**
  * Set all Mote LEDs to a given color.
@@ -22,7 +21,7 @@ const setAll = (rgb) => {
  */
 const setPixels = (leds) => {
   log.assert(Array.isArray(leds), `leds must be an array. Was ${leds}`);
-  leds.forEach(rgb => log.assert(Array.isArray(rgb), `rgb must be an array. Was ${rgb}`));
+  leds.forEach((rgb) => log.assert(Array.isArray(rgb), `rgb must be an array. Was ${rgb}`));
 
   execSync(`python ${`${__dirname}/../lib/mote-phat-pixels.py`} ${JSON.stringify(leds)}`);
 };
@@ -30,7 +29,8 @@ const setPixels = (leds) => {
 /**
  * Set all Mote LEDs to a given color.
  *
- * @param {Array<number>} rgb - New colors.
+ * @param {Array<number>} toRgb - New colors.
+ * @param {Array<number>} fromRgb - Previous colors.
  */
 const fadeAll = (toRgb, fromRgb) => {
   log.assert(Array.isArray(toRgb), `toRgb must be an array. Was ${toRgb}`);

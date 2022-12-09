@@ -4,7 +4,7 @@ const os = require('os');
 /**
  * Can hardware be used?
  *
- * @returns {boolean}
+ * @returns {boolean} true if the current platform is ARM
  */
 const hardwareAvailable = () => os.arch().includes('arm');
 
@@ -13,7 +13,6 @@ const hardwareAvailable = () => os.arch().includes('arm');
  *
  * @param {number} pin - GPIO pin number (https://www.raspberrypi.org/documentation/usage/gpio/)
  * @param {boolean} state - true for on, false for off.
- * @returns {boolean} true if the operation probably succeeded.
  */
 const set = (pin, state) => {
   if (!hardwareAvailable()) {
