@@ -9,7 +9,8 @@
   },
   "author": "Chris Lewis",
   "dependencies": {
-    "body-parser": "^1.17.2"
+    "body-parser": "^1.17.2",
+    "ws": "^8.11.0"
   },
   "devDependencies": {
     "@chris-lewis/eslint-config": "^1.0.3",
