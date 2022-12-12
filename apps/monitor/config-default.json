@@ -35,12 +35,10 @@
     }
   ],
   "LOG": {
-    "APP_NAME": "monitor",
-    "LEVEL": "info|debug"
+    "APP_NAME": "monitor"
   },
   "CONDUIT": {
     "HOST": "localhost",
-    "PORT": 5959,
     "APP": "monitor"
   },
   "SES": {

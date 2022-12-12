@@ -10,12 +10,10 @@
     "RECORD_NAME_PREFIX": "polaris"
   },
   "LOG": {
-    "APP_NAME": "polaris",
-    "LEVEL": "info|debug"
+    "APP_NAME": "polaris"
   },
   "CONDUIT": {
     "HOST": "localhost",
-    "PORT": 5959,
     "APP": "polaris"
   }
 }

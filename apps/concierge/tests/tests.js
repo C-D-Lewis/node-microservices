@@ -32,8 +32,9 @@ describe('API', () => {
   describe('Conduit topic: add', () => {
     it('should return 201 / Created', async () => {
       const response = await testing.sendConduitPacket({
-        to: 'concierge', topic: 'add',
-        message: TEST_WEBHOOK
+        to: 'concierge',
+        topic: 'add',
+        message: TEST_WEBHOOK,
       });
 
       expect(response.status).to.equal(201);
@@ -54,8 +55,9 @@ describe('API', () => {
   describe('Conduit topic: remove', () => {
     it('should return 200 / Removed', async () => {
       const response = await testing.sendConduitPacket({
-        to: 'concierge', topic: 'remove',
-        message: TEST_WEBHOOK
+        to: 'concierge',
+        topic: 'remove',
+        message: TEST_WEBHOOK,
       });
 
       expect(response.status).to.equal(200);
@@ -66,8 +68,9 @@ describe('API', () => {
   describe('Webhook is actually removed', () => {
     it('should return 404 / Not Found', async () => {
       const response = await testing.sendConduitPacket({
-        to: 'concierge', topic: 'remove',
-        message: TEST_WEBHOOK
+        to: 'concierge',
+        topic: 'remove',
+        message: TEST_WEBHOOK,
       });
 
       expect(response.status).to.equal(404);
@@ -81,7 +84,7 @@ describe('API', () => {
       const data = await requestAsync({ url, method: 'POST' });
 
       expect(data.response.statusCode).to.equal(404);
-      expect(data.body).to.contain('No hooks exist yet');
+      expect(data.body).to.contain('No hook found');
     });
   });
 });

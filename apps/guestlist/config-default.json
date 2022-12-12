@@ -1,11 +1,9 @@
 {
   "LOG": {
-    "APP_NAME": "guestlist",
-    "LEVEL": "info|debug"
+    "APP_NAME": "guestlist"
   },
   "CONDUIT": {
     "HOST": "localhost",
-    "PORT": 5959,
     "APP": "guestlist"
   }
 }

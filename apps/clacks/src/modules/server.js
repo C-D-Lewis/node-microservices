@@ -1,20 +1,9 @@
 const WebSocket = require('ws');
 
-const { config, log } = require('../node-common')(['config', 'log']);
+const { log } = require('../node-common')(['log']);
 
-config.requireKeys('server.js', {
-  required: ['SERVER'],
-  properties: {
-    SERVER: {
-      required: ['PORT'],
-      properties: {
-        PORT: { type: 'number' },
-      },
-    },
-  },
-});
-
-const { SERVER: { PORT } } = config;
+/** Fixed clacks port */
+const PORT = 7777;
 
 let server;
 

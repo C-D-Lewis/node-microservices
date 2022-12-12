@@ -7,12 +7,10 @@
     ]
   },
   "LOG": {
-    "APP_NAME": "concierge",
-    "LEVEL": "info|debug"
+    "APP_NAME": "concierge"
   },
   "CONDUIT": {
     "HOST": "localhost",
-    "PORT": 5959,
     "APP": "concierge"
   },
   "SERVER": {

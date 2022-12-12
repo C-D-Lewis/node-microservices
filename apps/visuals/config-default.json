@@ -1,7 +1,6 @@
 {
   "LOG": {
-    "APP_NAME": "visuals",
-    "LEVEL": "info|debug"
+    "APP_NAME": "visuals"
   },
   "LEDS": {
     "ATTENUATION_FACTOR": 1,
@@ -11,7 +10,6 @@
   },
   "CONDUIT": {
     "HOST": "localhost",
-    "PORT": 5959,
     "APP": "visuals"
   },
   "TEXT_DISPLAY": {

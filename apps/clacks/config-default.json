@@ -1,14 +1,9 @@
 {
   "LOG": {
-    "APP_NAME": "clacks",
-    "LEVEL": "info|debug"
-  },
-  "SERVER": {
-    "PORT": 7777
+    "APP_NAME": "clacks"
   },
   "CONDUIT": {
     "HOST": "localhost",
-    "PORT": 5959,
     "APP": "clacks"
   }
 }

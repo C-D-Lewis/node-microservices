@@ -1,10 +1,10 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { expect } = require('chai');
 const { WebSocket } = require('ws');
-const { config } = require('../src/node-common')(['config']);
 const server = require('../src/modules/server');
 
-const { SERVER: { PORT } } = config;
+/** Fixed clacks port */
+const PORT = 7777;
 
 /** Test JSON message */
 const TEST_MESSAGE = {

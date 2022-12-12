@@ -1,24 +1,14 @@
 const {
-  config, log, requestAsync, ses,
-} = require('../node-common')(['config', 'log', 'requestAsync', 'ses']);
+  log, requestAsync, ses,
+} = require('../node-common')(['log', 'requestAsync', 'ses']);
 const visuals = require('../modules/visuals');
-
-config.requireKeys('services.js', {
-  required: ['CONDUIT'],
-  properties: {
-    CONDUIT: {
-      required: ['PORT'],
-      properties: {
-        PORT: { type: 'number' },
-      },
-    },
-  },
-});
 
 /** LED state for OK */
 const LED_STATE_OK = [0, 255, 0];
 /** LED state for DOWN */
 const LED_STATE_DOWN = [255, 0, 0];
+/** Fixed conduit port */
+const PORT = 5959;
 
 let lastState = true;
 
@@ -31,7 +21,7 @@ module.exports = async (args) => {
   const host = args.HOST || 'localhost';
 
   // Read apps list
-  const { body } = await requestAsync(`http://${host}:${config.CONDUIT.PORT}/apps`);
+  const { body } = await requestAsync(`http://${host}:${PORT}/apps`);
   const json = JSON.parse(body);
 
   // Find apps that are not OK
