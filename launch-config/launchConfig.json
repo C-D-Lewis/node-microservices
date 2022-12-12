@@ -85,6 +85,10 @@
         "start": "npm start &"
       },
       {
+        "location": "code/node-microservices/apps/attic",
+        "start": "npm start &"
+      },
+      {
         "location": "code/node-microservices/apps/visuals",
         "start": "npm start &"
       },
@@ -96,6 +100,10 @@
     "bedroom-pi": [
       {
         "location": "code/node-microservices/apps/conduit",
+        "start": "npm start &"
+      },
+      {
+        "location": "code/node-microservices/apps/attic",
         "start": "npm start &"
       },
       {
