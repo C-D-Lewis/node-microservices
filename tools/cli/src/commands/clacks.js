@@ -3,7 +3,7 @@ const { WebSocket } = require('ws');
 const printTable = require('../functions/printTable');
 const switches = require('../modules/switches');
 
-/** WS port - assume like conduit's that it will never change */
+/** WS port */
 const CLACKS_PORT = 7777;
 /** Get hostnames topic */
 const TOPIC_GLOBAL_GET_HOSTNAMES = '/global/getHostnames';

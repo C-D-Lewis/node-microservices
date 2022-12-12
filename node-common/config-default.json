@@ -1,6 +1,5 @@
 {
   "LOG": {
-    "LEVEL": "info|debug",
     "APP_NAME": "TestApp"
   },
   "DB": {

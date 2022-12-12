@@ -3,8 +3,7 @@
     "FLEET": {
       "HOST": "",
       "DEVICE_TYPE": ""
-    },
-    "AUTH_TOKENS": false
+    }
   },
   "CONDUIT": {
     "APP": "conduit",
@@ -14,13 +13,10 @@
     "PORT": 5959
   },
   "LOG": {
-    "APP_NAME": "conduit",
-    "LEVEL": "info|debug"
+    "APP_NAME": "conduit"
   },
   "CLACKS": {
-    "SERVER": "localhost",
-    "PORT": 7777,
-    "HOSTNAME": "DEFAULT_HOSTNAME"
+    "SERVER": "localhost"
   }
 }
 

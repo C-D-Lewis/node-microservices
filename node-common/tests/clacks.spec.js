@@ -1,13 +1,9 @@
 const { expect } = require('chai');
+const { hostname } = require('os');
 const clacks = require('../src/modules/clacks');
-const config = require('../src/modules/config');
-
-const {
-  CLACKS: { HOSTNAME },
-} = config;
 
 /** Test topic */
-const TEST_TOPIC = `/devices/${HOSTNAME}/testTopic`;
+const TEST_TOPIC = `/devices/${hostname()}/testTopic`;
 
 describe('clacks.js', () => {
   after(clacks.disconnect);
