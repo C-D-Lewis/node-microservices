@@ -1,7 +1,6 @@
 {
   "LOG": {
-    "APP_NAME": "attic",
-    "LEVEL": "info|debug"
+    "APP_NAME": "attic"
   },
   "STORAGE_MODE": "db",
   "GIST_SYNC": {
@@ -14,7 +13,6 @@
   },
   "CONDUIT": {
     "HOST": "localhost",
-    "PORT": 5959,
     "APP": "attic"
   }
 }
