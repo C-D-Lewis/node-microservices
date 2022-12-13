@@ -32,16 +32,16 @@ module.exports = async () => {
     log.info(`Logged '${JSON.stringify(sample)}' from enviro`);
 
     // Notify the heating is on (temporary)
-    const rawTempInt = parseInt(rawTemp, 10);
-    const heating = rawTempInt > 25;
+    const adjTempInt = parseInt(adjTemp, 10);
+    const heating = adjTempInt > 20;
     if (heating && !notified) {
-      await ses.notify(`Heating turned on (${rawTempInt})`);
+      await ses.notify(`Heating turned on (${adjTempInt})`);
       notified = true;
     }
 
     // Reset if recovers
     if (!heating && notified) {
-      await ses.notify(`Heating turned off (${rawTempInt})`);
+      await ses.notify(`Heating turned off (${adjTempInt})`);
       notified = false;
     }
   } catch (e) {
