@@ -8,10 +8,11 @@ const { execSync } = require('child_process');
 const readAll = () => {
   try {
     const stdout = execSync(`python ${`${__dirname}/../lib/enviro-read-all.py`}`).toString();
-    const [temperature, pressure, humidity, lux, proximity] = stdout.split('\n');
+    const [rawTemp, adjTemp, pressure, humidity, lux, proximity] = stdout.split('\n');
 
     return {
-      temperature,  // °C
+      rawTemp,      // °C
+      adjTemp,
       pressure,     // hPa
       humidity,     // %
       lux,          // Lumens
@@ -20,7 +21,8 @@ const readAll = () => {
   } catch (error) {
     console.log(error.message.slice(0, 128));
     return {
-      temperature: 0,
+      rawTemp: 0,
+      adjTemp: 0,
       pressure: 0,
       humidity: 0,
       lux: 0,

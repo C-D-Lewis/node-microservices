@@ -3,17 +3,16 @@
 import time
 from bme280 import BME280
 from ltr559 import LTR559
-from smbus2 import SMBus
 
-bus = SMBus(1)
-bme280 = BME280(i2c_dev=bus)
+bme280 = BME280()
 ltr559 = LTR559()
 
-time.sleep(0.3) # Takes a while to warm up lux
+time.sleep(1) # Takes a while to warm up lux
 
 # Seems first couple of values are always the same
-for i in range(0, 5):
+for i in range(0, 3):
   bme280.get_temperature()
+  time.sleep(0.5) # Sleep makes value change
   bme280.get_pressure()
 
 # Get the temperature of the CPU for compensation
@@ -35,6 +34,7 @@ raw_temp = bme280.get_temperature()
 comp_temp = raw_temp - ((avg_cpu_temp - raw_temp) / factor)
 
 # Interface is one measurement per line, in this order
+print(raw_temp)
 print(comp_temp)
 print(bme280.get_pressure())
 print(bme280.get_humidity())

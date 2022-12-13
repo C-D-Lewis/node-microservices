@@ -1,20 +1,21 @@
 const { readFileSync, writeFileSync, existsSync } = require('fs');
-const { log, enviro } = require('../node-common')(['log', 'enviro']);
+const { log, enviro, ses } = require('../node-common')(['log', 'enviro', 'ses']);
 
 /** Destination file name */
 const CSV_FILE_NAME = `${__dirname}/../../enviro.csv`;
 
+let notified = false;
+
 /**
  * Log environment sensor data to a file.
- *
- * @param {object} args - plugin ARGS object.
  */
 module.exports = async () => {
   try {
     const sample = enviro.readAll();
     const timestamp = Date.now();
     const {
-      temperature,
+      rawTemp,
+      adjTemp,
       pressure,
       humidity,
       lux,
@@ -23,12 +24,26 @@ module.exports = async () => {
 
     // Append to CSV or start with just headers
     let data = (!existsSync(CSV_FILE_NAME))
-      ? 'timestamp,temperature,pressure,humidity,lux,proximity'
+      ? 'timestamp,rawTemp,adjTemp,pressure,humidity,lux,proximity'
       : readFileSync(CSV_FILE_NAME, 'utf8');
-    data = data.concat(`\n${timestamp},${temperature},${pressure},${humidity},${lux},${proximity}`);
+    data = data.concat(`\n${timestamp},${rawTemp},${adjTemp},${pressure},${humidity},${lux},${proximity}`);
     writeFileSync(CSV_FILE_NAME, data, 'utf8');
 
     log.info(`Logged '${JSON.stringify(sample)}' from enviro`);
+
+    // Notify the heating is on (temporary)
+    const rawTempInt = parseInt(rawTemp, 10);
+    const heating = rawTempInt > 25;
+    if (heating && !notified) {
+      await ses.notify(`Heating turned on (${rawTempInt})`);
+      notified = true;
+    }
+
+    // Reset if recovers
+    if (!heating && notified) {
+      await ses.notify(`Heating turned off (${rawTempInt})`);
+      notified = false;
+    }
   } catch (e) {
     log.error(e);
   }

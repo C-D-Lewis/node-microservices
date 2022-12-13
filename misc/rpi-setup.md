@@ -132,6 +132,7 @@ sudo pip install inky
 # Enviro?
 ```
 curl -sSL https://get.pimoroni.com/enviroplus | bash
+pip3 install smbus2
 ```
 
 # GPIO?
