@@ -1,5 +1,6 @@
 const fs = require('fs');
 const config = require('./config');
+require('colors');
 
 config.requireKeys('log.js', {
   required: ['LOG'],
@@ -28,6 +29,13 @@ const MONITOR_INTERVAL_MS = 60 * 60 * 1000;
 const MAX_SIZE_MB = 10;
 /** Log path */
 const FILE_PATH = `${config.getInstallPath()}/${config.LOG.APP_NAME.split(' ').join('-')}.log`;
+/** Log level color map */
+const LEVEL_COLOR_MAP = {
+  info: 'white',
+  debug: 'gray',
+  error: 'red',
+  fatal: 'magenta',
+};
 
 /**
  * Get a time string.
@@ -103,7 +111,8 @@ const log = (level, msg) => {
   // Write to all outputs
   const logLine = `${buildPrefix(level)} ${finalMsg}`;
   writeToFile(logLine);
-  console.log(logLine);
+
+  console.log(logLine[LEVEL_COLOR_MAP[level]]);
 
   // Fatal messages halt the app
   if (level === 'fatal') process.exit(1);

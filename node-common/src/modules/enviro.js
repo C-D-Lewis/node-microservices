@@ -11,12 +11,12 @@ const readAll = () => {
     const [rawTemp, adjTemp, pressure, humidity, lux, proximity] = stdout.split('\n');
 
     return {
-      rawTemp,      // °C
-      adjTemp,
-      pressure,     // hPa
-      humidity,     // %
-      lux,          // Lumens
-      proximity,
+      rawTemp: parseFloat(parseFloat(rawTemp).toFixed(3)),      // °C
+      adjTemp: parseFloat(parseFloat(adjTemp).toFixed(3)),      // °C
+      pressure: parseFloat(parseFloat(pressure).toFixed(3)),    // hPa
+      humidity: parseFloat(parseFloat(humidity).toFixed(3)),    // %
+      lux: parseFloat(parseFloat(lux).toFixed(3)),              // Lumens
+      proximity: parseFloat(parseFloat(proximity).toFixed(3)),
     };
   } catch (error) {
     console.log(error.message.slice(0, 128));

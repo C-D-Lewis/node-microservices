@@ -1,5 +1,6 @@
 const { conduit, log } = require('./node-common')(['config', 'conduit', 'log']);
 const plugins = require('./modules/plugins');
+const api = require('./modules/api');
 
 /**
  * The main function.
@@ -7,7 +8,9 @@ const plugins = require('./modules/plugins');
 const main = async () => {
   log.begin();
 
-  await conduit.register();
+  await api.setup();
+
+  // Clear any LEDs (still needed?)
   await conduit.send({
     to: 'visuals',
     topic: 'setAll',
