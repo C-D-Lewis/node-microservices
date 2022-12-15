@@ -16,17 +16,15 @@ let lastTenMinTemp = 0;
  * @returns {Promise<void>}
  */
 const checkHeatingState = async (now, adjTemp) => {
-  const isHeating = adjTemp - lastTenMinTemp > 5;
+  const isHeating = adjTemp - lastTenMinTemp > 3;
   const isCooling = adjTemp - lastTenMinTemp < -2;
 
   if (now.getMinutes() % 10 === 0 || lastTenMinTemp === 0) {
     // Remember this value for next 10 minutes
     lastTenMinTemp = adjTemp;
     log.debug(`lastTenMinTemp=${lastTenMinTemp}`);
+    return;
   }
-
-  // Not ready yet
-  if (lastTenMinTemp === adjTemp) return;
 
   // Greatly increased
   if (isHeating && !notified) {
