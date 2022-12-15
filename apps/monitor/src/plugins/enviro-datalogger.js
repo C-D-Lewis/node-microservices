@@ -6,7 +6,7 @@ const { updateMetrics } = require('../modules/metrics');
 const CSV_FILE_NAME = `${__dirname}/../../enviro.csv`;
 
 let notified = false;
-let lastTenMinTemp = 0;
+let last5MinTemp = 0;
 
 /**
  * Check and notify when heating comes on.
@@ -16,13 +16,13 @@ let lastTenMinTemp = 0;
  * @returns {Promise<void>}
  */
 const checkHeatingState = async (now, adjTemp) => {
-  const isHeating = adjTemp - lastTenMinTemp > 3;
-  const isCooling = adjTemp - lastTenMinTemp < -2;
+  const isHeating = adjTemp - last5MinTemp > 3;
+  const isCooling = adjTemp - last5MinTemp < -2;
 
-  if (now.getMinutes() % 10 === 0 || lastTenMinTemp === 0) {
-    // Remember this value for next 10 minutes
-    lastTenMinTemp = adjTemp;
-    log.debug(`lastTenMinTemp=${lastTenMinTemp}`);
+  if (now.getMinutes() % 5 === 0 || last5MinTemp === 0) {
+    // Remember this value for next 5 minutes
+    last5MinTemp = adjTemp;
+    log.debug(`last5MinTemp=${last5MinTemp}`);
     return;
   }
 
