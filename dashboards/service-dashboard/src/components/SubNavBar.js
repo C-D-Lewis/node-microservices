@@ -1,7 +1,7 @@
 /**
  * AllDevicesBreadcrumb component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const AllDevicesBreadcrumb = () => fabricate('p')
   .setStyles({
@@ -13,18 +13,23 @@ const AllDevicesBreadcrumb = () => fabricate('p')
 
 /**
  * Reboot this device.
+ *
+ * @param {HTMLElement} el - Fabricate component.
+ * @param {object} state - Current state.
+ * @param {Array<object>} state.fleetList - Fleet list.
+ * @param {string} state.selectedIp - Selected IP.
  */
-const rebootDevice = async (el, { fleetList, ip }) => {
+const rebootDevice = async (el, { fleetList, selectedIp }) => {
   // eslint-disable-next-line no-restricted-globals
   if (!confirm('Caution: If devices share an IP this might not be the actual device - continue?')) return;
 
   const {
     deviceName,
-  } = fleetList.find(({ publicIp, localIp }) => ip === publicIp || localIp === ip);
+  } = fleetList.find(({ publicIp, localIp }) => selectedIp === publicIp || localIp === selectedIp);
 
   try {
     // Public, then local
-    const { content, error } = await fetch(`http://${ip}:5959/reboot`, { method: 'POST' }).then((r) => r.json());
+    const { content, error } = await fetch(`http://${selectedIp}:5959/reboot`, { method: 'POST' }).then((r) => r.json());
 
     if (content) {
       fabricate.update('logEntries', ({ logEntries }) => [...logEntries, `Device ${deviceName} is rebooting now`]);
@@ -40,7 +45,7 @@ const rebootDevice = async (el, { fleetList, ip }) => {
 /**
  * RebootButton component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const RebootButton = () => fabricate('IconButton', { src: 'assets/restart.png' })
   .setStyles({ width: '18px', height: '18px' })
@@ -49,7 +54,7 @@ const RebootButton = () => fabricate('IconButton', { src: 'assets/restart.png' }
 /**
  * BackBreadcrumb component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const BackBreadcrumb = () => {
   const backButton = fabricate('p')
@@ -72,12 +77,10 @@ const BackBreadcrumb = () => {
       deviceSegment,
       RebootButton(),
     ])
-    .onUpdate((el, { fleetList, ip }) => {
-      const [found] = fleetList.filter(
-        ({ publicIp, localIp }) => ip === publicIp || localIp === ip,
-      );
-      if (found) deviceSegment.setText(`< ${found.deviceName} (${ip})`);
-    }, ['fleetList', 'ip']);
+    .onUpdate((el, { fleetList, selectedIp, selectedDeviceName }) => {
+      const [found] = fleetList.filter(({ deviceName }) => deviceName === selectedDeviceName);
+      if (found) deviceSegment.setText(`< ${found.deviceName} (${selectedIp})`);
+    }, ['fleetList', 'selectedIp']);
 };
 
 /**

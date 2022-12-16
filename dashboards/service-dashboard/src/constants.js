@@ -13,7 +13,8 @@ Constants.INITIAL_STATE = {
   page: 'FleetPage',
   apps: [],
   fleetList: [],
-  ip: FLEET_HOST,
+  selectedIp: FLEET_HOST,
+  selectedDeviceName: undefined,
   logEntries: ['Ready'],
   atticData: {
     app: '',

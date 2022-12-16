@@ -12,14 +12,28 @@ const ConduitService = {};
 ConduitService.sendPacket = async (state, packet, tokenOverride) => {
   fabricate.update('logEntries', ({ logEntries }) => [...logEntries, 'Sending...']);
 
+  const {
+    token, selectedDeviceName, fleetList, selectedIp,
+  } = state;
+
   try {
-    const { ip, token } = state;
-    const res = await fetch(`http://${ip}:${Constants.CONDUIT_PORT}/conduit`, {
+    let destination = selectedIp;
+    let forwardHost;
+    if (selectedDeviceName) {
+      // Destination is local if reachable, else local via public
+      const { localIp, publicIp } = fleetList.find((p) => p.deviceName === selectedDeviceName);
+      const isLocalReachable = state[Utils.isReachableKey(selectedDeviceName, 'local')];
+      destination = isLocalReachable ? localIp : publicIp;
+      forwardHost = !isLocalReachable ? localIp : undefined;
+    }
+
+    const res = await fetch(`http://${destination}:${Constants.CONDUIT_PORT}/conduit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         ...packet,
         auth: tokenOverride || token || '',
+        host: forwardHost,
       }),
     });
     const json = await res.json();

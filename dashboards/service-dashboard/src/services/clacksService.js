@@ -12,6 +12,7 @@ const ClacksService = {};
  * Set the connected state.
  *
  * @param {boolean} connected - true if now connected.
+ * @returns {void}
  */
 const setConnectedState = (connected) => fabricate.update('clacksData', ({ clacksData }) => ({ ...clacksData, connected }));
 
@@ -40,12 +41,15 @@ const startHeartbeat = () => {
 /**
  * Connect websocket server.
  *
- * @param {string} ip - IP to connect to.
+ * @param {string} host - IP to connect to.
  * @returns {Promise<void>}
  */
-ClacksService.connect = (ip) => new Promise((resolve) => {
-  socket = new WebSocket(`ws://${ip}:${WS_PORT}`);
+ClacksService.connect = (host) => new Promise((resolve) => {
+  socket = new WebSocket(`ws://${host}:${WS_PORT}`);
 
+  /**
+   * When socket opens.
+   */
   socket.onopen = () => {
     console.log('Connected');
     startHeartbeat();
@@ -53,17 +57,30 @@ ClacksService.connect = (ip) => new Promise((resolve) => {
     resolve();
   };
 
+  /**
+   * When a message is received.
+   *
+   * @param {object} event - WS event.
+   */
   socket.onmessage = async (event) => {
     const str = await event.data.text();
     const { topic, data } = JSON.parse(str);
     onClacksMessage(topic, data);
   };
 
+  /**
+   * When socket is closed.
+   */
   socket.onclose = () => {
     setConnectedState(false);
-    setTimeout(ClacksService.connect, 5000);
+    setTimeout(() => ClacksService.connect(host), 5000);
   };
 
+  /**
+   * When a socket error occurs.
+   *
+   * @param {*} err - Error.
+   */
   socket.onerror = (err) => {
     console.log(err);
     socket.close();
@@ -72,6 +89,8 @@ ClacksService.connect = (ip) => new Promise((resolve) => {
 
 /**
  * Disconnect from server.
+ *
+ * @returns {void}
  */
 ClacksService.disconnect = () => socket.close();
 

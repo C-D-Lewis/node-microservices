@@ -29,14 +29,14 @@ const ConnectionIcon = () => fabricate('Image', { src: 'assets/plug-off.png' })
  *
  * @param {object} props - Component props.
  * @param {string} props.deviceName - Device name.
- * @param {string} props.ip - Device IP.
+ * @param {string} props.deviceIp - Device IP.
  * @param {string} props.type - Device type, 'local' or 'public'.
  * @returns {HTMLElement} Fabricate component.
  */
-const IpTextButton = ({ deviceName, ip, type }) => {
+const IpTextButton = ({ deviceName, deviceIp, type }) => {
   const isReachableKey = Utils.isReachableKey(deviceName, type);
 
-  const icon = ConnectionIcon({ isReachable: false });
+  const icon = ConnectionIcon({ isReachable: false }).setAttributes({ src: `assets/${type}.png` });
 
   const textButton = fabricate('span')
     .setStyles({
@@ -46,7 +46,7 @@ const IpTextButton = ({ deviceName, ip, type }) => {
       fontFamily: Theme.fonts.code,
       cursor: 'pointer',
     })
-    .setText(ip)
+    .setText(deviceIp)
     .onUpdate((el, state) => {
       // TODO: watchlist of [key] here breaks this for some reason
       el.setStyles({
@@ -54,13 +54,10 @@ const IpTextButton = ({ deviceName, ip, type }) => {
           ? Theme.colors.IpTextButton.reachable
           : Theme.colors.IpTextButton.unreachable,
       });
-
-      // Icon depending on type
-      icon.setAttributes({ src: `assets/${type}.png` });
     })
     .onClick(() => {
       // Select device, go to apps page
-      fabricate.update({ ip, page: 'AppsPage' });
+      fabricate.update({ selectedIp: deviceIp, page: 'AppsPage', selectedDeviceName: deviceName });
     });
 
   return fabricate('Row')
@@ -125,12 +122,12 @@ const IpButtons = ({ deviceName, publicIp, localIp }) => fabricate('Column')
   .setChildren([
     IpTextButton({
       deviceName,
-      ip: publicIp,
+      deviceIp: publicIp,
       type: 'public',
     }),
     IpTextButton({
       deviceName,
-      ip: localIp,
+      deviceIp: localIp,
       type: 'local',
     }),
   ]);

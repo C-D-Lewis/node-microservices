@@ -353,10 +353,10 @@ const ClacksControls = () => {
             })),
         ]),
     ])
-    .onCreate((el, { clacksData, ip }) => {
+    .onCreate((el, { clacksData, selectedIp }) => {
       // Try and connect if not connected
       if (clacksData.connected) ClacksService.disconnect();
-      setTimeout(() => ClacksService.connect(ip), 500);
+      setTimeout(() => ClacksService.connect(selectedIp), 500);
     });
 };
 

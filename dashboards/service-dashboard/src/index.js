@@ -29,8 +29,10 @@ const fetchFleetList = async (el, state) => {
 const fetchApps = async (el, state) => {
   fabricate.update({ apps: [] });
 
+  // TODO: How to fetch apps via the public host? conduit topic instead of GET?
+
   try {
-    const res = await fetch(`http://${state.ip}:${Constants.CONDUIT_PORT}/apps`);
+    const res = await fetch(`http://${state.selectedIp}:${Constants.CONDUIT_PORT}/apps`);
     const json = await res.json();
     const apps =  json.sort((a, b) => (a.app < b.app ? -1 : 1));
     fabricate.update({ apps });
@@ -73,7 +75,7 @@ const ServiceDashboard = () => fabricate('Column')
     fabricate('AppsPage').when(({ page }) => page === 'AppsPage'),
   ])
   .onUpdate(parseParams, ['fabricate:init'])
-  .onUpdate(fetchApps, ['ip'])
+  .onUpdate(fetchApps, ['selectedIp'])
   .onUpdate(fetchFleetList, ['token']);
 
 fabricate.app(ServiceDashboard(), Constants.INITIAL_STATE);
