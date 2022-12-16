@@ -1,7 +1,11 @@
 /* eslint-disable no-param-reassign */
 
 const { readFileSync, writeFileSync, existsSync } = require('fs');
+const { execSync } = require('child_process');
 const { log } = require('../node-common')(['log']);
+
+/** Metrics directory */
+const METRICS_DIR = `${__dirname}/../../metrics`;
 
 /**
  * @typedef {object} MetricPoint
@@ -10,17 +14,27 @@ const { log } = require('../node-common')(['log']);
  * @property {*} value - Metric value.
  */
 
-// TODO: File per day?
-/** Metrics file name */
-const FILE_NAME = `${__dirname}/../../metrics.json`;
+// Note: Can't use CSV unless easy to add new column headers. Won't get too large anyway.
+
+/**
+ * Get metric file path - file per month.
+ *
+ * @returns {string} File path.
+ */
+const getFilePath = () => {
+  const now = new Date();
+  return `${METRICS_DIR}/metrics-${now.getMonth()}-${now.getFullYear()}.json`;
+};
 
 /**
  * Save the metrics file.
  *
  * @param {object} metricDb - Data to save.
- * @returns {void}
  */
-const save = (metricDb) => writeFileSync(FILE_NAME, JSON.stringify(metricDb), 'utf-8');
+const save = (metricDb) => {
+  execSync(`mkdir -p ${METRICS_DIR}`);
+  writeFileSync(getFilePath(), JSON.stringify(metricDb, null, 2), 'utf-8');
+};
 
 /**
  * Load the metrics file.
@@ -28,10 +42,12 @@ const save = (metricDb) => writeFileSync(FILE_NAME, JSON.stringify(metricDb), 'u
  * @returns {object} Metric file data.
  */
 const load = () => {
-  // No existing metrics data
-  if (!existsSync(FILE_NAME)) save({});
+  const filePath = getFilePath();
 
-  return JSON.parse(readFileSync(FILE_NAME, 'utf-8'));
+  // No existing metrics data
+  if (!existsSync(filePath)) save({});
+
+  return JSON.parse(readFileSync(filePath, 'utf-8'));
 };
 
 /**
