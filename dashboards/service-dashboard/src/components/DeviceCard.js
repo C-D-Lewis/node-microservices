@@ -1,7 +1,7 @@
 /**
  * DeviceName component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const DeviceName = () => fabricate('span')
   .setStyles({
@@ -15,7 +15,7 @@ const DeviceName = () => fabricate('span')
 /**
  * ConnectionIcon component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const ConnectionIcon = () => fabricate('Image', { src: 'assets/plug-off.png' })
   .setStyles({
@@ -28,7 +28,10 @@ const ConnectionIcon = () => fabricate('Image', { src: 'assets/plug-off.png' })
  * IpTextButton component.
  *
  * @param {object} props - Component props.
- * @returns {HTMLElement}
+ * @param {string} props.deviceName - Device name.
+ * @param {string} props.ip - Device IP.
+ * @param {string} props.type - Device type, 'local' or 'public'.
+ * @returns {HTMLElement} Fabricate component.
  */
 const IpTextButton = ({ deviceName, ip, type }) => {
   const isReachableKey = Utils.isReachableKey(deviceName, type);
@@ -45,15 +48,15 @@ const IpTextButton = ({ deviceName, ip, type }) => {
     })
     .setText(ip)
     .onUpdate((el, state) => {
-      const isReachable = state[isReachableKey];
-
       // TODO: watchlist of [key] here breaks this for some reason
       el.setStyles({
-        color: isReachable
+        color: state[isReachableKey]
           ? Theme.colors.IpTextButton.reachable
           : Theme.colors.IpTextButton.unreachable,
       });
-      icon.setAttributes({ src: `assets/plug${isReachable ? '' : '-off'}.png` });
+
+      // Icon depending on type
+      icon.setAttributes({ src: `assets/${type}.png` });
     })
     .onClick(() => {
       // Select device, go to apps page
@@ -68,7 +71,9 @@ const IpTextButton = ({ deviceName, ip, type }) => {
 /**
  * DeviceIcon component.
  *
- * @returns {HTMLElement}
+ * @param {object} props - Component props.
+ * @param {string} props.deviceType - Device type.
+ * @returns {HTMLElement} Fabricate component.
  */
 const DeviceIcon = ({ deviceType }) => fabricate('Image', { src: `assets/${Constants.ICON_NAMES[deviceType]}.png` })
   .setStyles({
@@ -81,7 +86,8 @@ const DeviceIcon = ({ deviceType }) => fabricate('Image', { src: `assets/${Const
  * Last checkin label component.
  *
  * @param {object} props - Component props.
- * @returns {HTMLElement}
+ * @param {number} props.minsAgo - Last seem minutes ago.
+ * @returns {HTMLElement} Fabricate component.
  */
 const LastSeenLabel = ({ minsAgo }) => fabricate('Text')
   .setStyles({
@@ -94,23 +100,26 @@ const LastSeenLabel = ({ minsAgo }) => fabricate('Text')
   })
   .onCreate((el) => {
     if (minsAgo > (60 * 24)) {
-      el.setText(`Last seen: ${Math.round(minsAgo / (60 * 24))} days ago`);
+      el.setText(`Last seen ${Math.round(minsAgo / (60 * 24))} days ago`);
       return;
     }
 
     if (minsAgo > 60) {
-      el.setText(`Last seen: ${Math.round(minsAgo / 60)} hours ago`);
+      el.setText(`Last seen ${Math.round(minsAgo / 60)} hours ago`);
       return;
     }
 
-    el.setText(`Last seen: ${minsAgo} mins ago`);
+    el.setText(`Last seen ${minsAgo} mins ago`);
   });
 
 /**
  * Set if IpTextButton components.
  *
  * @param {object} props - Component props.
- * @returns {HTMLElement}
+ * @param {string} props.deviceName - Device name.
+ * @param {string} props.publicIp - Public IP.
+ * @param {string} props.localIp - Local IP.
+ * @returns {HTMLElement} Fabricate component.
  */
 const IpButtons = ({ deviceName, publicIp, localIp }) => fabricate('Column')
   .setChildren([
@@ -131,7 +140,7 @@ const IpButtons = ({ deviceName, publicIp, localIp }) => fabricate('Column')
  *
  * @param {object} props - Component props.
  * @param {boolean} props.isHealthy - If the device is recently updated and presumed to be alive.
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const CardTitle = ({ isHealthy }) => fabricate('Row')
   .setStyles({
@@ -144,7 +153,7 @@ const CardTitle = ({ isHealthy }) => fabricate('Row')
 /**
  * DeviceCardContainer component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const DeviceCardContainer = () => fabricate('Card')
   .setStyles({
@@ -159,7 +168,7 @@ const DeviceCardContainer = () => fabricate('Card')
  * DeviceCard component.
  *
  * @param {object} props - Component props.
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 fabricate.declare('DeviceCard', ({ itemData }) => {
   const {
@@ -170,7 +179,7 @@ fabricate.declare('DeviceCard', ({ itemData }) => {
   const isUnreachableKey = Utils.isReachableKey(deviceName, 'isUnreachable');
 
   const minsAgo = Math.round((Date.now() - lastCheckIn) / (1000 * 60));
-  const isHealthy = minsAgo < 11;  // Based on default checkin interval
+  const isHealthy = minsAgo < 11;  // Based on default checkin interval of 10m
 
   /**
    * Test publicIp is reachable.
@@ -191,15 +200,6 @@ fabricate.declare('DeviceCard', ({ itemData }) => {
       fabricate.update(localIpValidKey, true);
     } catch (err) { /* It isn't available */ }
   };
-
-  // Timeout
-  // async state access?
-  // setTimeout(() => {
-  //   // At least one returned
-  //   if (localIpValid.get() || publicIpValid.get()) return;
-
-  //   isUnreachable.set(true);
-  // }, 5000);
 
   return DeviceCardContainer()
     .setChildren([

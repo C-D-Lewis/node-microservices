@@ -53,7 +53,7 @@ const parseParams = () => {
 /**
  * AppNavBar component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const AppNavBar = () => fabricate('NavBar', {
   title: 'Service Dashboard',
@@ -63,7 +63,7 @@ const AppNavBar = () => fabricate('NavBar', {
 /**
  * ServiceDashboard component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const ServiceDashboard = () => fabricate('Column')
   .setChildren([

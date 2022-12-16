@@ -368,6 +368,7 @@ const controlsMap = {
   // concierge: list hooks?
   guestlist: GuestlistControls,
   // polaris: show current record IP? Needs conduit API
+  // monitor:
 };
 
 /**

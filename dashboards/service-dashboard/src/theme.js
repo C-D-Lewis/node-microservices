@@ -22,7 +22,7 @@ Theme.colors = {
   },
   IpTextButton: {
     reachable: 'white',
-    unreachable: '#444',
+    unreachable: '#333',
   },
   status: {
     ok: '#43D047',
