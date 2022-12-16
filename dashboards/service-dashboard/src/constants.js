@@ -43,6 +43,10 @@ Constants.INITIAL_STATE = {
     topic: '',
     message: '{}',
   },
+  monitorData: {
+    metric: '',
+    metricHistory: [],
+  },
 };
 
 /** Icon type names */

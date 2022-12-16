@@ -7,21 +7,21 @@ const buttonStyle = {
 /**
  * Empty component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const Empty = () => fabricate('div');
 
 /**
  * ControlRow component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
-const ControlRow = () => fabricate('Row').setStyles({ padding: '0px 10px' });
+const ControlRow = () => fabricate('Row').setStyles({ padding: '0px 10px', alignItems: 'center' });
 
 /**
  * Control container component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const ControlContainer = () => fabricate('Column')
   .setStyles({ backgroundColor: Theme.colors.AppControls.background });
@@ -29,7 +29,7 @@ const ControlContainer = () => fabricate('Column')
 /**
  * AtticControls component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const AtticControls = () => {
   /**
@@ -37,6 +37,7 @@ const AtticControls = () => {
    *
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
+   * @returns {void}
    */
   const setProp = (k, v) => fabricate.update('atticData', ({ atticData }) => ({ ...atticData, [k]: v }));
 
@@ -92,7 +93,7 @@ const AtticControls = () => {
 /**
  * ConduitControls component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const ConduitControls = () => {
   /**
@@ -100,6 +101,7 @@ const ConduitControls = () => {
    *
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
+   * @returns {void}
    */
   const setProp = (k, v) => fabricate.update('conduitData', ({ conduitData }) => ({ ...conduitData, [k]: v }));
 
@@ -140,7 +142,7 @@ const ConduitControls = () => {
 /**
  * ConduitControls component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const VisualsControls = () => {
   /**
@@ -148,6 +150,7 @@ const VisualsControls = () => {
    *
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
+   * @returns {void}
    */
   const setProp = (k, v) => fabricate.update('visualsData', ({ visualsData }) => ({ ...visualsData, [k]: v }));
 
@@ -228,7 +231,7 @@ const VisualsControls = () => {
 /**
  * GuestlistControls component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const GuestlistControls = () => {
   /**
@@ -236,6 +239,7 @@ const GuestlistControls = () => {
    *
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
+   * @returns {void}
    */
   const setProp = (k, v) => fabricate.update('guestlistData', ({ guestlistData }) => ({ ...guestlistData, [k]: v }));
 
@@ -306,7 +310,7 @@ const GuestlistControls = () => {
 /**
  * ClacksControls component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const ClacksControls = () => {
   // list devices, most recent messages, and send messages
@@ -316,6 +320,7 @@ const ClacksControls = () => {
    *
    * @param {string} k - Prop key.
    * @param {*} v - Prop value.
+   * @returns {void}
    */
   const setProp = (k, v) => fabricate.update('clacksData', ({ clacksData }) => ({ ...clacksData, [k]: v }));
 
@@ -336,6 +341,7 @@ const ClacksControls = () => {
             .onChange((el, state, value) => setProp('message', value))
             .onCreate((el) => {
               // Default value
+              // eslint-disable-next-line no-param-reassign
               el.value = '{}';
             }),
         ]),
@@ -360,6 +366,53 @@ const ClacksControls = () => {
     });
 };
 
+/**
+ * MonitorControls component.
+ *
+ * @returns {HTMLElement} Fabricate component.
+ */
+const MonitorControls = () => {
+  // List metrics and show graph for chosen metric (all metrics?)
+
+  /**
+   * Set a property within the app controls state.
+   *
+   * @param {string} k - Prop key.
+   * @param {*} v - Prop value.
+   * @returns {void}
+   */
+  const setProp = (k, v) => fabricate.update('monitorData', ({ monitorData }) => ({ ...monitorData, [k]: v }));
+
+  return ControlContainer()
+    .setChildren([
+      ControlRow()
+        .setChildren([
+          fabricate('TextBox', { placeholder: 'Metric' })
+            .onUpdate((el, { monitorData: { metric } }) => el.setText(metric))
+            .setStyles({ width: '100%' })
+            .onChange((el, state, value) => setProp(' metric', value)),
+          fabricate('TextButton')
+            .setText('Graph')
+            .setStyles({ ...buttonStyle, width: '33%' })
+            .onClick(async (el, state) => {
+              const { metric } = state.monitorData;
+              const res = await ConduitService.sendPacket(
+                state,
+                {
+                  to: 'monitor',
+                  topic: 'getMetricToday',
+                  host: '192.168.0.3',  // HACK
+                  message: { name: metric },
+                },
+              );
+
+              // Draw data
+              console.log(res);
+            }),
+        ]),
+    ]);
+};
+
 const controlsMap = {
   attic: AtticControls,
   conduit: ConduitControls,
@@ -368,14 +421,14 @@ const controlsMap = {
   // concierge: list hooks?
   guestlist: GuestlistControls,
   // polaris: show current record IP? Needs conduit API
-  // monitor:
+  monitor: MonitorControls,
 };
 
 /**
  * AppControls component.
  *
  * @param {object} props - Component props.
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 fabricate.declare('AppControls', ({ app }) => {
   const Controls = controlsMap[app] || Empty;
