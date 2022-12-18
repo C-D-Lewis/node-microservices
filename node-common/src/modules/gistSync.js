@@ -6,7 +6,7 @@ const fs = require('fs');
 const config = require('./config');
 const log = require('./log');
 
-config.requireKeys('gist-sync.js', {
+const { GIST_SYNC } = config.withSchema('gist-sync.js', {
   required: ['GIST_SYNC'],
   properties: {
     GIST_SYNC: {
@@ -20,8 +20,14 @@ config.requireKeys('gist-sync.js', {
   },
 });
 
+const {
+  SYNC_INTERVAL_M,
+  URL,
+  DIR,
+} = GIST_SYNC;
+
 /** Directory to clone gist */
-const GIST_DIR = `${config.getInstallPath()}/${config.GIST_SYNC.DIR}`;
+const GIST_DIR = `${config.getInstallPath()}/${DIR}`;
 /** Context for git commands */
 const GIT_CONTEXT = { cwd: GIST_DIR };
 
@@ -53,22 +59,23 @@ const init = () => {
   if (jsonFiles) return;
 
   // Optionally sync
-  if (config.GIST_SYNC.SYNC_INTERVAL_M) {
-    log.info(`Setting gistSync to sync every ${config.GIST_SYNC.SYNC_INTERVAL_M} minutes.`);
-    setInterval(sync, 1000 * 60 * config.GIST_SYNC.SYNC_INTERVAL_M);
+  if (SYNC_INTERVAL_M) {
+    log.info(`Setting gistSync to sync every ${SYNC_INTERVAL_M} minutes.`);
+    // eslint-disable-next-line no-use-before-define
+    setInterval(sync, 1000 * 60 * SYNC_INTERVAL_M);
   }
 
   // Prevent erasing the whole project
-  if (!config.GIST_SYNC.DIR) throw new Error('DIR not set');
+  if (!DIR) throw new Error('DIR not set');
 
   execSync(`rm -rf "${GIST_DIR}"`);
-  execSync(`git clone ${config.GIST_SYNC.URL} "${GIST_DIR}"`);
+  execSync(`git clone ${URL} "${GIST_DIR}"`);
   loadFiles();
   log.debug('gistSync: init completed');
 };
 
 /**
- *
+ * Sync files.
  */
 const sync = () => {
   init();

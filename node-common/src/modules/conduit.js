@@ -7,7 +7,7 @@ const log = require('./log');
 const requestAsync = require('./requestAsync');
 const schema = require('./schema');
 
-config.requireKeys('conduit.js', {
+const { CONDUIT } = config.withSchema('conduit.js', {
   required: ['CONDUIT'],
   properties: {
     CONDUIT: {
@@ -48,7 +48,7 @@ let server;
  * @throws {Error} If packet to send does not conform to the schema.
  */
 const respond = async (res, packet) => {
-  if (!schema(RESPONSE_MESSAGE_SCHEMA, packet)) { throw new Error(`conduit.js: respond() packet from ${config.CONDUIT.APP} had schema errors`); }
+  if (!schema(RESPONSE_MESSAGE_SCHEMA, packet)) { throw new Error(`conduit.js: respond() packet from ${CONDUIT.APP} had schema errors`); }
 
   res.status(packet.status).send(packet);
 };
@@ -64,13 +64,13 @@ const send = async (packet) => {
   if (!server) throw new Error('conduit.js: Not yet registered');
 
   // Patch extras in
-  packet.from = config.CONDUIT.APP;
-  packet.auth = config.CONDUIT.TOKEN || '';
+  packet.from = CONDUIT.APP;
+  packet.auth = CONDUIT.TOKEN || '';
 
   // Send the data
   log.debug(`conduit.js: >> ${JSON.stringify(packet)}`);
   const { body } = await requestAsync({
-    url: `http://${config.CONDUIT.HOST}:${PORT}/conduit`,
+    url: `http://${CONDUIT.HOST}:${PORT}/conduit`,
     method: 'post',
     json: packet,
   });
@@ -153,8 +153,8 @@ const register = async () => {
 
   // Request a random port to be known by
   const { body } = await requestAsync({
-    url: `http://${config.CONDUIT.HOST}:${PORT}/port`,
-    json: { app: config.CONDUIT.APP, pid: process.pid },
+    url: `http://${CONDUIT.HOST}:${PORT}/port`,
+    json: { app: CONDUIT.APP, pid: process.pid },
   });
 
   // Start a local HTTP server and add routes

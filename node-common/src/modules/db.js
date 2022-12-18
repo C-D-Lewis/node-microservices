@@ -1,7 +1,7 @@
 const fs = require('fs');
 const config = require('./config');
 
-config.requireKeys('db.js', {
+const { DB } = config.withSchema('db.js', {
   required: ['DB'],
   properties: {
     DB: {
@@ -14,7 +14,7 @@ config.requireKeys('db.js', {
 });
 
 /** Path to DB file */
-const DB_PATH = `${config.getInstallPath()}/${config.DB.FILE}`;
+const DB_PATH = `${config.getInstallPath()}/${DB.FILE}`;
 
 let dbData;
 

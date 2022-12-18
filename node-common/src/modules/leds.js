@@ -5,7 +5,7 @@ const log = require('./log');
 /** Supported HATs and other LED hardware */
 const SUPPORTED_BOARDS = ['mote', 'blinkt'];
 
-config.requireKeys('leds.js', {
+const { LEDS } = config.withSchema('leds.js', {
   required: ['LEDS'],
   properties: {
     LEDS: {
@@ -20,7 +20,14 @@ config.requireKeys('leds.js', {
   },
 });
 
-log.assert(SUPPORTED_BOARDS.includes(config.LEDS.HARDWARE_TYPE), 'Valid hardware type', true);
+const {
+  ATTENUATION_FACTOR,
+  BRIGHTNESS,
+  USE_HARDWARE,
+  HARDWARE_TYPE,
+} = LEDS;
+
+log.assert(SUPPORTED_BOARDS.includes(HARDWARE_TYPE), 'Valid hardware type', true);
 
 /** Time between blink on and off */
 const BLINK_TIME_MS = 100;
@@ -28,25 +35,13 @@ const BLINK_TIME_MS = 100;
 const NUM_LEDS = {
   mote: 16,
   blinkt: 8,
-}[config.LEDS.HARDWARE_TYPE];
+}[HARDWARE_TYPE];
 
 const pixelsState = [];
 let blinkt = {};
 let mote = {};
 let initialised;
 let blinkHandle = null;
-
-/**
- * Can LED hardware be used?
- *
- * @returns {boolean}
- */
-const hardwareAvailable = () => {
-  if (!os.arch().includes('arm') || !config.LEDS.USE_HARDWARE) return false;
-  if (!initialised) init();
-
-  return true;
-};
 
 /**
  * Update blinkt - library somehow requires two of these.
@@ -60,11 +55,12 @@ const updateBlinkt = () => {
  * Init LED states and hardware library.
  */
 const init = () => {
-  for (let i = 0; i < NUM_LEDS; i++) {
+  for (let i = 0; i < NUM_LEDS; i += 1) {
     pixelsState.push([0, 0, 0]);
   }
 
-  if (config.LEDS.HARDWARE_TYPE === 'blinkt') {
+  if (HARDWARE_TYPE === 'blinkt') {
+    // eslint-disable-next-line import/no-unresolved
     const NodeBlinkt = require('node-blinkt');
     blinkt = new NodeBlinkt();
     blinkt.setup();
@@ -73,7 +69,7 @@ const init = () => {
     updateBlinkt();
   }
 
-  if (config.LEDS.HARDWARE_TYPE === 'mote') {
+  if (HARDWARE_TYPE === 'mote') {
     mote = require('./motePhat');
   }
 
@@ -81,24 +77,15 @@ const init = () => {
 };
 
 /**
- * Set all LEDs to a new color.
+ * Can LED hardware be used?
  *
- * @param {Array<number>} nextRgb - RGB color values.
+ * @returns {boolean} true if hardware is available.
  */
-const setAll = async (nextRgb) => {
-  for (let i = 0; i < NUM_LEDS; i++) {
-    pixelsState[i] = nextRgb;
-  }
+const hardwareAvailable = () => {
+  if (!os.arch().includes('arm') || !USE_HARDWARE) return false;
+  if (!initialised) init();
 
-  if (!hardwareAvailable()) return;
-
-  if (config.LEDS.HARDWARE_TYPE === 'blinkt') {
-    for (let i = 0; i < NUM_LEDS; i++) set(i, nextRgb);
-  }
-
-  if (config.LEDS.HARDWARE_TYPE === 'mote') {
-    mote.setAll(nextRgb);
-  }
+  return true;
 };
 
 /**
@@ -112,14 +99,35 @@ const set = (index, nextRgb) => {
 
   if (!hardwareAvailable()) return;
 
-  if (config.LEDS.HARDWARE_TYPE === 'blinkt') {
-    const rgb = nextRgb.map(p => p * config.LEDS.ATTENUATION_FACTOR);
-    blinkt.setPixel(index, ...rgb, config.LEDS.BRIGHTNESS);
+  if (HARDWARE_TYPE === 'blinkt') {
+    const rgb = nextRgb.map((p) => p * ATTENUATION_FACTOR);
+    blinkt.setPixel(index, ...rgb, BRIGHTNESS);
     updateBlinkt();
   }
 
-  if (config.LEDS.HARDWARE_TYPE === 'mote') {
+  if (HARDWARE_TYPE === 'mote') {
     mote.setPixels(pixelsState);
+  }
+};
+
+/**
+ * Set all LEDs to a new color.
+ *
+ * @param {Array<number>} nextRgb - RGB color values.
+ */
+const setAll = async (nextRgb) => {
+  for (let i = 0; i < NUM_LEDS; i += 1) {
+    pixelsState[i] = nextRgb;
+  }
+
+  if (!hardwareAvailable()) return;
+
+  if (HARDWARE_TYPE === 'blinkt') {
+    for (let i = 0; i < NUM_LEDS; i += 1) set(i, nextRgb);
+  }
+
+  if (HARDWARE_TYPE === 'mote') {
+    mote.setAll(nextRgb);
   }
 };
 
@@ -153,23 +161,23 @@ const blink = (index, nextRgb) => {
 const fadeAll = async (toRgb, fromRgb) => {
   // Set initial state immediately
   if (fromRgb && fromRgb.length === 3) {
-    for (let i = 0; i < NUM_LEDS; i++) {
+    for (let i = 0; i < NUM_LEDS; i += 1) {
       pixelsState[i] = fromRgb;
     }
   }
 
   if (!hardwareAvailable()) return;
 
-  if (config.LEDS.HARDWARE_TYPE === 'blinkt') {
+  if (HARDWARE_TYPE === 'blinkt') {
     throw new Error('Not implemented for blinkt currently');
   }
 
-  if (config.LEDS.HARDWARE_TYPE === 'mote') {
+  if (HARDWARE_TYPE === 'mote') {
     // Go from the pixelsState currently unless fromRgb is set
     mote.fadeAll(toRgb, pixelsState[0]);
 
     // Fade complete, remember the end state
-    for (let i = 0; i < NUM_LEDS; i++) {
+    for (let i = 0; i < NUM_LEDS; i += 1) {
       pixelsState[i] = toRgb;
     }
   }
@@ -177,7 +185,7 @@ const fadeAll = async (toRgb, fromRgb) => {
 
 // OK to init mote straight away - Non-pi dev should specify 'blinkt' HARDWARE_TYPE
 (() => {
-  if (config.LEDS.HARDWARE_TYPE === 'mote') init();
+  if (HARDWARE_TYPE === 'mote') init();
 })();
 
 module.exports = {
@@ -185,6 +193,16 @@ module.exports = {
   setAll,
   blink,
   fadeAll,
+  /**
+   * Get pixels state.
+   *
+   * @returns {Array<object>} Pixels state.
+   */
   getState: () => pixelsState,
+  /**
+   * Get number of LEDs.
+   *
+   * @returns {number} Number of LEDs available.
+   */
   getNumLEDs: () => NUM_LEDS,
 };

@@ -2,7 +2,7 @@ const express = require('express');
 const config = require('./config');
 const log = require('./log');
 
-config.requireKeys('server.js', {
+const { SERVER } = config.withSchema('server.js', {
   required: ['SERVER'],
   properties: {
     SERVER: {
@@ -53,8 +53,8 @@ const start = () => new Promise((resolve) => {
     next();
   });
 
-  server = app.listen(config.SERVER.PORT, () => {
-    log.info(`Express server up on ${config.SERVER.PORT}`);
+  server = app.listen(SERVER.PORT, () => {
+    log.info(`Express server up on ${SERVER.PORT}`);
     resolve();
   });
 });

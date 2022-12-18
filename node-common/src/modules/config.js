@@ -44,12 +44,15 @@ config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
  *
  * @param {string} name - Module name.
  * @param {object} partialSchema - Partial JSON schema for the module's config spec.
+ * @returns {object} Validaated schema.
  */
-config.requireKeys = (name, partialSchema) => {
+config.withSchema = (name, partialSchema) => {
   if (!schema(config, partialSchema)) {
     console.log(`Module ${name} is missing some configuration keys.`);
     process.exit(1);
   }
+
+  return config;
 };
 
 config.getInstallPath = getInstallPath;

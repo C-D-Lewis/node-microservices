@@ -5,7 +5,7 @@ const api = require('./modules/api');
 const { handlePacketWebhook } = require('./api/add');
 const { ATTIC_KEY_WEBHOOKS, setupHandler } = require('./modules/webhooks');
 
-config.requireKeys('main.js', {
+const { OPTIONS: { ENSURED_WEBHOOKS } } = config.withSchema('main.js', {
   required: ['OPTIONS'],
   properties: {
     OPTIONS: {
@@ -38,7 +38,6 @@ const initWebhooks = async () => {
  * Add any missing ensured webhooks (required).
  */
 const initEnsuredWebhooks = async () => {
-  const { ENSURED_WEBHOOKS } = config.OPTIONS;
   const existing = await attic.get(ATTIC_KEY_WEBHOOKS);
   for (let i = 0; i < ENSURED_WEBHOOKS.length; i += 1) {
     const hook = ENSURED_WEBHOOKS[i];

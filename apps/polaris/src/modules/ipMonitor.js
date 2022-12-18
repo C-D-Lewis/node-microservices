@@ -1,7 +1,7 @@
-const AWS = require('aws-sdk');
+const AWSSDK = require('aws-sdk');
 const { config, log, ip } = require('../node-common')(['config', 'log', 'ip']);
 
-config.requireKeys('server.js', {
+const { OPTIONS, AWS } = config.withSchema('server.js', {
   required: ['OPTIONS', 'AWS'],
   properties: {
     OPTIONS: {
@@ -23,20 +23,18 @@ config.requireKeys('server.js', {
   },
 });
 
+const { UPDATE_INTERVAL_M } = OPTIONS;
 const {
-  OPTIONS: { UPDATE_INTERVAL_M },
-  AWS: {
-    ACCESS_KEY_ID, SECRET_ACCESS_KEY, REGION, HOSTED_ZONE_NAME, RECORD_NAME_PREFIX,
-  },
-} = config;
+  ACCESS_KEY_ID, SECRET_ACCESS_KEY, REGION, HOSTED_ZONE_NAME, RECORD_NAME_PREFIX,
+} = AWS;
 
-AWS.config.update({
+AWSSDK.config.update({
   accessKeyId: ACCESS_KEY_ID,
   secretAccessKey: SECRET_ACCESS_KEY,
   region: REGION,
 });
 
-const route53 = new AWS.Route53();
+const route53 = new AWSSDK.Route53();
 
 /**
  * Create the record if it doesn't exist.

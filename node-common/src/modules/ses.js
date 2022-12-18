@@ -3,7 +3,7 @@ const os = require('os');
 const config = require('./config');
 const log = require('./log');
 
-config.requireKeys('ses.js', {
+const { SES } = config.withSchema('ses.js', {
   required: ['SES'],
   properties: {
     SES: {
@@ -18,9 +18,16 @@ config.requireKeys('ses.js', {
   },
 });
 
+const {
+  TO_ADDRESS,
+  SENDER_ADDRESS,
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY,
+} = SES;
+
 const credentials = new AWS.Credentials({
-  accessKeyId: config.SES.AWS_ACCESS_KEY_ID,
-  secretAccessKey: config.SES.AWS_SECRET_ACCESS_KEY,
+  accessKeyId: AWS_ACCESS_KEY_ID,
+  secretAccessKey: AWS_SECRET_ACCESS_KEY,
 });
 
 AWS.config.update({
@@ -47,8 +54,8 @@ ${msg}
 `;
 
   const res = await sesApi.sendEmail({
-    Source: config.SES.SENDER_ADDRESS,
-    Destination: { ToAddresses: [config.SES.TO_ADDRESS] },
+    Source: SENDER_ADDRESS,
+    Destination: { ToAddresses: [TO_ADDRESS] },
     Message: {
       Body: {
         Text: {

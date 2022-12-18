@@ -1,7 +1,7 @@
 const config = require('./config');
 const requestAsync = require('./requestAsync');
 
-config.requireKeys('attic.js', {
+const { CONDUIT } = config.withSchema('attic.js', {
   required: ['CONDUIT'],
   properties: {
     CONDUIT: {
@@ -18,7 +18,7 @@ config.requireKeys('attic.js', {
 const CONDUIT_PORT = 5959;
 
 let host = 'localhost';
-let appName = config.CONDUIT.APP || 'Unknown';
+let appName = CONDUIT.APP || 'Unknown';
 
 /**
  * Send a conduit packet.
@@ -28,7 +28,7 @@ let appName = config.CONDUIT.APP || 'Unknown';
  */
 const conduitSend = async (packet) => {
   // eslint-disable-next-line no-param-reassign
-  packet.auth = config.CONDUIT.TOKEN || '';
+  packet.auth = CONDUIT.TOKEN || '';
 
   const { body } = await requestAsync({
     url: `http://${host}:${CONDUIT_PORT}/conduit`,

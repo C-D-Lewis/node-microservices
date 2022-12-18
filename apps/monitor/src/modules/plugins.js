@@ -1,6 +1,6 @@
 const { config, log } = require('../node-common')(['config', 'log']);
 
-config.requireKeys('plugins.js', {
+const { PLUGINS } = config.withSchema('plugins.js', {
   required: ['PLUGINS'],
   properties: {
     PLUGINS: { type: 'array', items: { type: 'object' } },
@@ -93,7 +93,7 @@ const handleEvery = async (pluginName, plugin, pluginFunc) => {
  * Load all plugins in config.
  */
 const loadAll = () => {
-  config.PLUGINS.forEach(async (plugin) => {
+  PLUGINS.forEach(async (plugin) => {
     // Verify plugin config
     log.assert(!(plugin.EVERY && plugin.AT), 'Plugin must have only EVERY or AT, not both', true);
     log.assert(!(plugin.FILE_NAME && plugin.USE), 'Plugin must have only FILE_NAME or USE, not both', true);

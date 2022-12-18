@@ -9,7 +9,7 @@ const PIOLED_LIB_PATH = `${__dirname}/../lib/pioled-text.py`;
 /** Path to supporting Python script */
 const SSD1306_LIB_PATH = `${__dirname}/../lib/ssd1306.py`;
 
-config.requireKeys('textDisplay.js', {
+const { TEXT_DISPLAY } = config.withSchema('textDisplay.js', {
   required: ['TEXT_DISPLAY'],
   properties: {
     TEXT_DISPLAY: {
@@ -22,11 +22,16 @@ config.requireKeys('textDisplay.js', {
   },
 });
 
+const {
+  USE_HARDWARE,
+  HARDWARE_TYPE,
+} = TEXT_DISPLAY;
+
 /** Maximum number of lines of text supported */
 const NUM_LINES = {
   pioled: 4,
   ssd1306: 4,
-}[config.TEXT_DISPLAY.HARDWARE_TYPE];
+}[HARDWARE_TYPE];
 
 let linesState = ''.repeat(NUM_LINES);
 
@@ -35,7 +40,7 @@ let linesState = ''.repeat(NUM_LINES);
  *
  * @returns {boolean} true if the current platform is supported.
  */
-const hardwareAvailable = () => (os.arch().includes('arm') && config.TEXT_DISPLAY.USE_HARDWARE);
+const hardwareAvailable = () => (os.arch().includes('arm') && USE_HARDWARE);
 
 /**
  * Set a given line of text.
@@ -50,13 +55,13 @@ const setLines = (lines) => {
   if (!hardwareAvailable()) return;
 
   // PiOLED
-  if (config.TEXT_DISPLAY.HARDWARE_TYPE === 'pioled') {
+  if (HARDWARE_TYPE === 'pioled') {
     execSync(`python3 ${PIOLED_LIB_PATH} ${linesState.map((p) => `"${p}"`).join(' ')}`);
     return;
   }
 
   // SSD1306 module
-  if (config.TEXT_DISPLAY.HARDWARE_TYPE === 'ssd1306') {
+  if (HARDWARE_TYPE === 'ssd1306') {
     execSync(`python3 ${SSD1306_LIB_PATH} ${linesState.map((p) => `"${p}"`).join(' ')}`);
     return;
   }

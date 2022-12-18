@@ -11,9 +11,10 @@ describe('config.js', () => {
   });
 
   it('should allow modules to require keys', () => {
-    expect(config.requireKeys).to.be.a('function');
+    expect(config.withSchema).to.be.a('function');
 
-    config.requireKeys('config.spec.js', { required: ['LOG'] });
+    const { LOG } = config.withSchema('config.spec.js', { required: ['LOG'] });
+    expect(LOG).to.be.an('object');
   });
 
   it('should return the install path', () => {

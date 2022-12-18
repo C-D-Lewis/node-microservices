@@ -104,11 +104,11 @@ const { log, conduit } = require('../node-common')(['log', 'conduit']);
 Each app has a `config-default.json` that is created if no `config.json` exists,
 and in most cases the app will function normally. However, apps that require
 special keys (Spotify, DarkSky weather etc.) will not. Each module uses
-`config.requireKeys()` to declare a partial schema that must exist in the app's
+`config.withSchema()` to declare a partial schema that must exist in the app's
 config file, or else it will not start. For example, app logging:
 
 ```js
-config.requireKeys('log.js', {
+const { LOG } = config.withSchema('log.js', {
   required: ['LOG'],
   properties: {
     LOG: {

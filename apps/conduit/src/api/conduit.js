@@ -6,7 +6,7 @@ const {
   sendBadRequest, sendNotFound, sendPacket, sendNotAuthorized,
 } = require('../modules/util');
 
-config.requireKeys('conduit.js', {
+const { SERVER, OPTIONS } = config.withSchema('conduit.js', {
   required: ['SERVER'],
   properties: {
     SERVER: {
@@ -64,7 +64,7 @@ const handlePacketRequest = async (req, res) => {
   } = packet;
 
   // Enforce only localhost need not supply a guestlist token
-  if (hostname !== 'localhost' && config.OPTIONS.AUTH_TOKENS) {
+  if (hostname !== 'localhost' && OPTIONS.AUTH_TOKENS) {
     log.debug(`Origin: ${hostname} requires guestlist check`);
 
     if (!auth) {
@@ -97,7 +97,7 @@ const handlePacketRequest = async (req, res) => {
 
   try {
     // In case that the host is not this one, forward (all Conduit servers use 5959 currently)
-    const port = (host === DEFAULT_HOST_LOCAL) ? appConfig.port : config.SERVER.PORT;
+    const port = (host === DEFAULT_HOST_LOCAL) ? appConfig.port : SERVER.PORT;
 
     // Prevent forwarding loops by limiting to one redirection
     if (host !== DEFAULT_HOST_LOCAL) {

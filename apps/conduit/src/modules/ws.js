@@ -2,7 +2,7 @@ const WebSocket = require('ws');
 
 const { config, log } = require('../node-common')(['config', 'log']);
 
-config.requireKeys('ws.js', {
+const { WS } = config.withSchema('ws.js', {
   required: ['WS'],
   properties: {
     WS: {
@@ -13,8 +13,6 @@ config.requireKeys('ws.js', {
     },
   },
 });
-
-const { WS: { PORT } } = config;
 
 /**
  * 1. Server maps clients to hostnames after connection
@@ -94,8 +92,8 @@ const onNewClient = (client) => {
  * Start the WS server.
  */
 const start = () => {
-  server = new WebSocket.Server({ port: PORT });
-  log.info(`WebSocket server listening on ${PORT}`);
+  server = new WebSocket.Server({ port: WS.PORT });
+  log.info(`WebSocket server listening on ${WS.PORT}`);
 
   // Handle new connections
   server.on('connection', onNewClient);

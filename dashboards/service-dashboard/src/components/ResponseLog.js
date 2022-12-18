@@ -8,7 +8,7 @@
 const LogEntry = ({ text }) => {
   const wasError = text.includes('"error"');
 
-  let finalText = text;
+  let finalText = text.slice(0, 1000);
   try {
     finalText = JSON.stringify(JSON.parse(text), null, 2);
   } catch (e) { /** Not JSON */ }

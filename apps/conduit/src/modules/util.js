@@ -1,6 +1,6 @@
 const { config, log, requestAsync } = require('../node-common')(['config', 'log', 'requestAsync']);
 
-config.requireKeys('conduit.js', {
+const { SERVER } = config.withSchema('conduit.js', {
   required: ['SERVER'],
   properties: {
     SERVER: {
@@ -50,11 +50,11 @@ const sendNotAuthorized = (res, reason = 'None') => {
  * Send a packet.
  *
  * @param {object} json - Packet to send.
- * @returns {Promise<Object>} The request response.
+ * @returns {Promise<object>} The request response.
  */
 const sendPacket = async (json) => {
   const { body } = await requestAsync({
-    url: `http://localhost:${config.SERVER.PORT}/conduit`,
+    url: `http://localhost:${SERVER.PORT}/conduit`,
     method: 'post',
     json,
   });

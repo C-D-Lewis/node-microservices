@@ -2,7 +2,7 @@ const fs = require('fs');
 const config = require('./config');
 require('colors');
 
-config.requireKeys('log.js', {
+const { LOG } = config.withSchema('log.js', {
   required: ['LOG'],
   properties: {
     LOG: {
@@ -28,7 +28,7 @@ const MONITOR_INTERVAL_MS = 60 * 60 * 1000;
 /** Max log size */
 const MAX_SIZE_MB = 10;
 /** Log path */
-const FILE_PATH = `${config.getInstallPath()}/${config.LOG.APP_NAME.split(' ').join('-')}.log`;
+const FILE_PATH = `${config.getInstallPath()}/${LOG.APP_NAME.split(' ').join('-')}.log`;
 /** Log level color map */
 const LEVEL_COLOR_MAP = {
   info: 'white',
@@ -54,7 +54,7 @@ const getTimeString = () => {
  * @param {string} level - Log level.
  * @returns {string} Formatted log line prefix.
  */
-const buildPrefix = (level) => `[${getTimeString()} ${process.pid} ${config.LOG.APP_NAME} ${TAGS[level]}]`;
+const buildPrefix = (level) => `[${getTimeString()} ${process.pid} ${LOG.APP_NAME} ${TAGS[level]}]`;
 
 /**
  * Write a log line to file.
@@ -154,7 +154,7 @@ const fatal = (msg) => log('fatal', msg);
  * Print fancy decor when app starts.
  */
 const printDecor = () => {
-  const msg = ` ${config.LOG.APP_NAME} `;
+  const msg = ` ${LOG.APP_NAME} `;
   const decorLength = Math.floor((DECOR_WIDTH - msg.length) / 2);
   process.stdout.write('='.repeat(decorLength));
   process.stdout.write(msg);

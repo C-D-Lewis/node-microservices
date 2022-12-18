@@ -3,7 +3,7 @@ const {
   config, attic, ip, log,
 } = require('../node-common')(['config', 'attic', 'ip', 'log']);
 
-config.requireKeys('fleet.js', {
+const { OPTIONS } = config.withSchema('fleet.js', {
   required: ['OPTIONS'],
   properties: {
     OPTIONS: {
@@ -29,13 +29,8 @@ const FLEET_LIST_KEY = 'fleetList';
 /** Checking interval */
 const CHECKIN_INTERVAL_MS = 1000 * 60 * 10;
 
-const {
-  /** Fleet config data */
-  FLEET,
-} = config.OPTIONS;
-
 attic.setAppName('conduit');
-attic.setHost(FLEET.HOST);
+attic.setHost(OPTIONS.FLEET.HOST);
 
 /**
  * Sort item by lastCheckIn timestamp.
@@ -61,7 +56,7 @@ const checkIn = async () => {
       lastCheckInDate: now.toISOString(),
       publicIp: await ip.getPublic(),
       localIp: await ip.getLocal(),
-      deviceType: FLEET.DEVICE_TYPE,
+      deviceType: OPTIONS.FLEET.DEVICE_TYPE,
     };
 
     const fleetList = await attic.get(FLEET_LIST_KEY);

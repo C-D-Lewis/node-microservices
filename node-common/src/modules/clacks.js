@@ -4,7 +4,7 @@ const log = require('./log');
 const config = require('./config');
 const ip = require('./ip');
 
-config.requireKeys('clacks.js', {
+const { CLACKS } = config.withSchema('clacks.js', {
   required: ['CLACKS'],
   properties: {
     CLACKS: {
@@ -18,10 +18,6 @@ config.requireKeys('clacks.js', {
     },
   },
 });
-
-const {
-  CLACKS: { SERVER },
-} = config;
 
 /** Get hostnames topic */
 const TOPIC_GLOBAL_GET_HOSTNAMES = '/global/getHostnames';
@@ -66,7 +62,7 @@ const connect = async () => new Promise((resolve) => {
   }
 
   disconnectRequested = false;
-  socket = new WebSocket(`ws://${SERVER}:${PORT}`);
+  socket = new WebSocket(`ws://${CLACKS.SERVER}:${PORT}`);
 
   // When connection established
   socket.on('open', () => {

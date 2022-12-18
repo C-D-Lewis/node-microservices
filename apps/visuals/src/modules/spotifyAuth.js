@@ -15,7 +15,7 @@ const {
   attic, conduit, config, log,
 } = require('../node-common')(['attic', 'conduit', 'config', 'log']);
 
-config.requireKeys('spotifyAuth.js', {
+const { SPOTIFY, AUTH_ATTIC } = config.withSchema('spotifyAuth.js', {
   required: ['SPOTIFY', 'AUTH_ATTIC'],
   properties: {
     SPOTIFY: {
@@ -37,13 +37,6 @@ config.requireKeys('spotifyAuth.js', {
   },
 });
 
-const {
-  /** Spotify config */
-  SPOTIFY,
-  /** Authorizing Attic config */
-  AUTH_ATTIC,
-} = config;
-
 /** Keys for Attic database */
 const DB_KEYS = {
   ACCESS_TOKEN: 'spotify_access_token',
@@ -54,7 +47,7 @@ const DB_KEYS = {
 /**
  * Build a credentials object for spotify-web-api-node
  *
- * @returns {object}
+ * @returns {object} Credentials
  */
 const buildCredentials = () => ({
   clientId: SPOTIFY.CLIENT_ID,
@@ -75,7 +68,7 @@ const buildAuthURL = () => {
 /**
  * Refresh and store the active accessToken.
  *
- * @param {Object<Spotify>} Spotify API client.
+ * @param {Spotify} spotifyApi - Spotify API client.
  */
 const refreshCredentials = async (spotifyApi) => {
   const refreshAccessTokenAsync = promisify(spotifyApi.refreshAccessToken).bind(spotifyApi);
@@ -123,7 +116,7 @@ const updateRemoteAuthCode = async () => {
 /**
  * Test current API credentials work. If not, try and refresh them.
  *
- * @param {Object<Spotify>} Spotify API client.
+ * @param {Spotify} spotifyApi - Spotify API client.
  */
 const testCredentials = async (spotifyApi) => {
   const accessToken = await attic.get(DB_KEYS.ACCESS_TOKEN);
@@ -147,7 +140,7 @@ const testCredentials = async (spotifyApi) => {
  * Create and test an spotify-web-api-node API access object.
  * If returns null, caller should return buildAuthURL() to end user.
  *
- * @returns {Object<Spotify>} Spotify API object for use.
+ * @returns {Spotify} Spotify API object for use.
  */
 const createSpotifyClient = async () => {
   const spotifyApi = new Spotify(buildCredentials());
