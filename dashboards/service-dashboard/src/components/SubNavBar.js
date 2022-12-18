@@ -16,23 +16,19 @@ const AllDevicesBreadcrumb = () => fabricate('p')
  *
  * @param {HTMLElement} el - Fabricate component.
  * @param {object} state - Current state.
- * @param {Array<object>} state.fleetList - Fleet list.
  * @param {string} state.selectedIp - Selected IP.
+ * @param {string} state.selectedDeviceName - Selected device name.
  */
-const rebootDevice = async (el, { fleetList, selectedIp }) => {
+const rebootDevice = async (el, { selectedIp, selectedDeviceName }) => {
   // eslint-disable-next-line no-restricted-globals
   if (!confirm('Caution: If devices share an IP this might not be the actual device - continue?')) return;
-
-  const {
-    deviceName,
-  } = fleetList.find(({ publicIp, localIp }) => selectedIp === publicIp || localIp === selectedIp);
 
   try {
     // Public, then local
     const { content, error } = await fetch(`http://${selectedIp}:5959/reboot`, { method: 'POST' }).then((r) => r.json());
 
     if (content) {
-      fabricate.update('logEntries', ({ logEntries }) => [...logEntries, `Device ${deviceName} is rebooting now`]);
+      fabricate.update('logEntries', ({ logEntries }) => [...logEntries, `Device ${selectedDeviceName} is rebooting now`]);
     } else {
       throw new Error(error);
     }
