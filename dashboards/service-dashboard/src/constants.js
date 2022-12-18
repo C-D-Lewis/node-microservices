@@ -8,6 +8,9 @@ const Constants = {};
 /** Port to look for conduit apps */
 Constants.CONDUIT_PORT = 5959;
 
+/** App card width */
+Constants.APP_CARD_WIDTH = 375;
+
 /** Initial total app state */
 Constants.INITIAL_STATE = {
   page: 'FleetPage',

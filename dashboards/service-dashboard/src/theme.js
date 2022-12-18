@@ -24,6 +24,13 @@ Theme.colors = {
     reachable: 'white',
     unreachable: '#333',
   },
+  MetricGraph: {
+    background: '#222',
+    border: '#ccc',
+  },
+  DataPoint: {
+    background: 'orange',
+  },
   status: {
     ok: '#43D047',
     down: '#DD6E40',

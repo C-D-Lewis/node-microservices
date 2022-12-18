@@ -390,7 +390,7 @@ const MonitorControls = () => {
           fabricate('TextBox', { placeholder: 'Metric' })
             .onUpdate((el, { monitorData: { metric } }) => el.setText(metric))
             .setStyles({ width: '100%' })
-            .onChange((el, state, value) => setProp(' metric', value)),
+            .onChange((el, state, value) => setProp('metric', value)),
           fabricate('TextButton')
             .setText('Graph')
             .setStyles({ ...buttonStyle, width: '33%' })
@@ -401,15 +401,24 @@ const MonitorControls = () => {
                 {
                   to: 'monitor',
                   topic: 'getMetricToday',
-                  host: '192.168.0.3',  // HACK
                   message: { name: metric },
                 },
               );
 
-              // Draw data
-              console.log(res);
+              const { message: metricHistory } = res;
+              const minValue = metricHistory.reduce(
+                (acc, p) => (p.value < acc ? p.value : acc),
+                9999999,
+              );
+              const maxValue = metricHistory.reduce((acc, p) => (p.value > acc ? p.value : acc), 0);
+
+              // Save data
+              setProp('metricHistory', res.message);
+              setProp('minValue', minValue);
+              setProp('maxValue', maxValue);
             }),
         ]),
+      fabricate('MetricGraph'),
     ]);
 };
 

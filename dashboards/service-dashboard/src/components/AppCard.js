@@ -1,12 +1,14 @@
 /**
  * CardContainer component.
  *
- * @returns {HTMLElement}
+ * @param {object} props - Component props.
+ * @param {number} [props.size] - Grid size.
+ * @returns {HTMLElement} Fabricate component.
  */
-const CardContainer = () => fabricate('Card')
+const CardContainer = ({ size = 1 }) => fabricate('Card')
   .asFlex('column')
   .setStyles({
-    width: '375px',
+    width: `${Constants.APP_CARD_WIDTH * size}px`,
     margin: '10px 0px 10px 20px',
     opacity: 0,
     visibility: 'hidden',
@@ -18,8 +20,7 @@ const CardContainer = () => fabricate('Card')
 /**
  * AppName component.
  *
- * @param {object} props - Component props.
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const AppName = () => fabricate('Text')
   .setStyles({
@@ -33,8 +34,7 @@ const AppName = () => fabricate('Text')
 /**
  * StatusText component.
  *
- * @param {object} props - Component props.
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const StatusText = () => fabricate('Text')
   .setStyles({
@@ -48,7 +48,8 @@ const StatusText = () => fabricate('Text')
  * StatusLED component.
  *
  * @param {object} props - Component props.
- * @returns {HTMLElement}
+ * @param {string} props.app - App.
+ * @returns {HTMLElement} Fabricate component.
  */
 const StatusLED = ({ app }) => fabricate('div')
   .setStyles({
@@ -67,7 +68,9 @@ const StatusLED = ({ app }) => fabricate('div')
 /**
  * CardStatus component.
  *
- * @returns {HTMLElement}
+ * @param {object} props - Component props.
+ * @param {string} props.app - App.
+ * @returns {HTMLElement} Fabricate component.
  */
 const CardStatus = ({ app }) => fabricate('Row')
   .setStyles({
@@ -87,7 +90,7 @@ const CardStatus = ({ app }) => fabricate('Row')
 /**
  * CardTitleRow component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const CardTitleRow = () => fabricate('Row')
   .setStyles({
@@ -100,10 +103,11 @@ const CardTitleRow = () => fabricate('Row')
  * AppCard component.
  *
  * @param {object} props - Component props.
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 fabricate.declare('AppCard', ({ app }) => {
-  const container = CardContainer();
+  const size = app === 'monitor' ? 2 : 1;
+  const container = CardContainer({ size });
 
   // Become visible shortly after creation
   setTimeout(() => container.setStyles({ opacity: 1, visibility: 'visible' }), 50);
