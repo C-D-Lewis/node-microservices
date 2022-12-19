@@ -383,41 +383,55 @@ const MonitorControls = () => {
    */
   const setProp = (k, v) => fabricate.update('monitorData', ({ monitorData }) => ({ ...monitorData, [k]: v }));
 
+  /**
+   * Fetch data for a metric.
+   *
+   * @param {object} state - App state.
+   * @param {string} metric - Metric name.
+   */
+  const fetchMetric = async (state, metric) => {
+    const res = await ConduitService.sendPacket(
+      state,
+      {
+        to: 'monitor',
+        topic: 'getMetricToday',
+        message: { name: metric },
+      },
+    );
+    const { message: metricHistory } = res;
+
+    // Aggregate values
+    const minValue = metricHistory.reduce(
+      (acc, p) => (p.value < acc ? p.value : acc),
+      9999999,
+    );
+    const maxValue = metricHistory.reduce((acc, p) => (p.value > acc ? p.value : acc), 0);
+
+    // Save data
+    setProp('metricHistory', res.message);
+    setProp('minValue', minValue);
+    setProp('maxValue', maxValue);
+  };
+
   return ControlContainer()
     .setChildren([
       ControlRow()
-        .setChildren([
-          fabricate('TextBox', { placeholder: 'Metric' })
-            .onUpdate((el, { monitorData: { metric } }) => el.setText(metric))
-            .setStyles({ width: '100%' })
-            .onChange((el, state, value) => setProp('metric', value)),
-          fabricate('TextButton')
-            .setText('Graph')
-            .setStyles({ ...buttonStyle, width: '33%' })
-            .onClick(async (el, state) => {
-              const { metric } = state.monitorData;
-              const res = await ConduitService.sendPacket(
-                state,
-                {
-                  to: 'monitor',
-                  topic: 'getMetricToday',
-                  message: { name: metric },
-                },
-              );
+        .onUpdate((el, state) => {
+          const { monitorData: { metricNames } } = state;
+          if (!metricNames.length) return;
 
-              const { message: metricHistory } = res;
-              const minValue = metricHistory.reduce(
-                (acc, p) => (p.value < acc ? p.value : acc),
-                9999999,
-              );
-              const maxValue = metricHistory.reduce((acc, p) => (p.value > acc ? p.value : acc), 0);
-
-              // Save data
-              setProp('metricHistory', res.message);
-              setProp('minValue', minValue);
-              setProp('maxValue', maxValue);
-            }),
-        ]),
+          // Show button for each metric
+          const buttons = metricNames.map((metric) => fabricate('TextButton')
+            .setText(metric)
+            .setStyles({ ...buttonStyle, width: '25%' })
+            .onClick(() => fetchMetric(state, metric)));
+          el.setChildren(buttons);
+        }, ['monitorData'])
+        .onCreate(async (el, state) => {
+          // Fetch all metric names
+          const res = await ConduitService.sendPacket(state, { to: 'monitor', topic: 'getMetricNames' });
+          setProp('metricNames', res.message);
+        }),
       fabricate('MetricGraph'),
     ]);
 };

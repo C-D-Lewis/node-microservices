@@ -47,6 +47,7 @@ Constants.INITIAL_STATE = {
     message: '{}',
   },
   monitorData: {
+    metricNames: [],
     metric: '',
     metricHistory: [],
   },

@@ -4,6 +4,10 @@ const GRAPH_WIDTH = 2 * Constants.APP_CARD_WIDTH;
 const GRAPH_HEIGHT = 250;
 /** Y axis marign */
 const Y_AXIS_MARGIN = 60;
+/** Point size */
+const POINT_SIZE = 3;
+/** Number of points in a bucket */
+const BUCKET_SIZE = 5;
 
 /**
  * Label component.
@@ -38,8 +42,9 @@ const DataPoint = ({ point, minValue, maxValue }) => {
   const height = ((point.value - minValue) * GRAPH_HEIGHT) / range;
   return fabricate('div')
     .setStyles({
-      width: '1px',
-      height: '1px',
+      width: `${POINT_SIZE}px`,
+      height: `${POINT_SIZE}px`,
+      borderRadius: '10px',
       backgroundColor: Theme.colors.DataPoint.background,
       marginBottom: `${height}px`,
     })
@@ -82,8 +87,21 @@ const GraphView = () => fabricate('Row')
   .onUpdate((el, { monitorData: { metricHistory, minValue, maxValue } }) => {
     if (!metricHistory.length) return;
 
+    // Average into buckets
+    const copy = [...metricHistory];
+    const buckets = [];
+    while (copy.length) {
+      const items = copy.splice(0, BUCKET_SIZE);
+      const avgIndex = Math.round(items.length / 2);
+      buckets.push({
+        value: items.reduce((acc, p) => acc + p.value, 0) / items.length,
+        timestamp: items[avgIndex].timestamp,
+        dateTime: items[avgIndex].dateTime,
+      });
+    }
+
     // Update points - last that will fit
-    const points = metricHistory
+    const points = buckets
       .slice(-GRAPH_WIDTH)
       .map((point) => DataPoint({ point, minValue, maxValue }));
     el.setChildren(points);
