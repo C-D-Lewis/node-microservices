@@ -29,5 +29,13 @@ describe('API', () => {
       expect(point.dateTime).to.be.a('string');
       expect(point.value).to.equal(23);
     });
+
+    it('should return metric names', async () => {
+      const result = await testing.sendConduitPacket({ to: 'monitor', topic: 'getMetricNames' });
+
+      expect(result.status).to.equal(200);
+      expect(result.message).to.be.an('array');
+      expect(result.message).to.have.length(2);
+    });
   });
 });

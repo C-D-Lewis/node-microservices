@@ -110,7 +110,15 @@ const getMetricHistoryToday = (name) => {
   return metricDb[name].filter((p) => p.timestamp > todayStart.getTime());
 };
 
+/**
+ * Get all known metric names.
+ *
+ * @returns {Array<string>} Metric names.
+ */
+const getMetricNames = () => Object.keys(load());
+
 module.exports = {
   updateMetrics,
   getMetricHistoryToday,
+  getMetricNames,
 };
