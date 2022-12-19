@@ -92,7 +92,7 @@ const GraphView = () => fabricate('Row')
     const buckets = [];
     while (copy.length) {
       const items = copy.splice(0, BUCKET_SIZE);
-      const avgIndex = Math.round(items.length / 2);
+      const avgIndex = Math.floor(items.length / 2);
       buckets.push({
         value: items.reduce((acc, p) => acc + p.value, 0) / items.length,
         timestamp: items[avgIndex].timestamp,
