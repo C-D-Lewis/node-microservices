@@ -406,16 +406,20 @@ const MonitorControls = () => {
       9999999,
     );
     const maxValue = metricHistory.reduce((acc, p) => (p.value > acc ? p.value : acc), 0);
+    const minTime = metricHistory[0].dateTime;
+    const maxTime = metricHistory[metricHistory.length - 1].dateTime;
 
     // Save data
     setProp('metricHistory', res.message);
     setProp('minValue', minValue);
     setProp('maxValue', maxValue);
+    setProp('minTime', minTime);
+    setProp('maxTime', maxTime);
   };
 
   return ControlContainer()
     .setChildren([
-      ControlRow()
+      fabricate('Row')
         .onUpdate((el, state) => {
           const { monitorData: { metricNames } } = state;
           if (!metricNames.length) return;

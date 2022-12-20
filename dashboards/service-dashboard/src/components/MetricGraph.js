@@ -77,13 +77,9 @@ const GraphView = () => fabricate('Row')
     borderBottom: `solid 2px ${Theme.colors.MetricGraph.border}`,
     borderLeft: `solid 2px ${Theme.colors.MetricGraph.border}`,
     alignItems: 'end',
-    width: `${GRAPH_WIDTH - Y_AXIS_MARGIN}px`,
+    width: '100%',
+    height: `${GRAPH_HEIGHT}px`,
   })
-  .setChildren([
-    fabricate('div')
-      .setStyles({ color: 'white', padding: '10px' })
-      .setText('No data yet'),
-  ])
   .onUpdate((el, { monitorData: { metricHistory, minValue, maxValue } }) => {
     if (!metricHistory.length) return;
 
@@ -113,7 +109,7 @@ const GraphView = () => fabricate('Row')
  * @returns {HTMLElement} Fabricate component.
  */
 const YAxisLabels = () => fabricate('Column')
-  .setStyles({ width: Y_AXIS_MARGIN })
+  .setStyles({ width: `${Y_AXIS_MARGIN}px` })
   .setChildren([
     fabricate('Text')
       .setStyles({ fontSize: '0.9rem', color: 'white' })
@@ -132,16 +128,42 @@ const YAxisLabels = () => fabricate('Column')
   ]);
 
 /**
+ * HAxisLabels component.
+ *
+ * @returns {HTMLElement} Fabricate component.
+ */
+const HAxisLabels = () => fabricate('Row')
+  .setStyles({ paddingLeft: `${Y_AXIS_MARGIN}px` })
+  .setChildren([
+    fabricate('Text')
+      .setStyles({ fontSize: '0.9rem', color: 'white' })
+      .onUpdate((el, { monitorData: { metricHistory, minTime } }) => {
+        if (!metricHistory.length) return;
+
+        el.setText(minTime);
+      }, ['monitorData']),
+    fabricate('Text')
+      .setStyles({ fontSize: '0.9rem', color: 'white', marginLeft: 'auto' })
+      .onUpdate((el, { monitorData: { metricHistory, maxTime } }) => {
+        if (!metricHistory.length) return;
+
+        el.setText(maxTime);
+      }, ['monitorData']),
+  ]);
+
+/**
  * MetricGraph component.
  *
  * @returns {HTMLElement} Fabricate component.
  */
-fabricate.declare('MetricGraph', () => fabricate('Row')
-  .setStyles({
-    width: `${GRAPH_WIDTH}px`,
-    height: `${GRAPH_HEIGHT}px`,
-  })
+fabricate.declare('MetricGraph', () => fabricate('Column')
+  .setStyles({ width: `${GRAPH_WIDTH}px` })
   .setChildren([
-    YAxisLabels(),
-    GraphView(),
-  ]));
+    fabricate('Row')
+      .setChildren([
+        YAxisLabels(),
+        GraphView(),
+      ]),
+    HAxisLabels(),
+  ])
+  .when(({ monitorData }) => monitorData.metricHistory.length));
