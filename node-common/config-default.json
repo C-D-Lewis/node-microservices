@@ -35,5 +35,9 @@
     "SENDER_ADDRESS": "",
     "AWS_ACCESS_KEY_ID": "",
     "AWS_SECRET_ACCESS_KEY": ""
+  },
+  "BIFROST": {
+    "SERVER": "localhost",
+    "APP_NAME": "node-common"
   }
 }

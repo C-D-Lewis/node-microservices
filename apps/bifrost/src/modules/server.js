@@ -1,10 +1,11 @@
+/* eslint-disable no-param-reassign */
 const WebSocket = require('ws');
 const { log } = require('../node-common')(['log']);
 
 /** Fixed Norse port */
 const PORT = 3918;
-/** Client declaring hostname */
-const TOPIC_GLOBAL_MYHOSTNAME = '/global/myHostname';
+/** Client declaring itself */
+const TOPIC_GLOBAL_WHOAMI = '/global/whoami';
 
 let server;
 const clients = [];
@@ -24,7 +25,7 @@ const validateMessage = (json) => {
   if (typeof message !== 'object') throw new Error('message is not object');
 
   // Valid route - either /devices/$NAME/$APP/$TOPIC or /global/*
-  if (!route.includes('/global/') || route.split('/').length === 4) throw new Error('Invalid route');
+  if (!(route.includes('/global/') || route.split('/').length === 5)) throw new Error('Invalid route');
 };
 
 /**
@@ -33,12 +34,21 @@ const validateMessage = (json) => {
  * @param {object} json - Received message data.
  */
 const handlePacket = (json) => {
-  const { route, message } = json;
+  const { route } = json;
 
   // Global?
 
   // Destined for a given device app route
-  const [, device, app, topic] = route.split('/');
+  const [, , device, appName] = route.split('/');
+  const target = clients.find((p) => p.hostname === device && p.appName === appName);
+  if (!target) {
+    log.error(`Unknown: ${device}>${appName}`);
+    return;
+  }
+
+  // Forward to that device
+  target.send(JSON.stringify(json));
+  log.debug(`Forwarded to ${device}>${appName}`);
 };
 
 /**
@@ -60,14 +70,17 @@ const onClientMessage = (client, data) => {
     return;
   }
 
-  // Client declaring hostname
+  // Client declaring hostname and app name (unique combination)
   const { route, message } = json;
-  if (route === TOPIC_GLOBAL_MYHOSTNAME) {
-    const { hostname } = message;
-    // eslint-disable-next-line no-param-reassign
+  if (route === TOPIC_GLOBAL_WHOAMI) {
+    const { hostname, appName } = message;
     client.hostname = hostname;
+    client.appName = appName;
+    log.debug(`Received whoami: ${hostname}>${appName}`);
     return;
   }
+
+  // Ignore heartbeats received
 
   // Handle packet, getting it where it needs to go
   handlePacket(json);
