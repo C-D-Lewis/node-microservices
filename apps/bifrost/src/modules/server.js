@@ -33,24 +33,24 @@ const validateMessage = (json) => {
 /**
  * Handle a packet.
  *
- * @param {object} json - Received message data.
+ * @param {object} packet - Received message data.
  */
-const handlePacket = (json) => {
-  const { route } = json;
+const handlePacket = (packet) => {
+  const { route } = packet;
 
   // Global?
 
   // Destined for a given host & app route
-  const { hostname, appName } = bifrost.parseRoute(route);
-  const target = clients.find((p) => p.hostname === hostname && p.appName === appName);
+  const { hostname, toApp } = bifrost.parseRoute(route);
+  const target = clients.find((p) => p.hostname === hostname && p.appName === toApp);
   if (!target) {
-    log.error(`Unknown: ${hostname}>${appName}`);
+    log.error(`Unknown: ${hostname}>${toApp}`);
     return;
   }
 
   // Forward to that host and app
-  target.send(JSON.stringify(json));
-  log.debug(`Forwarded to ${hostname}>${appName}`);
+  target.send(JSON.stringify(packet));
+  log.debug(`Forwarded to ${hostname}>${toApp}`);
 };
 
 /**
@@ -64,34 +64,34 @@ const onClientMessage = (client, data) => {
   client.lastSeen = Date.now();
 
   // Ensure it has the right data
-  let json;
+  let packet;
   try {
-    json = JSON.parse(data.toString());
-    validateMessage(json);
+    packet = JSON.parse(data.toString());
+    validateMessage(packet);
   } catch (e) {
     log.error(e);
     return;
   }
 
   // Client declaring hostname and app name (unique combination)
-  const { route } = json;
-  const { topic, hostname, appName } = bifrost.parseRoute(route);
+  const { route } = packet;
+  const { topic, hostname, fromApp } = bifrost.parseRoute(route);
   if (topic === TOPIC_WHOAMI) {
     // Annotate this client
     client.hostname = hostname;
-    client.appName = appName;
-    log.debug(`Received whoami: ${hostname}>${appName}`);
+    client.appName = fromApp;
+    log.debug(`Received whoami: ${hostname}>${fromApp}`);
     return;
   }
 
   // Ignore heartbeats received
   if (topic === TOPIC_HEARTBEAT) {
-    log.debug(`Received heartbeat: ${hostname}>${appName}`);
+    log.debug(`Received heartbeat: ${hostname}>${fromApp}`);
     return;
   }
 
   // Handle packet, getting it where it needs to go
-  handlePacket(json);
+  handlePacket(packet);
 };
 
 /**

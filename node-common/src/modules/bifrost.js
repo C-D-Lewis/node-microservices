@@ -41,8 +41,8 @@ const TOPIC_HEARTBEAT = 'heartbeat';
 /** Heartbeat interval */
 const HEARTBEAT_INTERVAL_MS = 30000;
 
-// Map of topic to callback
-const subscriptions = {};
+const topics = {};
+const inflights = {};
 
 let socket;
 let connected;
@@ -58,13 +58,14 @@ let heartbeatHandle;
  */
 const parseRoute = (route) => {
   const parts = route.split('/');
-  if (!(route.includes('/global/') || parts.length === 5)) throw new Error('Invalid route');
+  if (!(route.includes('/global/') || parts.length === 6)) throw new Error('Invalid route');
 
-  const [, type, routeHostname, appName, topic] = route.split('/');
+  const [, type, routeHostname, fromApp, toApp, topic] = route.split('/');
   return {
     type,
     hostname: routeHostname,
-    appName,
+    fromApp,
+    toApp,
     topic,
     isGlobal: type === 'global',
   };
@@ -74,9 +75,10 @@ const parseRoute = (route) => {
  * Build a route string for a topic message from this device.
  *
  * @param {string} topic - Topic to use.
+ * @param {string} [toApp] - Override toApp.
  * @returns {string} Route string.
  */
-const buildRoute = (topic) => `/devices/${HOSTNAME}/${APP_NAME}/${topic}`;
+const buildRoute = (topic, toApp = APP_NAME) => `/devices/${HOSTNAME}/${APP_NAME}/${toApp}/${topic}`;
 
 /**
  * Stop heartbeats.
@@ -109,6 +111,19 @@ const sendWhoAmI = () => {
 };
 
 /**
+ * Expect messages on a given topic.
+ *
+ * @param {string} topic - Topic to listen to.
+ * @param {Function} onTopicMessage - Callback when a message with the matching topic is received.
+ */
+const registerTopic = (topic, onTopicMessage) => {
+  if (!connected) throw new Error('bifrost.js: not yet connected');
+
+  topics[topic] = onTopicMessage;
+  log.debug(`Added topic ${topic}`);
+};
+
+/**
  * Connect to the configured server.
  *
  * @returns {Promise<void>}
@@ -128,22 +143,45 @@ const connect = async () => new Promise((resolve) => {
     log.info('bifrost.js: connected');
     connected = true;
 
+    registerTopic('ping', () => ({ pong: true }));
     sendWhoAmI();
     startHeartbeat();
     resolve();
   });
 
   // When a message is received
-  socket.on('message', (buffer) => {
-    const { route, message } = JSON.parse(buffer.toString());
-    log.debug(`bifrost << ${route} ${JSON.stringify(message)}`);
+  socket.on('message', async (buffer) => {
+    const { id, route, message } = JSON.parse(buffer.toString());
+    log.debug(`bifrost << ${id} ${route} ${JSON.stringify(message)}`);
+    const { fromApp, topic } = parseRoute(route);
+    console.log({topics, id, inflights})
 
     // Ignore if nobody is listening locally
-    const { topic } = parseRoute(route);
-    if (!subscriptions[topic]) return;
+    if (!topics[topic]) return;
 
-    // Pass to the application
-    subscriptions[topic](message);
+    pinging self resolves immediately...
+
+    // Did we request this message response? Resolve the send()!
+    if (id && inflights[id]) {
+      console.log('callback')
+      inflights[id](message);
+      delete inflights[id];
+      return;
+    }
+
+    // Pass to the application and allow it to return a response for this ID
+    const response = (await topics[topic](message)) || { ok: true };
+    console.log({ response })
+
+    // Send response to requester
+    const responseRoute = buildRoute(topic, fromApp);
+    const responsePacket = {
+      id,
+      route: responseRoute,
+      message: response,
+    };
+    socket.send(JSON.stringify(responsePacket));
+    log.debug(`bifrost <> ${id} ${route} ${JSON.stringify(responsePacket)}`);
   });
 
   // When connection is closed
@@ -176,34 +214,30 @@ const disconnect = () => {
 };
 
 /**
- * Subscribe to a message topic.
- *
- * @param {string} topic - Topic to listen to.
- * @param {Function} onTopicMessage - Callback when a message with the matching topic is received.
- */
-const subscribeTopic = (topic, onTopicMessage) => {
-  if (!connected) throw new Error('bifrost.js: not yet connected');
-
-  subscriptions[topic] = onTopicMessage;
-  log.debug(`Added subscription to ${topic}`);
-};
-
-/**
- * Send some JSON data to the server for another local application.
+ * Send a packet to the server for another local application.
+ * ID is attached to allow awaiting of other app's response data, so it can be
+ * used in the same way as HTTP.
  *
  * @param {string} topic - Topic to broadcast on.
  * @param {object} message - Data to send.
- * @returns {void}
+ * @returns {Promise<object>} Response message data.
  */
 const send = (topic, message = {}) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
-  // TODO const res = await send()...
+  const id = `${Date.now() + Math.random()}`;
+  const packet = {
+    id,
+    route: buildRoute(topic),
+    message,
+  };
+  log.debug(`bifrost >> ${JSON.stringify(packet)}`);
+  socket.send(JSON.stringify(packet));
 
-  const route = buildRoute(topic);
-  const data = { route, message };
-  log.debug(`bifrost >> ${JSON.stringify(data)}`);
-  socket.send(JSON.stringify(data));
+  // TODO reject on timeout
+  return new Promise((resolve) => {
+    inflights[id] = resolve;
+  });
 };
 
 module.exports = {
@@ -215,6 +249,6 @@ module.exports = {
   connect,
   disconnect,
   send,
-  subscribeTopic,
+  registerTopic,
   parseRoute,
 };
