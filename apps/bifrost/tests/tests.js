@@ -24,5 +24,13 @@ describe('Tests', () => {
 
       expect(time).to.be.a('number');
     });
+
+    it('should reject when Not Found', (done) => {
+      bifrost.send('foo', 'bar')
+        .catch((err) => {
+          expect(err.message).to.equal('Not Found');
+          done();
+        });
+    });
   });
 });

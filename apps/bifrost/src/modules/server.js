@@ -23,10 +23,11 @@ const validateMessage = (json) => {
   const { route, message } = json;
 
   // Basic structure
-  if (!route) throw new Error('Message missing route');
-  if (!message) throw new Error('Message missing message');
-  if (typeof message !== 'object') throw new Error('message is not object');
+  if (!route) throw new Error('Message missing .route');
+  if (!message) throw new Error('Message missing .message');
+  if (typeof message !== 'object') throw new Error('.message is not object');
 
+  // Validate route
   bifrost.parseRoute(route);
 };
 
@@ -34,17 +35,28 @@ const validateMessage = (json) => {
  * Handle a packet.
  *
  * @param {object} packet - Received message data.
+ * @param {object} client - Client who sent the received packet.
  */
-const handlePacket = (packet) => {
-  const { route } = packet;
+const handlePacket = (packet, client) => {
+  const { id, route } = packet;
 
-  // Global?
+  // TODO From another device or browser?
 
   // Destined for a given host & app route
-  const { hostname, toApp } = bifrost.parseRoute(route);
+  const {
+    hostname, toApp, fromApp, topic,
+  } = bifrost.parseRoute(route);
   const target = clients.find((p) => p.hostname === hostname && p.appName === toApp);
   if (!target) {
     log.error(`Unknown: ${hostname}>${toApp}`);
+
+    // Send error response to sender
+    const errResponse = {
+      sendId: id,
+      route: `/devices/${hostname}/bifrost/${fromApp}/${topic}`,
+      message: { error: 'Not Found' },
+    };
+    client.send(JSON.stringify(errResponse));
     return;
   }
 
@@ -91,7 +103,7 @@ const onClientMessage = (client, data) => {
   }
 
   // Handle packet, getting it where it needs to go
-  handlePacket(packet);
+  handlePacket(packet, client);
 };
 
 /**

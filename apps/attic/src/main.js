@@ -1,4 +1,4 @@
-const { log, bifrost } = require('./node-common')(['log', 'bifrost']);
+const { log } = require('./node-common')(['log']);
 const api = require('./modules/api');
 const storage = require('./modules/storage');
 

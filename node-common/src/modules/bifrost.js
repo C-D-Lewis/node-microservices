@@ -44,7 +44,7 @@ const HEARTBEAT_INTERVAL_MS = 30000;
 const SEND_TIMEOUT_MS = 15000;
 
 const topics = {};
-const inflights = {};
+const pending = {};
 
 let socket;
 let connected;
@@ -69,7 +69,6 @@ const parseRoute = (route) => {
     fromApp,
     toApp,
     topic,
-    isGlobal: type === 'global',
   };
 };
 
@@ -80,12 +79,12 @@ const parseRoute = (route) => {
  * @param {string} [toApp] - Override toApp.
  * @returns {string} Route string.
  */
-const buildRoute = (topic, toApp = APP_NAME) => `/devices/${HOSTNAME}/${APP_NAME}/${toApp}/${topic}`;
+const buildRoute = (topic, toApp) => `/devices/${HOSTNAME}/${APP_NAME}/${toApp}/${topic}`;
 
 /**
  * Stop heartbeats.
  */
-const stopHearbeat = () => {
+const stopHearbeats = () => {
   clearInterval(heartbeatHandle);
   log.debug('bifrost.js: Stopped heartbeats');
 };
@@ -93,12 +92,11 @@ const stopHearbeat = () => {
 /**
  * Start heartbeat loop to keepalive connection.
  */
-const startHeartbeat = () => {
-  stopHearbeat();
+const startHeartbeats = () => {
+  stopHearbeats();
 
   heartbeatHandle = setInterval(() => {
-    const message = { route: buildRoute(TOPIC_HEARTBEAT), message: {} };
-    socket.send(JSON.stringify(message));
+    socket.send(JSON.stringify({ route: buildRoute(TOPIC_HEARTBEAT), message: {} }));
     log.debug('bifrost.js: Sent heartbeat');
   }, HEARTBEAT_INTERVAL_MS);
   log.debug('bifrost.js: Began heartbeats');
@@ -116,12 +114,12 @@ const sendWhoAmI = () => {
  * Expect messages on a given topic.
  *
  * @param {string} topic - Topic to listen to.
- * @param {Function} onTopicMessage - Callback when a message with the matching topic is received.
+ * @param {Function} cb - Callback when a message with the matching topic is received.
  */
-const registerTopic = (topic, onTopicMessage) => {
+const registerTopic = (topic, cb) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
-  topics[topic] = onTopicMessage;
+  topics[topic] = cb;
   log.debug(`Added topic ${topic}`);
 };
 
@@ -133,10 +131,11 @@ const registerTopic = (topic, onTopicMessage) => {
 const onConnected = (resolve) => {
   log.info('bifrost.js: connected');
   connected = true;
+  disconnectRequested = false;
 
   registerTopic('ping', () => ({ pong: true }));
   sendWhoAmI();
-  startHeartbeat();
+  startHeartbeats();
   resolve();
 };
 
@@ -154,9 +153,9 @@ const onMessage = async (buffer) => {
   const { fromApp, topic } = parseRoute(route);
 
   // Did we request this message response? Resolve the send()!
-  if (sendId && inflights[sendId]) {
-    inflights[sendId](message);
-    delete inflights[sendId];
+  if (sendId && pending[sendId]) {
+    pending[sendId](message);
+    delete pending[sendId];
     return;
   }
 
@@ -168,13 +167,13 @@ const onMessage = async (buffer) => {
 
   // Pass to the application and allow it to return a response for this ID
   const response = (await topics[topic](message)) || { ok: true };
-  const responsePacket = {
+  const packet = {
     sendId: id,
     route: buildRoute(topic, fromApp),
     message: response,
   };
-  socket.send(JSON.stringify(responsePacket));
-  log.debug(`bifrost <> ${id} ${route} ${JSON.stringify(responsePacket)}`);
+  socket.send(JSON.stringify(packet));
+  log.debug(`bifrost <> ${id} ${route} ${JSON.stringify(packet)}`);
 };
 
 /**
@@ -183,30 +182,21 @@ const onMessage = async (buffer) => {
  * @returns {Promise<void>}
  */
 const connect = async () => new Promise((resolve) => {
-  // Already connected?
   if (connected) {
     log.error('Warning: Already connected to bifrost');
     return;
   }
 
-  disconnectRequested = false;
   socket = new WebSocket(`ws://${SERVER}:${PORT}`);
-
-  // When connection established
   socket.on('open', () => onConnected(resolve));
-
-  // When a message is received
   socket.on('message', onMessage);
-
-  // When connection is closed
   socket.on('close', () => {
     connected = false;
     log.debug('bifrost.js: closed');
 
-    // Retry unless explicitly disconnected
+    // Reconnect unless explicitly disconnected
     if (!disconnectRequested) setTimeout(connect, 5000);
   });
-
   socket.on('error', (err) => {
     log.error(err);
     log.error('bifrost.js: errored - closing');
@@ -218,10 +208,10 @@ const connect = async () => new Promise((resolve) => {
  * Close the connection.
  */
 const disconnect = () => {
-  disconnectRequested = true;
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
-  stopHearbeat();
+  disconnectRequested = true;
+  stopHearbeats();
   socket.close();
   connected = false;
   log.info('bifrost.js: disconnected');
@@ -240,6 +230,7 @@ const disconnect = () => {
 const send = (toApp, topic, message = {}) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
+  // Send this message to the chosen app
   const id = `${Date.now() + Math.random()}`;
   const packet = {
     id,
@@ -249,16 +240,27 @@ const send = (toApp, topic, message = {}) => {
   log.debug(`bifrost >> ${JSON.stringify(packet)}`);
   socket.send(JSON.stringify(packet));
 
+  // Allow awaiting the response - handled in onMessage
   return new Promise((resolve, reject) => {
-    const timeoutHandle = setTimeout(reject, SEND_TIMEOUT_MS);
+    // Reject if no response message arrives soon
+    const timeoutHandle = setTimeout(() => {
+      delete pending[id];
+      reject(new Error('No response'));
+    }, SEND_TIMEOUT_MS);
 
     /**
      * Callback when a message is received with this outgoing ID.
      *
      * @param {object} response - Response data from app who answered.
      */
-    inflights[id] = (response) => {
+    pending[id] = (response) => {
       clearTimeout(timeoutHandle);
+
+      if (response.error) {
+        reject(new Error(response.error));
+        return;
+      }
+
       resolve(response);
     };
   });
