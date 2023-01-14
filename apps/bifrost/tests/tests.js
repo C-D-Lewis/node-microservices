@@ -18,20 +18,11 @@ describe('Tests', () => {
   });
 
   describe('bifrost server and common library', () => {
-    it('should send and recieve a message to self', (done) => {
-      // Expect a topic to receive packets
-      bifrost.registerTopic('foo', async (message) => {
-        expect(message.bar).to.equal('baz');
-        done();
-      });
-
+    it('should send and recieve a message to self', async () => {
       // send to self
-      bifrost.send('foo', { bar: 'baz' });
-    });
+      const { time } = await bifrost.send('bifrost', 'getTime');
 
-    it('should allow awaiting a packet response', async () => {
-      const res = await bifrost.send('getTime');
-      expect(res.time).to.be.a('number');
+      expect(time).to.be.a('number');
     });
   });
 });

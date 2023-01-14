@@ -40,6 +40,8 @@ const TOPIC_WHOAMI = 'whoami';
 const TOPIC_HEARTBEAT = 'heartbeat';
 /** Heartbeat interval */
 const HEARTBEAT_INTERVAL_MS = 30000;
+/** Send tmeout */
+const SEND_TIMEOUT_MS = 15000;
 
 const topics = {};
 const inflights = {};
@@ -124,6 +126,58 @@ const registerTopic = (topic, onTopicMessage) => {
 };
 
 /**
+ * When connection is open.
+ *
+ * @param {Function} resolve - Callback for the app.
+ */
+const onConnected = (resolve) => {
+  log.info('bifrost.js: connected');
+  connected = true;
+
+  registerTopic('ping', () => ({ pong: true }));
+  sendWhoAmI();
+  startHeartbeat();
+  resolve();
+};
+
+/**
+ * When the socket receives a message.
+ *
+ * @param {*} buffer - Data buffer.
+ * @returns {Promise<void>}
+ */
+const onMessage = async (buffer) => {
+  const {
+    id, sendId, route, message,
+  } = JSON.parse(buffer.toString());
+  log.debug(`bifrost << ${id}/${sendId} ${route} ${JSON.stringify(message)}`);
+  const { fromApp, topic } = parseRoute(route);
+
+  // Did we request this message response? Resolve the send()!
+  if (sendId && inflights[sendId]) {
+    inflights[sendId](message);
+    delete inflights[sendId];
+    return;
+  }
+
+  // Topic does not exist in the app
+  if (!topics[topic]) {
+    log.error(`No topic registered for ${topic}`);
+    return;
+  }
+
+  // Pass to the application and allow it to return a response for this ID
+  const response = (await topics[topic](message)) || { ok: true };
+  const responsePacket = {
+    sendId: id,
+    route: buildRoute(topic, fromApp),
+    message: response,
+  };
+  socket.send(JSON.stringify(responsePacket));
+  log.debug(`bifrost <> ${id} ${route} ${JSON.stringify(responsePacket)}`);
+};
+
+/**
  * Connect to the configured server.
  *
  * @returns {Promise<void>}
@@ -139,50 +193,10 @@ const connect = async () => new Promise((resolve) => {
   socket = new WebSocket(`ws://${SERVER}:${PORT}`);
 
   // When connection established
-  socket.on('open', () => {
-    log.info('bifrost.js: connected');
-    connected = true;
-
-    registerTopic('ping', () => ({ pong: true }));
-    sendWhoAmI();
-    startHeartbeat();
-    resolve();
-  });
+  socket.on('open', () => onConnected(resolve));
 
   // When a message is received
-  socket.on('message', async (buffer) => {
-    const { id, route, message } = JSON.parse(buffer.toString());
-    log.debug(`bifrost << ${id} ${route} ${JSON.stringify(message)}`);
-    const { fromApp, topic } = parseRoute(route);
-    console.log({topics, id, inflights})
-
-    // Ignore if nobody is listening locally
-    if (!topics[topic]) return;
-
-    pinging self resolves immediately...
-
-    // Did we request this message response? Resolve the send()!
-    if (id && inflights[id]) {
-      console.log('callback')
-      inflights[id](message);
-      delete inflights[id];
-      return;
-    }
-
-    // Pass to the application and allow it to return a response for this ID
-    const response = (await topics[topic](message)) || { ok: true };
-    console.log({ response })
-
-    // Send response to requester
-    const responseRoute = buildRoute(topic, fromApp);
-    const responsePacket = {
-      id,
-      route: responseRoute,
-      message: response,
-    };
-    socket.send(JSON.stringify(responsePacket));
-    log.debug(`bifrost <> ${id} ${route} ${JSON.stringify(responsePacket)}`);
-  });
+  socket.on('message', onMessage);
 
   // When connection is closed
   socket.on('close', () => {
@@ -218,25 +232,35 @@ const disconnect = () => {
  * ID is attached to allow awaiting of other app's response data, so it can be
  * used in the same way as HTTP.
  *
+ * @param {string} toApp - App to send to.
  * @param {string} topic - Topic to broadcast on.
  * @param {object} message - Data to send.
  * @returns {Promise<object>} Response message data.
  */
-const send = (topic, message = {}) => {
+const send = (toApp, topic, message = {}) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
   const id = `${Date.now() + Math.random()}`;
   const packet = {
     id,
-    route: buildRoute(topic),
+    route: buildRoute(topic, toApp),
     message,
   };
   log.debug(`bifrost >> ${JSON.stringify(packet)}`);
   socket.send(JSON.stringify(packet));
 
-  // TODO reject on timeout
-  return new Promise((resolve) => {
-    inflights[id] = resolve;
+  return new Promise((resolve, reject) => {
+    const timeoutHandle = setTimeout(reject, SEND_TIMEOUT_MS);
+
+    /**
+     * Callback when a message is received with this outgoing ID.
+     *
+     * @param {object} response - Response data from app who answered.
+     */
+    inflights[id] = (response) => {
+      clearTimeout(timeoutHandle);
+      resolve(response);
+    };
   });
 };
 
