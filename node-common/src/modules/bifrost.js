@@ -3,16 +3,24 @@ const { hostname } = require('os');
 const log = require('./log');
 const config = require('./config');
 
-const { BIFROST: { SERVER, APP_NAME } } = config.withSchema('bifrost.js', {
-  required: ['BIFROST'],
+const {
+  BIFROST: { SERVER },
+  LOG: { APP_NAME },
+} = config.withSchema('bifrost.js', {
+  required: ['BIFROST', 'LOG'],
   properties: {
     BIFROST: {
-      required: ['SERVER', 'APP_NAME'],
+      required: ['SERVER'],
       properties: {
         SERVER: {
           type: 'string',
           description: 'Host to connect to',
         },
+      },
+    },
+    LOG: {
+      required: ['APP_NAME'],
+      properties: {
         APP_NAME: {
           type: 'string',
           description: 'Name of the app on this device',
@@ -27,9 +35,9 @@ const HOSTNAME = hostname();
 /** Fixed Norse port */
 const PORT = 3918;
 /** Client declaring itself */
-const ROUTE_GLOBAL_WHOAMI = '/global/whoami';
-/** Route for this device heartbeat */
-const ROUTE_THIS_DEVICE_HEARTBEAT = `/devices/${HOSTNAME}/${APP_NAME}/heartbeat`;
+const TOPIC_WHOAMI = 'whoami';
+/** Topic for heartbeat */
+const TOPIC_HEARTBEAT = 'heartbeat';
 /** Heartbeat interval */
 const HEARTBEAT_INTERVAL_MS = 30000;
 
@@ -42,23 +50,62 @@ let disconnectRequested = false;
 let heartbeatHandle;
 
 /**
- * Start heartbeat loop.
+ * Parse a bifrost route string.
+ *
+ * @param {string} route - Route string to parse.
+ * @returns {object} Route semantic parts.
+ * @throws {Error} if unexpected format.
+ */
+const parseRoute = (route) => {
+  const parts = route.split('/');
+  if (!(route.includes('/global/') || parts.length === 5)) throw new Error('Invalid route');
+
+  const [, type, routeHostname, appName, topic] = route.split('/');
+  return {
+    type,
+    hostname: routeHostname,
+    appName,
+    topic,
+    isGlobal: type === 'global',
+  };
+};
+
+/**
+ * Build a route string for a topic message from this device.
+ *
+ * @param {string} topic - Topic to use.
+ * @returns {string} Route string.
+ */
+const buildRoute = (topic) => `/devices/${HOSTNAME}/${APP_NAME}/${topic}`;
+
+/**
+ * Stop heartbeats.
+ */
+const stopHearbeat = () => {
+  clearInterval(heartbeatHandle);
+  log.debug('bifrost.js: Stopped heartbeats');
+};
+
+/**
+ * Start heartbeat loop to keepalive connection.
  */
 const startHeartbeat = () => {
-  clearInterval(heartbeatHandle);
+  stopHearbeat();
+
   heartbeatHandle = setInterval(() => {
-    const message = { route: ROUTE_THIS_DEVICE_HEARTBEAT, message: {} };
+    const message = { route: buildRoute(TOPIC_HEARTBEAT), message: {} };
     socket.send(JSON.stringify(message));
+    log.debug('bifrost.js: Sent heartbeat');
   }, HEARTBEAT_INTERVAL_MS);
+  log.debug('bifrost.js: Began heartbeats');
 };
 
 /**
  * Tell the server which device and app we are.
  */
 const sendWhoAmI = () => {
-  const message = { hostname: HOSTNAME, appName: APP_NAME };
-  socket.send(JSON.stringify({ route: ROUTE_GLOBAL_WHOAMI, message }));
-  log.debug(`bifrost.js: Sent whoami: ${JSON.stringify(message)}`);
+  socket.send(JSON.stringify({ route: buildRoute(TOPIC_WHOAMI), message: {} }));
+  log.debug('bifrost.js: Sent whoami');
 };
 
 /**
@@ -78,7 +125,7 @@ const connect = async () => new Promise((resolve) => {
 
   // When connection established
   socket.on('open', () => {
-    log.debug('bifrost.js: connected');
+    log.info('bifrost.js: connected');
     connected = true;
 
     sendWhoAmI();
@@ -92,7 +139,7 @@ const connect = async () => new Promise((resolve) => {
     log.debug(`bifrost << ${route} ${JSON.stringify(message)}`);
 
     // Ignore if nobody is listening locally
-    const [, , , , topic] = route.split('/');
+    const { topic } = parseRoute(route);
     if (!subscriptions[topic]) return;
 
     // Pass to the application
@@ -110,7 +157,7 @@ const connect = async () => new Promise((resolve) => {
 
   socket.on('error', (err) => {
     log.error(err);
-    log.debug('bifrost.js: errored - closing');
+    log.error('bifrost.js: errored - closing');
     socket.close();
   });
 });
@@ -122,9 +169,10 @@ const disconnect = () => {
   disconnectRequested = true;
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
+  stopHearbeat();
   socket.close();
   connected = false;
-  log.debug('bifrost.js: Closed');
+  log.info('bifrost.js: disconnected');
 };
 
 /**
@@ -137,6 +185,7 @@ const subscribeTopic = (topic, onTopicMessage) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
   subscriptions[topic] = onTopicMessage;
+  log.debug(`Added subscription to ${topic}`);
 };
 
 /**
@@ -149,17 +198,23 @@ const subscribeTopic = (topic, onTopicMessage) => {
 const send = (topic, message = {}) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
-  // TODO Async compatible interface
+  // TODO const res = await send()...
 
-  const route = `/devices/${HOSTNAME}/${APP_NAME}/${topic}`;
+  const route = buildRoute(topic);
   const data = { route, message };
   log.debug(`bifrost >> ${JSON.stringify(data)}`);
   socket.send(JSON.stringify(data));
 };
 
 module.exports = {
+  PORT,
+  HEARTBEAT_INTERVAL_MS,
+  TOPIC_WHOAMI,
+  TOPIC_HEARTBEAT,
+
   connect,
   disconnect,
   send,
   subscribeTopic,
+  parseRoute,
 };

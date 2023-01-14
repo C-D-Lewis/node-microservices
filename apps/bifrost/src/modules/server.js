@@ -1,14 +1,17 @@
 /* eslint-disable no-param-reassign */
 const WebSocket = require('ws');
-const { log } = require('../node-common')(['log']);
+const { log, bifrost } = require('../node-common')(['log', 'bifrost']);
 
-/** Fixed Norse port */
-const PORT = 3918;
-/** Client declaring itself */
-const TOPIC_GLOBAL_WHOAMI = '/global/whoami';
+const {
+  PORT,
+  HEARTBEAT_INTERVAL_MS,
+  TOPIC_WHOAMI,
+  TOPIC_HEARTBEAT,
+} = bifrost;
 
-let server;
 const clients = [];
+let server;
+let evictionHandle;
 
 /**
  * Validate a message has the correct format.
@@ -24,8 +27,7 @@ const validateMessage = (json) => {
   if (!message) throw new Error('Message missing message');
   if (typeof message !== 'object') throw new Error('message is not object');
 
-  // Valid route - either /devices/$NAME/$APP/$TOPIC or /global/*
-  if (!(route.includes('/global/') || route.split('/').length === 5)) throw new Error('Invalid route');
+  bifrost.parseRoute(route);
 };
 
 /**
@@ -38,17 +40,17 @@ const handlePacket = (json) => {
 
   // Global?
 
-  // Destined for a given device app route
-  const [, , device, appName] = route.split('/');
-  const target = clients.find((p) => p.hostname === device && p.appName === appName);
+  // Destined for a given host & app route
+  const { hostname, appName } = bifrost.parseRoute(route);
+  const target = clients.find((p) => p.hostname === hostname && p.appName === appName);
   if (!target) {
-    log.error(`Unknown: ${device}>${appName}`);
+    log.error(`Unknown: ${hostname}>${appName}`);
     return;
   }
 
-  // Forward to that device
+  // Forward to that host and app
   target.send(JSON.stringify(json));
-  log.debug(`Forwarded to ${device}>${appName}`);
+  log.debug(`Forwarded to ${hostname}>${appName}`);
 };
 
 /**
@@ -59,6 +61,7 @@ const handlePacket = (json) => {
  */
 const onClientMessage = (client, data) => {
   log.debug(`message: ${data}`);
+  client.lastSeen = Date.now();
 
   // Ensure it has the right data
   let json;
@@ -71,9 +74,10 @@ const onClientMessage = (client, data) => {
   }
 
   // Client declaring hostname and app name (unique combination)
-  const { route, message } = json;
-  if (route === TOPIC_GLOBAL_WHOAMI) {
-    const { hostname, appName } = message;
+  const { route } = json;
+  const { topic, hostname, appName } = bifrost.parseRoute(route);
+  if (topic === TOPIC_WHOAMI) {
+    // Annotate this client
     client.hostname = hostname;
     client.appName = appName;
     log.debug(`Received whoami: ${hostname}>${appName}`);
@@ -81,6 +85,10 @@ const onClientMessage = (client, data) => {
   }
 
   // Ignore heartbeats received
+  if (topic === TOPIC_HEARTBEAT) {
+    log.debug(`Received heartbeat: ${hostname}>${appName}`);
+    return;
+  }
 
   // Handle packet, getting it where it needs to go
   handlePacket(json);
@@ -93,24 +101,38 @@ const onClientMessage = (client, data) => {
  */
 const onNewClient = (client) => {
   log.info('New client connected');
-
   client.on('message', (data) => onClientMessage(client, data));
-
-  // TODO: When to evict?
   clients.push(client);
 };
 
 /**
- * Start the WebSocket server.
- *
- * @returns {Promise<void>}
+ * Begin checking for clients who we haven't been heard from in a while.
  */
-const startServer = async () => {
-  server = new WebSocket.Server({ port: PORT });
-  log.info(`Server listening on ${PORT}`);
+const beginEvictionChecks = () => {
+  clearInterval(evictionHandle);
 
-  // Handle new connections
+  evictionHandle = setInterval(() => {
+    const now = Date.now();
+    clients.forEach((p) => {
+      if (now - p.lastSeen < HEARTBEAT_INTERVAL_MS) return;
+
+      p.close();
+      clients.splice(clients.indexOf(p), 1);
+      log.debug(`Evicted ${p.hostname}>${p.appName} after ${HEARTBEAT_INTERVAL_MS}`);
+    });
+  }, HEARTBEAT_INTERVAL_MS);
+  log.info('Began eviction checks');
+};
+
+/**
+ * Start the WebSocket server.
+ */
+const startServer = () => {
+  server = new WebSocket.Server({ port: PORT });
   server.on('connection', onNewClient);
+
+  log.info(`Server listening on ${PORT}`);
+  beginEvictionChecks();
 };
 
 /**
