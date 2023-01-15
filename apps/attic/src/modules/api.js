@@ -1,4 +1,4 @@
-const { conduit } = require('../node-common')(['conduit']);
+const { bifrost } = require('../node-common')(['bifrost']);
 
 /** Schema for messages with no value */
 const NO_VALUE_MESSAGE_SCHEMA = {
@@ -23,14 +23,28 @@ const SET_MESSAGE_SCHEMA = {
  * Setup Conduit topic handlers.
  */
 const setup = async () => {
-  await conduit.register();
+  await bifrost.connect();
 
-  conduit.on('get', require('../api/get'), NO_VALUE_MESSAGE_SCHEMA);
-  conduit.on('listApps', require('../api/listApps'), {});
-  conduit.on('set', require('../api/set'), SET_MESSAGE_SCHEMA);
-  conduit.on('increment', require('../api/increment'), NO_VALUE_MESSAGE_SCHEMA);
+  bifrost.registerTopic(
+    'get',
+    require('../api/get'),
+    NO_VALUE_MESSAGE_SCHEMA,
+  );
+  bifrost.registerTopic(
+    'listApps',
+    require('../api/listApps'),
+    {},
+  );
+  bifrost.registerTopic(
+    'set',
+    require('../api/set'),
+    SET_MESSAGE_SCHEMA,
+  );
+  bifrost.registerTopic(
+    'increment',
+    require('../api/increment'),
+    NO_VALUE_MESSAGE_SCHEMA,
+  );
 };
 
-module.exports = {
-  setup,
-};
+module.exports = { setup };

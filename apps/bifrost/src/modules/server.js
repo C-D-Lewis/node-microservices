@@ -72,7 +72,7 @@ const handlePacket = (packet, client) => {
  * @param {ArrayBuffer} data - The message.
  */
 const onClientMessage = (client, data) => {
-  log.debug(`RECV ${data}`);
+  log.debug(`REC ${data}`);
   client.lastSeen = Date.now();
 
   // Ensure it has the right data
@@ -100,10 +100,7 @@ const onClientMessage = (client, data) => {
   }
 
   // Ignore heartbeats received
-  if (topic === TOPIC_HEARTBEAT) {
-    log.debug(`heartbeat: ${hostname}>${fromApp}`);
-    return;
-  }
+  if (topic === TOPIC_HEARTBEAT) return;
 
   // Handle packet, getting it where it needs to go
   handlePacket(packet, client);
@@ -129,11 +126,11 @@ const beginEvictionChecks = () => {
   evictionHandle = setInterval(() => {
     const now = Date.now();
     clients.forEach((p) => {
-      if (now - p.lastSeen < HEARTBEAT_INTERVAL_MS) return;
+      if (now - p.lastSeen < 2 * HEARTBEAT_INTERVAL_MS) return;
 
       clients.splice(clients.indexOf(p), 1);
       p.close();
-      log.info(`Evicted ${p.hostname}>${p.appName} after ${HEARTBEAT_INTERVAL_MS}`);
+      log.info(`Evicted ${p.hostname}>${p.appName}`);
     });
   }, HEARTBEAT_INTERVAL_MS);
   log.info('Began eviction checks');

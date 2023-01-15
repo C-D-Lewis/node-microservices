@@ -2,6 +2,7 @@ const { WebSocket } = require('ws');
 const { hostname } = require('os');
 const log = require('./log');
 const config = require('./config');
+const schema = require('./schema');
 
 const {
   BIFROST: { SERVER },
@@ -50,6 +51,7 @@ let socket;
 let connected;
 let disconnectRequested = false;
 let heartbeatHandle;
+let thisAppName = APP_NAME; // Could be overridden
 
 /**
  * Parse a bifrost route string.
@@ -76,10 +78,11 @@ const parseRoute = (route) => {
  * Build a route string for a topic message from this device.
  *
  * @param {string} topic - Topic to use.
- * @param {string} toApp - Override toApp.
+ * @param {string} toApp - App sending to.
+ * @param {string} [fromApp] - Override fromApp.
  * @returns {string} Route string.
  */
-const buildRoute = (topic, toApp) => `/devices/${HOSTNAME}/${APP_NAME}/${toApp}/${topic}`;
+const buildRoute = (topic, toApp, fromApp = thisAppName) => `/devices/${HOSTNAME}/${fromApp}/${toApp}/${topic}`;
 
 /**
  * Stop heartbeats.
@@ -115,12 +118,35 @@ const sendWhoAmI = () => {
  *
  * @param {string} topic - Topic to listen to.
  * @param {Function} cb - Callback when a message with the matching topic is received.
+ * @param {object} topicSchema - Schema for topic messages.
  */
-const registerTopic = (topic, cb) => {
+const registerTopic = (topic, cb, topicSchema) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
+  if (!topicSchema) throw new Error('Topics require schema');
 
-  topics[topic] = cb;
+  topics[topic] = { cb, topicSchema };
   log.debug(`Added topic '${topic}'`);
+};
+
+/**
+ * Send a reply to a received packet with an 'id'.
+ *
+ * @param {object} packet - Packet received.
+ * @param {object} message - Response data.
+ */
+const reply = async (packet, message) => {
+  const { id, route } = packet;
+  const { topic, fromApp } = parseRoute(route);
+  if (!id) throw new Error('Cannot reply to packet with no id');
+
+  // Reply to sender
+  const payload = {
+    replyId: id,
+    route: buildRoute(topic, fromApp),
+    message,
+  };
+  socket.send(JSON.stringify(payload));
+  log.debug(`bifrost.js: <> ${id} ${route} ${JSON.stringify(payload)}`);
 };
 
 /**
@@ -133,7 +159,7 @@ const onConnected = (resolve) => {
   connected = true;
   disconnectRequested = false;
 
-  registerTopic('ping', () => ({ pong: true }));
+  registerTopic('status', () => ({ content: 'OK' }), {});
   sendWhoAmI();
   startHeartbeats();
   resolve();
@@ -145,12 +171,13 @@ const onConnected = (resolve) => {
  * @param {*} buffer - Data buffer.
  * @returns {Promise<void>}
  */
-const onMessage = async (buffer) => {
+const onSocketMessage = async (buffer) => {
+  const packet = JSON.parse(buffer.toString());
   const {
     id, replyId, route, message,
-  } = JSON.parse(buffer.toString());
+  } = packet;
   log.debug(`bifrost.js: << ${id}/${replyId} ${route} ${JSON.stringify(message)}`);
-  const { fromApp, topic } = parseRoute(route);
+  const { topic } = parseRoute(route);
 
   // Did we request this message response? Resolve the send()!
   if (replyId && pending[replyId]) {
@@ -160,36 +187,45 @@ const onMessage = async (buffer) => {
   }
 
   // Topic does not exist in the app
-  if (!topics[topic]) {
+  const found = topics[topic];
+  if (!found) {
     log.error(`bifrost.js: No topic registered for ${topic}`);
     return;
   }
 
+  // Check topic schema
+  const { topicSchema, cb } = found;
+  if (!schema(message, topicSchema)) {
+    log.error(`bifrost.js: Schema failed:\n${JSON.stringify(topicSchema)}\n${JSON.stringify(message)}`);
+    return;
+  }
+
   // Pass to the application and allow it to return a response for this ID
-  const response = (await topics[topic](message)) || { ok: true };
-  const packet = {
-    replyId: id,
-    route: buildRoute(topic, fromApp),
-    message: response,
-  };
-  socket.send(JSON.stringify(packet));
-  log.debug(`bifrost.js: <> ${id} ${route} ${JSON.stringify(packet)}`);
+  const responseMessage = (await cb(packet)) || { ok: true };
+  reply(packet, responseMessage);
 };
 
 /**
  * Connect to the configured server.
  *
+ * @param {object} [opts] - Function opts.
+ * @param {string} [opts.appName] - Override this app name.
  * @returns {Promise<void>}
  */
-const connect = async () => new Promise((resolve) => {
+const connect = async ({ appName } = {}) => new Promise((resolve) => {
   if (connected) {
     log.error('bifrost.js: Warning: Already connected to bifrost');
     return;
   }
 
+  if (appName) {
+    thisAppName = appName;
+    log.debug(`Overridden app name: ${thisAppName}`);
+  }
+
   socket = new WebSocket(`ws://${SERVER}:${PORT}`);
   socket.on('open', () => onConnected(resolve));
-  socket.on('message', onMessage);
+  socket.on('message', onSocketMessage);
   socket.on('close', () => {
     connected = false;
     log.debug('bifrost.js: closed');
@@ -222,25 +258,29 @@ const disconnect = () => {
  * ID is attached to allow awaiting of other app's response data, so it can be
  * used in the same way as HTTP.
  *
- * @param {string} toApp - App to send to.
- * @param {string} topic - Topic to broadcast on.
- * @param {object} message - Data to send.
+ * @param {object} opts - Function opts.
+ * @param {string} opts.toApp - App to send to.
+ * @param {string} opts.topic - Topic to broadcast on.
+ * @param {object} [opts.message] - Data to send.
+ * @param {string} [opts.fromApp] - Override fromApp.
  * @returns {Promise<object>} Response message data.
  */
-const send = (toApp, topic, message = {}) => {
+const send = ({
+  toApp, topic, message = {}, fromApp,
+}) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
   // Send this message to the chosen app
   const id = `${Date.now() + Math.round(Math.random() * 10000)}`;
   const packet = {
     id,
-    route: buildRoute(topic, toApp),
+    route: buildRoute(topic, toApp, fromApp),
     message,
   };
   log.debug(`bifrost.js: >> ${JSON.stringify(packet)}`);
   socket.send(JSON.stringify(packet));
 
-  // Allow awaiting the response - handled in onMessage
+  // Allow awaiting the response - handled in onSocketMessage
   return new Promise((resolve, reject) => {
     // Reject if no response message arrives soon
     const timeoutHandle = setTimeout(() => {

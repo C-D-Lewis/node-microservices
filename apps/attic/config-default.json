@@ -11,8 +11,7 @@
   "DB": {
     "FILE":  "./db.json"
   },
-  "CONDUIT": {
-    "HOST": "localhost",
-    "APP": "attic"
+  "BIFROST": {
+    "SERVER": "localhost"
   }
 }
