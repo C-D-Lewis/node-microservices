@@ -48,7 +48,7 @@ const handlePacket = (packet, client) => {
   // Destined for a given host & app route
   const target = clients.find((p) => p.hostname === hostname && p.appName === toApp);
   if (!target) {
-    log.error(`Unknown: ${hostname}>${toApp}`);
+    log.error(`Unknown: ${hostname}/${toApp}`);
 
     // Send error response to sender
     const errResponse = {
@@ -62,7 +62,7 @@ const handlePacket = (packet, client) => {
 
   // Forward to that host and app
   target.send(JSON.stringify(packet));
-  log.debug(`FWD ${hostname}>${toApp}`);
+  log.debug(`FWD ${hostname}/${toApp}`);
 };
 
 /**
@@ -95,7 +95,6 @@ const onClientMessage = (client, data) => {
     // Annotate this client
     client.hostname = hostname;
     client.appName = fromApp;
-    log.debug(`whoami: ${hostname}>${fromApp}`);
     return;
   }
 
@@ -113,28 +112,34 @@ const onClientMessage = (client, data) => {
  */
 const onNewClient = (client) => {
   log.info('New client connected');
-  client.on('message', (data) => onClientMessage(client, data));
   clients.push(client);
+
+  client.on('message', (data) => onClientMessage(client, data));
+  client.on('close', () => {
+    clients.splice(clients.indexOf(client));
+    log.info(`Client ${client.hostname}/${client.appName} closed connection`);
+  });
 };
 
-/**
- * Begin checking for clients who we haven't been heard from in a while.
- */
-const beginEvictionChecks = () => {
-  clearInterval(evictionHandle);
+// /**
+//  * Begin checking for clients who we haven't been heard from in a while.
+//  */
+// const beginEvictionChecks = () => {
+//   clearInterval(evictionHandle);
 
-  evictionHandle = setInterval(() => {
-    const now = Date.now();
-    clients.forEach((p) => {
-      if (now - p.lastSeen < 2 * HEARTBEAT_INTERVAL_MS) return;
+//   evictionHandle = setInterval(() => {
+//     const now = Date.now();
+//     clients.forEach((p) => {
+//       if (now - p.lastSeen < 2 * HEARTBEAT_INTERVAL_MS) return;
 
-      clients.splice(clients.indexOf(p), 1);
-      p.close();
-      log.info(`Evicted ${p.hostname}>${p.appName}`);
-    });
-  }, HEARTBEAT_INTERVAL_MS);
-  log.info('Began eviction checks');
-};
+//       clients.splice(clients.indexOf(p), 1);
+//       p.close();
+//       log.info(`Evicted ${p.hostname}/${p.appName}`);
+//       log.debug(JSON.stringify(clients.map(p => `${p.hostname}/${p.appName}`)));
+//     });
+//   }, HEARTBEAT_INTERVAL_MS);
+//   log.info('Began eviction checks');
+// };
 
 /**
  * Start the WebSocket server.
@@ -144,7 +149,7 @@ const startServer = () => {
   server.on('connection', onNewClient);
 
   log.info(`Server listening on ${PORT}`);
-  beginEvictionChecks();
+  // beginEvictionChecks();
 };
 
 /**

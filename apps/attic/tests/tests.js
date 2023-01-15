@@ -13,27 +13,26 @@ describe('API', () => {
   describe('Conduit topic: status', () => {
     it('should return 200 / OK', async () => {
       const { content } = await bifrost.send({ toApp: 'attic', topic: 'status' });
-      console.log(content)
 
       expect(content).to.equal('OK');
     });
   });
 
-  // describe('Conduit topic: set', () => {
-  //   it('should return 200 / OK', async () => {
-  //     const response = await testing.sendConduitPacket({
-  //       to: 'attic',
-  //       topic: 'set',
-  //       message: {
-  //         app: TEST_APP,
-  //         key: TEST_KEY,
-  //         value: TEST_VALUE
-  //       }
-  //     });
+  describe('Conduit topic: set', () => {
+    it('should return 200 / OK', async () => {
+      const { content } = await bifrost.send({
+        toApp: 'attic',
+        topic: 'set',
+        message: {
+          app: TEST_APP,
+          key: TEST_KEY,
+          value: TEST_VALUE,
+        },
+      });
 
-  //     expect(response.content).to.equal('OK');
-  //   });
-  // });
+      expect(content).to.equal('OK');
+    });
+  });
 
   // describe('Conduit topic: get', () => {
   //   it('should return 200 / TEST_VALUE', async () => {
