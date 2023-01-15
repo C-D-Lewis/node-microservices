@@ -25,26 +25,10 @@ const SET_MESSAGE_SCHEMA = {
 const setup = async () => {
   await bifrost.connect();
 
-  bifrost.registerTopic(
-    'get',
-    require('../api/get'),
-    NO_VALUE_MESSAGE_SCHEMA,
-  );
-  bifrost.registerTopic(
-    'listApps',
-    require('../api/listApps'),
-    {},
-  );
-  bifrost.registerTopic(
-    'set',
-    require('../api/set'),
-    SET_MESSAGE_SCHEMA,
-  );
-  bifrost.registerTopic(
-    'increment',
-    require('../api/increment'),
-    NO_VALUE_MESSAGE_SCHEMA,
-  );
+  bifrost.registerTopic('get', require('../api/get'), NO_VALUE_MESSAGE_SCHEMA);
+  bifrost.registerTopic('listApps', require('../api/listApps'), {});
+  bifrost.registerTopic('set', require('../api/set'), SET_MESSAGE_SCHEMA);
+  bifrost.registerTopic('increment', require('../api/increment'), NO_VALUE_MESSAGE_SCHEMA);
 };
 
 module.exports = { setup };

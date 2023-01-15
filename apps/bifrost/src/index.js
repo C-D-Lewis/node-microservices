@@ -1,4 +1,4 @@
-const { log } = require('./node-common')(['log']);
+const { log, bifrost } = require('./node-common')(['log', 'bifrost']);
 const { startServer } = require('./modules/server');
 
 /**
@@ -10,7 +10,8 @@ const main = async () => {
   await startServer();
   log.info('Ready for clients');
 
-  // TODO: Fleet checkin
+  // TODO: fleet checkin
+  await bifrost.connect();
 };
 
 main();
