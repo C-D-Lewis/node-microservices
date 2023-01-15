@@ -4,14 +4,12 @@ const { log, bifrost } = require('../node-common')(['log', 'bifrost']);
 
 const {
   PORT,
-  HEARTBEAT_INTERVAL_MS,
   TOPIC_WHOAMI,
   TOPIC_HEARTBEAT,
 } = bifrost;
 
 const clients = [];
 let server;
-let evictionHandle;
 
 /**
  * Validate a message has the correct format.
@@ -35,12 +33,11 @@ const validateMessage = (json) => {
  * Handle a packet.
  *
  * @param {object} packet - Received message data.
- * @param {object} client - Client who sent the received packet.
  */
-const handlePacket = (packet, client) => {
-  const { id, route } = packet;
+const handlePacket = (packet) => {
+  const { route } = packet;
   const {
-    hostname, toApp, fromApp, topic,
+    hostname, toApp,
   } = bifrost.parseRoute(route);
 
   // TODO From another device or browser?
@@ -51,12 +48,7 @@ const handlePacket = (packet, client) => {
     log.error(`Unknown: ${hostname}/${toApp}`);
 
     // Send error response to sender
-    const errResponse = {
-      replyId: id,
-      route: `/devices/${hostname}/bifrost/${fromApp}/${topic}`,
-      message: { error: 'Not Found' },
-    };
-    client.send(JSON.stringify(errResponse));
+    bifrost.reply(packet, { error: 'Not Found' });
     return;
   }
 
@@ -102,7 +94,7 @@ const onClientMessage = (client, data) => {
   if (topic === TOPIC_HEARTBEAT) return;
 
   // Handle packet, getting it where it needs to go
-  handlePacket(packet, client);
+  handlePacket(packet);
 };
 
 /**
@@ -121,26 +113,6 @@ const onNewClient = (client) => {
   });
 };
 
-// /**
-//  * Begin checking for clients who we haven't been heard from in a while.
-//  */
-// const beginEvictionChecks = () => {
-//   clearInterval(evictionHandle);
-
-//   evictionHandle = setInterval(() => {
-//     const now = Date.now();
-//     clients.forEach((p) => {
-//       if (now - p.lastSeen < 2 * HEARTBEAT_INTERVAL_MS) return;
-
-//       clients.splice(clients.indexOf(p), 1);
-//       p.close();
-//       log.info(`Evicted ${p.hostname}/${p.appName}`);
-//       log.debug(JSON.stringify(clients.map(p => `${p.hostname}/${p.appName}`)));
-//     });
-//   }, HEARTBEAT_INTERVAL_MS);
-//   log.info('Began eviction checks');
-// };
-
 /**
  * Start the WebSocket server.
  */
@@ -149,7 +121,6 @@ const startServer = () => {
   server.on('connection', onNewClient);
 
   log.info(`Server listening on ${PORT}`);
-  // beginEvictionChecks();
 };
 
 /**

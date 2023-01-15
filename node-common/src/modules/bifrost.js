@@ -308,7 +308,6 @@ const send = ({
 
 module.exports = {
   PORT,
-  HEARTBEAT_INTERVAL_MS,
   TOPIC_WHOAMI,
   TOPIC_HEARTBEAT,
 
@@ -317,4 +316,5 @@ module.exports = {
   send,
   registerTopic,
   parseRoute,
+  reply,
 };
