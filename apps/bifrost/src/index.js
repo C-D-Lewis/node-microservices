@@ -10,7 +10,7 @@ const main = async () => {
   await startServer();
   log.info('Ready for clients');
 
-  // Fleet checkin
+  // TODO: Fleet checkin
 };
 
 main();

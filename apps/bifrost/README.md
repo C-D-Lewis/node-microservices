@@ -8,7 +8,7 @@ awaited at the application level. Alternative to `conduit` that uses HTTP.
 ```
 {
   id,
-  sendId,
+  replyId,
   route,
   message: {
     error
@@ -17,7 +17,7 @@ awaited at the application level. Alternative to `conduit` that uses HTTP.
 ```
 
 * `id` - ID of a new packet.
-* `sendId` - Same as ID, present in a response packet.
+* `replyId` - Same as ID, present in a response packet.
 * `route` - Route to the topic, in the format `/$TYPE/$HOSTNAME/$FROM_APP/$TO_APP/$TOPIC`
 * `message` - Payload data for the app.
 * `message.error` - Present if the response is an error.

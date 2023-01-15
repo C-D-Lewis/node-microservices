@@ -39,20 +39,20 @@ const validateMessage = (json) => {
  */
 const handlePacket = (packet, client) => {
   const { id, route } = packet;
+  const {
+    hostname, toApp, fromApp, topic,
+  } = bifrost.parseRoute(route);
 
   // TODO From another device or browser?
 
   // Destined for a given host & app route
-  const {
-    hostname, toApp, fromApp, topic,
-  } = bifrost.parseRoute(route);
   const target = clients.find((p) => p.hostname === hostname && p.appName === toApp);
   if (!target) {
     log.error(`Unknown: ${hostname}>${toApp}`);
 
     // Send error response to sender
     const errResponse = {
-      sendId: id,
+      replyId: id,
       route: `/devices/${hostname}/bifrost/${fromApp}/${topic}`,
       message: { error: 'Not Found' },
     };
@@ -62,7 +62,7 @@ const handlePacket = (packet, client) => {
 
   // Forward to that host and app
   target.send(JSON.stringify(packet));
-  log.debug(`Forwarded to ${hostname}>${toApp}`);
+  log.debug(`FWD ${hostname}>${toApp}`);
 };
 
 /**
@@ -72,7 +72,7 @@ const handlePacket = (packet, client) => {
  * @param {ArrayBuffer} data - The message.
  */
 const onClientMessage = (client, data) => {
-  log.debug(`message: ${data}`);
+  log.debug(`RECV ${data}`);
   client.lastSeen = Date.now();
 
   // Ensure it has the right data
@@ -85,20 +85,23 @@ const onClientMessage = (client, data) => {
     return;
   }
 
-  // Client declaring hostname and app name (unique combination)
   const { route } = packet;
   const { topic, hostname, fromApp } = bifrost.parseRoute(route);
+
+  // TODO guestlist integration for auth
+
+  // Client declaring hostname and app name (unique combination)
   if (topic === TOPIC_WHOAMI) {
     // Annotate this client
     client.hostname = hostname;
     client.appName = fromApp;
-    log.debug(`Received whoami: ${hostname}>${fromApp}`);
+    log.debug(`whoami: ${hostname}>${fromApp}`);
     return;
   }
 
   // Ignore heartbeats received
   if (topic === TOPIC_HEARTBEAT) {
-    log.debug(`Received heartbeat: ${hostname}>${fromApp}`);
+    log.debug(`heartbeat: ${hostname}>${fromApp}`);
     return;
   }
 
@@ -128,9 +131,9 @@ const beginEvictionChecks = () => {
     clients.forEach((p) => {
       if (now - p.lastSeen < HEARTBEAT_INTERVAL_MS) return;
 
-      p.close();
       clients.splice(clients.indexOf(p), 1);
-      log.debug(`Evicted ${p.hostname}>${p.appName} after ${HEARTBEAT_INTERVAL_MS}`);
+      p.close();
+      log.info(`Evicted ${p.hostname}>${p.appName} after ${HEARTBEAT_INTERVAL_MS}`);
     });
   }, HEARTBEAT_INTERVAL_MS);
   log.info('Began eviction checks');

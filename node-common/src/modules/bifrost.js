@@ -76,7 +76,7 @@ const parseRoute = (route) => {
  * Build a route string for a topic message from this device.
  *
  * @param {string} topic - Topic to use.
- * @param {string} [toApp] - Override toApp.
+ * @param {string} toApp - Override toApp.
  * @returns {string} Route string.
  */
 const buildRoute = (topic, toApp) => `/devices/${HOSTNAME}/${APP_NAME}/${toApp}/${topic}`;
@@ -96,7 +96,7 @@ const startHeartbeats = () => {
   stopHearbeats();
 
   heartbeatHandle = setInterval(() => {
-    socket.send(JSON.stringify({ route: buildRoute(TOPIC_HEARTBEAT), message: {} }));
+    socket.send(JSON.stringify({ route: buildRoute(TOPIC_HEARTBEAT, 'bifrost'), message: {} }));
     log.debug('bifrost.js: Sent heartbeat');
   }, HEARTBEAT_INTERVAL_MS);
   log.debug('bifrost.js: Began heartbeats');
@@ -106,7 +106,7 @@ const startHeartbeats = () => {
  * Tell the server which device and app we are.
  */
 const sendWhoAmI = () => {
-  socket.send(JSON.stringify({ route: buildRoute(TOPIC_WHOAMI), message: {} }));
+  socket.send(JSON.stringify({ route: buildRoute(TOPIC_WHOAMI, 'bifrost'), message: {} }));
   log.debug('bifrost.js: Sent whoami');
 };
 
@@ -120,7 +120,7 @@ const registerTopic = (topic, cb) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
   topics[topic] = cb;
-  log.debug(`Added topic ${topic}`);
+  log.debug(`Added topic '${topic}'`);
 };
 
 /**
@@ -147,33 +147,33 @@ const onConnected = (resolve) => {
  */
 const onMessage = async (buffer) => {
   const {
-    id, sendId, route, message,
+    id, replyId, route, message,
   } = JSON.parse(buffer.toString());
-  log.debug(`bifrost << ${id}/${sendId} ${route} ${JSON.stringify(message)}`);
+  log.debug(`bifrost.js: << ${id}/${replyId} ${route} ${JSON.stringify(message)}`);
   const { fromApp, topic } = parseRoute(route);
 
   // Did we request this message response? Resolve the send()!
-  if (sendId && pending[sendId]) {
-    pending[sendId](message);
-    delete pending[sendId];
+  if (replyId && pending[replyId]) {
+    pending[replyId](message);
+    delete pending[replyId];
     return;
   }
 
   // Topic does not exist in the app
   if (!topics[topic]) {
-    log.error(`No topic registered for ${topic}`);
+    log.error(`bifrost.js: No topic registered for ${topic}`);
     return;
   }
 
   // Pass to the application and allow it to return a response for this ID
   const response = (await topics[topic](message)) || { ok: true };
   const packet = {
-    sendId: id,
+    replyId: id,
     route: buildRoute(topic, fromApp),
     message: response,
   };
   socket.send(JSON.stringify(packet));
-  log.debug(`bifrost <> ${id} ${route} ${JSON.stringify(packet)}`);
+  log.debug(`bifrost.js: <> ${id} ${route} ${JSON.stringify(packet)}`);
 };
 
 /**
@@ -183,7 +183,7 @@ const onMessage = async (buffer) => {
  */
 const connect = async () => new Promise((resolve) => {
   if (connected) {
-    log.error('Warning: Already connected to bifrost');
+    log.error('bifrost.js: Warning: Already connected to bifrost');
     return;
   }
 
@@ -231,13 +231,13 @@ const send = (toApp, topic, message = {}) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
   // Send this message to the chosen app
-  const id = `${Date.now() + Math.random()}`;
+  const id = `${Date.now() + Math.round(Math.random() * 10000)}`;
   const packet = {
     id,
     route: buildRoute(topic, toApp),
     message,
   };
-  log.debug(`bifrost >> ${JSON.stringify(packet)}`);
+  log.debug(`bifrost.js: >> ${JSON.stringify(packet)}`);
   socket.send(JSON.stringify(packet));
 
   // Allow awaiting the response - handled in onMessage
