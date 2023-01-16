@@ -43,6 +43,8 @@ const TOPIC_HEARTBEAT = 'heartbeat';
 const HEARTBEAT_INTERVAL_MS = 30000;
 /** Send tmeout */
 const SEND_TIMEOUT_MS = 15000;
+/** If this is the 'mothership' bifrost */
+const IS_TOP_HOST = APP_NAME === 'bifrost' && SERVER === 'localhost';
 
 const topics = {};
 const pending = {};
@@ -125,7 +127,7 @@ const registerTopic = (topic, cb, topicSchema) => {
   if (!topicSchema) throw new Error('Topics require schema');
 
   topics[topic] = { cb, topicSchema };
-  log.debug(`Added topic '${topic}'`);
+  log.debug(`bifrost.js: Added topic '${topic}'`);
 };
 
 /**
@@ -218,9 +220,14 @@ const connect = async ({ appName } = {}) => new Promise((resolve) => {
     return;
   }
 
+  if (IS_TOP_HOST) {
+    log.info('This is the top bifrost host, not connecting to self');
+    return;
+  }
+
   if (appName) {
     thisAppName = appName;
-    log.debug(`Overridden app name: ${thisAppName}`);
+    log.debug(`bifrost.js: Overridden app name: ${thisAppName}`);
   }
 
   socket = new WebSocket(`ws://${SERVER}:${PORT}`);

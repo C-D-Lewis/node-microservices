@@ -11,6 +11,7 @@ const main = async () => {
   log.info('Ready for clients');
 
   // TODO: fleet checkin
+  // TODO: Don't connect to self
   await bifrost.connect();
 };
 
