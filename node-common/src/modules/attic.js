@@ -73,7 +73,7 @@ const set = async (key, value) => sendPacket({
  * @throws {Error} If key not found or some other error occurred.
  */
 const get = async (key) => {
-  const res = await sendPacket({
+  const { message } = await sendPacket({
     toApp: 'attic',
     topic: 'get',
     message: {
@@ -83,9 +83,9 @@ const get = async (key) => {
   });
 
   // Not connected, not found etc.
-  if (res.error) throw new Error(res.error);
+  if (message.error) throw new Error(message.error);
 
-  return res.message.value;
+  return message.value;
 };
 
 /**
