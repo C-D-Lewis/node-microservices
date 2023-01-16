@@ -42,8 +42,8 @@ const handlePacket = (packet) => {
 
   // TODO From another device or browser?
 
-  // Destined for a given host & app route
-  const target = clients.find((p) => p.hostname === hostname && p.appName === toApp);
+  // Destined for a given local app route
+  const target = clients.find((p) => p.appName === toApp);
   if (!target) {
     log.error(`Unknown: ${hostname}/${toApp}`);
 

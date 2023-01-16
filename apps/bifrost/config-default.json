@@ -1,4 +1,10 @@
 {
+  "OPTIONS": {
+    "FLEET": {
+      "HOST": "",
+      "DEVICE_TYPE": ""
+    }
+  },
   "LOG": {
     "APP_NAME": "bifrost"
   },

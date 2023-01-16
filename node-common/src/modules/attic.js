@@ -1,41 +1,33 @@
 const config = require('./config');
-const requestAsync = require('./requestAsync');
+const bifrost = require('./bifrost');
 
-const { CONDUIT } = config.withSchema('attic.js', {
-  required: ['CONDUIT'],
+const { BIFROST, LOG } = config.withSchema('attic.js', {
+  required: ['BIFROST'],
   properties: {
-    CONDUIT: {
-      required: ['APP'],
+    BIFROST: {
       properties: {
-        APP: { type: 'string' },
         TOKEN: { type: 'string' },
       },
     },
   },
 });
 
-/** Conduit port */
-const CONDUIT_PORT = 5959;
-
+// TODO: How to send to another host? Multiple connections?
 let host = 'localhost';
-let appName = CONDUIT.APP || 'Unknown';
+let appName = LOG.APP_NAME || 'Unknown';
 
 /**
- * Send a conduit packet.
+ * Send a bifrost packet.
  *
  * @param {object} packet - Packet to send.
  * @returns {object} Response body.
  */
-const conduitSend = async (packet) => {
+const sendPacket = async (packet) => {
   // eslint-disable-next-line no-param-reassign
-  packet.auth = CONDUIT.TOKEN || '';
+  packet.auth = BIFROST.TOKEN || '';
 
-  const { body } = await requestAsync({
-    url: `http://${host}:${CONDUIT_PORT}/conduit`,
-    method: 'post',
-    json: packet,
-  });
-  return body;
+  const { message } = await bifrost.send(packet);
+  return message;
 };
 
 /**
@@ -63,8 +55,8 @@ const setAppName = (newAppName) => {
  * @param {*} value - Data value.
  * @returns {Promise<object>} Response body.
  */
-const set = async (key, value) => conduitSend({
-  to: 'attic',
+const set = async (key, value) => sendPacket({
+  toApp: 'attic',
   topic: 'set',
   message: {
     key,
@@ -81,8 +73,8 @@ const set = async (key, value) => conduitSend({
  * @throws {Error} If key not found or some other error occurred.
  */
 const get = async (key) => {
-  const res = await conduitSend({
-    to: 'attic',
+  const res = await sendPacket({
+    toApp: 'attic',
     topic: 'get',
     message: {
       app: appName,

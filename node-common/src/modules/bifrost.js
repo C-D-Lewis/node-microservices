@@ -43,8 +43,6 @@ const TOPIC_HEARTBEAT = 'heartbeat';
 const HEARTBEAT_INTERVAL_MS = 30000;
 /** Send tmeout */
 const SEND_TIMEOUT_MS = 15000;
-/** If this is the 'mothership' bifrost */
-const IS_TOP_HOST = APP_NAME === 'bifrost' && SERVER === 'localhost';
 
 const topics = {};
 const pending = {};
@@ -217,11 +215,6 @@ const onSocketMessage = async (buffer) => {
 const connect = async ({ appName } = {}) => new Promise((resolve) => {
   if (connected) {
     log.error('bifrost.js: Warning: Already connected to bifrost');
-    return;
-  }
-
-  if (IS_TOP_HOST) {
-    log.info('This is the top bifrost host, not connecting to self');
     return;
   }
 
