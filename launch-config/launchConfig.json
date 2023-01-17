@@ -56,6 +56,11 @@
         "start": "npm start &"
       },
       {
+        "location": "code/node-microservices/apps/attic",
+        "start": "npm start &",
+        "note": "for testing while on branch bifrost-ify"
+      },
+      {
         "location": "code/node-microservices/apps/visuals",
         "start": "npm start &"
       },
