@@ -57,7 +57,7 @@ const onClientMessage = (client, data) => {
     return;
   }
 
-  const { from, topic } = packet;
+  const { from, topic, id } = packet;
 
   // TODO guestlist integration for auth
 
@@ -71,8 +71,8 @@ const onClientMessage = (client, data) => {
   // Ignore heartbeats received
   if (topic === TOPIC_HEARTBEAT) return;
 
-  // Provide connected apps
-  if (TOPIC_KNOWN_APPS) {
+  // Provide connected apps (and isn't the reply)
+  if (TOPIC_KNOWN_APPS && id) {
     const apps = clients.map((p) => p.appName);
     bifrost.reply(packet, { apps });
     return;
