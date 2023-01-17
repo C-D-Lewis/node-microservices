@@ -26,9 +26,7 @@ const sendPacket = async (packet) => {
   // eslint-disable-next-line no-param-reassign
   packet.auth = BIFROST.TOKEN || '';
 
-  const { message } = await bifrost.send(packet);
-  console.log(message)
-  return message;
+  return bifrost.send(packet);
 };
 
 /**
