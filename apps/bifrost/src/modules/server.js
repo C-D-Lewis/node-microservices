@@ -72,7 +72,7 @@ const onClientMessage = (client, data) => {
   if (topic === TOPIC_HEARTBEAT) return;
 
   // Provide connected apps (and isn't the reply)
-  if (TOPIC_KNOWN_APPS && id) {
+  if (topic === TOPIC_KNOWN_APPS && id) {
     const apps = clients.map((p) => p.appName);
     bifrost.reply(packet, { apps });
     return;
