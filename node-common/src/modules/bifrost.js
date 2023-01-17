@@ -146,7 +146,11 @@ const registerTopic = (topic, cb, topicSchema) => {
  */
 const reply = async (packet, message) => {
   const { id, from, topic } = packet;
-  if (!id) throw new Error('Cannot reply to packet with no \'id\'');
+  if (!id) {
+    log.error('Cannot reply to packet with no \'id\'');
+    log.error(JSON.stringify(packet));
+    return;
+  }
 
   // Reply to sender app
   const payload = {
