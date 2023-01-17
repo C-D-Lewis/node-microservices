@@ -1,16 +1,16 @@
-const { textDisplay, conduit } = require('../node-common')(['textDisplay', 'conduit']);
+const { textDisplay } = require('../node-common')(['textDisplay']);
 
 /**
  * Handle a 'setText' topic packet.
  *
- * @param {object} packet - The conduit packet request.
- * @param {object} res - Express response object.
+ * @param {object} packet - The bifrost packet request.
+ * @returns {object} Response data.
  */
-const handleSetTextPacket = (packet, res) => {
+const handleSetTextPacket = (packet) => {
   const { lines } = packet.message;
   textDisplay.setLines(lines);
 
-  conduit.respond(res, { status: 200, message: { content: 'OK' } });
+  return { message: { content: 'OK' } };
 };
 
 module.exports = handleSetTextPacket;

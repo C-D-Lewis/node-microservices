@@ -12,6 +12,9 @@
     "HOST": "localhost",
     "APP": "visuals"
   },
+  "BIFROST": {
+    "SERVER": "localhost"
+  },
   "TEXT_DISPLAY": {
     "USE_HARDWARE": false,
     "HARDWARE_TYPE": "pioled"

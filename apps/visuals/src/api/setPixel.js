@@ -1,12 +1,12 @@
-const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
+const { leds } = require('../node-common')(['leds']);
 
 /**
  * Handle a 'setPixel' topic packet.
  *
- * @param {object} packet - The conduit packet request.
- * @param {object} res - Express response object.
+ * @param {object} packet - The bifrost packet request.
+ * @returns {object} Response data.
  */
-const handleSetPixelPacket = (packet, res) => {
+const handleSetPixelPacket = (packet) => {
   const { message } = packet;
   for (let i = 0; i < leds.getNumLEDs(); i += 1) {
     if (message[i]) {
@@ -14,7 +14,7 @@ const handleSetPixelPacket = (packet, res) => {
     }
   }
 
-  conduit.respond(res, { status: 200, message: { content: 'OK' } });
+  return { message: { content: 'OK' } };
 };
 
 module.exports = handleSetPixelPacket;

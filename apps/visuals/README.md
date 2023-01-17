@@ -35,7 +35,7 @@ they play.
 
 The setup process:
 
-1. Run `conduit`, `attic`, and `concierge` on a static IP, internet-accessible
+1. Run `bifrost`, `attic`, and `concierge` on a static IP, internet-accessible
    machine such as in AWS, or another hosting provider.
 
 2. Log into the Spotify developer dashboard and create an application in order
@@ -64,7 +64,7 @@ To use the feature:
 
 ## API
 
-This service provides the following `conduit` topics and message formats:
+This service provides the following `bifrost` topics and message formats:
 
 ### `setAll`
 

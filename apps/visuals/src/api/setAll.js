@@ -1,19 +1,18 @@
-const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
+const { leds } = require('../node-common')(['leds']);
 const handles = require('../modules/handles');
 
 /**
  * Handle a 'setAll' topic packet.
  *
- * @param {object} packet - The conduit packet request.
- * @param {object} res - Express response object.
+ * @param {object} packet - The bifrost packet request.
  */
-const handleSetAllPacket = async (packet, res) => {
+const handleSetAllPacket = async (packet) => {
   handles.cancelAll();
 
   const { all } = packet.message;
   await leds.setAll(all);
 
-  conduit.respond(res, { status: 200, message: { content: 'OK' } });
+  return { message: { content: 'OK' } };
 };
 
 module.exports = handleSetAllPacket;

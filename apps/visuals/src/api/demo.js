@@ -1,4 +1,4 @@
-const { leds, conduit, math } = require('../node-common')(['leds', 'conduit', 'math']);
+const { leds, math } = require('../node-common')(['leds', 'math']);
 const handles = require('../modules/handles');
 
 /** Demo color change interval */
@@ -38,10 +38,9 @@ const nextDemoColor = () => {
 /**
  * Handle a 'demo' topic packet.
  *
- * @param {object} packet - The conduit packet request.
- * @param {object} res - Express response object.
+ * @returns {object} Response data.
  */
-const handleDemoPacket = async (packet, res) => {
+const handleDemoPacket = async () => {
   handles.cancelAll();
 
   // Set up the animation cycle
@@ -49,7 +48,7 @@ const handleDemoPacket = async (packet, res) => {
   handles.add('demo', handle);
 
   nextDemoColor();
-  conduit.respond(res, { status: 200, message: { content: 'OK' } });
+  return { message: { content: 'OK' } };
 };
 
 module.exports = handleDemoPacket;
