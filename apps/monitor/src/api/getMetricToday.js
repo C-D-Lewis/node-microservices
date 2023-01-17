@@ -1,17 +1,14 @@
 const { getMetricHistoryToday } = require('../modules/metrics');
-const { conduit } = require('../node-common')(['conduit']);
 
 /**
  * Handle a 'getMetricToday' topic packet.
  *
- * @param {object} packet - The conduit packet request.
- * @param {object} res - Express response object.
+ * @param {object} packet - The bifrost packet request.
  */
-const handleGetMetricTodayPacket = async (packet, res) => {
+const handleGetMetricTodayPacket = async (packet) => {
   const { name } = packet.message;
-  const data = getMetricHistoryToday(name);
 
-  conduit.respond(res, { status: 200, message: data });
+  return { message: getMetricHistoryToday(name) };
 };
 
 module.exports = handleGetMetricTodayPacket;

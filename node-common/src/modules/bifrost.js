@@ -38,6 +38,8 @@ const PORT = 3918;
 const TOPIC_WHOAMI = 'whoami';
 /** Topic for heartbeat */
 const TOPIC_HEARTBEAT = 'heartbeat';
+/** Known apps */
+const TOPIC_KNOWN_APPS = 'knownApps';
 /** Heartbeat interval */
 const HEARTBEAT_INTERVAL_MS = 30000;
 /** Send tmeout */
@@ -318,6 +320,7 @@ module.exports = {
   PORT,
   TOPIC_WHOAMI,
   TOPIC_HEARTBEAT,
+  TOPIC_KNOWN_APPS,
 
   connect,
   disconnect,

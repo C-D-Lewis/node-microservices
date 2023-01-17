@@ -1,4 +1,4 @@
-const { conduit } = require('../node-common')(['conduit']);
+const { bifrost } = require('../node-common')(['bifrost']);
 
 /** Schema for messages getting metric data today */
 const GET_METRIC_TODAY_MESSAGE_SCHEMA = {
@@ -23,13 +23,11 @@ const GET_METRIC_NAMES_MESSAGE_SCHEMA = {};
  * Setup Conduit topic handlers.
  */
 const setup = async () => {
-  await conduit.register();
+  await bifrost.connect();
 
-  conduit.on('getMetricToday', require('../api/getMetricToday'), GET_METRIC_TODAY_MESSAGE_SCHEMA);
-  conduit.on('updateMetrics', require('../api/updateMetrics'), UPDATE_METRICS_MESSAGE_SCHEMA);
-  conduit.on('getMetricNames', require('../api/getMetricNames'), GET_METRIC_NAMES_MESSAGE_SCHEMA);
+  bifrost.registerTopic('getMetricToday', require('../api/getMetricToday'), GET_METRIC_TODAY_MESSAGE_SCHEMA);
+  bifrost.registerTopic('updateMetrics', require('../api/updateMetrics'), UPDATE_METRICS_MESSAGE_SCHEMA);
+  bifrost.registerTopic('getMetricNames', require('../api/getMetricNames'), GET_METRIC_NAMES_MESSAGE_SCHEMA);
 };
 
-module.exports = {
-  setup,
-};
+module.exports = { setup };

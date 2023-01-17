@@ -1,4 +1,4 @@
-const { conduit, log } = require('./node-common')(['config', 'conduit', 'log']);
+const { bifrost, log } = require('./node-common')(['config', 'bifrost', 'log']);
 const plugins = require('./modules/plugins');
 const api = require('./modules/api');
 
@@ -11,11 +11,16 @@ const main = async () => {
   await api.setup();
 
   // Clear any LEDs (still needed?)
-  await conduit.send({
-    to: 'visuals',
-    topic: 'setAll',
-    message: { all: [0, 0, 0] },
-  });
+  try {
+    await bifrost.send({
+      to: 'visuals',
+      topic: 'setAll',
+      message: { all: [0, 0, 0] },
+    });
+  } catch (e) {
+    log.error(e);
+    log.error('Failed to initialise visuals to 0s');
+  }
 
   plugins.loadAll();
 };

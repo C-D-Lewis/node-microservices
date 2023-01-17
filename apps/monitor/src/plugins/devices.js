@@ -4,7 +4,7 @@
 
 // const sleep = require('../modules/sleep');
 
-// Reimplement with conduit when the time comes
+// Reimplement with bifrost when the time comes
 // server.getExpressApp().get('/devices', (req, res) => {
 //   log.info('<< /devices');
 //   res.status(200);

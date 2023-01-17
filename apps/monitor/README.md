@@ -71,12 +71,6 @@ Show a forecast of one hour per LED on a Mote or Blinkt strip.
 | `TEMP_COLD` | Number | Minimum comfortable temperature. |
 | `TEMP_HOT` | Number | Maximum comfortable temperature. |
 
-### `conduit.js`
-
-Send a Conduit packet on a schedule.
-
-For this plugin, the entire `ARGS` object is the packet to be sent.
-
 ### `delays.js`
 
 Show state of select National Rail lines on connected LEDs.

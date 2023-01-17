@@ -1,5 +1,4 @@
-const { log } = require('../node-common')(['log']);
-const conduitPost = require('./conduit');
+const { log, bifrost } = require('../node-common')(['log', 'bifrost']);
 
 /** Off color */
 const LED_STATE_OFF = [0, 0, 0];
@@ -41,7 +40,7 @@ module.exports = (args) => {
     // Time to be ON?
     if (isTime(ON.split(':'))) {
       log.info(`Time for ON: ${NAME}`);
-      await conduitPost({
+      await bifrost.send({
         to: 'visuals',
         topic: 'fadeAll',
         message: { to: COLOR },
@@ -51,7 +50,7 @@ module.exports = (args) => {
     // Time to be OFF?
     if (isTime(OFF.split(':'))) {
       log.info(`Time for OFF: ${NAME}`);
-      await conduitPost({
+      await bifrost.send({
         to: 'visuals',
         topic: 'fadeAll',
         message: { to: LED_STATE_OFF },

@@ -6,6 +6,7 @@ const {
   PORT,
   TOPIC_WHOAMI,
   TOPIC_HEARTBEAT,
+  TOPIC_KNOWN_APPS,
 } = bifrost;
 
 const clients = [];
@@ -60,7 +61,7 @@ const onClientMessage = (client, data) => {
 
   // TODO guestlist integration for auth
 
-  // Client declaring hostname and app name (unique combination)
+  // Client declaring app name (unique combination)
   if (topic === TOPIC_WHOAMI) {
     // Annotate this client
     client.appName = from;
@@ -69,6 +70,13 @@ const onClientMessage = (client, data) => {
 
   // Ignore heartbeats received
   if (topic === TOPIC_HEARTBEAT) return;
+
+  // Provide connected apps
+  if (TOPIC_KNOWN_APPS) {
+    const apps = clients.map((p) => p.appName);
+    bifrost.reply(packet, { apps });
+    return;
+  }
 
   // Handle packet, getting it where it needs to go
   handlePacket(packet);
@@ -86,7 +94,7 @@ const onNewClient = (client) => {
   client.on('message', (data) => onClientMessage(client, data));
   client.on('close', () => {
     clients.splice(clients.indexOf(client));
-    log.info(`Client ${client.hostname}/${client.appName} closed connection`);
+    log.info(`Client ${client.appName} closed connection`);
   });
 };
 

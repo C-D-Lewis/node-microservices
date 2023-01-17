@@ -37,9 +37,8 @@
   "LOG": {
     "APP_NAME": "monitor"
   },
-  "CONDUIT": {
-    "HOST": "localhost",
-    "APP": "monitor"
+  "BIFROST": {
+    "SERVER": "localhost"
   },
   "SES": {
     "TO_ADDRESS": "",
