@@ -52,7 +52,7 @@
     ],
     "stack-int": [
       {
-        "location": "code/node-microservices/apps/conduit",
+        "location": "code/node-microservices/apps/bifrost",
         "start": "npm start &"
       },
       {
