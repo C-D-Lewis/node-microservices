@@ -27,6 +27,7 @@ const sendPacket = async (packet) => {
   packet.auth = BIFROST.TOKEN || '';
 
   const { message } = await bifrost.send(packet);
+  console.log(message)
   return message;
 };
 
@@ -56,7 +57,7 @@ const setAppName = (newAppName) => {
  * @returns {Promise<object>} Response body.
  */
 const set = async (key, value) => sendPacket({
-  toApp: 'attic',
+  to: 'attic',
   topic: 'set',
   message: {
     key,
@@ -73,8 +74,8 @@ const set = async (key, value) => sendPacket({
  * @throws {Error} If key not found or some other error occurred.
  */
 const get = async (key) => {
-  const { message } = await sendPacket({
-    toApp: 'attic',
+  const message = await sendPacket({
+    to: 'attic',
     topic: 'get',
     message: {
       app: appName,

@@ -1,5 +1,6 @@
+/* eslint-disable no-param-reassign */
+
 const { WebSocket } = require('ws');
-const { hostname } = require('os');
 const log = require('./log');
 const config = require('./config');
 const schema = require('./schema');
@@ -31,8 +32,6 @@ const {
   },
 });
 
-/** This hostname */
-const HOSTNAME = hostname();
 /** Fixed Norse port */
 const PORT = 3918;
 /** Client declaring itself */
@@ -43,6 +42,20 @@ const TOPIC_HEARTBEAT = 'heartbeat';
 const HEARTBEAT_INTERVAL_MS = 30000;
 /** Send tmeout */
 const SEND_TIMEOUT_MS = 15000;
+/** Schema for all conduit message packets. */
+const PACKET_SCHEMA = {
+  required: ['to', 'topic'],
+  additionalProperties: false,
+  properties: {
+    id: { type: 'string' },
+    replyId: { type: 'string' },
+    to: { type: 'string' },
+    from: { type: 'string' },
+    topic: { type: 'string' },
+    message: { type: 'object' },
+    error: { type: 'string' },
+  },
+};
 
 const topics = {};
 const pending = {};
@@ -54,35 +67,30 @@ let heartbeatHandle;
 let thisAppName = APP_NAME; // Could be overridden
 
 /**
- * Parse a bifrost route string.
+ * Validate a packet, either sent or received.
  *
- * @param {string} route - Route string to parse.
- * @returns {object} Route semantic parts.
- * @throws {Error} if unexpected format.
+ * @param {object} packet - Packet to validate.
+ * @throws {Error}s
  */
-const parseRoute = (route) => {
-  const parts = route.split('/');
-  if (!(route.includes('/global/') || parts.length === 6)) throw new Error('Invalid route');
-
-  const [, type, routeHostname, fromApp, toApp, topic] = route.split('/');
-  return {
-    type,
-    hostname: routeHostname,
-    fromApp,
-    toApp,
-    topic,
-  };
+const validatePacket = (packet) => {
+  if (!schema(packet, PACKET_SCHEMA)) throw new Error(`Invalid packet: ${JSON.stringify(packet)}`);
 };
 
 /**
- * Build a route string for a topic message from this device.
+ * Validate a packet and make WebSocket payload.
  *
- * @param {string} topic - Topic to use.
- * @param {string} toApp - App sending to.
- * @param {string} [fromApp] - Override fromApp.
- * @returns {string} Route string.
+ * @param {object} opts - Packet build options.
+ * @returns {string} Validated packet as a WebSocket data string.
  */
-const buildRoute = (topic, toApp, fromApp = thisAppName) => `/devices/${HOSTNAME}/${fromApp}/${toApp}/${topic}`;
+const stringifyPacket = (opts) => {
+  validatePacket(opts);
+
+  // Defaults here
+  opts.message = opts.message || {};
+  opts.from = opts.from || thisAppName;
+
+  return JSON.stringify(opts);
+};
 
 /**
  * Stop heartbeats.
@@ -99,7 +107,7 @@ const startHeartbeats = () => {
   stopHearbeats();
 
   heartbeatHandle = setInterval(() => {
-    socket.send(JSON.stringify({ route: buildRoute(TOPIC_HEARTBEAT, 'bifrost'), message: {} }));
+    socket.send(stringifyPacket({ to: 'bifrost', topic: TOPIC_HEARTBEAT }));
     log.debug('bifrost.js: Sent heartbeat');
   }, HEARTBEAT_INTERVAL_MS);
   log.debug('bifrost.js: Began heartbeats');
@@ -109,7 +117,7 @@ const startHeartbeats = () => {
  * Tell the server which device and app we are.
  */
 const sendWhoAmI = () => {
-  socket.send(JSON.stringify({ route: buildRoute(TOPIC_WHOAMI, 'bifrost'), message: {} }));
+  socket.send(stringifyPacket({ to: 'bifrost', topic: TOPIC_WHOAMI }));
   log.debug('bifrost.js: Sent whoami');
 };
 
@@ -135,18 +143,18 @@ const registerTopic = (topic, cb, topicSchema) => {
  * @param {object} message - Response data.
  */
 const reply = async (packet, message) => {
-  const { id, route } = packet;
-  const { topic, fromApp } = parseRoute(route);
-  if (!id) throw new Error('Cannot reply to packet with no id');
+  const { id, from, topic } = packet;
+  if (!id) throw new Error('Cannot reply to packet with no \'id\'');
 
-  // Reply to sender
+  // Reply to sender app
   const payload = {
     replyId: id,
-    route: buildRoute(topic, fromApp),
+    to: from,
+    topic,
     message,
   };
   socket.send(JSON.stringify(payload));
-  log.debug(`bifrost.js: <> ${id} ${route} ${JSON.stringify(payload)}`);
+  log.debug(`bifrost.js: <> ${JSON.stringify(payload)}`);
 };
 
 /**
@@ -173,11 +181,8 @@ const onConnected = (resolve) => {
  */
 const onSocketMessage = async (buffer) => {
   const packet = JSON.parse(buffer.toString());
-  const {
-    id, replyId, route, message,
-  } = packet;
-  log.debug(`bifrost.js: << ${id}/${replyId} ${route} ${JSON.stringify(message)}`);
-  const { topic } = parseRoute(route);
+  const { replyId, topic, message } = packet;
+  log.debug(`bifrost.js: << ${JSON.stringify(packet)}`);
 
   // Did we request this message response? Resolve the send()!
   if (replyId && pending[replyId]) {
@@ -201,8 +206,8 @@ const onSocketMessage = async (buffer) => {
   }
 
   // Pass to the application and allow it to return a response for this ID
-  const responseMessage = (await cb(packet)) || { ok: true };
-  reply(packet, responseMessage);
+  const response = (await cb(packet)) || { ok: true };
+  reply(packet, response);
 };
 
 /**
@@ -210,9 +215,10 @@ const onSocketMessage = async (buffer) => {
  *
  * @param {object} [opts] - Function opts.
  * @param {string} [opts.appName] - Override this app name.
+ * @param {string} [opts.server] - Override server.
  * @returns {Promise<void>}
  */
-const connect = async ({ appName } = {}) => new Promise((resolve) => {
+const connect = async ({ appName, server = SERVER } = {}) => new Promise((resolve) => {
   if (connected) {
     log.error('bifrost.js: Warning: Already connected to bifrost');
     return;
@@ -223,7 +229,7 @@ const connect = async ({ appName } = {}) => new Promise((resolve) => {
     log.debug(`bifrost.js: Overridden app name: ${thisAppName}`);
   }
 
-  socket = new WebSocket(`ws://${SERVER}:${PORT}`);
+  socket = new WebSocket(`ws://${server}:${PORT}`);
   socket.on('open', () => onConnected(resolve));
   socket.on('message', onSocketMessage);
   socket.on('close', () => {
@@ -259,14 +265,14 @@ const disconnect = () => {
  * used in the same way as HTTP.
  *
  * @param {object} opts - Function opts.
- * @param {string} opts.toApp - App to send to.
+ * @param {string} opts.to - App to send to.
+ * @param {string} [opts.from] - Override from.
  * @param {string} opts.topic - Topic to broadcast on.
  * @param {object} [opts.message] - Data to send.
- * @param {string} [opts.fromApp] - Override fromApp.
  * @returns {Promise<object>} Response message data.
  */
 const send = ({
-  toApp, topic, message = {}, fromApp,
+  to, from, topic, message,
 }) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
@@ -274,11 +280,13 @@ const send = ({
   const id = `${Date.now() + Math.round(Math.random() * 10000)}`;
   const packet = {
     id,
-    route: buildRoute(topic, toApp, fromApp),
+    to,
+    from,
+    topic,
     message,
   };
   log.debug(`bifrost.js: >> ${JSON.stringify(packet)}`);
-  socket.send(JSON.stringify(packet));
+  socket.send(stringifyPacket(packet));
 
   // Allow awaiting the response - handled in onSocketMessage
   return new Promise((resolve, reject) => {
@@ -314,7 +322,7 @@ module.exports = {
   connect,
   disconnect,
   send,
-  registerTopic,
-  parseRoute,
   reply,
+  registerTopic,
+  validatePacket,
 };
