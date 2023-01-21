@@ -7,7 +7,7 @@ const api = require('./modules/api');
  */
 const main = async () => {
   log.begin();
-  api.setup();
+  await api.setup();
 
   try {
     await createSpotifyClient();

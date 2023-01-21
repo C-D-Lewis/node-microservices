@@ -101,7 +101,6 @@ const updateRemoteAuthCode = async () => {
       host: AUTH_ATTIC.HOST,
       message: { app: 'concierge', key: AUTH_ATTIC.KEY },
     });
-    console.log(res)
     if (res.error) throw new Error(res.error);
     if (!res || !res.message) {
       // Nothing was found
