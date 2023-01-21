@@ -18,7 +18,7 @@ let server;
  * @param {object} packet - Received message data.
  */
 const handlePacket = (packet) => {
-  const { to } = packet;
+  const { to, topic } = packet;
 
   // TODO From another device or browser?
 
@@ -34,7 +34,7 @@ const handlePacket = (packet) => {
 
   // Forward to that host and app
   target.send(JSON.stringify(packet));
-  log.debug(`FWD ${to}`);
+  log.debug(`FWD ${to}:${topic}`);
 };
 
 /**
@@ -44,9 +44,6 @@ const handlePacket = (packet) => {
  * @param {ArrayBuffer} data - The message.
  */
 const onClientMessage = (client, data) => {
-  log.debug(`REC ${data}`);
-  client.lastSeen = Date.now();
-
   // Ensure it has the right data
   let packet;
   try {
@@ -57,7 +54,10 @@ const onClientMessage = (client, data) => {
     return;
   }
 
-  const { from, topic, id } = packet;
+  const {
+    id, replyId, from, topic, message = {},
+  } = packet;
+  log.debug(`REC ${from}:${topic} ${JSON.stringify(message)} (${id}/${replyId})`);
 
   // TODO guestlist integration for auth
 
@@ -93,7 +93,7 @@ const onNewClient = (client) => {
 
   client.on('message', (data) => onClientMessage(client, data));
   client.on('close', () => {
-    clients.splice(clients.indexOf(client));
+    clients.splice(clients.indexOf(client), 1);
     log.info(`Client ${client.appName} closed connection`);
   });
 };

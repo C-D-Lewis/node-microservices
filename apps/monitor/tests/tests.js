@@ -1,41 +1,44 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { expect } = require('chai');
-const { testing } = require('../src/node-common')(['testing']);
+const { bifrost } = require('../src/node-common')(['bifrost']);
 
 describe('API', () => {
-  describe('Conduit topic: status', () => {
+  before(async () => {
+    await bifrost.connect({ appName: 'monitorTests' });
+  });
+
+  describe('Bifrost topic: status', () => {
     it('should return 200 / OK', async () => {
-      const result = await testing.sendConduitPacket({ to: 'monitor', topic: 'status' });
+      const { message } = await bifrost.send({ to: 'monitor', topic: 'status' });
 
-      expect(result.status).to.equal(200);
-      expect(result.message.content).to.equal('OK');
+      expect(message.content).to.equal('OK');
     });
+  });
 
+  describe('Metric API', () => {
     it('should accept metric data', async () => {
       const metrics = { temp: 23, light: 12 };
-      const result = await testing.sendConduitPacket({ to: 'monitor', topic: 'updateMetrics', message: { metrics } });
+      const { message } = await bifrost.send({ to: 'monitor', topic: 'updateMetrics', message: { metrics } });
 
-      expect(result.status).to.equal(200);
-      expect(result.message.content).to.equal('success');
+      expect(message.content).to.equal('success');
     });
 
     it('should return metric data', async () => {
-      const result = await testing.sendConduitPacket({ to: 'monitor', topic: 'getMetricToday', message: { name: 'temp' } });
+      const { message } = await bifrost.send({ to: 'monitor', topic: 'getMetricToday', message: { name: 'temp' } });
 
-      expect(result.status).to.equal(200);
-      expect(result.message).to.be.an('array');
+      expect(message).to.be.an('array');
 
-      const point = result.message.pop();
+      const point = message.pop();
       expect(point.timestamp).to.be.a('number');
       expect(point.dateTime).to.be.a('string');
       expect(point.value).to.equal(23);
     });
 
     it('should return metric names', async () => {
-      const result = await testing.sendConduitPacket({ to: 'monitor', topic: 'getMetricNames' });
+      const { message } = await bifrost.send({ to: 'monitor', topic: 'getMetricNames' });
 
-      expect(result.status).to.equal(200);
-      expect(result.message).to.be.an('array');
-      expect(result.message).to.have.length(2);
+      expect(message).to.be.an('array');
+      expect(message).to.have.length(2);
     });
   });
 });

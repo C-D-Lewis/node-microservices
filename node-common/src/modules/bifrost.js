@@ -96,11 +96,10 @@ const stringifyPacket = (opts) => {
 
 /**
  * Stop heartbeats.
+ *
+ * @returns {void}
  */
-const stopHearbeats = () => {
-  clearInterval(heartbeatHandle);
-  log.debug('bifrost.js: Stopped heartbeats');
-};
+const stopHearbeats = () => clearInterval(heartbeatHandle);
 
 /**
  * Start heartbeat loop to keepalive connection.
@@ -110,7 +109,7 @@ const startHeartbeats = () => {
 
   heartbeatHandle = setInterval(() => {
     socket.send(stringifyPacket({ to: 'bifrost', topic: TOPIC_HEARTBEAT }));
-    log.debug('bifrost.js: Sent heartbeat');
+    // log.debug('bifrost.js: Sent heartbeat');
   }, HEARTBEAT_INTERVAL_MS);
   log.debug('bifrost.js: Began heartbeats');
 };
@@ -159,8 +158,8 @@ const reply = async (packet, message) => {
     topic,
     message,
   };
-  socket.send(JSON.stringify(payload));
-  log.debug(`bifrost.js: <> ${JSON.stringify(payload)}`);
+  socket.send(stringifyPacket(payload));
+  log.debug(`<> ${from}:${topic} ${JSON.stringify(message)} (${id})`);
 };
 
 /**
@@ -187,8 +186,10 @@ const onConnected = (resolve) => {
  */
 const onSocketMessage = async (buffer) => {
   const packet = JSON.parse(buffer.toString());
-  const { replyId, topic, message } = packet;
-  log.debug(`bifrost.js: << ${JSON.stringify(packet)}`);
+  const {
+    id, from, replyId, topic, message = {},
+  } = packet;
+  log.debug(`<< ${from}:${topic} ${JSON.stringify(message)} (${id}/${replyId})`);
 
   // Did we request this message response? Resolve the send()!
   if (replyId && pending[replyId]) {
@@ -291,7 +292,7 @@ const send = ({
     topic,
     message,
   };
-  log.debug(`bifrost.js: >> ${JSON.stringify(packet)}`);
+  log.debug(`>> ${to}:${topic} ${JSON.stringify(message)} (${id})`);
   socket.send(stringifyPacket(packet));
 
   // Allow awaiting the response - handled in onSocketMessage
@@ -311,6 +312,7 @@ const send = ({
       clearTimeout(timeoutHandle);
 
       if (response.error) {
+        delete pending[id];
         reject(new Error(response.error));
         return;
       }
