@@ -54,10 +54,8 @@ const onClientMessage = (client, data) => {
     return;
   }
 
-  const {
-    id, replyId, from, topic, message = {},
-  } = packet;
-  log.debug(`REC ${from}:${topic} ${JSON.stringify(message)} (${id}/${replyId})`);
+  const { id, from, topic } = packet;
+  log.debug(`REC ${bifrost.formatPacket(packet)}`);
 
   // TODO guestlist integration for auth
 
@@ -73,8 +71,7 @@ const onClientMessage = (client, data) => {
 
   // Provide connected apps (and isn't the reply)
   if (topic === TOPIC_KNOWN_APPS && id) {
-    const apps = clients.map((p) => p.appName);
-    bifrost.reply(packet, { apps });
+    bifrost.reply(packet, { apps: clients.map((p) => p.appName) });
     return;
   }
 
