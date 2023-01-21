@@ -12,8 +12,8 @@
 const { promisify } = require('util');
 const Spotify = require('spotify-web-api-node');
 const {
-  attic, conduit, config, log,
-} = require('../node-common')(['attic', 'conduit', 'config', 'log']);
+  attic, bifrost, config, log,
+} = require('../node-common')(['attic', 'bifrost', 'config', 'log']);
 
 const { SPOTIFY, AUTH_ATTIC } = config.withSchema('spotifyAuth.js', {
   required: ['SPOTIFY', 'AUTH_ATTIC'],
@@ -89,28 +89,43 @@ const refreshCredentials = async (spotifyApi) => {
  * Should be done if authorization fails.
  */
 const updateRemoteAuthCode = async () => {
-  // Fetch credentials - stored by conduit as conduit relay
-  const res = await conduit.send({
-    to: 'attic',
-    topic: 'get',
-    host: AUTH_ATTIC.HOST,
-    message: { app: 'concierge', key: AUTH_ATTIC.KEY },
-  });
-  if (res.error) throw new Error(res.error);
-  if (!res || !res.message) {
-    // Nothing was found
-    log.error(`No code is stored yet or was not found: ${JSON.stringify(res)}`);
-    throw new Error('No code is stored yet');
-  }
+  try {
+    // Special connection to another device
+    bifrost.disconnect();
+    await bifrost.connect({ server: AUTH_ATTIC.HOST });
 
-  const { code } = res.message.value;
-  if (!code) {
-    throw new Error(`/spotifyCallback did not contain .code: ${JSON.stringify(res)}`);
-  }
+    // Fetch credentials - stored by concierge as bifrost relay
+    const res = await bifrost.send({
+      to: 'attic',
+      topic: 'get',
+      host: AUTH_ATTIC.HOST,
+      message: { app: 'concierge', key: AUTH_ATTIC.KEY },
+    });
+    console.log(res)
+    if (res.error) throw new Error(res.error);
+    if (!res || !res.message) {
+      // Nothing was found
+      log.error(`No code is stored yet or was not found: ${JSON.stringify(res)}`);
+      throw new Error('No code is stored yet');
+    }
 
-  // Set credential in Attic locally
-  await attic.set(DB_KEYS.AUTH_CODE, code);
-  log.debug(`Saved new AUTH_CODE: ${code}`);
+    const { code } = res.message.value;
+    if (!code) {
+      throw new Error(`/spotifyCallback did not contain .code: ${JSON.stringify(res)}`);
+    }
+
+    // Set credential in Attic locally
+    await attic.set(DB_KEYS.AUTH_CODE, code);
+    log.debug(`Saved new AUTH_CODE: ${code}`);
+  } catch (e) {
+    log.error(e);
+
+    // Reconnect locally again
+    await bifrost.connect();
+
+    // Propagate error
+    throw e;
+  }
 };
 
 /**

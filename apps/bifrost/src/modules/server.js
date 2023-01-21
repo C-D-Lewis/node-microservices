@@ -20,8 +20,6 @@ let server;
 const handlePacket = (packet) => {
   const { to, topic } = packet;
 
-  // TODO From another device or browser?
-
   // Destined for a given local app route
   const target = clients.find((p) => p.appName === to);
   if (!target) {

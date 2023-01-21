@@ -8,10 +8,6 @@
     "USE_HARDWARE": false,
     "HARDWARE_TYPE": "mote"
   },
-  "CONDUIT": {
-    "HOST": "localhost",
-    "APP": "visuals"
-  },
   "BIFROST": {
     "SERVER": "localhost"
   },
