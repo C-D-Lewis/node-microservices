@@ -9,36 +9,36 @@ describe('API', () => {
 
   describe('Bifrost topic: status', () => {
     it('should return 200 / OK', async () => {
-      const { message } = await bifrost.send({ to: 'monitor', topic: 'status' });
+      const { content } = await bifrost.send({ to: 'monitor', topic: 'status' });
 
-      expect(message.content).to.equal('OK');
+      expect(content).to.equal('OK');
     });
   });
 
   describe('Metric API', () => {
     it('should accept metric data', async () => {
       const metrics = { temp: 23, light: 12 };
-      const { message } = await bifrost.send({ to: 'monitor', topic: 'updateMetrics', message: { metrics } });
+      const { content } = await bifrost.send({ to: 'monitor', topic: 'updateMetrics', message: { metrics } });
 
-      expect(message.content).to.equal('success');
+      expect(content).to.equal('success');
     });
 
     it('should return metric data', async () => {
-      const { message } = await bifrost.send({ to: 'monitor', topic: 'getMetricToday', message: { name: 'temp' } });
+      const { points } = await bifrost.send({ to: 'monitor', topic: 'getMetricToday', message: { name: 'temp' } });
 
-      expect(message).to.be.an('array');
+      expect(points).to.be.an('array');
 
-      const point = message.pop();
+      const point = points.pop();
       expect(point.timestamp).to.be.a('number');
       expect(point.dateTime).to.be.a('string');
       expect(point.value).to.equal(23);
     });
 
     it('should return metric names', async () => {
-      const { message } = await bifrost.send({ to: 'monitor', topic: 'getMetricNames' });
+      const { names } = await bifrost.send({ to: 'monitor', topic: 'getMetricNames' });
 
-      expect(message).to.be.an('array');
-      expect(message).to.have.length(2);
+      expect(names).to.be.an('array');
+      expect(names).to.have.length(2);
     });
   });
 });

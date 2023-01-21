@@ -9,7 +9,7 @@ const handleUpdateMetricsPacket = async (packet) => {
   const { metrics } = packet.message;
   updateMetrics(metrics);
 
-  return { message: { content: 'success' } };
+  return { content: 'success' };
 };
 
 module.exports = handleUpdateMetricsPacket;

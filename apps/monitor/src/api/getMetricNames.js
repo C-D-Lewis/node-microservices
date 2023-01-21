@@ -5,6 +5,6 @@ const { getMetricNames } = require('../modules/metrics');
  *
  * @returns {object} Response data.
  */
-const handleGetMetricTodayPacket = async () => ({ message: getMetricNames() });
+const handleGetMetricTodayPacket = async () => ({ names: getMetricNames() });
 
 module.exports = handleGetMetricTodayPacket;

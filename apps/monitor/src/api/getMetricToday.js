@@ -8,7 +8,7 @@ const { getMetricHistoryToday } = require('../modules/metrics');
 const handleGetMetricTodayPacket = async (packet) => {
   const { name } = packet.message;
 
-  return { message: getMetricHistoryToday(name) };
+  return { points: getMetricHistoryToday(name) };
 };
 
 module.exports = handleGetMetricTodayPacket;

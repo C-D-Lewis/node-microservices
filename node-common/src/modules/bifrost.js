@@ -69,6 +69,19 @@ let heartbeatHandle;
 let thisAppName = APP_NAME; // Could be overridden
 
 /**
+ * Format a packet in a readable format.
+ *
+ * @param {object} packet - Packet to log.
+ * @returns {string} Formatted packet.
+ */
+const formatPacket = (packet) => {
+  const {
+    from, to, topic, message, id, replyId,
+  } = packet;
+  return `${from}>${to}:${topic} ${JSON.stringify(message)} (${id || ''}/${replyId || ''})`;
+};
+
+/**
  * Validate a packet, either sent or received.
  *
  * @param {object} packet - Packet to validate.
@@ -81,17 +94,19 @@ const validatePacket = (packet) => {
 /**
  * Validate a packet and make WebSocket payload.
  *
- * @param {object} opts - Packet build options.
+ * @param {string} prefix - Prefix for log.
+ * @param {object} packet - Packet to prepare.
  * @returns {string} Validated packet as a WebSocket data string.
  */
-const stringifyPacket = (opts) => {
-  validatePacket(opts);
+const stringifyPacket = (prefix, packet) => {
+  validatePacket(packet);
 
   // Defaults here
-  opts.message = opts.message || {};
-  opts.from = opts.from || thisAppName;
+  packet.message = packet.message || {};
+  packet.from = packet.from || thisAppName;
 
-  return JSON.stringify(opts);
+  log.debug(`${prefix} ${formatPacket(packet)}`);
+  return JSON.stringify(packet);
 };
 
 /**
@@ -108,7 +123,7 @@ const startHeartbeats = () => {
   stopHearbeats();
 
   heartbeatHandle = setInterval(() => {
-    socket.send(stringifyPacket({ to: 'bifrost', topic: TOPIC_HEARTBEAT }));
+    socket.send(stringifyPacket('>>', { to: 'bifrost', topic: TOPIC_HEARTBEAT }));
     // log.debug('bifrost.js: Sent heartbeat');
   }, HEARTBEAT_INTERVAL_MS);
   log.debug('bifrost.js: Began heartbeats');
@@ -118,15 +133,15 @@ const startHeartbeats = () => {
  * Tell the server which device and app we are.
  */
 const sendWhoAmI = () => {
-  socket.send(stringifyPacket({ to: 'bifrost', topic: TOPIC_WHOAMI }));
-  log.debug('bifrost.js: Sent whoami');
+  socket.send(stringifyPacket('>>', { to: 'bifrost', topic: TOPIC_WHOAMI }));
+  // log.debug('bifrost.js: Sent whoami');
 };
 
 /**
  * Expect messages on a given topic.
  *
  * @param {string} topic - Topic to listen to.
- * @param {Function} cb - Callback when a message with the matching topic is received.
+ * @param {Function} cb - Callback returning app data.
  * @param {object} topicSchema - Schema for topic messages.
  */
 const registerTopic = (topic, cb, topicSchema) => {
@@ -158,8 +173,7 @@ const reply = async (packet, message) => {
     topic,
     message,
   };
-  socket.send(stringifyPacket(payload));
-  log.debug(`<> ${from}:${topic} ${JSON.stringify(message)} (${id})`);
+  socket.send(stringifyPacket('<>', payload));
 };
 
 /**
@@ -187,9 +201,9 @@ const onConnected = (resolve) => {
 const onSocketMessage = async (buffer) => {
   const packet = JSON.parse(buffer.toString());
   const {
-    id, from, replyId, topic, message = {},
+    replyId, topic, message = {},
   } = packet;
-  log.debug(`<< ${from}:${topic} ${JSON.stringify(message)} (${id}/${replyId})`);
+  log.debug(`<< ${formatPacket(packet)}`);
 
   // Did we request this message response? Resolve the send()!
   if (replyId && pending[replyId]) {
@@ -279,7 +293,7 @@ const disconnect = () => {
  * @returns {Promise<object>} Response message data.
  */
 const send = ({
-  to, from, topic, message,
+  to, from, topic, message = {},
 }) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
@@ -292,8 +306,7 @@ const send = ({
     topic,
     message,
   };
-  log.debug(`>> ${to}:${topic} ${JSON.stringify(message)} (${id})`);
-  socket.send(stringifyPacket(packet));
+  socket.send(stringifyPacket('>>', packet));
 
   // Allow awaiting the response - handled in onSocketMessage
   return new Promise((resolve, reject) => {
@@ -334,4 +347,5 @@ module.exports = {
   reply,
   registerTopic,
   validatePacket,
+  formatPacket,
 };
