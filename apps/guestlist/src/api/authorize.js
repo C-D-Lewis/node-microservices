@@ -8,7 +8,7 @@ const { ATTIC_KEY_USERS } = require('../constants');
  * @returns {object} Response data.
  */
 const handleAuthorizePacket = async (packet) => {
-  const { auth, to, topic } = packet.message;
+  const { token, to, topic } = packet.message;
 
   // Fetch user list
   const list = (await attic.exists(ATTIC_KEY_USERS))
@@ -16,7 +16,7 @@ const handleAuthorizePacket = async (packet) => {
     : [];
 
   // Check it exists
-  const user = list.find((p) => p.token === auth);
+  const user = list.find((p) => p.token === token);
   if (!user) return { error: 'User does not exist' };
 
   // Check apps

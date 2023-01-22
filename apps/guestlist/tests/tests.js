@@ -90,7 +90,7 @@ describe('API', () => {
         message: {
           to: 'attic',
           topic: 'get',
-          auth: token,
+          token,
         },
       });
 
@@ -105,7 +105,7 @@ describe('API', () => {
           message: {
             to: 'attic',
             topic: 'get',
-            auth: 'badtokenbadbadtoken',
+            token: 'badtokenbadbadtoken',
           },
         });
       } catch (e) {
@@ -121,7 +121,7 @@ describe('API', () => {
           message: {
             to: 'fakeapp',
             topic: 'off',
-            auth: token,
+            token,
           },
         });
       } catch (e) {
@@ -137,7 +137,7 @@ describe('API', () => {
           message: {
             to: 'attic',
             topic: 'set',
-            auth: token,
+            token,
           },
         });
       } catch (e) {

@@ -1,6 +1,22 @@
 /* eslint-disable no-param-reassign */
 const WebSocket = require('ws');
-const { log, bifrost } = require('../node-common')(['log', 'bifrost']);
+const { config, log, bifrost } = require('../node-common')(['config', 'log', 'bifrost']);
+
+const {
+  OPTIONS: { AUTH_TOKENS },
+} = config.withSchema('server.js', {
+  required: ['OPTIONS'],
+  properties: {
+    OPTIONS: {
+      properties: {
+        AUTH_TOKENS: {
+          type: 'boolean',
+          description: 'Whether to verify auth tokens when not from localhost',
+        },
+      },
+    },
+  },
+});
 
 const {
   PORT,
@@ -41,7 +57,7 @@ const handlePacket = (packet) => {
  * @param {object} client - Client that sent the message.
  * @param {ArrayBuffer} data - The message.
  */
-const onClientMessage = (client, data) => {
+const onClientMessage = async (client, data) => {
   // Ensure it has the right data
   let packet;
   try {
@@ -52,10 +68,38 @@ const onClientMessage = (client, data) => {
     return;
   }
 
-  const { id, from, topic } = packet;
+  const {
+    id, to, from, topic, token,
+  } = packet;
   log.debug(`REC ${bifrost.formatPacket(packet)}`);
 
-  // TODO guestlist integration for auth
+  // If not from localhost, token required?
+  const { ip: remoteIp = '' } = client;
+  const shouldCheckToken = AUTH_TOKENS && !['127.0.0.1', 'localhost'].includes(remoteIp);
+  if (shouldCheckToken) {
+    log.debug(`Origin: ${remoteIp} requires guestlist check`);
+
+    // No token when one was expected
+    if (!token) {
+      await bifrost.reply(packet, { error: 'No authorization provided' });
+      return;
+    }
+
+    // Verify the token provided
+    const { error } = await bifrost.send({
+      to: 'guestlist',
+      topic: 'authorize',
+      message: {
+        to,
+        topic,
+        token,
+      },
+    });
+    if (error) {
+      await bifrost.reply(packet, { error: `Authorization check failed: ${error}` });
+      return;
+    }
+  }
 
   // Client declaring app name (unique combination)
   if (topic === TOPIC_WHOAMI) {
@@ -81,10 +125,14 @@ const onClientMessage = (client, data) => {
  * When a new client connects.
  *
  * @param {object} client - The newly connected client.
+ * @param {object} req - Request object.
  */
-const onNewClient = (client) => {
-  log.info('New client connected');
+const onNewClient = (client, req) => {
+  const ip = req.socket.remoteAddress.split(':').pop();
+  client.ip = ip;
   clients.push(client);
+  log.debug(req.socket.remoteAddress);
+  log.info(`New client connected from ${ip}`);
 
   client.on('message', (data) => onClientMessage(client, data));
   client.on('close', () => {

@@ -3,7 +3,8 @@
     "FLEET": {
       "HOST": "",
       "DEVICE_TYPE": ""
-    }
+    },
+    "AUTH_TOKENS": false
   },
   "LOG": {
     "APP_NAME": "bifrost"

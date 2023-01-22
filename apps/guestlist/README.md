@@ -55,7 +55,7 @@ password:
   "topic": "create",
   "message": {
     "name": "BacklightUser",
-    "apps": ["ambience"],
+    "apps": ["visuals"],
     "topics": ["set", "fade", "off"],
     "adminPassword": "MyAdminPassword",
   }
@@ -71,7 +71,7 @@ at this one time**:
   "message": {
     "id": "165dacd16a253b28",
     "name": "BacklightUser",
-    "apps": ["ambience"],
+    "apps": ["visuals"],
     "topics": ["set","fade","off"],
     "token": "b6aacf6f46dbdd24659b537f7754506eb4aa5638",
     "createdAt": 1586599862140
@@ -87,9 +87,9 @@ by including their token as the `auth` field in a `conduit` request:
 
 ```json
 {
-  "to": "ambience",
+  "to": "visuals",
   "topic": "off",
-  "auth": "b6aacf6f46dbdd24659b537f7754506eb4aa5638"
+  "token": "b6aacf6f46dbdd24659b537f7754506eb4aa5638"
 }
 ```
 

@@ -56,6 +56,7 @@ const PACKET_SCHEMA = {
     topic: { type: 'string' },
     message: { type: 'object' },
     error: { type: 'string' },
+    token: { type: 'string' },
   },
 };
 

@@ -33,11 +33,11 @@ const DELETE_MESSAGE_SCHEMA = {
 /** Schema for messages to get a user */
 const AUTHORIZE_MESSAGE_SCHEMA = {
   additionalProperties: false,
-  required: ['to', 'topic', 'auth'],
+  required: ['to', 'topic', 'token'],
   properties: {
     to: { type: 'string' },
     topic: { type: 'string' },
-    auth: { type: 'string' },
+    token: { type: 'string' },
   },
 };
 
