@@ -9,9 +9,8 @@
   "LOG": {
     "APP_NAME": "concierge"
   },
-  "CONDUIT": {
-    "HOST": "localhost",
-    "APP": "concierge"
+  "BIFROST": {
+    "SERVER": "localhost"
   },
   "SERVER": {
     "PORT": 4665

@@ -1,25 +1,24 @@
-const { attic, conduit } = require('../node-common')(['attic', 'conduit']);
+const { attic } = require('../node-common')(['attic']);
 const { ATTIC_KEY_WEBHOOKS } = require('../modules/webhooks');
 
 /**
  * Handle a 'remove' packet.
  *
  * @param {object} packet - The conduit packet request.
- * @param {object} res - Express response object.
+ * @returns {object} Response message data.
  */
-const handleRemovePacket = async (packet, res) => {
+const handleRemovePacket = async (packet) => {
   const hooks = await attic.get(ATTIC_KEY_WEBHOOKS);
   const found = hooks.find((p) => p.url === packet.message.url);
   if (!found) {
-    conduit.respond(res, { status: 404, error: 'Not Found' });
-    return;
+    return { error: 'Not Found' };
   }
 
+  // Remove it
   hooks.splice(hooks.indexOf(found), 1);
-
   await attic.set(ATTIC_KEY_WEBHOOKS, hooks);
-  // Note - Can't be 204 otherwise the body gets discarded
-  conduit.respond(res, { status: 200, message: { content: 'Removed' } });
+
+  return { content: 'Removed' };
 };
 
 module.exports = handleRemovePacket;

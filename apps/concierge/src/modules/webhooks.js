@@ -1,6 +1,6 @@
 const {
-  attic, conduit, log, server,
-} = require('../node-common')(['attic', 'conduit', 'log', 'server']);
+  attic, bifrost, log, server,
+} = require('../node-common')(['attic', 'bifrost', 'log', 'server']);
 
 /** Attic key for webhook list */
 const ATTIC_KEY_WEBHOOKS = 'webhooks';
@@ -28,6 +28,7 @@ const WEBHOOK_SCHEMA = {
  * @param {object} res - Response object.
  */
 const handleRequest = async (req, res) => {
+  // If no hooks, nothing to do
   const hooks = await attic.get(ATTIC_KEY_WEBHOOKS);
   if (!hooks.length) {
     res.status(404).json({ error: 'No hooks exist yet' });
@@ -49,9 +50,10 @@ const handleRequest = async (req, res) => {
     // Forward the packet's static message and the webhook query to trigger another service
     packet.message = packet.message || {};
     packet.message.webhookQuery = query;
+    packet.id = bifrost.generateId();
 
     log.info(`Forwarding webhook to ${packet.to}`);
-    await conduit.send(packet);
+    await bifrost.send(packet);
   } else {
     // Just save the query in local Attic for use asynchronously
     await attic.set(url, query);

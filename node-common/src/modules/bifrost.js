@@ -110,6 +110,13 @@ const stringifyPacket = (prefix, packet) => {
 };
 
 /**
+ * Generate a message ID.
+ *
+ * @returns {string} Message ID.
+ */
+const generateId = () => `${Date.now() + Math.round(Math.random() * 10000)}`;
+
+/**
  * Stop heartbeats.
  *
  * @returns {void}
@@ -298,7 +305,7 @@ const send = ({
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
   // Send this message to the chosen app
-  const id = `${Date.now() + Math.round(Math.random() * 10000)}`;
+  const id = generateId();
   const packet = {
     id,
     to,
@@ -348,4 +355,5 @@ module.exports = {
   registerTopic,
   validatePacket,
   formatPacket,
+  generateId,
 };

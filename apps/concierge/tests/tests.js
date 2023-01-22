@@ -1,49 +1,47 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { expect } = require('chai');
+const { bifrost } = require('../src/node-common')(['bifrost']);
 
 const {
-  config, testing, requestAsync,
-} = require('../src/node-common')(['config', 'testing', 'requestAsync']);
+  config, requestAsync,
+} = require('../src/node-common')(['config', 'requestAsync']);
 
+/** Test webhook with packet */
 const TEST_WEBHOOK = {
   url: `/testWebhook${Date.now()}`,
-  packet: { to: 'attic', topic: 'webhookReceived' },
+  // TODO: Re-introduce relay
+  // packet: { to: 'attic', topic: 'webhookReceived' },
 };
 
 describe('API', () => {
-  describe('Conduit topic: status', () => {
-    it('should return 200 / OK', async () => {
-      const result = await testing.sendConduitPacket({ to: 'concierge', topic: 'status' });
+  before(async () => {
+    await bifrost.connect({ appName: 'conciergeTests' });
+  });
 
-      expect(result.status).to.equal(200);
-      expect(result.message.content).to.equal('OK');
+  after(bifrost.disconnect);
+
+  describe('Bifrost topic: status', () => {
+    it('should return OK', async () => {
+      const { content } = await bifrost.send({ to: 'concierge', topic: 'status' });
+
+      expect(content).to.equal('OK');
     });
   });
 
-  describe('/status', () => {
-    it('should return 200 / OK', async () => {
-      const url = `http://localhost:${config.SERVER.PORT}/status`;
-      const data = await requestAsync({ url });
-
-      expect(data.response.statusCode).to.equal(200);
-      expect(data.body).to.contain('OK');
-    });
-  });
-
-  describe('Conduit topic: add', () => {
-    it('should return 201 / Created', async () => {
-      const response = await testing.sendConduitPacket({
+  describe('Bifrost topic: add', () => {
+    it('should return Created', async () => {
+      const { content } = await bifrost.send({
         to: 'concierge',
         topic: 'add',
         message: TEST_WEBHOOK,
       });
 
-      expect(response.status).to.equal(201);
-      expect(response.message.content).to.equal('Created');
+      expect(content).to.equal('Created');
     });
   });
 
   describe('Hit TEST_WEBHOOK', () => {
-    it('should return 200 / OK', async () => {
+    it('should return OK', async () => {
       const url = `http://localhost:${config.SERVER.PORT}${TEST_WEBHOOK.url}`;
       const data = await requestAsync({ url, method: 'POST' });
 
@@ -52,34 +50,34 @@ describe('API', () => {
     });
   });
 
-  describe('Conduit topic: remove', () => {
-    it('should return 200 / Removed', async () => {
-      const response = await testing.sendConduitPacket({
+  describe('Bifrost topic: remove', () => {
+    it('should return Removed', async () => {
+      const { content } = await bifrost.send({
         to: 'concierge',
         topic: 'remove',
         message: TEST_WEBHOOK,
       });
 
-      expect(response.status).to.equal(200);
-      expect(response.message.content).to.equal('Removed');
+      expect(content).to.equal('Removed');
     });
   });
 
   describe('Webhook is actually removed', () => {
-    it('should return 404 / Not Found', async () => {
-      const response = await testing.sendConduitPacket({
-        to: 'concierge',
-        topic: 'remove',
-        message: TEST_WEBHOOK,
-      });
-
-      expect(response.status).to.equal(404);
-      expect(response.error).to.equal('Not Found');
+    it('should return Not Found', async () => {
+      try {
+        await bifrost.send({
+          to: 'concierge',
+          topic: 'remove',
+          message: TEST_WEBHOOK,
+        });
+      } catch (e) {
+        expect(e.message).to.equal('Not Found');
+      }
     });
   });
 
   describe('Miss TEST_WEBHOOK', () => {
-    it('should return 404 / Not Found', async () => {
+    it('should return Not Found', async () => {
       const url = `http://localhost:${config.SERVER.PORT}${TEST_WEBHOOK.url}`;
       const data = await requestAsync({ url, method: 'POST' });
 

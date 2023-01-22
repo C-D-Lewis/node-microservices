@@ -1,6 +1,6 @@
 const {
-  attic, conduit, log, schema,
-} = require('../node-common')(['attic', 'conduit', 'log', 'schema']);
+  attic, log, schema,
+} = require('../node-common')(['attic', 'log', 'schema']);
 const { ATTIC_KEY_WEBHOOKS, WEBHOOK_SCHEMA } = require('../modules/webhooks');
 
 /**
@@ -11,13 +11,15 @@ const { ATTIC_KEY_WEBHOOKS, WEBHOOK_SCHEMA } = require('../modules/webhooks');
 const handlePacketWebhook = async (message) => {
   const hooks = await attic.get(ATTIC_KEY_WEBHOOKS);
   const found = hooks.find((p) => p.url === message.url);
+
+  // Add it, else update it
   if (!found) {
     hooks.push(message);
-    log.info(`Added new webhook for url ${message.url}`);
+    log.info(`Added new webhook for ${message.url}`);
   } else {
     found.url = message.url;
     found.packet = message.packet;
-    log.info(`Updated webhook for url ${message.url}`);
+    log.info(`Updated webhook for ${message.url}`);
   }
 
   await attic.set(ATTIC_KEY_WEBHOOKS, hooks);
@@ -27,19 +29,18 @@ const handlePacketWebhook = async (message) => {
  * Handle a 'add' packet.
  *
  * @param {object} packet - The conduit packet request.
- * @param {object} res - Express response object.
+ * @returns {object} Response messsage data.
  */
-const handleAddPacket = async (packet, res) => {
+const handleAddPacket = async (packet) => {
   const { message } = packet;
   if (!schema(message, WEBHOOK_SCHEMA)) {
     log.error(`Invalid webhook: ${JSON.stringify(message)}`);
-    conduit.respond(res, { status: 400, error: 'Bad Request' });
-    return;
+    return { error: 'Bad Request' };
   }
 
   await handlePacketWebhook(message);
 
-  conduit.respond(res, { status: 201, message: { content: 'Created' } });
+  return { content: 'Created' };
 };
 
 module.exports = {

@@ -1,6 +1,6 @@
 const {
-  attic, config, conduit, log,
-} = require('./node-common')(['attic', 'config', 'conduit', 'log']);
+  attic, config, bifrost, log,
+} = require('./node-common')(['attic', 'config', 'bifrost', 'log']);
 const api = require('./modules/api');
 const { handlePacketWebhook } = require('./api/add');
 const { ATTIC_KEY_WEBHOOKS, setupHandler } = require('./modules/webhooks');
@@ -56,9 +56,11 @@ const initEnsuredWebhooks = async () => {
 const main = async () => {
   log.begin();
 
+  await bifrost.connect();
+
   try {
-    await conduit.register();
-    await conduit.send({ to: 'attic', topic: 'status' });
+    // Ensure attic is available as the webhook store
+    await bifrost.send({ to: 'attic', topic: 'status' });
   } catch (e) {
     log.error(e);
     log.fatal('Unable to reach attic!');

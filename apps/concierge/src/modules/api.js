@@ -1,14 +1,12 @@
-const { conduit } = require('../node-common')(['conduit']);
+const { bifrost } = require('../node-common')(['bifrost']);
 const { WEBHOOK_SCHEMA } = require('./webhooks');
 
 /**
  * Register Conduit topic handlers.
  */
 const setup = () => {
-  conduit.on('add', require('../api/add').handleAddPacket, WEBHOOK_SCHEMA);
-  conduit.on('remove', require('../api/remove'), WEBHOOK_SCHEMA);
+  bifrost.registerTopic('add', require('../api/add').handleAddPacket, WEBHOOK_SCHEMA);
+  bifrost.registerTopic('remove', require('../api/remove'), WEBHOOK_SCHEMA);
 };
 
-module.exports = {
-  setup,
-};
+module.exports = { setup };
