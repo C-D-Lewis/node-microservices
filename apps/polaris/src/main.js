@@ -1,4 +1,4 @@
-const { log, conduit } = require('./node-common')(['log', 'conduit']);
+const { log, bifrost } = require('./node-common')(['log', 'bifrost']);
 const ipMonitor = require('./modules/ipMonitor');
 
 /**
@@ -7,9 +7,8 @@ const ipMonitor = require('./modules/ipMonitor');
 const main = async () => {
   log.begin();
 
-  await conduit.register();
+  await bifrost.connect();
 
-  // Setup ipMonitor
   ipMonitor.start();
 };
 

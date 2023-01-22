@@ -12,8 +12,7 @@
   "LOG": {
     "APP_NAME": "polaris"
   },
-  "CONDUIT": {
-    "HOST": "localhost",
-    "APP": "polaris"
+  "BIFROST": {
+    "SERVER": "localhost"
   }
 }
