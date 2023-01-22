@@ -14,7 +14,7 @@ const handleBlinkPacket = (packet) => {
     }
   }
 
-  return { message: { content: 'OK' } };
+  return { content: 'OK' };
 };
 
 module.exports = handleBlinkPacket;

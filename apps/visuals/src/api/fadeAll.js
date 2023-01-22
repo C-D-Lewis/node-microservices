@@ -17,7 +17,7 @@ const handleFadeAllPacket = async (packet) => {
     setTimeout(() => leds.setAll(to), OFF_CONFIRMATION_MS);
   }
 
-  return { message: { content: 'OK' } };
+  return { content: 'OK' };
 };
 
 module.exports = handleFadeAllPacket;

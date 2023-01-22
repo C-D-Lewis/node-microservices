@@ -9,7 +9,7 @@ const handleOffPacket = async () => {
 
   await leds.setAll([0, 0, 0]);
 
-  return { message: { content: 'OK' } };
+  return { content: 'OK' };
 };
 
 module.exports = handleOffPacket;

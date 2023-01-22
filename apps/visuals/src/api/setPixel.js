@@ -14,7 +14,7 @@ const handleSetPixelPacket = (packet) => {
     }
   }
 
-  return { message: { content: 'OK' } };
+  return { content: 'OK' };
 };
 
 module.exports = handleSetPixelPacket;

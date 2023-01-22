@@ -48,7 +48,7 @@ const handleDemoPacket = async () => {
   handles.add('demo', handle);
 
   nextDemoColor();
-  return { message: { content: 'OK' } };
+  return { content: 'OK' };
 };
 
 module.exports = handleDemoPacket;

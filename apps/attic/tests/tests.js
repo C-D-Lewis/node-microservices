@@ -12,7 +12,7 @@ describe('API', () => {
   });
 
   describe('Bifrost topic: status', () => {
-    it('should return 200 / OK', async () => {
+    it('should return OK', async () => {
       const { content } = await bifrost.send({ to: 'attic', topic: 'status' });
 
       expect(content).to.equal('OK');
@@ -20,7 +20,7 @@ describe('API', () => {
   });
 
   describe('Bifrost topic: set', () => {
-    it('should return 200 / OK', async () => {
+    it('should return OK', async () => {
       const { content } = await bifrost.send({
         to: 'attic',
         topic: 'set',
@@ -36,7 +36,7 @@ describe('API', () => {
   });
 
   describe('Bifrost topic: get', () => {
-    it('should return 200 / TEST_VALUE', async () => {
+    it('should return TEST_VALUE', async () => {
       const {
         app, key, value, timestamp,
       } = await bifrost.send({
@@ -56,7 +56,7 @@ describe('API', () => {
   });
 
   describe('Bifrost topic: increment', () => {
-    it('should return 200 / OK, then return 200 / TEST_VALUE + 1', async () => {
+    it('should return OK, then return TEST_VALUE + 1', async () => {
       let response = await bifrost.send({
         to: 'attic',
         topic: 'increment',

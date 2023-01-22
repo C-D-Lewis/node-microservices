@@ -7,7 +7,7 @@ const { startAnimation } = require('../modules/spotify');
 const handleSpotifyPacket = async () => {
   try {
     const rgbArr = await startAnimation();
-    return { message: { content: rgbArr } };
+    return { content: rgbArr };
   } catch (e) {
     log.error(e);
     return { error: e.message };

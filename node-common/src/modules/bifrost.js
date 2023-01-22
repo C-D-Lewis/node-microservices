@@ -241,7 +241,7 @@ const onSocketMessage = async (buffer) => {
  */
 const connect = async ({ appName, server = SERVER } = {}) => new Promise((resolve) => {
   if (connected) {
-    log.error('bifrost.js: Warning: Already connected to bifrost');
+    log.error('bifrost.js: Already connected to bifrost');
     return;
   }
 

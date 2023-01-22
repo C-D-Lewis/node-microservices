@@ -120,6 +120,7 @@ const updateRemoteAuthCode = async () => {
     log.error(e);
 
     // Reconnect locally again
+    bifrost.disconnect();
     await bifrost.connect();
 
     // Propagate error

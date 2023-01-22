@@ -10,7 +10,7 @@ const handleSetTextPacket = (packet) => {
   const { lines } = packet.message;
   textDisplay.setLines(lines);
 
-  return { message: { content: 'OK' } };
+  return { content: 'OK' };
 };
 
 module.exports = handleSetTextPacket;

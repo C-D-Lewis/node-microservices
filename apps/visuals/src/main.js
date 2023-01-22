@@ -1,5 +1,5 @@
 const { log } = require('./node-common')(['log']);
-const { createSpotifyClient } = require('./modules/spotifyAuth');
+const { createSpotifyClient, buildAuthURL } = require('./modules/spotifyAuth');
 const api = require('./modules/api');
 
 /**
@@ -9,12 +9,15 @@ const main = async () => {
   log.begin();
   await api.setup();
 
-  try {
-    await createSpotifyClient();
-  } catch (e) {
-    log.error('Failed to createSpotifyClient, credentials may be invalid');
-    log.error(e);
-  }
+  setTimeout(async () => {
+    try {
+      await createSpotifyClient();
+    } catch (e) {
+      log.error('Failed to createSpotifyClient, credentials may be invalid');
+      log.error(e);
+      log.info(`Go to ${buildAuthURL()}`);
+    }
+  }, 5000);
 };
 
 main();

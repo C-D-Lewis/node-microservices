@@ -12,7 +12,7 @@ const handleSetAllPacket = async (packet) => {
   const { all } = packet.message;
   await leds.setAll(all);
 
-  return { message: { content: 'OK' } };
+  return { content: 'OK' };
 };
 
 module.exports = handleSetAllPacket;
