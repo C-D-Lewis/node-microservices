@@ -12,9 +12,9 @@ let password;
  * Read the password file from disk.
  * This authorizes all 'create' and 'delete' requests.
  */
-const waitForFile = () => {
+const watchForFile = () => {
   if (!existsSync(PASSWORD_FILE)) {
-    setTimeout(waitForFile, INTERVAL_MS);
+    setTimeout(watchForFile, INTERVAL_MS);
     return;
   }
 
@@ -25,11 +25,11 @@ const waitForFile = () => {
 /**
  * Return the read password, if any.
  *
- * @returns {string} password, if any read from disk.s
+ * @returns {string} password, if any read from disk.
  */
 const get = () => password;
 
 module.exports = {
-  waitForFile,
+  watchForFile,
   get,
 };

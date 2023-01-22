@@ -1,13 +1,13 @@
-const { conduit, attic } = require('../node-common')(['conduit', 'attic']);
+const { attic } = require('../node-common')(['attic']);
 const { ATTIC_KEY_USERS } = require('../constants');
 
 /**
  * Handle a 'authorize' topic packet.
  *
  * @param {object} packet - The conduit packet request.
- * @param {object} res - Express response object.
+ * @returns {object} Response data.
  */
-const handleAuthorizePacket = async (packet, res) => {
+const handleAuthorizePacket = async (packet) => {
   const { auth, to, topic } = packet.message;
 
   // Fetch user list
@@ -17,25 +17,20 @@ const handleAuthorizePacket = async (packet, res) => {
 
   // Check it exists
   const user = list.find((p) => p.token === auth);
-  if (!user) {
-    conduit.respond(res, { status: 404, error: 'User does not exist' });
-    return;
-  }
+  if (!user) return { error: 'User does not exist' };
 
   // Check apps
   if (!(user.apps.includes(to) || user.apps.includes('all'))) {
-    conduit.respond(res, { status: 401, error: `User is not permitted for app ${to}` });
-    return;
+    return { error: `User is not permitted for app ${to}` };
   }
 
   // Check topics
   if (!(user.topics.includes(topic) || user.topics.includes('all'))) {
-    conduit.respond(res, { status: 401, error: `User is not permitted for topic ${topic}` });
-    return;
+    return { error: `User is not permitted for topic ${topic}` };
   }
 
   // Respond
-  conduit.respond(res, { status: 200, message: { content: 'OK' } });
+  return { content: 'OK' };
 };
 
 module.exports = handleAuthorizePacket;

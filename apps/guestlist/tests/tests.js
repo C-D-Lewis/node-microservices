@@ -1,5 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { expect } = require('chai');
-const { testing } = require('../src/node-common')(['testing']);
+const { bifrost } = require('../src/node-common')(['bifrost']);
 const adminPassword = require('../src/modules/adminPassword');
 
 /** Test user name */
@@ -11,78 +12,79 @@ let token;
 describe('API', () => {
   before(async () => {
     console.log('Waiting for read of adminPassword...');
-    adminPassword.waitForFile();
+    adminPassword.watchForFile();
     while (!inputPassword) {
       inputPassword = adminPassword.get();
     }
 
+    await bifrost.connect({ appName: 'guestlistTests' });
+
     // Delete test user if they exist
-    await testing.sendConduitPacket({
-      to: 'guestlist',
-      topic: 'delete',
-      message: {
-        name: TEST_USER_NAME,
-        adminPassword: inputPassword,
-      },
+    try {
+      await bifrost.send({
+        to: 'guestlist',
+        topic: 'delete',
+        message: {
+          name: TEST_USER_NAME,
+          adminPassword: inputPassword,
+        },
+      });
+    } catch (e) { /* not existing */ }
+  });
+
+  after(bifrost.disconnect);
+
+  describe('Bifrost topic: status', () => {
+    it('should return OK', async () => {
+      const { content } = await bifrost.send({ to: 'guestlist', topic: 'status' });
+
+      expect(content).to.equal('OK');
     });
   });
 
-  describe('Conduit topic: status', () => {
-    it('should return 200 / OK', async () => {
-      const response = await testing.sendConduitPacket({ to: 'guestlist', topic: 'status' });
-
-      expect(response.message.content).to.equal('OK');
-      expect(response.status).to.equal(200);
-    });
-  });
-
-  describe('Conduit topic: create', () => {
-    it('should return 201 / User', async () => {
+  describe('Bifrost topic: create', () => {
+    it('should return User', async () => {
       const payload = {
         name: TEST_USER_NAME,
         apps: ['attic'],
         topics: ['get'],
         adminPassword: inputPassword,
       };
-      const response = await testing.sendConduitPacket({
+      const message = await bifrost.send({
         to: 'guestlist',
         topic: 'create',
         message: payload,
       });
 
-      const { status, message } = response;
       expect(message.name).to.equal(payload.name);
       expect(message.password).to.equal(undefined);
       expect(message.apps).to.deep.equal(payload.apps);
       expect(message.topics).to.deep.equal(payload.topics);
       expect(message.token).to.be.a('string');
-      expect(status).to.equal(201);
 
       token = message.token;
     });
   });
 
-  describe('Conduit topic: get', () => {
-    it('should return 200 / User', async () => {
+  describe('Bifrost topic: get', () => {
+    it('should return User', async () => {
       const payload = { name: TEST_USER_NAME };
-      const response = await testing.sendConduitPacket({
+      const message = await bifrost.send({
         to: 'guestlist',
         topic: 'get',
         message: payload,
       });
 
-      const { status, message } = response;
       expect(message.name).to.equal(payload.name);
       expect(message.token).to.equal(undefined);
       expect(message.apps).to.be.an('array');
       expect(message.topics).to.be.an('array');
-      expect(status).to.equal(200);
     });
   });
 
-  describe('Conduit topic: authorize', () => {
-    it('should return 200 / OK', async () => {
-      const response = await testing.sendConduitPacket({
+  describe('Bifrost topic: authorize', () => {
+    it('should return OK', async () => {
+      const { content } = await bifrost.send({
         to: 'guestlist',
         topic: 'authorize',
         message: {
@@ -92,72 +94,68 @@ describe('API', () => {
         },
       });
 
-      const { status, message } = response;
-      expect(message.content).to.equal('OK');
-      expect(status).to.equal(200);
+      expect(content).to.equal('OK');
     });
 
-    it('should return 404 / Not found', async () => {
-      const response = await testing.sendConduitPacket({
-        to: 'guestlist',
-        topic: 'authorize',
-        message: {
-          to: 'attic',
-          topic: 'get',
-          auth: 'badtokenbadbadtoken',
-        },
-      });
-
-      const { status, error } = response;
-      expect(error).to.equal('User does not exist');
-      expect(status).to.equal(404);
+    it('should return Not found', async () => {
+      try {
+        await bifrost.send({
+          to: 'guestlist',
+          topic: 'authorize',
+          message: {
+            to: 'attic',
+            topic: 'get',
+            auth: 'badtokenbadbadtoken',
+          },
+        });
+      } catch (e) {
+        expect(e.message).to.equal('User does not exist');
+      }
     });
 
-    it('should return 401 / Not Authorized for invalid app', async () => {
-      const response = await testing.sendConduitPacket({
-        to: 'guestlist',
-        topic: 'authorize',
-        message: {
-          to: 'ambience',
-          topic: 'off',
-          auth: token,
-        },
-      });
-
-      const { status, error } = response;
-      expect(error).to.equal('User is not permitted for app ambience');
-      expect(status).to.equal(401);
+    it('should return Not Authorized for invalid app', async () => {
+      try {
+        await bifrost.send({
+          to: 'guestlist',
+          topic: 'authorize',
+          message: {
+            to: 'fakeapp',
+            topic: 'off',
+            auth: token,
+          },
+        });
+      } catch (e) {
+        expect(e.message).to.equal('User is not permitted for app fakeapp');
+      }
     });
 
-    it('should return 401 / Not Authorized for invalid topic', async () => {
-      const response = await testing.sendConduitPacket({
-        to: 'guestlist',
-        topic: 'authorize',
-        message: {
-          to: 'attic',
-          topic: 'set',
-          auth: token,
-        },
-      });
-
-      const { status, error } = response;
-      expect(error).to.equal('User is not permitted for topic set');
-      expect(status).to.equal(401);
+    it('should return Not Authorized for invalid topic', async () => {
+      try {
+        await bifrost.send({
+          to: 'guestlist',
+          topic: 'authorize',
+          message: {
+            to: 'attic',
+            topic: 'set',
+            auth: token,
+          },
+        });
+      } catch (e) {
+        expect(e.message).to.equal('User is not permitted for topic set');
+      }
     });
   });
 
-  describe('Conduit topic: delete', () => {
-    it('should return 200 / OK', async () => {
+  describe('Bifrost topic: delete', () => {
+    it('should return OK', async () => {
       const payload = { name: TEST_USER_NAME, adminPassword: inputPassword };
-      const response = await testing.sendConduitPacket({
+      const { content } = await bifrost.send({
         to: 'guestlist',
         topic: 'delete',
         message: payload,
       });
 
-      const { status, message } = response;
-      expect(message.content).to.equal('Deleted');
-      expect(status).to.equal(200);
+      expect(content).to.equal('Deleted');
     });
   });
 });

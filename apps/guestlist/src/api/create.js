@@ -1,5 +1,5 @@
 const Chance = require('chance');
-const { conduit, attic } = require('../node-common')(['conduit', 'attic']);
+const { attic } = require('../node-common')(['attic']);
 const { ATTIC_KEY_USERS } = require('../constants');
 const adminPassword = require('../modules/adminPassword');
 
@@ -15,9 +15,9 @@ const chance = new Chance();
  * Requires 'auth' Conduit field containing 'adminPassword'.
  *
  * @param {object} packet - The conduit packet request.
- * @param {object} res - Express response object.
+ @returns {object} Response data.
  */
-const handleCreatePacket = async (packet, res) => {
+const handleCreatePacket = async (packet) => {
   const { message } = packet;
   const {
     name, apps, topics, adminPassword: inputPassword,
@@ -25,22 +25,10 @@ const handleCreatePacket = async (packet, res) => {
 
   // Only the administrator can create users (for now)
   const password = adminPassword.get();
-  if (!password) {
-    conduit.respond(res, { status: 500, error: 'Authorizing app not authorized' });
-    return;
-  }
-  if (!inputPassword || inputPassword !== password) {
-    conduit.respond(res, { status: 401, error: 'Unauthorized' });
-    return;
-  }
-  if (RESERVED_NAMES.includes(name)) {
-    conduit.respond(res, { status: 409, error: 'Cannot use reserved name' });
-    return;
-  }
-  if (name.includes(' ')) {
-    conduit.respond(res, { status: 400, error: 'Name may not contain spaces' });
-    return;
-  }
+  if (!password) return { error: 'Authorizing app not authorized' };
+  if (!inputPassword || inputPassword !== password) return { error: 'Unauthorized' };
+  if (RESERVED_NAMES.includes(name)) return { error: 'Cannot use reserved name' };
+  if (name.includes(' ')) return { error: 'Name may not contain spaces' };
 
   // Fetch user list
   const list = (await attic.exists(ATTIC_KEY_USERS))
@@ -48,10 +36,7 @@ const handleCreatePacket = async (packet, res) => {
     : [];
 
   const existing = list.find((p) => p.name === name);
-  if (existing) {
-    conduit.respond(res, { status: 409, error: 'User already exists' });
-    return;
-  }
+  if (existing) return { error: 'User already exists' };
 
   // Save it
   const user = {
@@ -66,7 +51,7 @@ const handleCreatePacket = async (packet, res) => {
   await attic.set(ATTIC_KEY_USERS, list);
 
   // Respond
-  conduit.respond(res, { status: 201, message: user });
+  return user;
 };
 
 module.exports = handleCreatePacket;

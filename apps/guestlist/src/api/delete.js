@@ -1,4 +1,4 @@
-const { conduit, attic } = require('../node-common')(['conduit', 'attic']);
+const { attic } = require('../node-common')(['attic']);
 const { ATTIC_KEY_USERS } = require('../constants');
 const adminPassword = require('../modules/adminPassword');
 
@@ -6,22 +6,16 @@ const adminPassword = require('../modules/adminPassword');
  * Handle a 'delete' topic packet.
  *
  * @param {object} packet - The conduit packet request.
- * @param {object} res - Express response object.
+ * @returns {object} Response data.
  */
-const handleDeletePacket = async (packet, res) => {
+const handleDeletePacket = async (packet) => {
   const { message } = packet;
   const { name, adminPassword: inputPassword } = message;
 
   // Only the administrator can delete users (for now)
   const password = adminPassword.get();
-  if (!password) {
-    conduit.respond(res, { status: 500, error: 'Authorizing app not authorized' });
-    return;
-  }
-  if (!inputPassword || inputPassword !== password) {
-    conduit.respond(res, { status: 401, error: 'Unauthorized' });
-    return;
-  }
+  if (!password) return { error: 'Authorizing app not authorized' };
+  if (!inputPassword || inputPassword !== password) return { error: 'Unauthorized' };
 
   // Fetch user list
   const list = (await attic.exists(ATTIC_KEY_USERS))
@@ -30,17 +24,14 @@ const handleDeletePacket = async (packet, res) => {
 
   // Find existing user
   const existing = list.find((p) => p.name === name);
-  if (!existing) {
-    conduit.respond(res, { status: 404, error: 'User does not exist' });
-    return;
-  }
+  if (!existing) return { error: 'User does not exist' };
 
   // Delete it
   list.splice(list.indexOf(existing), 1);
   await attic.set(ATTIC_KEY_USERS, list);
 
   // Respond
-  conduit.respond(res, { status: 200, message: { content: 'Deleted' } });
+  return { content: 'Deleted' };
 };
 
 module.exports = handleDeletePacket;

@@ -1,4 +1,4 @@
-const { conduit } = require('../node-common')(['conduit']);
+const { bifrost } = require('../node-common')(['bifrost']);
 
 /** Schema for messages to create users */
 const CREATE_MESSAGE_SCHEMA = {
@@ -60,15 +60,13 @@ const GET_ALL_MESSAGE_SCHEMA = {
  * Setup Conduit topic handlers.
  */
 const setup = async () => {
-  await conduit.register();
+  await bifrost.connect();
 
-  conduit.on('create', require('../api/create'), CREATE_MESSAGE_SCHEMA);
-  conduit.on('get', require('../api/get'), GET_MESSAGE_SCHEMA);
-  conduit.on('getAll', require('../api/getAll'), GET_ALL_MESSAGE_SCHEMA);
-  conduit.on('authorize', require('../api/authorize'), AUTHORIZE_MESSAGE_SCHEMA);
-  conduit.on('delete', require('../api/delete'), DELETE_MESSAGE_SCHEMA);
+  bifrost.registerTopic('create', require('../api/create'), CREATE_MESSAGE_SCHEMA);
+  bifrost.registerTopic('get', require('../api/get'), GET_MESSAGE_SCHEMA);
+  bifrost.registerTopic('getAll', require('../api/getAll'), GET_ALL_MESSAGE_SCHEMA);
+  bifrost.registerTopic('authorize', require('../api/authorize'), AUTHORIZE_MESSAGE_SCHEMA);
+  bifrost.registerTopic('delete', require('../api/delete'), DELETE_MESSAGE_SCHEMA);
 };
 
-module.exports = {
-  setup,
-};
+module.exports = { setup };

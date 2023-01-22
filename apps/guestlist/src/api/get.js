@@ -1,13 +1,13 @@
-const { conduit, attic } = require('../node-common')(['conduit', 'attic']);
+const { attic } = require('../node-common')(['attic']);
 const { ATTIC_KEY_USERS } = require('../constants');
 
 /**
  * Handle a 'get' topic packet.
  *
  * @param {object} packet - The conduit packet request.
- * @param {object} res - Express response object.
+ * @returns {object} Response data.
  */
-const handleGetPacket = async (packet, res) => {
+const handleGetPacket = async (packet) => {
   const { name } = packet.message;
 
   // Fetch user list
@@ -17,14 +17,11 @@ const handleGetPacket = async (packet, res) => {
 
   // Check it doesn't already exist
   const user = list.find((p) => p.name === name);
-  if (!user) {
-    conduit.respond(res, { status: 404, error: 'User does not exist' });
-    return;
-  }
+  if (!user) return { error: 'User does not exist' };
 
   // Respond without token (should be remembered by client)
   const { token, ...response } = user;
-  conduit.respond(res, { status: 200, message: response });
+  return response;
 };
 
 module.exports = handleGetPacket;

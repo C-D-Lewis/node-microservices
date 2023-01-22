@@ -2,8 +2,7 @@
   "LOG": {
     "APP_NAME": "guestlist"
   },
-  "CONDUIT": {
-    "HOST": "localhost",
-    "APP": "guestlist"
+  "BIFROST": {
+    "SERVER": "localhost"
   }
 }
