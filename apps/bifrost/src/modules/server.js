@@ -73,6 +73,22 @@ const onClientMessage = async (client, data) => {
   } = packet;
   log.debug(`REC ${bifrost.formatPacket(packet)}`);
 
+  // Client declaring app name (unique combination)
+  if (topic === TOPIC_WHOAMI) {
+    // Annotate this client
+    client.appName = from;
+    return;
+  }
+
+  // Ignore heartbeats received
+  if (topic === TOPIC_HEARTBEAT) return;
+
+  // Provide connected apps (and isn't the reply)
+  if (topic === TOPIC_KNOWN_APPS && id) {
+    bifrost.reply(packet, { apps: clients.map((p) => p.appName) });
+    return;
+  }
+
   // If not from localhost, token required?
   const { ip: remoteIp = '' } = client;
   const shouldCheckToken = AUTH_TOKENS && !['127.0.0.1', 'localhost'].includes(remoteIp);
@@ -99,22 +115,6 @@ const onClientMessage = async (client, data) => {
       await bifrost.reply(packet, { error: `Authorization check failed: ${error}` });
       return;
     }
-  }
-
-  // Client declaring app name (unique combination)
-  if (topic === TOPIC_WHOAMI) {
-    // Annotate this client
-    client.appName = from;
-    return;
-  }
-
-  // Ignore heartbeats received
-  if (topic === TOPIC_HEARTBEAT) return;
-
-  // Provide connected apps (and isn't the reply)
-  if (topic === TOPIC_KNOWN_APPS && id) {
-    bifrost.reply(packet, { apps: clients.map((p) => p.appName) });
-    return;
   }
 
   // Handle packet, getting it where it needs to go
