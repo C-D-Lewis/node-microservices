@@ -47,11 +47,11 @@
       },
       {
         "location": "code/discord-bot-norren",
-        "start": "$(which node) src/index.js &"
+        "start": "/home/pi/.nvm/versions/node/v16.17.1/bin/node src/index.js &"
       },
       {
         "location": "code/reddit-reply-bot",
-        "start": "$(which node) src/index.js &"
+        "start": "/home/pi/.nvm/versions/node/v16.17.1/bin/node src/index.js &"
       }
     ],
     "stack-int": [
