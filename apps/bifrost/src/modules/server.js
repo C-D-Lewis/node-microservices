@@ -71,7 +71,9 @@ const onClientMessage = async (client, data) => {
   const {
     id, to, from, topic, token,
   } = packet;
-  log.debug(`REC ${bifrost.formatPacket(packet)}`);
+  if (topic !== TOPIC_HEARTBEAT) {
+    log.debug(`REC ${bifrost.formatPacket(packet)}`);
+  }
 
   // Client declaring app name (unique combination)
   if (topic === TOPIC_WHOAMI) {

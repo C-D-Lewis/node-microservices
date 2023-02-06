@@ -106,7 +106,9 @@ const stringifyPacket = (prefix, packet) => {
   packet.message = packet.message || {};
   packet.from = packet.from || thisAppName;
 
-  log.debug(`bifrost.js ${prefix} ${formatPacket(packet)}`);
+  if (packet.topic !== TOPIC_HEARTBEAT) {
+    log.debug(`bifrost.js ${prefix} ${formatPacket(packet)}`);
+  }
   return JSON.stringify(packet);
 };
 
@@ -132,18 +134,16 @@ const startHeartbeats = () => {
 
   heartbeatHandle = setInterval(() => {
     socket.send(stringifyPacket('>>', { to: 'bifrost', topic: TOPIC_HEARTBEAT }));
-    // log.debug('bifrost.js: Sent heartbeat');
   }, HEARTBEAT_INTERVAL_MS);
   log.debug('bifrost.js: Began heartbeats');
 };
 
 /**
  * Tell the server which device and app we are.
+ *
+ * @returns {void}
  */
-const sendWhoAmI = () => {
-  socket.send(stringifyPacket('>>', { to: 'bifrost', topic: TOPIC_WHOAMI }));
-  // log.debug('bifrost.js: Sent whoami');
-};
+const sendWhoAmI = () => socket.send(stringifyPacket('>>', { to: 'bifrost', topic: TOPIC_WHOAMI }));
 
 /**
  * Expect messages on a given topic.
