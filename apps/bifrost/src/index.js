@@ -18,8 +18,9 @@ const main = async () => {
   await startServer();
   log.info('Ready for clients');
 
+  await bifrost.connect();
+
   // FIXME: Wait for Attic to come up then check into fleet
-  // await bifrost.connect();
   // setTimeout(scheduleCheckins, FLEET_CHECKIN_DELAY_MS);
 };
 
