@@ -267,6 +267,7 @@ const connect = async ({ appName, server = SERVER } = {}) => new Promise((resolv
   }
 
   socket = new WebSocket(`ws://${server}:${PORT}`);
+  log.debug('bifrost.js: socket created');
   socket.on('open', () => onConnected(resolve));
   socket.on('message', onSocketMessage);
   socket.on('close', () => {
