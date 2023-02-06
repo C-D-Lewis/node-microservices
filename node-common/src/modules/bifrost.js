@@ -216,12 +216,15 @@ const onSocketMessage = async (buffer) => {
   const {
     replyId, topic, message = {},
   } = packet;
-  log.debug(`<< ${formatPacket(packet)}`);
+  log.debug(`bifrost.js << ${formatPacket(packet)}`);
 
   // Did we request this message response? Resolve the send()!
-  if (replyId && pending[replyId]) {
-    pending[replyId](message);
-    delete pending[replyId];
+  // If we were't expecting this reply, ignore
+  if (replyId) {
+    if (pending[replyId]) {
+      pending[replyId](message);
+      delete pending[replyId];
+    }
     return;
   }
 

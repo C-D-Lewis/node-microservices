@@ -131,8 +131,7 @@ const onNewClient = (client, req) => {
   const ip = req.socket.remoteAddress.split(':').pop();
   client.ip = ip;
   clients.push(client);
-  log.debug(req.socket.remoteAddress);
-  log.info(`New client connected from ${ip}`);
+  log.info(`New client connected from ${ip} (${req.socket.remoteAddress})`);
 
   client.on('message', (data) => onClientMessage(client, data));
   client.on('close', () => {
