@@ -57,8 +57,11 @@
       },
       {
         "location": "code/node-microservices/apps/attic",
-        "start": "npm start &",
-        "note": "for testing while on branch bifrost-ify"
+        "start": "npm start &"
+      },
+      {
+        "location": "code/node-microservices/apps/guestlist",
+        "start": "npm start &"
       },
       {
         "location": "code/node-microservices/apps/visuals",
@@ -67,10 +70,6 @@
       {
         "location": "code/node-microservices/apps/monitor",
         "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/dashboards/lighting-dashboard",
-        "start": "http-server -p 54448 &"
       }
     ],
     "stack-util": [
