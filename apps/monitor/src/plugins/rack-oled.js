@@ -1,9 +1,14 @@
 const {
   hostname, loadavg, freemem, totalmem, uptime,
 } = require('os');
-const fetch = require('node-fetch');
 const visuals = require('../modules/visuals');
-const { ip, log } = require('../node-common')(['ip', 'log']);
+const { ip, log, bifrost } = require('../node-common')(['ip', 'log', 'bifrost']);
+
+const {
+  TOPIC_KNOWN_APPS,
+} = bifrost;
+
+let maxSeen = 0;
 
 /**
  * Monitor stats for display on rack-mounted OLED display
@@ -20,15 +25,16 @@ module.exports = async () => {
   const [, time] =  new Date().toISOString().split('T');
   const timeNow = time.split(':').slice(0, 2).join(':');
 
-  const apps = await fetch('http://localhost:5959/apps').then((r) => r.json());
-  const appsUp = apps.filter((p) => p.status === 'OK').length;
+  const { apps } = await bifrost.send({ to: 'bifrost', topic: TOPIC_KNOWN_APPS });
+  const seenNow = apps.length;
+  maxSeen = Math.max(maxSeen, seenNow);
 
   const lines = [
     `${hostname} (.${ipLastTwoOctets})`,
     `${timeNow} (Up ${uptimeStr} hrs)`,
-    `C:${cpuMinute} / M:${memoryPerc} / A:${appsUp}/${apps.length}`,
+    `C:${cpuMinute} / M:${memoryPerc} / A:${seenNow}/${maxSeen}`,
     '',
   ];
-  log.debug(lines);
+  log.info(lines);
   await visuals.setText(lines);
 };

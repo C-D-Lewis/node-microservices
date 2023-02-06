@@ -1,7 +1,7 @@
 const { hostname } = require('os');
 const {
-  config, attic, ip, log,
-} = require('../node-common')(['config', 'attic', 'ip', 'log']);
+  config, ip, log, bifrost,
+} = require('../node-common')(['config', 'ip', 'log', 'bifrost']);
 
 const { OPTIONS } = config.withSchema('fleet.js', {
   required: ['OPTIONS'],
@@ -29,9 +29,6 @@ const FLEET_LIST_KEY = 'fleetList';
 /** Checking interval */
 const CHECKIN_INTERVAL_MS = 1000 * 60 * 10;
 
-// All devices check into the top host
-attic.setHost(OPTIONS.FLEET.HOST);
-
 /**
  * Sort item by lastCheckIn timestamp.
  *
@@ -42,12 +39,30 @@ attic.setHost(OPTIONS.FLEET.HOST);
 const sortByLastCheckIn = (a, b) => (a.lastCheckIn > b.lastCheckIn ? -1 : 1);
 
 /**
+ * Get data from attic on another device.
+ *
+ * @param {string} key - Key to use.
+ * @returns {object} Response.
+ */
+const atticGet = (key) => bifrost.sendToOtherDevice(OPTIONS.FLEET.HOST, {
+  to: 'attic',
+  topic: 'get',
+  message: {
+    app: 'bifrost',
+    key,
+  },
+});
+
+/**
  * Send the data to remote Attic to perform the checkin.
+ *
+ * TODO: Can't use attic module until can be configured for sendToOtherDevice.
  */
 const checkIn = async () => {
   try {
     // Create the remote list if it doesn't already exist
-    if (!(await attic.exists(FLEET_LIST_KEY))) await attic.set(FLEET_LIST_KEY, []);
+    const existing = await atticGet(FLEET_LIST_KEY);
+    console.log(existing);
 
     const now = new Date();
     const updatePayload = {

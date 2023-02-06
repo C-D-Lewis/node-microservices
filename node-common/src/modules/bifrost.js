@@ -343,6 +343,32 @@ const send = ({
   });
 };
 
+/**
+ * Disconnect from local bifrost, connect to other device, send message,
+ * wait for reply, then disconnect and re-connect local.
+ *
+ * @param {string} server - Temporary server to connect to.
+ * @param {object} packet - Packet to send.
+ */
+const sendToOtherDevice = async (server, packet) => {
+  let res;
+  try {
+    disconnect();
+
+    await connect({ server });
+    res = await send(packet);
+    console.log({ res })
+
+    disconnect();
+  } catch (e) {
+    log.error('sendToOtherDevice failed!');
+    log.error(e);
+  }
+
+  await connect();
+  return res;
+};
+
 module.exports = {
   PORT,
   TOPIC_WHOAMI,
@@ -357,4 +383,5 @@ module.exports = {
   validatePacket,
   formatPacket,
   generateId,
+  sendToOtherDevice,
 };

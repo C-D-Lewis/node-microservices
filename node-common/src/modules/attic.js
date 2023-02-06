@@ -12,9 +12,7 @@ const { BIFROST, LOG } = config.withSchema('attic.js', {
   },
 });
 
-// TODO: How to send to another host? Multiple connections?
-let host = 'localhost';
-let appName = LOG.APP_NAME || 'Unknown';
+const appName = LOG.APP_NAME || 'Unknown';
 
 /**
  * Send a bifrost packet.
@@ -27,24 +25,6 @@ const sendPacket = async (packet) => {
   packet.auth = BIFROST.TOKEN || '';
 
   return bifrost.send(packet);
-};
-
-/**
- * Change the local host name.
- *
- * @param {string} newHost - New host name.
- */
-const setHost = (newHost) => {
-  host = newHost;
-};
-
-/**
- * Set the local app name.
- *
- * @param {string} newAppName - New app name.
- */
-const setAppName = (newAppName) => {
-  appName = newAppName;
 };
 
 /**
@@ -106,6 +86,4 @@ module.exports = {
   set,
   get,
   exists,
-  setHost,
-  setAppName,
 };
