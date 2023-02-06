@@ -106,7 +106,7 @@ const stringifyPacket = (prefix, packet) => {
   packet.message = packet.message || {};
   packet.from = packet.from || thisAppName;
 
-  log.debug(`${prefix} ${formatPacket(packet)}`);
+  log.debug(`bifrost.js ${prefix} ${formatPacket(packet)}`);
   return JSON.stringify(packet);
 };
 
@@ -181,6 +181,11 @@ const reply = async (packet, message) => {
     topic,
     message,
   };
+  if (!socket) {
+    log.error(`Can't reply as socket is not ready: ${JSON.stringify(message)}`);
+    return;
+  }
+
   socket.send(stringifyPacket('<>', payload));
 };
 
@@ -357,7 +362,7 @@ const sendToOtherDevice = async (server, packet) => {
 
     await connect({ server });
     res = await send(packet);
-    console.log({ res })
+    console.log({ res });
 
     disconnect();
   } catch (e) {
