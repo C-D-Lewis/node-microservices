@@ -11,6 +11,8 @@ describe('API', () => {
     await bifrost.connect({ appName: 'atticTests' });
   });
 
+  after(bifrost.disconnect);
+
   describe('Bifrost topic: status', () => {
     it('should return OK', async () => {
       const { content } = await bifrost.send({ to: 'attic', topic: 'status' });

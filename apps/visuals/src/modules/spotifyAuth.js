@@ -101,17 +101,14 @@ const updateRemoteAuthCode = async () => {
       host: AUTH_ATTIC.HOST,
       message: { app: 'concierge', key: AUTH_ATTIC.KEY },
     });
-    if (res.error) throw new Error(res.error);
-    if (!res || !res.message) {
+    if (!res.value) {
       // Nothing was found
       log.error(`No code is stored yet or was not found: ${JSON.stringify(res)}`);
       throw new Error('No code is stored yet');
     }
 
-    const { code } = res.message.value;
-    if (!code) {
-      throw new Error(`/spotifyCallback did not contain .code: ${JSON.stringify(res)}`);
-    }
+    const { code } = res.value;
+    if (!code) throw new Error(`/spotifyCallback did not contain .code: ${JSON.stringify(res)}`);
 
     // Set credential in Attic locally
     await attic.set(DB_KEYS.AUTH_CODE, code);
