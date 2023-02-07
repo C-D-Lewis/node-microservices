@@ -1,3 +1,7 @@
+#
+# Drives display for Cirroc project - icon, CPU, disk usage and RAID status
+#
+
 import time
 import subprocess
 import os

@@ -64,5 +64,5 @@ sudo hdparm -tT --direct /dev/md0
 sudo crontab -e
 ```
   ```
-  @reboot python3 /home/pi/code/node-microservices/tools/raid_stats/raid_stats.py > /home/pi/raid_stats.log
+  @reboot python3 /home/pi/code/node-microservices/tools/cirroc_oled/main.py > /home/pi/cirroc_oled.log
   ```
