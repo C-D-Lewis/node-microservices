@@ -307,10 +307,11 @@ const disconnect = () => {
  * @param {string} [opts.from] - Override from.
  * @param {string} opts.topic - Topic to broadcast on.
  * @param {object} [opts.message] - Data to send.
+ * @param {string} [opts.token] - Guestlist token if required.
  * @returns {Promise<object>} Response message data.
  */
 const send = ({
-  to, from, topic, message = {},
+  to, from, topic, message = {}, token,
 }) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
@@ -322,6 +323,7 @@ const send = ({
     from,
     topic,
     message,
+    token,
   };
   socket.send(stringifyPacket('>>', packet));
 

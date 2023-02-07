@@ -103,18 +103,19 @@ const onClientMessage = async (client, data) => {
       return;
     }
 
-    // Verify the token provided
-    const { error } = await bifrost.send({
-      to: 'guestlist',
-      topic: 'authorize',
-      message: {
-        to,
-        topic,
-        token,
-      },
-    });
-    if (error) {
-      await bifrost.reply(packet, { error: `Authorization check failed: ${error}` });
+    // Verify the token provided - throws on error returned
+    try {
+      await bifrost.send({
+        to: 'guestlist',
+        topic: 'authorize',
+        message: {
+          to,
+          topic,
+          token,
+        },
+      });
+    } catch (e) {
+      await bifrost.reply(packet, { error: `Authorization check failed: ${e.message}` });
       return;
     }
   }
