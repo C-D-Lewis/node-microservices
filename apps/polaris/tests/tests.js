@@ -8,6 +8,8 @@ describe('Tests', () => {
     await bifrost.connect({ appName: 'polarisTests' });
   });
 
+  after(bifrost.disconnect);
+
   describe('Bifrost topic: status', () => {
     it('should return OK', async () => {
       const { content } = await bifrost.send({ to: 'polaris', topic: 'status' });

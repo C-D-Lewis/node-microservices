@@ -7,6 +7,8 @@ describe('API', () => {
     await bifrost.connect({ appName: 'monitorTests' });
   });
 
+  after(bifrost.disconnect);
+
   describe('Bifrost topic: status', () => {
     it('should return 200 / OK', async () => {
       const { content } = await bifrost.send({ to: 'monitor', topic: 'status' });
