@@ -1,0 +1,8 @@
+{
+  "LOG": {
+    "APP_NAME": "bifrost.js"
+  },
+  "BIFROST": {
+    "SERVER": "localhost"
+  }
+}

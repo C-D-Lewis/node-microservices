@@ -28,7 +28,7 @@ const MONITOR_INTERVAL_MS = 60 * 60 * 1000;
 /** Max log size */
 const MAX_SIZE_MB = 10;
 /** Log path */
-const FILE_PATH = `${config.getInstallPath()}/${LOG.APP_NAME.split(' ').join('-')}.log`;
+const FILE_PATH = `${config.getInstallPath()}/${LOG.APP_NAME}.log`;
 /** Log level color map */
 const LEVEL_COLOR_MAP = {
   info: 'white',
