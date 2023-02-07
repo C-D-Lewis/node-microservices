@@ -1,6 +1,11 @@
 # visuals
 
-API service allowing control of attached Blinkt! or Mote LED hats and boards.
+API service allowing control of attached display accessories including:
+
+* Blinkt! hats
+* Mote LED strips
+* PiOLED
+* ssd1306
 
 Allows sharing of LED hardware between any number of other connected apps, such
 as for status or alerting with `monitor.`
@@ -9,18 +14,21 @@ Can also be used for interactive backlighting, including instant set, gradual
 fade, demo mode, and Spotify mode using the dominant color of whatever music is
 playing in an authorized Spotify account.
 
+For OLED displays, up to four lines of test can be set via connecting apps.
+
 
 ## Setup
 
 1. Run `npm ci && npm start` to create `config.json`.
 
-2. Configure `HARDWARE_TYPE` depending on the attached LED hardware.
+2. Configure `HARDWARE_TYPE` depending on the attached LED hardware. If OLED
+   displays are used, configure `TEXT_DISPLAY` as well.
 
 3. Configure `AUTH_ATTIC` to a host where Spotify is configured to save callback
-   data in `concierge`.
+   data in `concierge` in Spotify Developer dashboard redirect URI settings.
 
-4. Configure `SPOTIFY` client ID and secret from the Spotify developer
-   dashboard, as well as details of where `concierge` is watiing for the
+4. Configure `SPOTIFY` client ID and secret from the Spotify Developer
+   dashboard, as well as details of where a `concierge` is waiting for the
    authorization callback (for use in building the authorization URL).
 
 5. Start the service again to apply the new configuration.
@@ -50,7 +58,7 @@ To use the feature:
 1. Run `visuals` once configured with the Spotify and `concierge` details, and
    send a `spotify` packet to trigger attempted authorization. The first time
    this will fail, and the response will contain the authorization URL allowing
-   a Spotify signin to the application.
+   a Spotify signin to the application. The URL is also logged to app logs.
 
 2. Once signed in, `concierge` will acknowledge with `OK` and the authorization
    `code` will be saved in the static IP instance of `attic`. If this is set as

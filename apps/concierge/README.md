@@ -2,13 +2,13 @@
 
 Configurable webhook service with known webhooks stored in `attic`.
 
-When running, `conduit` messages can add or remove new webhooks on demand.
+When running, `bifrost` messages can add or remove new webhooks on demand.
 
 If a request is made to service port (default `4665`) to a given webhook's
 `url`, the query string of that request is saved in `attic`, using the `url` as
 the key. For example, adding the following webhook:
 
-```
+```json
 { "url": "/exampleCallback" }
 ```
 
@@ -20,36 +20,22 @@ POST localhost:4665/exampleCallback?token=7834623
 
 Will store this data for another app to retrieve and work with:
 
-```
+```json
 {
-  "app": "concierge",
-  "key": "/exampleCallback",
-  "value": {
-    "token": "7834623"
+  "exampleCallback": {
+    "value": {
+      "token": "7834623"
+    },
+    "timestamp": 1675804855233
   }
 }
 ```
 
-Note that the value is an object, because `req.query` in Express is an object
+Note that the `value` is an object, because `req.query` in Express is an object
 representing the query string parameters, and is easier to work with.
 
 However, if `packet` is also in the webhook configuration, a hit to that webhook
-will be forwarded as a `conduit` message. For example, to turn on a light via
-`plug-server`:
-
-```
-{
-  "url": "/turnLightsOn",
-  "packet": {
-    "app": "plug-server",
-    "topic": "setPlugState",
-    "message": {
-      "alias": "Bedroom Light",
-      "state": true
-    }
-  }
-}
-```
+will be forwarded as a `bifrost` message.
 
 
 ## Setup
@@ -64,7 +50,7 @@ will be forwarded as a `conduit` message. For example, to turn on a light via
 
 ## API
 
-This service provides the following `conduit` topics and message formats:
+This service provides the following `bifrost` topics and message formats:
 
 ### `add`
 

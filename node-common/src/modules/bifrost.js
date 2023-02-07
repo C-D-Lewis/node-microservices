@@ -6,17 +6,21 @@ const config = require('./config');
 const schema = require('./schema');
 
 const {
-  BIFROST: { SERVER },
+  BIFROST: { SERVER, TOKEN },
   LOG: { APP_NAME },
 } = config.withSchema('bifrost.js', {
   required: ['BIFROST', 'LOG'],
   properties: {
     BIFROST: {
-      required: ['SERVER'],
+      required: ['SERVER', 'TOKEN'],
       properties: {
         SERVER: {
           type: 'string',
           description: 'Host to connect to',
+        },
+        TOKEN: {
+          type: 'string',
+          description: 'Token to use if host bifrost requires them',
         },
       },
     },
@@ -167,19 +171,22 @@ const registerTopic = (topic, cb, topicSchema) => {
  * @param {object} message - Response data.
  */
 const reply = async (packet, message) => {
-  const { id, from, topic } = packet;
+  const {
+    id, from, topic, token,
+  } = packet;
   if (!id) {
     log.error('Cannot reply to packet with no \'id\'');
     log.error(JSON.stringify(packet));
     return;
   }
 
-  // Reply to sender app
+  // Reply to sender app, including any token send originally
   const payload = {
     replyId: id,
     to: from,
     topic,
     message,
+    token,
   };
   if (!socket) {
     log.error(`Can't reply as socket is not ready: ${JSON.stringify(message)}`);
@@ -311,7 +318,7 @@ const disconnect = () => {
  * @returns {Promise<object>} Response message data.
  */
 const send = ({
-  to, from, topic, message = {}, token,
+  to, from, topic, message = {}, token = TOKEN,
 }) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
 

@@ -1,7 +1,7 @@
 # guestlist
 
 API service to grant credentials and check requests made against them when
-used in conjunction with `conduit` for external requests.
+used in conjunction with `bifrost` for external requests.
 
 Credentials take the following format. For example, a user who can only read
 from the Attic service:
@@ -46,7 +46,7 @@ requests.
 > Users represent real users, or devices, and so should have all the permissions
 > they need to talk to all the apps they will talk to.
 
-New users are created with `conduit` messages where `adminPassword` is the admin
+New users are created with `bifrost` messages where `adminPassword` is the admin
 password:
 
 ```json
@@ -83,7 +83,7 @@ at this one time**:
 ## Authenticating User Requests
 
 After creation, a user may then connect to the `apps` and `topics` specified
-by including their token as the `auth` field in a `conduit` request:
+by including their token as the `token` field in a `bifrost` request:
 
 ```json
 {
@@ -94,20 +94,18 @@ by including their token as the `auth` field in a `conduit` request:
 ```
 
 Apps that communicate with a token should include it as `TOKEN` in their
-`conduit` config.
+`bifrost` config.
 
 
 ## API
 
-This service provides the following `conduit` topics and message formats:
+This service provides the following `bifrost` topics and message formats:
 
 ### `create`
 
 Create a new user with appropriate permissions.
 
-> Must include `auth` packet field, set to the admin password.
-
-Send: `{ name, apps, topics }`
+Send: `{ name, apps, topics, adminPassword }`
 
 Receive: `user` (the created user with one-time visible token).
 
@@ -129,10 +127,8 @@ Receive: `user` (but without their access token)
 
 ### `delete`
 
-> Must include `auth` packet field, set to the admin password.
-
 Delete an existing user as the admin.
 
-Send: `{ name }`
+Send: `{ name, adminPassword }`
 
 Receive: `{ content: 'Deleted' }`

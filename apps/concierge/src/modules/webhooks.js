@@ -47,6 +47,7 @@ const handleRequest = async (req, res) => {
   // Handle the hook call
   const { url, packet } = found;
   if (packet) {
+    // TODO: Add a test for this
     // Forward the packet's static message and the webhook query to trigger another service
     packet.message = packet.message || {};
     packet.message.webhookQuery = query;

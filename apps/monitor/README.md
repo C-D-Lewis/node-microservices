@@ -21,9 +21,11 @@ For example to run `delays.js` every 15 minutes:
 
 ```
 "plugins": [
-  { "ENABLED": true, "FILE_NAME": "delays.js", "EVERY": 15 }
+  { "FILE_NAME": "delays.js", "EVERY": 15 }
 ]
 ```
+
+> Include `ENABLED` `false` to disable a listed plugin.
 
 Any plugin can be supplied with arguments at runtime specified in the
 configuration by adding the `ARGS` property as the object to provide at
@@ -33,7 +35,8 @@ For example, a list of scheduled requests to update LED lights:
 
 ```
 "plugins": [
-  { "ENABLED": true, "FILE_NAME": "visuals-scheduler.js", "EVERY": 1,
+  { "FILE_NAME": "visuals-scheduler.js",
+    "EVERY": 1,
     "ARGS": {
       "EVENTS": [
         { "NAME": "Morning", "ON": "07:30", "OFF": "08:00", "COLOR": [128, 128, 128] },
@@ -43,6 +46,8 @@ For example, a list of scheduled requests to update LED lights:
   }
 ]
 ```
+
+The args are accessible as the first callback argument:
 
 ```js
 module.exports = args => {

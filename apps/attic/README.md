@@ -24,7 +24,7 @@ Data is stored on a per-app basis, so keys are unique within a given app.
 
 ## API
 
-This service provides the following `conduit` topics and message formats:
+This service provides the following `bifrost` topics and message formats:
 
 ### `get`
 
@@ -49,3 +49,9 @@ Increment a numeric value by key for a given app.
 Send: `{ app, key }`
 
 Receive: `{ content: 'OK' }`
+
+### `listApp`
+
+List all apps that currently store data.
+
+Receive: { appNames }
