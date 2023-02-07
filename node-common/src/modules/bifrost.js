@@ -12,7 +12,7 @@ const {
   required: ['BIFROST', 'LOG'],
   properties: {
     BIFROST: {
-      required: ['SERVER', 'TOKEN'],
+      required: ['SERVER'],
       properties: {
         SERVER: {
           type: 'string',
