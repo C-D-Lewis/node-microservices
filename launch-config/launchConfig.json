@@ -72,17 +72,6 @@
         "start": "npm start &"
       }
     ],
-    "stack-util": [
-      {
-        "location": "code/node-microservices/node-common",
-        "install": "git clone https://github.com/c-d-lewis/code/node-microservices",
-        "update": "$git-pull"
-      },
-      {
-        "location": "code/node-microservices/apps/conduit",
-        "start": "npm start &"
-      }
-    ],
     "tv-mote-pi": [
       {
         "location": "code/node-microservices/apps/conduit",
@@ -147,7 +136,7 @@
         "start": "npm start &"
       },
       {
-        "location": "code/node-microservices/apps/visuals",
+        "location": "code/node-microservices/apps/attic",
         "start": "npm start &"
       }
     ],
