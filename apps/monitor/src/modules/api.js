@@ -17,7 +17,7 @@ const UPDATE_METRICS_MESSAGE_SCHEMA = {
 };
 
 /** Schema for messages getting metric data today */
-const GET_METRIC_NAMES_MESSAGE_SCHEMA = {};
+const NO_MESSAGE_SCHEMA = {};
 
 /**
  * Setup Conduit topic handlers.
@@ -27,7 +27,8 @@ const setup = async () => {
 
   bifrost.registerTopic('getMetricToday', require('../api/getMetricToday'), GET_METRIC_TODAY_MESSAGE_SCHEMA);
   bifrost.registerTopic('updateMetrics', require('../api/updateMetrics'), UPDATE_METRICS_MESSAGE_SCHEMA);
-  bifrost.registerTopic('getMetricNames', require('../api/getMetricNames'), GET_METRIC_NAMES_MESSAGE_SCHEMA);
+  bifrost.registerTopic('getMetricNames', require('../api/getMetricNames'), NO_MESSAGE_SCHEMA);
+  bifrost.registerTopic('getPlugins', require('../api/getPlugins'), NO_MESSAGE_SCHEMA);
 };
 
 module.exports = { setup };
