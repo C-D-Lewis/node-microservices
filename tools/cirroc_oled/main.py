@@ -73,6 +73,6 @@ while True:
     image.paste(icon_unhealthy, (root_x, 0))
 
   # Display image
-  disp.image(ImageOps.mirror(ImageOps.flip(image)))
+  disp.image(image)
   disp.show()
   time.sleep(5)
