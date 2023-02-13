@@ -275,7 +275,7 @@ const connect = async ({ appName, server = SERVER } = {}) => new Promise((resolv
 
   socket = new WebSocket(`ws://${server}:${PORT}`);
   socket.on('open', () => {
-    log.info(`Socked open: ${server}`);
+    log.info(`Socket open: ${server}`);
     onConnected(resolve);
   });
   socket.on('message', onSocketMessage);
@@ -364,32 +364,35 @@ const send = ({
 };
 
 /**
- * Disconnect from local bifrost, connect to other device, send message,
- * wait for reply, then disconnect and re-connect local.
+ * Send a message to another device, no reply possible.
  *
  * @param {string} server - Temporary server to connect to.
  * @param {object} packet - Packet to send.
  */
-const sendToOtherDevice = async (server, packet) => {
-  let res;
-  try {
-    disconnect();
+const sendToOtherDevice = (server, packet) => new Promise((resolve, reject) => {
+  // Use a temporary connection, all in this function.
+  const tempSocket = new WebSocket(`ws://${server}:${PORT}`);
+  tempSocket.on('open', () => {
+    log.info(`temp: open: ${server}`);
 
-    await connect({ server });
-    res = await send(packet);
-
-    disconnect();
-  } catch (e) {
-    log.error('sendToOtherDevice failed!');
-    log.error(e);
-  }
-
-  // Brief pause so onConnect doesn't interfere with close test on disconnectRequested
-  await new Promise(r => setTimeout(r, 100));
-
-  await connect();
-  return res;
-};
+    const payload = {
+      id: generateId(),
+      ...packet,
+    };
+    
+    // Send data, then resolve without reply
+    tempSocket.send(stringifyPacket('temp>>', payload));
+    resolve();
+    tempSocket.close();
+  });
+  tempSocket.on('close', () => log.debug('temp: closed'));
+  tempSocket.on('error', (err) => {
+    log.error(err);
+    log.error('temp: errored - closing');
+    tempSocket.close();
+    reject();
+  });
+});
 
 module.exports = {
   PORT,
