@@ -69,7 +69,7 @@ const pending = {};
 
 let socket;
 let connected;
-let disconnectRequested = false;
+let disconnectRequested = 'init';
 let heartbeatHandle;
 let thisAppName = APP_NAME; // Could be overridden
 
@@ -202,9 +202,9 @@ const reply = async (packet, message) => {
  * @param {Function} resolve - Callback for the app.
  */
 const onConnected = (resolve) => {
-  log.info('bifrost.js: connected');
-  connected = true;
+  log.debug(`bifrost.js: onConnected()`);
   disconnectRequested = false;
+  connected = true;
 
   registerTopic('status', () => ({ content: 'OK' }), {});
   sendWhoAmI();
@@ -274,12 +274,14 @@ const connect = async ({ appName, server = SERVER } = {}) => new Promise((resolv
   }
 
   socket = new WebSocket(`ws://${server}:${PORT}`);
-  log.debug('bifrost.js: socket created');
-  socket.on('open', () => onConnected(resolve));
+  socket.on('open', () => {
+    log.info(`Socked open: ${server}`);
+    onConnected(resolve);
+  });
   socket.on('message', onSocketMessage);
   socket.on('close', () => {
     connected = false;
-    log.debug('bifrost.js: closed');
+    log.debug(`bifrost.js: closed (disconnectRequested: ${disconnectRequested})`);
 
     // Reconnect unless explicitly disconnected
     if (!disconnectRequested) setTimeout(connect, 5000);
@@ -375,13 +377,15 @@ const sendToOtherDevice = async (server, packet) => {
 
     await connect({ server });
     res = await send(packet);
-    console.log({ res });
 
     disconnect();
   } catch (e) {
     log.error('sendToOtherDevice failed!');
     log.error(e);
   }
+
+  // Brief pause so onConnect doesn't interfere with close test on disconnectRequested
+  await new Promise(r => setTimeout(r, 100));
 
   await connect();
   return res;
