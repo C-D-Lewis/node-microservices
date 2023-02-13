@@ -382,8 +382,8 @@ const sendToOtherDevice = (server, packet) => new Promise((resolve, reject) => {
     
     // Send data, then resolve without reply
     tempSocket.send(stringifyPacket('temp>>', payload));
-    resolve();
     tempSocket.close();
+    resolve();
   });
   tempSocket.on('close', () => log.debug('temp: closed'));
   tempSocket.on('error', (err) => {
