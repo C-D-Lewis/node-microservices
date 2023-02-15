@@ -31,9 +31,9 @@ module.exports = async () => {
 
   const lines = [
     `${hostname} (.${ipLastTwoOctets})`,
+    '',
     `${timeNow} (Up ${uptimeStr} hrs)`,
     `C:${cpuMinute} / M:${memoryPerc} / A:${seenNow}/${maxSeen}`,
-    '',
   ];
   log.info(lines);
   await visuals.setText(lines);
