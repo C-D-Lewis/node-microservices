@@ -1,6 +1,7 @@
 window.Config = {
-  wsServer: 'polaris.chrislewis.me.uk',
-  ignoreHosts: [
+  // server: 'polaris.chrislewis.me.uk',
+  SERVER: 'localhost',
+  IGNORE_HOSTS: [
     'stack-ext',
     'stack-int',
     'stack-util',

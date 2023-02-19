@@ -14,7 +14,7 @@
     "globals": {
       "fabricate": "readonly",
       "Theme": "readonly",
-      "WsService": "readonly"
+      "BifrostService": "readonly"
     }
   }
 }

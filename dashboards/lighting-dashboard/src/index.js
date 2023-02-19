@@ -1,7 +1,7 @@
 /**
  * AppNavBar component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Component.
  */
 const AppNavBar = () => fabricate('NavBar', {
   title: 'Lighting Dashboard',
@@ -22,7 +22,7 @@ const AppNavBar = () => fabricate('NavBar', {
 /**
  * NoDevicesText component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Component.
  */
 const NoDevicesText = () => fabricate('Text')
   .setStyles({ color: Theme.colors.lightGrey, marginTop: '25px' })
@@ -31,7 +31,7 @@ const NoDevicesText = () => fabricate('Text')
 /**
  * DeviceList component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Component.
  */
 const DeviceList = () => fabricate('Column')
   .setStyles({ alignItems: 'center' })
@@ -48,9 +48,24 @@ const DeviceList = () => fabricate('Column')
   });
 
 /**
+ * Get fleet list.
+ */
+const getFleetDevices = async () => {
+  const res = await BifrostService.send({
+    to: 'attic',
+    topic: 'get',
+    message: {
+      app: 'bifrost',
+      key: 'fleetList',
+    },
+  });
+  console.log({ res });
+};
+
+/**
  * LightingDashboard component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Component.
  */
 const LightingDashboard = () => fabricate('Column')
   .setStyles({ width: '100%' })
@@ -65,5 +80,5 @@ const initialState = {
 };
 fabricate.app(LightingDashboard(), initialState);
 
-// Connect WebSocket server
-WsService.connect();
+// Connect WebSocket server then get devices
+BifrostService.connect().then(getFleetDevices);

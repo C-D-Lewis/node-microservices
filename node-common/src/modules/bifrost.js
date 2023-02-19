@@ -69,7 +69,7 @@ const pending = {};
 
 let socket;
 let connected;
-let disconnectRequested = 'init';
+let disconnectRequested;
 let heartbeatHandle;
 let thisAppName = APP_NAME; // Could be overridden
 
@@ -202,7 +202,7 @@ const reply = async (packet, message) => {
  * @param {Function} resolve - Callback for the app.
  */
 const onConnected = (resolve) => {
-  log.debug(`bifrost.js: onConnected()`);
+  log.debug('bifrost.js: onConnected()');
   disconnectRequested = false;
   connected = true;
 
@@ -368,6 +368,7 @@ const send = ({
  *
  * @param {string} server - Temporary server to connect to.
  * @param {object} packet - Packet to send.
+ * @returns {Promise<void>}
  */
 const sendToOtherDevice = (server, packet) => new Promise((resolve, reject) => {
   // Use a temporary connection, all in this function.
@@ -379,7 +380,7 @@ const sendToOtherDevice = (server, packet) => new Promise((resolve, reject) => {
       id: generateId(),
       ...packet,
     };
-    
+
     // Send data, then resolve without reply
     tempSocket.send(stringifyPacket('temp>>', payload));
     tempSocket.close();
