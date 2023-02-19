@@ -67,7 +67,7 @@ const PACKET_SCHEMA = {
 const topics = {};
 const pending = {};
 
-let socket;
+let localHostSocket;
 let connected;
 let disconnectRequested;
 let heartbeatHandle;
@@ -137,7 +137,7 @@ const startHeartbeats = () => {
   stopHearbeats();
 
   heartbeatHandle = setInterval(() => {
-    socket.send(stringifyPacket('>>', { to: 'bifrost', topic: TOPIC_HEARTBEAT }));
+    localHostSocket.send(stringifyPacket('>>', { to: 'bifrost', topic: TOPIC_HEARTBEAT }));
   }, HEARTBEAT_INTERVAL_MS);
   log.debug('bifrost.js: Began heartbeats');
 };
@@ -147,7 +147,7 @@ const startHeartbeats = () => {
  *
  * @returns {void}
  */
-const sendWhoAmI = () => socket.send(stringifyPacket('>>', { to: 'bifrost', topic: TOPIC_WHOAMI }));
+const sendWhoAmI = () => localHostSocket.send(stringifyPacket('>>', { to: 'bifrost', topic: TOPIC_WHOAMI }));
 
 /**
  * Expect messages on a given topic.
@@ -188,12 +188,12 @@ const reply = async (packet, message) => {
     message,
     token,
   };
-  if (!socket) {
-    log.error(`Can't reply as socket is not ready: ${JSON.stringify(message)}`);
+  if (!localHostSocket) {
+    log.error(`Can't reply as localHostSocket is not ready: ${JSON.stringify(message)}`);
     return;
   }
 
-  socket.send(stringifyPacket('<>', payload));
+  localHostSocket.send(stringifyPacket('<>', payload));
 };
 
 /**
@@ -213,13 +213,14 @@ const onConnected = (resolve) => {
 };
 
 /**
- * When the socket receives a message.
+ * When the localHostSocket receives a message.
  *
  * @param {*} buffer - Data buffer.
  * @returns {Promise<void>}
  */
 const onSocketMessage = async (buffer) => {
-  const packet = JSON.parse(buffer.toString());
+  const packetStr = buffer.toString();
+  const packet = JSON.parse(packetStr);
   const {
     replyId, topic, message = {},
   } = packet;
@@ -273,23 +274,23 @@ const connect = async ({ appName, server = SERVER } = {}) => new Promise((resolv
     log.debug(`bifrost.js: Overridden app name: ${thisAppName}`);
   }
 
-  socket = new WebSocket(`ws://${server}:${PORT}`);
-  socket.on('open', () => {
+  localHostSocket = new WebSocket(`ws://${server}:${PORT}`);
+  localHostSocket.on('open', () => {
     log.info(`Socket open: ${server}`);
     onConnected(resolve);
   });
-  socket.on('message', onSocketMessage);
-  socket.on('close', () => {
+  localHostSocket.on('message', onSocketMessage);
+  localHostSocket.on('close', () => {
     connected = false;
     log.debug(`bifrost.js: closed (disconnectRequested: ${disconnectRequested})`);
 
     // Reconnect unless explicitly disconnected
     if (!disconnectRequested) setTimeout(connect, 5000);
   });
-  socket.on('error', (err) => {
+  localHostSocket.on('error', (err) => {
     log.error(err);
     log.error('bifrost.js: errored - closing');
-    socket.close();
+    localHostSocket.close();
   });
 });
 
@@ -301,30 +302,26 @@ const disconnect = () => {
 
   disconnectRequested = true;
   stopHearbeats();
-  socket.close();
+  localHostSocket.close();
   connected = false;
   log.info('bifrost.js: disconnected');
 };
 
 /**
- * Send a packet to the server for another local application.
+ * Send a packet to the server for another application.
  * ID is attached to allow awaiting of other app's response data, so it can be
  * used in the same way as HTTP.
  *
- * @param {object} opts - Function opts.
- * @param {string} opts.to - App to send to.
- * @param {string} [opts.from] - Override from.
- * @param {string} opts.topic - Topic to broadcast on.
- * @param {object} [opts.message] - Data to send.
- * @param {string} [opts.token] - Guestlist token if required.
+ * @param {object} data - Packet to send.
  * @returns {Promise<object>} Response message data.
  */
-const send = ({
-  to, from, topic, message = {}, token = TOKEN,
-}) => {
+const send = (data) => {
   if (!connected) throw new Error('bifrost.js: not yet connected');
 
   // Send this message to the chosen app
+  const {
+    to, from, topic, message = {}, token = TOKEN,
+  } = data;
   const id = generateId();
   const packet = {
     id,
@@ -334,7 +331,7 @@ const send = ({
     message,
     token,
   };
-  socket.send(stringifyPacket('>>', packet));
+  localHostSocket.send(stringifyPacket('>>', packet));
 
   // Allow awaiting the response - handled in onSocketMessage
   return new Promise((resolve, reject) => {

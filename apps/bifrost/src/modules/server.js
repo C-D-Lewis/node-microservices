@@ -29,34 +29,6 @@ const clients = [];
 let server;
 
 /**
- * Handle a packet.
- *
- * @param {object} packet - Received message data.
- */
-const handlePacket = (packet) => {
-  const { to, topic, host } = packet;
-
-  // TODO: Dashboards require forwarding to another host
-  // How to await secondary response and pass back?
-  // Server uses library but doesn't handle many connections
-  if (host) {
-
-  }
-
-  // Check local app is available
-  const target = clients.find((p) => p.appName === to);
-  if (!target) {
-    log.error(`Unknown: ${to}`);
-    bifrost.reply(packet, { error: 'Not Found' });
-    return;
-  }
-
-  // Forward to that local app
-  target.send(JSON.stringify(packet));
-  log.debug(`FWD ${to}:${topic}`);
-};
-
-/**
  * When a client sends a message.
  *
  * @param {object} client - Client that sent the message.
@@ -74,11 +46,14 @@ const onClientMessage = async (client, data) => {
   }
 
   const {
-    id, to, from, topic, token,
+    id, to, from, topic, token, host,
   } = packet;
   if (topic !== TOPIC_HEARTBEAT) {
     log.debug(`REC ${bifrost.formatPacket(packet)}`);
   }
+
+  // Ignore heartbeats received
+  if (topic === TOPIC_HEARTBEAT) return;
 
   // Client declaring app name (unique combination)
   if (topic === TOPIC_WHOAMI) {
@@ -86,9 +61,6 @@ const onClientMessage = async (client, data) => {
     client.appName = from;
     return;
   }
-
-  // Ignore heartbeats received
-  if (topic === TOPIC_HEARTBEAT) return;
 
   // Provide connected apps (and isn't the reply)
   if (topic === TOPIC_KNOWN_APPS && id) {
@@ -104,12 +76,13 @@ const onClientMessage = async (client, data) => {
 
     // No token when one was expected
     if (!token) {
-      await bifrost.reply(packet, { error: 'No authorization provided' });
+      bifrost.reply(packet, { error: 'No authorization provided' });
       return;
     }
 
     // Verify the token provided - throws on error returned
     try {
+      // Use library here as a local call
       await bifrost.send({
         to: 'guestlist',
         topic: 'authorize',
@@ -120,13 +93,28 @@ const onClientMessage = async (client, data) => {
         },
       });
     } catch (e) {
-      await bifrost.reply(packet, { error: `Authorization check failed: ${e.message}` });
+      bifrost.reply(packet, { error: `Authorization check failed: ${e.message}` });
       return;
     }
   }
 
-  // Handle packet, getting it where it needs to go
-  handlePacket(packet);
+  // TODO: Dashboards require forwarding to another host
+  if (host) {
+    // Send with specific socket for reply content
+    // bifrost.send(packet, )
+  }
+
+  // Check local app is available
+  const target = clients.find((p) => p.appName === to);
+  if (!target) {
+    log.error(`Unknown: ${to}`);
+    bifrost.reply(packet, { error: 'Not Found' });
+    return;
+  }
+
+  // Forward to that local app
+  target.send(JSON.stringify(packet));
+  log.debug(`FWD ${to}:${topic}`);
 };
 
 /**
