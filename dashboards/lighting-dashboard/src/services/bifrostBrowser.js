@@ -255,3 +255,31 @@ BifrostService.send = ({
     };
   });
 };
+
+/**
+ * Send a message to another device, no reply possible.
+ *
+ * @param {string} server - Temporary server to connect to.
+ * @param {object} packet - Packet to send.
+ * @returns {Promise<void>}
+ */
+BifrostService.sendAndClose = (server, packet) => new Promise((resolve, reject) => {
+  // Use a temporary connection, all in this function.
+  const tempSocket = new WebSocket(`ws://${server}:${PORT}`);
+  tempSocket.on('open', () => {
+    console.log(`temp: open: ${server}`);
+
+    // Send data, then resolve without reply
+    const payload = { id: generateId(), ...packet };
+    tempSocket.send(stringifyPacket('temp>>', payload));
+    tempSocket.close();
+    resolve();
+  });
+  tempSocket.on('close', () => console.log('temp: closed'));
+  tempSocket.on('error', (err) => {
+    console.error(err);
+    console.error('temp: errored - closing');
+    tempSocket.close();
+    reject();
+  });
+});

@@ -370,18 +370,14 @@ const send = ({
  * @param {object} packet - Packet to send.
  * @returns {Promise<void>}
  */
-const sendToOtherDevice = (server, packet) => new Promise((resolve, reject) => {
+const sendAndClose = (server, packet) => new Promise((resolve, reject) => {
   // Use a temporary connection, all in this function.
   const tempSocket = new WebSocket(`ws://${server}:${PORT}`);
   tempSocket.on('open', () => {
-    log.info(`temp: open: ${server}`);
-
-    const payload = {
-      id: generateId(),
-      ...packet,
-    };
+    log.debug(`temp: open: ${server}`);
 
     // Send data, then resolve without reply
+    const payload = { id: generateId(), ...packet };
     tempSocket.send(stringifyPacket('temp>>', payload));
     tempSocket.close();
     resolve();
@@ -409,5 +405,5 @@ module.exports = {
   validatePacket,
   formatPacket,
   generateId,
-  sendToOtherDevice,
+  sendAndClose,
 };

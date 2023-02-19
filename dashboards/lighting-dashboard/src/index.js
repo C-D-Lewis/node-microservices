@@ -10,9 +10,9 @@ const AppNavBar = () => fabricate('NavBar', {
   .addChildren([
     fabricate('Text')
       .setStyles({
-        marginLeft: 'auto',
         color: Theme.colors.lightGrey,
         cursor: 'default',
+        margin: '0px 10px 0px auto',
       })
       .setText('Server'),
     fabricate('LED')
@@ -37,7 +37,7 @@ const DeviceList = () => fabricate('Column')
   .setStyles({ alignItems: 'center' })
   .onUpdate((el, state) => {
     const deviceCards = state.devices
-      .filter((p) => !window.Config.ignoreHosts.includes(p.hostname))
+      .filter((p) => !window.Config.IGNORE_HOSTS.includes(p.deviceName))
       .map((device) => fabricate('DeviceCard', { device }));
 
     el.setChildren(
@@ -51,7 +51,7 @@ const DeviceList = () => fabricate('Column')
  * Get fleet list.
  */
 const getFleetDevices = async () => {
-  const res = await BifrostService.send({
+  const { value } = await BifrostService.send({
     to: 'attic',
     topic: 'get',
     message: {
@@ -59,7 +59,7 @@ const getFleetDevices = async () => {
       key: 'fleetList',
     },
   });
-  console.log({ res });
+  fabricate.update({ devices: value });
 };
 
 /**
@@ -81,4 +81,9 @@ const initialState = {
 fabricate.app(LightingDashboard(), initialState);
 
 // Connect WebSocket server then get devices
-BifrostService.connect().then(getFleetDevices);
+BifrostService.connect().then(() => {
+  // TODO: Shows at least host server is up, but not useful after that as
+  //       each connection is one way
+  fabricate.update({ connected: true });
+  getFleetDevices();
+});

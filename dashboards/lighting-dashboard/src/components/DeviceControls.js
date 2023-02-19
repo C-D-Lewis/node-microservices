@@ -41,11 +41,13 @@ const SwatchesBar = ({ device }) => {
   /**
    * Build a sawtch button from a color.
    *
-   * @param {Array<number>} p - Color.
+   * @param {Array<number>} rgb - Color.
    * @returns {HTMLElement} Fabricate component.
    */
-  const buildButton = (p) => fabricate('SwatchButton', { backgroundColor: `rgb(${p[0]},${p[1]},${p[2]}` })
-    .onClick(() => WsService.sendPacket(device, { to: 'visuals', topic: 'setAll', message: { all: p } }));
+  const buildButton = (rgb) => fabricate('SwatchButton', {
+    backgroundColor: `rgb(${rgb[0]},${rgb[1]},${rgb[2]}`,
+  })
+    .onClick(() => BifrostService.sendAndClose(device, { to: 'visuals', topic: 'setAll', message: { all: rgb } }));
 
   return fabricate('Column')
     .setChildren([

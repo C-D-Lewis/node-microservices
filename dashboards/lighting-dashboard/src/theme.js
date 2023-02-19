@@ -8,7 +8,3 @@ Theme.colors = {
   statusOk: '#43D047',
   statusDown: '#DD6E40',
 };
-
-Theme.fonts = {
-  body: 'sans-serif',
-};

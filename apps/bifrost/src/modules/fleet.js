@@ -42,7 +42,7 @@ const checkIn = async () => {
       deviceType: OPTIONS.FLEET.DEVICE_TYPE,
     };
 
-    await bifrost.sendToOtherDevice(OPTIONS.FLEET.HOST, {
+    await bifrost.sendAndClose(OPTIONS.FLEET.HOST, {
       to: 'bifrost',
       topic: 'checkIn',
       message: updatePayload,

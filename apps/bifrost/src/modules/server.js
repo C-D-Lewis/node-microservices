@@ -34,19 +34,24 @@ let server;
  * @param {object} packet - Received message data.
  */
 const handlePacket = (packet) => {
-  const { to, topic } = packet;
+  const { to, topic, host } = packet;
 
-  // Destined for a given local app route
+  // TODO: Dashboards require forwarding to another host
+  // How to await secondary response and pass back?
+  // Server uses library but doesn't handle many connections
+  if (host) {
+
+  }
+
+  // Check local app is available
   const target = clients.find((p) => p.appName === to);
   if (!target) {
     log.error(`Unknown: ${to}`);
-
-    // Send error response to sender
     bifrost.reply(packet, { error: 'Not Found' });
     return;
   }
 
-  // Forward to that host and app
+  // Forward to that local app
   target.send(JSON.stringify(packet));
   log.debug(`FWD ${to}:${topic}`);
 };

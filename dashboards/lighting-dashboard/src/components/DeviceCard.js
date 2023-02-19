@@ -1,7 +1,7 @@
 /**
  * CardContainer component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const CardContainer = () => fabricate('Column')
   .setStyles({
@@ -15,7 +15,7 @@ const CardContainer = () => fabricate('Column')
 /**
  * CardTitle component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const CardTitle = () => fabricate('Text')
   .setStyles({
@@ -28,7 +28,7 @@ const CardTitle = () => fabricate('Text')
 /**
  * CardSubtitle component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const CardSubtitle = () => fabricate('Text')
   .setStyles({
@@ -43,7 +43,7 @@ const CardSubtitle = () => fabricate('Text')
  *
  * @param {object} props - Component props.
  * @param {object} props.device - Device object.
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const CardStatus = ({ device }) => fabricate('Row')
   .setStyles({
@@ -52,14 +52,14 @@ const CardStatus = ({ device }) => fabricate('Row')
     flex: 1,
   })
   .setChildren([
-    CardSubtitle().setText(device.localIp || ''),
+    CardSubtitle().setText(device.localIp || '?'),
     fabricate('LED').onCreate((el) => el.setConnected(true)),
   ]);
 
 /**
  * CardTitleRpw component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} Fabricate component.
  */
 const CardTitleRow = () => fabricate('Row')
   .setStyles({
@@ -79,7 +79,7 @@ fabricate.declare('DeviceCard', ({ device }) => fabricate('Fader')
       .setChildren([
         CardTitleRow()
           .setChildren([
-            CardTitle().setText(device.hostname),
+            CardTitle().setText(device.deviceName),
             CardStatus({ device }),
           ]),
         fabricate('DeviceControls', { device }),
