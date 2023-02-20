@@ -40,13 +40,14 @@ const onClientMessage = async (client, data) => {
   try {
     packet = JSON.parse(data.toString());
     bifrost.validatePacket(packet);
+    log.debug(data.toString());
   } catch (e) {
     log.error(e);
     return;
   }
 
   const {
-    id, to, from, topic, token, host,
+    id, to, from, topic, token, message, fromHostname, toHostname,
   } = packet;
   if (topic !== TOPIC_HEARTBEAT) {
     log.debug(`REC ${bifrost.formatPacket(packet)}`);
@@ -57,8 +58,10 @@ const onClientMessage = async (client, data) => {
 
   // Client declaring app name (unique combination)
   if (topic === TOPIC_WHOAMI) {
-    // Annotate this client
+    const { hostname: whoamiHostname } = message;
     client.appName = from;
+    client.hostname = whoamiHostname;
+    log.info(`Registered: ${from}@${whoamiHostname}`);
     return;
   }
 
@@ -98,21 +101,18 @@ const onClientMessage = async (client, data) => {
     }
   }
 
-  // TODO: Dashboards require forwarding to another host
-  if (host) {
-    // Send with specific socket for reply content
-    // bifrost.send(packet, )
-  }
-
-  // Check local app is available
-  const target = clients.find((p) => p.appName === to);
+  // Find local app, or client with specified forwarding hostname if known
+  // If a reply, match the fromHostname, else the toHostname
+  const target = clients.find(
+    (p) => p.appName === to && (!toHostname || p.hostname === toHostname),
+  );
   if (!target) {
-    log.error(`Unknown: ${to}`);
+    log.error(`Unknown: ${to}@${toHostname}/${fromHostname}`);
     bifrost.reply(packet, { error: 'Not Found' });
     return;
   }
 
-  // Forward to that local app
+  // Forward to that app connection
   target.send(JSON.stringify(packet));
   log.debug(`FWD ${to}:${topic}`);
 };

@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 const { WebSocket } = require('ws');
+const { hostname } = require('os');
 const log = require('./log');
 const config = require('./config');
 const schema = require('./schema');
@@ -61,6 +62,8 @@ const PACKET_SCHEMA = {
     message: { type: 'object' },
     error: { type: 'string' },
     token: { type: 'string' },
+    toHostname: { type: 'string' },
+    fromHostname: { type: 'string' },
   },
 };
 
@@ -147,7 +150,16 @@ const startHeartbeats = () => {
  *
  * @returns {void}
  */
-const sendWhoAmI = () => localHostSocket.send(stringifyPacket('>>', { to: 'bifrost', topic: TOPIC_WHOAMI }));
+const sendWhoAmI = () => localHostSocket.send(
+  stringifyPacket(
+    '>>',
+    {
+      to: 'bifrost',
+      topic: TOPIC_WHOAMI,
+      message: { hostname: hostname() },
+    },
+  ),
+);
 
 /**
  * Expect messages on a given topic.
@@ -172,7 +184,7 @@ const registerTopic = (topic, cb, topicSchema) => {
  */
 const reply = async (packet, message) => {
   const {
-    id, from, topic, token,
+    id, from, topic, token, fromHostname,
   } = packet;
   if (!id) {
     log.error('Cannot reply to packet with no \'id\'');
@@ -182,8 +194,9 @@ const reply = async (packet, message) => {
 
   // Reply to sender app, including any token send originally
   const payload = {
+    to: from,                 // Intended for app that sent originally
+    toHostname: fromHostname, // Intended for device that sent originally
     replyId: id,
-    to: from,
     topic,
     message,
     token,
@@ -275,10 +288,7 @@ const connect = async ({ appName, server = SERVER } = {}) => new Promise((resolv
   }
 
   localHostSocket = new WebSocket(`ws://${server}:${PORT}`);
-  localHostSocket.on('open', () => {
-    log.info(`Socket open: ${server}`);
-    onConnected(resolve);
-  });
+  localHostSocket.on('open', () => onConnected(resolve));
   localHostSocket.on('message', onSocketMessage);
   localHostSocket.on('close', () => {
     connected = false;
@@ -320,16 +330,19 @@ const send = (data) => {
 
   // Send this message to the chosen app
   const {
-    to, from, topic, message = {}, token = TOKEN,
+    to, from, topic, message = {}, token = TOKEN, toHostname,
   } = data;
   const id = generateId();
   const packet = {
     id,
+    fromHostname: hostname(),
+
     to,
     from,
     topic,
     message,
     token,
+    toHostname,
   };
   localHostSocket.send(stringifyPacket('>>', packet));
 
@@ -374,7 +387,11 @@ const sendAndClose = (server, packet) => new Promise((resolve, reject) => {
     log.debug(`temp: open: ${server}`);
 
     // Send data, then resolve without reply
-    const payload = { id: generateId(), ...packet };
+    const payload = {
+      id: generateId(),
+      fromHostname: hostname(),
+      ...packet,
+    };
     tempSocket.send(stringifyPacket('temp>>', payload));
     tempSocket.close();
     resolve();

@@ -28,7 +28,7 @@ const { OPTIONS } = config.withSchema('fleet.js', {
 const CHECKIN_INTERVAL_MS = 1000 * 60 * 10;
 
 /**
- * Call bifrost checkin API for this device - should be only towards the fleet host (not this device)
+ * Call bifrost checkin API for this device - should be only for the fleet host (not this device)
  */
 const checkIn = async () => {
   try {
