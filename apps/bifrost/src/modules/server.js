@@ -101,10 +101,9 @@ const onClientMessage = async (client, data) => {
     }
   }
 
-  // Find local app, or client with specified forwarding hostname if known
-  // If a reply, match the fromHostname, else the toHostname
+  // Forward if a bifrost has connected by the hostname, else match a local app by name
   const target = clients.find(
-    (p) => p.appName === to && (!toHostname || p.hostname === toHostname),
+    (p) => (toHostname && p.hostname === toHostname) || p.appName === to,
   );
   if (!target) {
     log.error(`Unknown: ${to}@${toHostname}/${fromHostname}`);

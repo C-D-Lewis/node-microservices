@@ -184,7 +184,7 @@ const registerTopic = (topic, cb, topicSchema) => {
  */
 const reply = async (packet, message) => {
   const {
-    id, from, topic, token, fromHostname,
+    id, from, topic, token, fromHostname, toHostname,
   } = packet;
   if (!id) {
     log.error('Cannot reply to packet with no \'id\'');
@@ -194,8 +194,8 @@ const reply = async (packet, message) => {
 
   // Reply to sender app, including any token send originally
   const payload = {
-    to: from,                 // Intended for app that sent originally
-    toHostname: fromHostname, // Intended for device that sent originally
+    to: from, // Intended for app that sent originally
+    toHostname: toHostname && fromHostname, // Intended for original sender, if forwarded
     replyId: id,
     topic,
     message,
@@ -334,9 +334,11 @@ const send = (data) => {
   } = data;
   const id = generateId();
   const packet = {
+    // System generated
     id,
     fromHostname: hostname(),
 
+    // User data
     to,
     from,
     topic,
