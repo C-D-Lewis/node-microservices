@@ -40,7 +40,7 @@ const onClientMessage = async (client, data) => {
   try {
     packet = JSON.parse(data.toString());
     bifrost.validatePacket(packet);
-    log.debug(data.toString());
+    log.debug(`RAW: ${data.toString()}`);
   } catch (e) {
     log.error(e);
     return;
@@ -102,9 +102,12 @@ const onClientMessage = async (client, data) => {
   }
 
   // Forward if a bifrost has connected by the hostname, else match a local app by name
-  const target = clients.find(
-    (p) => (toHostname && p.hostname === toHostname) || (!toHostname && p.appName === to),
-  );
+  let target;
+  if (toHostname) {
+    target = clients.find((p) => p.hostname === toHostname);
+  } else {
+    target = clients.find((p) => p.appName === to);
+  }
   log.debug({ to, toHostname, target: target && target.hostname });
   if (!target) {
     log.error(`Unknown: ${to}@${toHostname}/${fromHostname}`);
