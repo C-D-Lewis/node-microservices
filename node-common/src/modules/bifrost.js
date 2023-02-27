@@ -181,8 +181,9 @@ const registerTopic = (topic, cb, topicSchema) => {
  *
  * @param {object} packet - Packet received.
  * @param {object} message - Response data.
+ * @param {object} [socket] - Socket override.
  */
-const reply = async (packet, message) => {
+const reply = async (packet, message, socket = localHostSocket) => {
   const {
     id, from, topic, token, fromHostname, toHostname,
   } = packet;
@@ -201,12 +202,13 @@ const reply = async (packet, message) => {
     message,
     token,
   };
-  if (!localHostSocket) {
-    log.error(`Can't reply as localHostSocket is not ready: ${JSON.stringify(message)}`);
+
+  if (!socket) {
+    log.error(`Can't reply as socket is not ready: ${JSON.stringify(message)}`);
     return;
   }
 
-  localHostSocket.send(stringifyPacket('<>', payload));
+  socket.send(stringifyPacket('<>', payload));
 };
 
 /**

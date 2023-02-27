@@ -67,7 +67,7 @@ const onClientMessage = async (client, data) => {
 
   // Provide connected apps (and isn't the reply)
   if (topic === TOPIC_KNOWN_APPS && id) {
-    bifrost.reply(packet, { apps: clients.map((p) => p.appName) });
+    bifrost.reply(packet, { apps: clients.map((p) => p.appName) }, client);
     return;
   }
 
@@ -79,7 +79,7 @@ const onClientMessage = async (client, data) => {
 
     // No token when one was expected
     if (!token) {
-      bifrost.reply(packet, { error: 'No authorization provided' });
+      bifrost.reply(packet, { error: 'No authorization provided' }, client);
       return;
     }
 
@@ -96,7 +96,7 @@ const onClientMessage = async (client, data) => {
         },
       });
     } catch (e) {
-      bifrost.reply(packet, { error: `Authorization check failed: ${e.message}` });
+      bifrost.reply(packet, { error: `Authorization check failed: ${e.message}` }, client);
       return;
     }
   }
@@ -105,10 +105,10 @@ const onClientMessage = async (client, data) => {
   const target = clients.find(
     (p) => (toHostname && p.hostname === toHostname) || p.appName === to,
   );
-  log.debug({ toHostname, target });
+  log.debug({ to, toHostname, target: target && target.hostname });
   if (!target) {
     log.error(`Unknown: ${to}@${toHostname}/${fromHostname}`);
-    bifrost.reply(packet, { error: 'Not Found' });
+    bifrost.reply(packet, { error: 'Not Found' }, client);
     return;
   }
 
