@@ -112,6 +112,9 @@ const onClientMessage = async (client, data) => {
     return;
   }
 
+  // toHostname served purpose - remove it
+  delete packet.toHostname;
+
   // Forward to that app connection
   target.send(JSON.stringify(packet));
   log.debug(`FWD ${to}:${topic}`);
