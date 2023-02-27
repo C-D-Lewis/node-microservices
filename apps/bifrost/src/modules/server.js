@@ -105,6 +105,7 @@ const onClientMessage = async (client, data) => {
   const target = clients.find(
     (p) => (toHostname && p.hostname === toHostname) || p.appName === to,
   );
+  log.debug({ toHostname, target });
   if (!target) {
     log.error(`Unknown: ${to}@${toHostname}/${fromHostname}`);
     bifrost.reply(packet, { error: 'Not Found' });
