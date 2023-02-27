@@ -103,7 +103,7 @@ const onClientMessage = async (client, data) => {
 
   // Forward if a bifrost has connected by the hostname, else match a local app by name
   const target = clients.find(
-    (p) => (toHostname && p.hostname === toHostname) || p.appName === to,
+    (p) => (toHostname && p.hostname === toHostname) || (!toHostname && p.appName === to),
   );
   log.debug({ to, toHostname, target: target && target.hostname });
   if (!target) {
