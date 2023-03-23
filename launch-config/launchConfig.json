@@ -43,7 +43,7 @@
       },
       {
         "location": "code/microdiary",
-        "start": "http-server -p 34279 &"
+        "start": "npm start &"
       },
       {
         "location": "code/discord-bot-norren",
