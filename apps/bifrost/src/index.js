@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 require('colors');
-const { log } = require('./node-common')(['log']);
+const { log, config } = require('./node-common')(['log', 'config']);
 const { scheduleCheckins } = require('./modules/fleet');
 const { openTheBifrost } = require('./modules/bifrost');
 const { startServer } = require('./modules/server');
@@ -22,7 +22,7 @@ const main = async () => {
   await api.setup();
 
   // FIXME: Wait for Attic to come up then check into fleet
-  setTimeout(scheduleCheckins, FLEET_CHECKIN_DELAY_MS);
+  if (config.OPTIONS.FLEET.HOST.length) setTimeout(scheduleCheckins, FLEET_CHECKIN_DELAY_MS);
 };
 
 main();
