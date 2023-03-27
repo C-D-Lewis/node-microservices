@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 require('colors');
-const { log, bifrost } = require('./node-common')(['log', 'bifrost']);
+const { log } = require('./node-common')(['log']);
 const { scheduleCheckins } = require('./modules/fleet');
 const { openTheBifrost } = require('./modules/bifrost');
 const { startServer } = require('./modules/server');

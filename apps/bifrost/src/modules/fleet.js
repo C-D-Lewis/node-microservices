@@ -24,6 +24,8 @@ const { OPTIONS } = config.withSchema('fleet.js', {
   },
 });
 
+const { sendAndClose } = bifrost;
+
 /** Checking interval */
 const CHECKIN_INTERVAL_MS = 1000 * 60 * 10;
 
@@ -42,7 +44,7 @@ const checkIn = async () => {
       deviceType: OPTIONS.FLEET.DEVICE_TYPE,
     };
 
-    await bifrost.sendAndClose(OPTIONS.FLEET.HOST, {
+    await sendAndClose(OPTIONS.FLEET.HOST, {
       to: 'bifrost',
       topic: 'checkIn',
       message: updatePayload,

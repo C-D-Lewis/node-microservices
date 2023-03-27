@@ -177,24 +177,24 @@ const registerTopic = (topic, cb, topicSchema) => {
 };
 
 /**
- * Send a reply to a received packet with an 'id'.
+ * Create a reply packet based on data to be sent.
  *
  * @param {object} packet - Packet received.
  * @param {object} message - Response data.
- * @param {object} [socket] - Socket override.
+ * @returns {object} Reply packet.
  */
-const reply = async (packet, message, socket = localHostSocket) => {
+const createReplyPacket = (packet, message) => {
   const {
     id, from, topic, token, fromHostname, toHostname,
   } = packet;
   if (!id) {
     log.error('Cannot reply to packet with no \'id\'');
     log.error(JSON.stringify(packet));
-    return;
+    return undefined;
   }
 
   // Reply to sender app, including any token send originally
-  const payload = {
+  return {
     to: from, // Intended for app that sent originally
     toHostname: toHostname && fromHostname, // Intended for original sender, if forwarded
     replyId: id,
@@ -202,13 +202,23 @@ const reply = async (packet, message, socket = localHostSocket) => {
     message,
     token,
   };
+};
 
-  if (!socket) {
-    log.error(`Can't reply as socket is not ready: ${JSON.stringify(message)}`);
+/**
+ * Send a reply to a received packet with an 'id'.
+ *
+ * @param {object} packet - Packet received.
+ * @param {object} message - Response data.
+ */
+const reply = async (packet, message) => {
+  const payload = createReplyPacket(packet, message);
+
+  if (!localHostSocket) {
+    log.error(`Can't reply as localHostSocket is not ready: ${JSON.stringify(message)}`);
     return;
   }
 
-  socket.send(stringifyPacket('<>', payload));
+  localHostSocket.send(stringifyPacket('<>', payload));
 };
 
 /**
@@ -424,4 +434,6 @@ module.exports = {
   formatPacket,
   generateId,
   sendAndClose,
+  createReplyPacket,
+  stringifyPacket,
 };

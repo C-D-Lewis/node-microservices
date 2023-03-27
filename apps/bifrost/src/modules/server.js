@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 const WebSocket = require('ws');
+const { hostname } = require('os');
 const { config, log, bifrost } = require('../node-common')(['config', 'log', 'bifrost']);
 
 const {
@@ -18,15 +19,44 @@ const {
   },
 });
 
+// Allowed exports - should NOT use the client common module for sockets
 const {
   PORT,
   TOPIC_WHOAMI,
   TOPIC_HEARTBEAT,
   TOPIC_KNOWN_APPS,
+
+  validatePacket,
+  formatPacket,
+  createReplyPacket,
+  stringifyPacket,
 } = bifrost;
+
+/** This hostname */
+const HOSTNAME = hostname();
 
 const clients = [];
 let server;
+
+/**
+ * Reply to a packet to a specific source.
+ * Should be used instead of client common module reply()
+ *
+ * @param {object} packet - Packet receieved.
+ * @param {object} message - Message data for reply.
+ * @param {object} socket - Sender socket.
+ * @returns {void}
+ */
+const reply = async (packet, message, socket) => {
+  const payload = createReplyPacket(packet, message);
+
+  if (!socket) {
+    log.error(`Can't reply as scoket is not ready: ${JSON.stringify(message)}`);
+    return;
+  }
+
+  socket.send(stringifyPacket('<>', payload));
+};
 
 /**
  * When a client sends a message.
@@ -39,7 +69,7 @@ const onClientMessage = async (client, data) => {
   let packet;
   try {
     packet = JSON.parse(data.toString());
-    bifrost.validatePacket(packet);
+    validatePacket(packet);
     log.debug(`RAW: ${data.toString()}`);
   } catch (e) {
     log.error(e);
@@ -50,7 +80,7 @@ const onClientMessage = async (client, data) => {
     id, to, from, topic, token, message, fromHostname, toHostname,
   } = packet;
   if (topic !== TOPIC_HEARTBEAT) {
-    log.debug(`REC ${bifrost.formatPacket(packet)}`);
+    log.debug(`REC ${formatPacket(packet)}`);
   }
 
   // Ignore heartbeats received
@@ -67,7 +97,7 @@ const onClientMessage = async (client, data) => {
 
   // Provide connected apps (and isn't the reply)
   if (topic === TOPIC_KNOWN_APPS && id) {
-    bifrost.reply(packet, { apps: clients.map((p) => p.appName) }, client);
+    reply(packet, { apps: clients.map((p) => p.appName) }, client);
     return;
   }
 
@@ -79,13 +109,13 @@ const onClientMessage = async (client, data) => {
 
     // No token when one was expected
     if (!token) {
-      bifrost.reply(packet, { error: 'No authorization provided' }, client);
+      reply(packet, { error: 'No authorization provided' }, client);
       return;
     }
 
     // Verify the token provided - throws on error returned
     try {
-      // Use library here as a local call
+      // Use library here as it's a local app call
       await bifrost.send({
         to: 'guestlist',
         topic: 'authorize',
@@ -96,22 +126,22 @@ const onClientMessage = async (client, data) => {
         },
       });
     } catch (e) {
-      bifrost.reply(packet, { error: `Authorization check failed: ${e.message}` }, client);
+      reply(packet, { error: `Authorization check failed: ${e.message}` }, client);
       return;
     }
   }
 
   // Forward if a bifrost has connected by the hostname, else match a local app by name
   let target;
-  if (toHostname) {
+  if (toHostname && toHostname !== HOSTNAME) {
     target = clients.find((p) => p.hostname === toHostname);
   } else {
     target = clients.find((p) => p.appName === to);
   }
   log.debug({ to, toHostname, target: target && target.hostname });
   if (!target) {
-    log.error(`Unknown: ${to}@${toHostname}/${fromHostname}`);
-    bifrost.reply(packet, { error: 'Not Found' }, client);
+    log.error(`Unknown: ${to}@${toHostname} from ${fromHostname}`);
+    reply(packet, { error: 'Not Found' }, client);
     return;
   }
 
@@ -120,7 +150,7 @@ const onClientMessage = async (client, data) => {
 
   // Forward to that app connection
   target.send(JSON.stringify(packet));
-  log.debug(`FWD ${to}:${topic}`);
+  log.debug(`FWD ${to}@${target.hostname}:${topic}`);
 };
 
 /**
