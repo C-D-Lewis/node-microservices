@@ -48,7 +48,7 @@
       {
         "location": "code/discord-bot-norren",
         "start_vanilla": "/home/pi/.nvm/versions/node/v16.17.1/bin/node src/index.js &",
-        "start": " /home/pi/.nvm/versions/node/v16.17.1/bin/npm start &"
+        "start": "/home/pi/.nvm/versions/node/v16.17.1/bin/npm run build && /home/pi/.nvm/versions/node/v16.17.1/bin/node dist/src/index.js &"
       }
     ],
     "stack-int": [
