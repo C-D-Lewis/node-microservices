@@ -17,7 +17,7 @@ const CHECKIN_MESSAGE_SCHEMA = {
  * Setup Conduit topic handlers.
  */
 const setup = async () => {
-  await bifrost.connect();
+  // await connectToHostServer();
 
   bifrost.registerTopic('checkIn', require('../api/checkIn'), CHECKIN_MESSAGE_SCHEMA);
 };

@@ -4,7 +4,10 @@ const { hostname } = require('os');
 const { config, log, bifrost } = require('../node-common')(['config', 'log', 'bifrost']);
 
 const {
-  OPTIONS: { AUTH_TOKENS },
+  OPTIONS: {
+    AUTH_TOKENS,
+    FLEET: { HOST },
+  },
 } = config.withSchema('server.js', {
   required: ['OPTIONS'],
   properties: {
@@ -14,6 +17,12 @@ const {
           type: 'boolean',
           description: 'Whether to verify auth tokens when not from localhost',
         },
+      },
+    },
+    FLEET: {
+      required: ['HOST'],
+      properties: {
+        HOST: { type: 'string' },
       },
     },
   },
@@ -190,7 +199,28 @@ const stopServer = () => {
   server.close();
 };
 
+/**
+ * Connect to host bifrost, avoiding use of bifrost.js to allow routing from it
+ * to local apps.
+ */
+const connectToHostServer = async () => {
+  const hostSocket = new WebSocket(`ws://${HOST}:${PORT}`);
+  hostSocket.on('open', () => log.info(`Connected to host: ${HOST}`));
+  hostSocket.on('message', (data) => onClientMessage(hostSocket, data));
+  hostSocket.on('close', () => {
+    log.debug('host: closed');
+
+    setTimeout(connectToHostServer, 5000);
+  });
+  hostSocket.on('error', (err) => {
+    log.error(err);
+    log.error('host: errored - closing');
+    hostSocket.close();
+  });
+};
+
 module.exports = {
   startServer,
   stopServer,
+  connectToHostServer,
 };
