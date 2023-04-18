@@ -43,7 +43,7 @@
       },
       {
         "location": "code/microdiary",
-        "start": "npm start &"
+        "start": "http-server -p 34279 &"
       },
       {
         "location": "code/discord-bot-norren",
@@ -63,10 +63,6 @@
       {
         "location": "code/node-microservices/apps/monitor",
         "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/dashboards/lighting-dashboard",
-        "start": "http-server -p 54448 &"
       }
     ],
     "stack-util": [
