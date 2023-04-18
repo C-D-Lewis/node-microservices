@@ -1,6 +1,6 @@
 # node-microservices
 
-![](misc/overview.png)
+![](docs/overview.png)
 
 This is an ongoing project (since September 2016) that encompasses a set of
 small Node microservices that work together to deliver private and public

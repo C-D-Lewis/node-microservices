@@ -1,8 +1,0 @@
-{
-  "LOG": {
-    "APP_NAME": "bifrost"
-  },
-  "BIFROST": {
-    "SERVER": "localhost"
-  }
-}

@@ -1,7 +1,10 @@
+#
+# Drives display for Cirroc project - icon, CPU, disk usage and RAID status
+#
+
 import time
 import subprocess
 import os
-from datetime import datetime
 
 from board import SCL, SDA
 import busio
@@ -39,7 +42,6 @@ icon_bg = Image.open(os.path.join(DIR, 'cloud.bmp'))
 while True:
   image_draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
-  # Get data
   cmd = 'cut -f 1 -d " " /proc/loadavg'
   cpuUsage = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
   cmd = 'df -h | awk \'$NF=="/mnt/raid1"{printf "%d/%d", $3,$2}\''
@@ -48,14 +50,11 @@ while True:
   diskPercent = subprocess.check_output(cmd, shell=True).decode("utf-8").replace('%', '').strip()
   cmd = 'cut -f 11 -d " " /proc/mdstat | grep \'\[\''
   devices = subprocess.check_output(cmd, shell=True).decode("utf-8").replace('[', '').replace(']', '')
-  now = datetime.now()
-  timeStr = now.strftime("%H:%M:%S")
 
-  # Draw text lines
-  image_draw.text((x, top),  timeStr, font=font, fill=255)
-  image_draw.text((x, top + 8),      "CPU | " + cpuUsage, font=font, fill=255)
-  image_draw.text((x, top + 16),  "Disk| " + diskUsage, font=font, fill=255)
-  image_draw.text((x, top + 25), "RAID| " + devices, font=font, fill=255)
+  image_draw.text((x, top),      "CPU | " + cpuUsage, font=font, fill=255)
+  image_draw.text((x, top + 8),  "Disk| " + diskUsage, font=font, fill=255)
+  image_draw.text((x, top + 16), "RAID| " + devices, font=font, fill=255)
+  image_draw.text((x, top + 25),  "", font=font, fill=255)
 
   # Healthy if 2/2
   healthy = devices[0] == devices[2]

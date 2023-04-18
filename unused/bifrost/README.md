@@ -37,5 +37,5 @@ bifrost.registerTopic('getTime', () => ({ time: Date.now() }));
 In another app:
 
 ```js
-const { time } = await bifrost.send('TimeApp', 'getTime');
+const { time } = await bifrost.send({ to: 'TimeApp', topic: 'getTime' });
 ```
