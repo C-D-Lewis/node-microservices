@@ -44,11 +44,6 @@
       {
         "location": "code/microdiary",
         "start": "http-server -p 34279 &"
-      },
-      {
-        "location": "code/discord-bot-norren",
-        "start_vanilla": "/home/pi/.nvm/versions/node/v16.17.1/bin/node src/index.js &",
-        "start": "/home/pi/.nvm/versions/node/v16.17.1/bin/npm run build && /home/pi/.nvm/versions/node/v16.17.1/bin/node dist/src/index.js &"
       }
     ],
     "stack-int": [
@@ -67,6 +62,11 @@
       {
         "location": "code/node-microservices/apps/monitor",
         "start": "npm start &"
+      },
+      {
+        "location": "code/discord-bot-norren",
+        "start_vanilla": "/home/pi/.nvm/versions/node/v16.17.1/bin/node src/index.js &",
+        "start": "/home/pi/.nvm/versions/node/v16.20.0/bin/npm start &"
       }
     ],
     "stack-util": [],
