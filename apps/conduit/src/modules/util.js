@@ -1,6 +1,6 @@
 const { config, log, requestAsync } = require('../node-common')(['config', 'log', 'requestAsync']);
 
-const { SERVER } = config.withSchema('conduit.js', {
+config.addPartialSchema({
   required: ['SERVER'],
   properties: {
     SERVER: {
@@ -11,6 +11,8 @@ const { SERVER } = config.withSchema('conduit.js', {
     },
   },
 });
+
+const { SERVER } = config.get(['SERVER']);
 
 /**
  * Send a 'bad request' response.

@@ -4,7 +4,7 @@ const log = require('./log');
 const config = require('./config');
 const ip = require('./ip');
 
-const { CLACKS } = config.withSchema('clacks.js', {
+config.addPartialSchema({
   required: ['CLACKS'],
   properties: {
     CLACKS: {
@@ -18,6 +18,8 @@ const { CLACKS } = config.withSchema('clacks.js', {
     },
   },
 });
+
+const { CLACKS } = config.get(['CLACKS']);
 
 /** Get hostnames topic */
 const TOPIC_GLOBAL_GET_HOSTNAMES = '/global/getHostnames';

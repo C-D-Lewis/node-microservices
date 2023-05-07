@@ -1,7 +1,7 @@
 const config = require('./config');
 const requestAsync = require('./requestAsync');
 
-const { CONDUIT } = config.withSchema('attic.js', {
+config.addPartialSchema({
   required: ['CONDUIT'],
   properties: {
     CONDUIT: {
@@ -13,6 +13,8 @@ const { CONDUIT } = config.withSchema('attic.js', {
     },
   },
 });
+
+const { CONDUIT } = config.get(['CONDUIT']);
 
 /** Conduit port */
 const CONDUIT_PORT = 5959;

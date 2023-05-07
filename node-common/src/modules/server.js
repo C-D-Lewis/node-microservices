@@ -2,7 +2,7 @@ const express = require('express');
 const config = require('./config');
 const log = require('./log');
 
-const { SERVER } = config.withSchema('server.js', {
+config.addPartialSchema({
   required: ['SERVER'],
   properties: {
     SERVER: {
@@ -13,6 +13,8 @@ const { SERVER } = config.withSchema('server.js', {
     },
   },
 });
+
+const { SERVER } = config.get(['SERVER']);
 
 let app;
 let server;

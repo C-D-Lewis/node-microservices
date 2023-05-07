@@ -2,7 +2,7 @@ const fs = require('fs');
 const config = require('./config');
 require('colors');
 
-const { LOG } = config.withSchema('log.js', {
+config.addPartialSchema({
   required: ['LOG'],
   properties: {
     LOG: {
@@ -13,6 +13,8 @@ const { LOG } = config.withSchema('log.js', {
     },
   },
 });
+
+const { LOG } = config.get(['LOG']);
 
 /** Log start decor width */
 const DECOR_WIDTH = 80; // process.stdout.columns;

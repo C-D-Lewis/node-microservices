@@ -3,7 +3,7 @@ const {
   config, attic, ip, log,
 } = require('../node-common')(['config', 'attic', 'ip', 'log']);
 
-const { OPTIONS } = config.withSchema('fleet.js', {
+config.addPartialSchema({
   required: ['OPTIONS'],
   properties: {
     OPTIONS: {
@@ -23,6 +23,8 @@ const { OPTIONS } = config.withSchema('fleet.js', {
     },
   },
 });
+
+const { OPTIONS } = config.get(['OPTIONS']);
 
 /** Attic key for fleet list data */
 const FLEET_LIST_KEY = 'fleetList';

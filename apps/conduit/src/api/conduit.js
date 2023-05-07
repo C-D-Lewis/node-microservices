@@ -6,7 +6,7 @@ const {
   sendBadRequest, sendNotFound, sendPacket, sendNotAuthorized,
 } = require('../modules/util');
 
-const { SERVER, OPTIONS } = config.withSchema('conduit.js', {
+config.addPartialSchema({
   required: ['SERVER'],
   properties: {
     SERVER: {
@@ -22,6 +22,8 @@ const { SERVER, OPTIONS } = config.withSchema('conduit.js', {
     },
   },
 });
+
+const { OPTIONS, SERVER } = config.get(['OPTIONS', 'SERVER']);
 
 /** Default destination host (same machine) */
 const DEFAULT_HOST_LOCAL = 'localhost';
