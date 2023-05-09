@@ -4,7 +4,7 @@ const {
 const mongo = require('./mongo');
 const gistSync = require('./gistSync');
 
-const { STORAGE_MODE } = config.withSchema('storage.js', {
+config.addPartialSchema({
   required: ['STORAGE_MODE'],
   properties: {
     STORAGE_MODE: {
@@ -13,6 +13,8 @@ const { STORAGE_MODE } = config.withSchema('storage.js', {
     },
   },
 });
+
+const { STORAGE_MODE } = config.get(['STORAGE_MODE']);
 
 /** Implementation of each storage mode using same interface */
 const MODE_HANDLERS = {

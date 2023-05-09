@@ -1,10 +1,11 @@
-const { log, conduit } = require('./node-common')(['log', 'conduit']);
+const { log, conduit, config } = require('./node-common')(['log', 'conduit', 'config']);
 const server = require('./modules/server');
 
 /**
  * The main function.
  */
 const main = () => {
+  config.validate();
   log.begin();
 
   // This should launch before conduit, but keep trying to connect
@@ -12,7 +13,7 @@ const main = () => {
     try {
       await conduit.register();
       clearInterval(handle);
-    } catch(e) {
+    } catch (e) {
       log.error(`Failed to register with conduit, is it up yet? ${e.message}`);
     }
   }, 5000);

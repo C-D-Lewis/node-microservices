@@ -4,6 +4,8 @@ const {
   config, testing, requestAsync,
 } = require('../src/node-common')(['config', 'testing', 'requestAsync']);
 
+const { SERVER } = config.get(['SERVER']);
+
 const TEST_WEBHOOK = {
   url: `/testWebhook${Date.now()}`,
   packet: { to: 'attic', topic: 'webhookReceived' },
@@ -21,7 +23,7 @@ describe('API', () => {
 
   describe('/status', () => {
     it('should return 200 / OK', async () => {
-      const url = `http://localhost:${config.SERVER.PORT}/status`;
+      const url = `http://localhost:${SERVER.PORT}/status`;
       const data = await requestAsync({ url });
 
       expect(data.response.statusCode).to.equal(200);
@@ -44,7 +46,7 @@ describe('API', () => {
 
   describe('Hit TEST_WEBHOOK', () => {
     it('should return 200 / OK', async () => {
-      const url = `http://localhost:${config.SERVER.PORT}${TEST_WEBHOOK.url}`;
+      const url = `http://localhost:${SERVER.PORT}${TEST_WEBHOOK.url}`;
       const data = await requestAsync({ url, method: 'POST' });
 
       expect(data.response.statusCode).to.equal(200);
@@ -80,7 +82,7 @@ describe('API', () => {
 
   describe('Miss TEST_WEBHOOK', () => {
     it('should return 404 / Not Found', async () => {
-      const url = `http://localhost:${config.SERVER.PORT}${TEST_WEBHOOK.url}`;
+      const url = `http://localhost:${SERVER.PORT}${TEST_WEBHOOK.url}`;
       const data = await requestAsync({ url, method: 'POST' });
 
       expect(data.response.statusCode).to.equal(404);

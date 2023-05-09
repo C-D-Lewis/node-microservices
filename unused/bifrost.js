@@ -6,10 +6,7 @@ const log = require('./log');
 const config = require('./config');
 const schema = require('./schema');
 
-const {
-  BIFROST: { SERVER, TOKEN },
-  LOG: { APP_NAME },
-} = config.withSchema('bifrost.js', {
+config.addPartialSchema({
   required: ['BIFROST', 'LOG'],
   properties: {
     BIFROST: {
@@ -36,6 +33,11 @@ const {
     },
   },
 });
+
+const {
+  BIFROST: { SERVER, TOKEN },
+  LOG: { APP_NAME },
+} = config.get(['BIFROST', 'LOG']);
 
 /** Fixed Norse port */
 const PORT = 3918;

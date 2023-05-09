@@ -3,6 +3,7 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const schema = require('./schema');
+require('colors');
 
 /**
  * Get app install path.
@@ -17,7 +18,7 @@ const DEFAULT_PATH = `${getInstallPath()}/config-default.json`;
 const CONFIG_PATH = `${getInstallPath()}/config.json`;
 
 let config = {};
-const builtSchema = { properties: {} };
+const configSchema = { properties: {} };
 
 /**
  * Compare expected keys with those present.
@@ -32,27 +33,27 @@ const deepCompareKeys = (spec, data, parents = []) => {
   const dataKeys = Object.keys(data);
 
   specKeys.forEach((s) => {
+    const thisSpec = spec.properties[s];
+
     // This spec has all required keys
     if (!dataKeys.includes(s)) {
-      throw new Error(`Missing config: ${parents.join(' > ')} > ${s}`);
+      console.log(`Missing config: ${parents.join(' > ')} > ${s}`.yellow);
     }
 
     // Go deeper?
-    if (spec.properties[s].properties) {
-      deepCompareKeys(spec.properties[s], data[s], [...parents, s]);
+    if (thisSpec.properties) {
+      deepCompareKeys(thisSpec, data[s], [...parents, s]);
     }
   });
 
-  // If not top-level, check for unexpected (does not work with partial schemas)
-  if (parents.length) {
-    dataKeys.forEach((d) => {
-      if (!specKeys.includes(d)) {
-        console.log(
-          `Unexpected config: ${parents.join(' > ')} > ${d}: ${JSON.stringify(data[d])}`,
-        );
-      }
-    });
-  }
+  // If not top-level, check for unexpected
+  dataKeys.forEach((d) => {
+    if (!specKeys.includes(d)) {
+      console.log(
+        `Unexpected config: ${parents.join(' > ')} > ${d}: ${JSON.stringify(data[d])}`.yellow,
+      );
+    }
+  });
 };
 
 /**
@@ -74,9 +75,8 @@ const ensureConfigFile = () => {
   const defaultConfig = JSON.parse(fs.readFileSync(DEFAULT_PATH, 'utf8'));
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(defaultConfig, null, 2), 'utf8');
   console.log('Set up new config.json from config-default.json - may require additional configuration.');
+  config = defaultConfig;
 };
-
-ensureConfigFile();
 
 /**
  * Add a fragment of config.
@@ -93,19 +93,26 @@ const addFragment = (partial, parentSpec, parentKey) => {
   }
 
   // Object type
-  Object.entries(partial.properties).forEach(([k, spec]) => {
+  Object.entries(partial.properties).forEach(([prop, propSpec]) => {
     // New property
-    if (!parentSpec.properties[k]) {
-      parentSpec.properties[k] = spec;
+    if (!parentSpec.properties[prop]) {
+      parentSpec.properties[prop] = propSpec;
       return;
     }
 
     // Exists, but simple type
-    if (!spec.properties) return;
+    if (!propSpec.properties) return;
 
     // Exists with sub-properties, merge them
-    Object.entries(spec.properties).forEach(([childK, childSpec]) => {
-      addFragment(childSpec, parentSpec.properties[k], childK);
+    Object.entries(propSpec.properties).forEach(([childK, childSpec]) => {
+      // Add child simple type
+      if (!childSpec.properties) {
+        parentSpec.properties[prop].properties[childK] = childSpec;
+        return;
+      }
+
+      // Add deeper object spec
+      addFragment(childSpec.properties, parentSpec.properties[prop], childK);
     });
   });
 };
@@ -116,58 +123,39 @@ const addFragment = (partial, parentSpec, parentKey) => {
  * @param {object} partial - Partial schema to add, from top-level perspective.
  * @returns {void}
  */
-const addPartialSchema = (partial) => addFragment(partial, builtSchema);
+const addPartialSchema = (partial) => addFragment(partial, configSchema);
 
 /**
  * Validate all schema assemnbled in require phase and return requested.
  *
- * @param {Array<string>} topLevelNames - Top-level config names.
+ * @param {Array<string>} names - Top-level config names.
  * @returns {object} Object of requested config.
  */
-const get = (topLevelNames) => {
+const get = (names) => names.reduce((acc, name) => {
+  if (!config[name]) throw new Error(`Unknown config name: ${name}`);
+
+  return { ...acc, [name]: config[name] };
+}, {});
+
+/**
+ * Validate built schema after all modules are required. Currently must be done
+ * manually as part of app launch.
+ *
+ * @throws {Error} if validation fails.
+ */
+const validate = () => {
   // Schema valid?
-  if (!schema(config, builtSchema)) throw new Error('Schema failed validation.');
+  if (!schema(config, configSchema)) throw new Error('Schema failed validation.');
 
   // Redundant keys?
-  deepCompareKeys(builtSchema, config);
-
-  return topLevelNames.reduce((acc, name) => ({ ...acc, [name]: config[name] }), {});
+  deepCompareKeys(configSchema, config);
 };
 
-// Behave as if we required config.json directly
+ensureConfigFile();
+
 module.exports = {
   getInstallPath,
   addPartialSchema,
   get,
+  validate,
 };
-
-// Self-test
-// addPartialSchema({
-//   properties: {
-//     FOO: { type: 'string' },
-//   },
-// });
-// addPartialSchema({
-//   properties: {
-//     OBJ: {
-//       properties: {
-//         A: { type: 'string' },
-//       },
-//     },
-//   },
-// });
-// addPartialSchema({
-//   properties: {
-//     LEVEL_1: {
-//       properties: {
-//         LEVEL_2: {
-//           properties: {
-//             B: { type: 'string' },
-//           },
-//         },
-//       },
-//     },
-//   },
-// });
-
-// console.log(JSON.stringify(builtSchema, null, 2));

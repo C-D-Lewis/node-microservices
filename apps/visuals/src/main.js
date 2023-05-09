@@ -1,4 +1,4 @@
-const { log } = require('./node-common')(['log']);
+const { log, config } = require('./node-common')(['log', 'config']);
 const { createSpotifyClient } = require('./modules/spotifyAuth');
 const api = require('./modules/api');
 
@@ -6,8 +6,10 @@ const api = require('./modules/api');
  * The main function.
  */
 const main = async () => {
+  config.validate();
   log.begin();
-  api.setup();
+
+  await api.setup();
 
   try {
     await createSpotifyClient();

@@ -3,12 +3,7 @@ const WebSocket = require('ws');
 const { hostname } = require('os');
 const { config, log, bifrost } = require('../node-common')(['config', 'log', 'bifrost']);
 
-const {
-  OPTIONS: {
-    AUTH_TOKENS,
-    FLEET: { HOST },
-  },
-} = config.withSchema('server.js', {
+config.addPartialSchema({
   required: ['OPTIONS'],
   properties: {
     OPTIONS: {
@@ -27,6 +22,13 @@ const {
     },
   },
 });
+
+const {
+  OPTIONS: {
+    AUTH_TOKENS,
+    FLEET: { HOST },
+  },
+} = config.get(['OPTIONS']);
 
 // Allowed exports - should NOT use the client common module for sockets
 const {

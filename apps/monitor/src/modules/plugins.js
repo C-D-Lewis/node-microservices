@@ -1,11 +1,13 @@
 const { config, log } = require('../node-common')(['config', 'log']);
 
-const { PLUGINS } = config.withSchema('plugins.js', {
+config.addPartialSchema({
   required: ['PLUGINS'],
   properties: {
     PLUGINS: { type: 'array', items: { type: 'object' } },
   },
 });
+
+const { PLUGINS } = config.get(['PLUGINS']);
 
 /** Interval between checks for handleAt() */
 const HANDLE_AT_INTERVAL_MS = 1000;

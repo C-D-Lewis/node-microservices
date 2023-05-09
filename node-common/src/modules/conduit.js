@@ -7,7 +7,7 @@ const log = require('./log');
 const requestAsync = require('./requestAsync');
 const schema = require('./schema');
 
-const { CONDUIT } = config.withSchema('conduit.js', {
+config.addPartialSchema({
   required: ['CONDUIT'],
   properties: {
     CONDUIT: {
@@ -20,6 +20,8 @@ const { CONDUIT } = config.withSchema('conduit.js', {
     },
   },
 });
+
+const { CONDUIT } = config.get(['CONDUIT']);
 
 /** Fixed conduit port */
 const PORT = 5959;

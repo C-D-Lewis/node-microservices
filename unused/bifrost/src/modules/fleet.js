@@ -3,7 +3,7 @@ const {
   config, ip, log, bifrost,
 } = require('../node-common')(['config', 'ip', 'log', 'bifrost']);
 
-const { OPTIONS } = config.withSchema('fleet.js', {
+config.addPartialSchema({
   required: ['OPTIONS'],
   properties: {
     OPTIONS: {
@@ -23,6 +23,8 @@ const { OPTIONS } = config.withSchema('fleet.js', {
     },
   },
 });
+
+const { OPTIONS } = config.get(['OPTIONS']);
 
 const { sendAndClose } = bifrost;
 

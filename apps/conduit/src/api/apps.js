@@ -2,11 +2,13 @@ const { config } = require('../node-common')(['config']);
 const allocator = require('../modules/allocator');
 const util = require('../modules/util');
 
+const { SERVER } = config.get(['SERVER']);
+
 /**
  * Get the status of an allocated app, and construct the response piece.
  *
  * @param {object} item - Allocator item.
- * @returns {Promise<Object>}
+ * @returns {Promise<Object>} Status result
  */
 const getAppStatus = async (item) => {
   const res = await util.sendPacket({ to: item.app, topic: 'status' });
@@ -29,7 +31,7 @@ const respondWithApps = async (req, res) => {
   // Report conduit itself for completeness
   result.push({
     app: 'conduit',
-    port: config.SERVER.PORT,
+    port: SERVER.PORT,
     status: 'OK',
     pid: process.pid,
   });

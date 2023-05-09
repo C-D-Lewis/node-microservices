@@ -5,7 +5,7 @@ const api = require('./modules/api');
 const { handlePacketWebhook } = require('./api/add');
 const { ATTIC_KEY_WEBHOOKS, setupHandler } = require('./modules/webhooks');
 
-const { OPTIONS: { ENSURED_WEBHOOKS } } = config.withSchema('main.js', {
+config.addPartialSchema({
   required: ['OPTIONS'],
   properties: {
     OPTIONS: {
@@ -16,6 +16,8 @@ const { OPTIONS: { ENSURED_WEBHOOKS } } = config.withSchema('main.js', {
     },
   },
 });
+
+const { OPTIONS: { ENSURED_WEBHOOKS } } = config.get(['OPTIONS']);
 
 /**
  * Show the stored webhooks, or initialise if missing.
@@ -54,6 +56,7 @@ const initEnsuredWebhooks = async () => {
  * The main function.
  */
 const main = async () => {
+  config.validate();
   log.begin();
 
   try {
@@ -68,7 +71,7 @@ const main = async () => {
   await initEnsuredWebhooks();
 
   setupHandler();
-  api.setup();
+  await api.setup();
 };
 
 main();

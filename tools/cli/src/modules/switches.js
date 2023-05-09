@@ -12,6 +12,11 @@ const SWITCH_LIST = [
     constant: 'TOKEN',
     valueLabel: '<token>',
   },
+  {
+    name: '--verbose',
+    about: 'Show launched app logs',
+    constant: 'VERBOSE',
+  },
 ];
 
 /**

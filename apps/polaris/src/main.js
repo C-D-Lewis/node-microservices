@@ -1,15 +1,16 @@
-const { log, conduit } = require('./node-common')(['log', 'conduit']);
+const { log, conduit, config } = require('./node-common')(['log', 'conduit', 'config']);
 const ipMonitor = require('./modules/ipMonitor');
 
 /**
  * The main function.
  */
 const main = async () => {
+  config.validate();
+
   log.begin();
 
   await conduit.register();
 
-  // Setup ipMonitor
   ipMonitor.start();
 };
 

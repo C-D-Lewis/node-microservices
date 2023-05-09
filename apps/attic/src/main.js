@@ -1,4 +1,4 @@
-const { log } = require('./node-common')(['log']);
+const { log, config } = require('./node-common')(['log', 'config']);
 const api = require('./modules/api');
 const storage = require('./modules/storage');
 
@@ -6,9 +6,13 @@ const storage = require('./modules/storage');
  * The main function.
  */
 const main = async () => {
+  config.validate();
+
   log.begin();
+
   storage.init();
-  api.setup();
+
+  await api.setup();
 };
 
 main();

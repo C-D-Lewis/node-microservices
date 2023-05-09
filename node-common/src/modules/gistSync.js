@@ -6,7 +6,7 @@ const fs = require('fs');
 const config = require('./config');
 const log = require('./log');
 
-const { GIST_SYNC } = config.withSchema('gist-sync.js', {
+config.addPartialSchema({
   required: ['GIST_SYNC'],
   properties: {
     GIST_SYNC: {
@@ -21,10 +21,12 @@ const { GIST_SYNC } = config.withSchema('gist-sync.js', {
 });
 
 const {
-  SYNC_INTERVAL_M,
-  URL,
-  DIR,
-} = GIST_SYNC;
+  GIST_SYNC: {
+    SYNC_INTERVAL_M,
+    URL,
+    DIR,
+  },
+} = config.get(['GIST_SYNC']);
 
 /** Directory to clone gist */
 const GIST_DIR = `${config.getInstallPath()}/${DIR}`;

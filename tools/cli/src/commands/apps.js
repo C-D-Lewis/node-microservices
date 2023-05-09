@@ -14,7 +14,6 @@ const CONDUIT_PORT = 5959;
  */
 const fetchRunningApps = async () => {
   const finalHost = switches.HOST || 'localhost';
-
   return fetch(`http://${finalHost}:${CONDUIT_PORT}/apps`).then((r) => r.json());
 };
 
@@ -28,17 +27,25 @@ const start = async (appName) => {
   if (!existsSync(appDir)) throw new Error(`App ${appName} does not exist`);
 
   // Launch and detatch process
-  const options = { stdio: 'ignore', shell: true, detatched: true };
+  const options = {
+    stdio: switches.VERBOSE ? 'pipe' : 'ignore',
+    shell: true,
+    detatched: true,
+  };
   const child = spawn(`cd ${appDir} && npm start`, options);
-  // Remove stdio option above and uncomment to monitor
-  // child.stdout.on('data', (data) => {
-  //   console.log(`${appName}: ${data}`);
-  // });
+
+  if (switches.VERBOSE) {
+    child.stdout.on('data', (data) => {
+      console.log(`${appName}: ${data}`);
+    });
+  }
+
   console.log(`Starting ${appName}...`);
   child.unref();
 
   // Check it worked
   setTimeout(async () => {
+    console.log('Verifying launch...');
     const apps = await fetchRunningApps();
     const found = apps.find((p) => p.app === appName);
     if (found && found.status === 'OK') {

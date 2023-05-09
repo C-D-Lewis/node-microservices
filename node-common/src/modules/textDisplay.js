@@ -9,7 +9,7 @@ const PIOLED_LIB_PATH = `${__dirname}/../lib/pioled-text.py`;
 /** Path to supporting Python script */
 const SSD1306_LIB_PATH = `${__dirname}/../lib/ssd1306.py`;
 
-const { TEXT_DISPLAY } = config.withSchema('textDisplay.js', {
+config.addPartialSchema({
   required: ['TEXT_DISPLAY'],
   properties: {
     TEXT_DISPLAY: {
@@ -23,9 +23,11 @@ const { TEXT_DISPLAY } = config.withSchema('textDisplay.js', {
 });
 
 const {
-  USE_HARDWARE,
-  HARDWARE_TYPE,
-} = TEXT_DISPLAY;
+  TEXT_DISPLAY: {
+    USE_HARDWARE,
+    HARDWARE_TYPE,
+  },
+} = config.get(['TEXT_DISPLAY']);
 
 /** Maximum number of lines of text supported */
 const NUM_LINES = {

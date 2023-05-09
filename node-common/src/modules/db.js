@@ -1,7 +1,7 @@
 const fs = require('fs');
 const config = require('./config');
 
-const { DB } = config.withSchema('db.js', {
+config.addPartialSchema({
   required: ['DB'],
   properties: {
     DB: {
@@ -12,6 +12,8 @@ const { DB } = config.withSchema('db.js', {
     },
   },
 });
+
+const { DB } = config.get(['DB']);
 
 /** Path to DB file */
 const DB_PATH = `${config.getInstallPath()}/${DB.FILE}`;

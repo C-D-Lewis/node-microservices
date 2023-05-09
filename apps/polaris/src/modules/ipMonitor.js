@@ -1,7 +1,7 @@
 const AWSSDK = require('aws-sdk');
 const { config, log, ip } = require('../node-common')(['config', 'log', 'ip']);
 
-const { OPTIONS, AWS } = config.withSchema('server.js', {
+config.addPartialSchema({
   required: ['OPTIONS', 'AWS'],
   properties: {
     OPTIONS: {
@@ -11,7 +11,13 @@ const { OPTIONS, AWS } = config.withSchema('server.js', {
       },
     },
     AWS: {
-      required: ['ACCESS_KEY_ID', 'SECRET_ACCESS_KEY', 'REGION', 'HOSTED_ZONE_NAME', 'RECORD_NAME_PREFIX'],
+      required: [
+        'ACCESS_KEY_ID',
+        'SECRET_ACCESS_KEY',
+        'REGION',
+        'HOSTED_ZONE_NAME',
+        'RECORD_NAME_PREFIX',
+      ],
       properties: {
         ACCESS_KEY_ID: { type: 'string' },
         SECRET_ACCESS_KEY: { type: 'string' },
@@ -23,10 +29,14 @@ const { OPTIONS, AWS } = config.withSchema('server.js', {
   },
 });
 
-const { UPDATE_INTERVAL_M } = OPTIONS;
 const {
-  ACCESS_KEY_ID, SECRET_ACCESS_KEY, REGION, HOSTED_ZONE_NAME, RECORD_NAME_PREFIX,
-} = AWS;
+  OPTIONS: {
+    UPDATE_INTERVAL_M,
+  },
+  AWS: {
+    ACCESS_KEY_ID, SECRET_ACCESS_KEY, REGION, HOSTED_ZONE_NAME, RECORD_NAME_PREFIX,
+  },
+} = config.get(['OPTIONS', 'AWS']);
 
 AWSSDK.config.update({
   accessKeyId: ACCESS_KEY_ID,

@@ -1,13 +1,17 @@
-const { log } = require('./node-common')(['log']);
+const { log, config } = require('./node-common')(['log', 'config']);
 const api = require('./modules/api');
 const adminPassword = require('./modules/adminPassword');
 
 /**
  * The main function.
  */
-const main = () => {
+const main = async () => {
+  config.validate();
+
   log.begin();
-  api.setup();
+
+  await api.setup();
+
   adminPassword.waitForFile();
 };
 

@@ -1,10 +1,12 @@
 const { expect } = require('chai');
 const { config, requestAsync } = require('../src/node-common')(['config', 'requestAsync']);
 
+const { SERVER } = config.get(['SERVER']);
+
 describe('API', () => {
   describe('/status', () => {
     it('should return 200 / \'OK\'', async () => {
-      const url = `http://localhost:${config.SERVER.PORT}/status`;
+      const url = `http://localhost:${SERVER.PORT}/status`;
       const data = await requestAsync({ url });
 
       expect(data.response.statusCode).to.equal(200);
@@ -14,7 +16,7 @@ describe('API', () => {
 
   describe('/port', () => {
     it('should return 200 / { port }', async () => {
-      const url = `http://localhost:${config.SERVER.PORT}/port`;
+      const url = `http://localhost:${SERVER.PORT}/port`;
       const data = await requestAsync({
         url,
         json: { app: 'attic', pid: 0 },  // Next test depends on response from attic
@@ -28,7 +30,7 @@ describe('API', () => {
   describe('/apps', () => {
     it('should return 200 / [{ app, port, status }]', async () => {
       const data = await requestAsync({
-        url: `http://localhost:${config.SERVER.PORT}/apps`,
+        url: `http://localhost:${SERVER.PORT}/apps`,
       });
 
       const json = JSON.parse(data.body);

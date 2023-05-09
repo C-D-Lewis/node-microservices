@@ -5,7 +5,7 @@ const log = require('./log');
 /** Supported HATs and other LED hardware */
 const SUPPORTED_BOARDS = ['mote', 'blinkt'];
 
-const { LEDS } = config.withSchema('leds.js', {
+config.addPartialSchema({
   required: ['LEDS'],
   properties: {
     LEDS: {
@@ -21,11 +21,13 @@ const { LEDS } = config.withSchema('leds.js', {
 });
 
 const {
-  ATTENUATION_FACTOR,
-  BRIGHTNESS,
-  USE_HARDWARE,
-  HARDWARE_TYPE,
-} = LEDS;
+  LEDS: {
+    ATTENUATION_FACTOR,
+    BRIGHTNESS,
+    USE_HARDWARE,
+    HARDWARE_TYPE,
+  },
+} = config.get(['LEDS']);
 
 log.assert(SUPPORTED_BOARDS.includes(HARDWARE_TYPE), 'Valid hardware type', true);
 

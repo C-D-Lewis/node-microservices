@@ -1,4 +1,4 @@
-const { conduit, log } = require('./node-common')(['config', 'conduit', 'log']);
+const { conduit, log, config } = require('./node-common')(['conduit', 'log', 'config']);
 const plugins = require('./modules/plugins');
 const api = require('./modules/api');
 
@@ -18,6 +18,9 @@ const main = async () => {
   });
 
   plugins.loadAll();
+
+  // Uniquely, allow plugins to require node-common module with config schemas
+  config.validate();
 };
 
 main();

@@ -3,7 +3,7 @@ const os = require('os');
 const config = require('./config');
 const log = require('./log');
 
-const { SES } = config.withSchema('ses.js', {
+config.addPartialSchema({
   required: ['SES'],
   properties: {
     SES: {
@@ -19,11 +19,13 @@ const { SES } = config.withSchema('ses.js', {
 });
 
 const {
-  TO_ADDRESS,
-  SENDER_ADDRESS,
-  AWS_ACCESS_KEY_ID,
-  AWS_SECRET_ACCESS_KEY,
-} = SES;
+  SES: {
+    TO_ADDRESS,
+    SENDER_ADDRESS,
+    AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY,
+  },
+} = config.get(['SES']);
 
 const credentials = new AWS.Credentials({
   accessKeyId: AWS_ACCESS_KEY_ID,

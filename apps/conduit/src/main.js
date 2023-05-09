@@ -1,4 +1,4 @@
-const { log } = require('./node-common')(['log']);
+const { log, config } = require('./node-common')(['log', 'config']);
 const api = require('./modules/api');
 const clacksRelay = require('./modules/clacksRelay');
 const { scheduleCheckins } = require('./modules/fleet');
@@ -10,10 +10,11 @@ const FLEET_CHECKIN_DELAY_MS = 30000;
  * The main function.
  */
 const main = async () => {
+  config.validate();
   log.begin();
+
   await api.setup();
 
-  // Subscribe to clacks
   clacksRelay.setup();
 
   // Wait for Attic to come up

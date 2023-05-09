@@ -15,7 +15,7 @@ const {
   attic, conduit, config, log,
 } = require('../node-common')(['attic', 'conduit', 'config', 'log']);
 
-const { SPOTIFY, AUTH_ATTIC } = config.withSchema('spotifyAuth.js', {
+config.addPartialSchema({
   required: ['SPOTIFY', 'AUTH_ATTIC'],
   properties: {
     SPOTIFY: {
@@ -37,6 +37,13 @@ const { SPOTIFY, AUTH_ATTIC } = config.withSchema('spotifyAuth.js', {
   },
 });
 
+const {
+  SPOTIFY: {
+    CLIENT_ID, CLIENT_SECRET, CONCIERGE_IP, CONCIERGE_PORT,
+  },
+  AUTH_ATTIC,
+} = config.get(['SPOTIFY', 'AUTH_ATTIC']);
+
 /** Keys for Attic database */
 const DB_KEYS = {
   ACCESS_TOKEN: 'spotify_access_token',
@@ -50,9 +57,9 @@ const DB_KEYS = {
  * @returns {object} Credentials
  */
 const buildCredentials = () => ({
-  clientId: SPOTIFY.CLIENT_ID,
-  clientSecret: SPOTIFY.CLIENT_SECRET,
-  redirectUri: `http://${SPOTIFY.CONCIERGE_IP}:${SPOTIFY.CONCIERGE_PORT}/spotifyCallback`,
+  clientId: CLIENT_ID,
+  clientSecret: CLIENT_SECRET,
+  redirectUri: `http://${CONCIERGE_IP}:${CONCIERGE_PORT}/spotifyCallback`,
 });
 
 /**

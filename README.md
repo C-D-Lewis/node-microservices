@@ -103,12 +103,12 @@ const { log, conduit } = require('../node-common')(['log', 'conduit']);
 
 Each app has a `config-default.json` that is created if no `config.json` exists,
 and in most cases the app will function normally. However, apps that require
-special keys (Spotify, DarkSky weather etc.) will not. Each module uses
-`config.withSchema()` to declare a partial schema that must exist in the app's
-config file, or else it will not start. For example, app logging:
+special keys (Spotify, API keys etc.) will not. Each module uses
+`config.addPartialSchema()` to declare a partial schema that must exist in the
+app's config file, or else it will not start. For example, app logging:
 
 ```js
-const { LOG } = config.withSchema('log.js', {
+config.addPartialSchema({
   required: ['LOG'],
   properties: {
     LOG: {
@@ -120,7 +120,12 @@ const { LOG } = config.withSchema('log.js', {
     },
   },
 });
+
+const { LOG } = config.get(['LOG']);
 ```
+
+Apps must then use `validate()` during startup to validate the whole and to
+discover unused keys.
 
 
 ## Communication
