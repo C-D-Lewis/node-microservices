@@ -72,7 +72,7 @@ const identify = (args) => {
       const patternArgs = pattern.split(' ');
 
       // Every arg in the pattern must match a program arg
-      if (!patternArgs.every((pArg, i) => matchArg(pArg, rest[i]))) return;
+      if (!patternArgs.every((pArg, i) => matchArg(pArg, rest[i]))) return undefined;
 
       return name;
     });
