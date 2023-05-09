@@ -6,13 +6,13 @@ const adminPassword = require('./modules/adminPassword');
  * The main function.
  */
 const main = async () => {
-  config.validate();
-
   log.begin();
 
   await api.setup();
 
   adminPassword.waitForFile();
+
+  config.validate();
 };
 
 main();

@@ -141,14 +141,18 @@ const get = (names) => names.reduce((acc, name) => {
  * Validate built schema after all modules are required. Currently must be done
  * manually as part of app launch.
  *
+ * @param {object} opts - Options.
+ * @param {boolean} [opts.verbose] - Log details.
  * @throws {Error} if validation fails.
  */
-const validate = () => {
+const validate = ({ verbose }) => {
   // Schema valid?
   if (!schema(config, configSchema)) throw new Error('Schema failed validation.');
 
   // Redundant keys?
   deepCompareKeys(configSchema, config);
+
+  if (verbose) console.log(JSON.stringify(configSchema, null, 2));
 };
 
 ensureConfigFile();

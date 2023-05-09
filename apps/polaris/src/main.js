@@ -5,13 +5,13 @@ const ipMonitor = require('./modules/ipMonitor');
  * The main function.
  */
 const main = async () => {
-  config.validate();
-
   log.begin();
 
   await conduit.register();
 
   ipMonitor.start();
+
+  config.validate();
 };
 
 main();

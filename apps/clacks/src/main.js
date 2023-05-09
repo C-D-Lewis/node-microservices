@@ -5,7 +5,6 @@ const server = require('./modules/server');
  * The main function.
  */
 const main = () => {
-  config.validate();
   log.begin();
 
   // This should launch before conduit, but keep trying to connect
@@ -18,8 +17,9 @@ const main = () => {
     }
   }, 5000);
 
-  // Setup WS server
   server.start();
+
+  config.validate();
 };
 
 main();

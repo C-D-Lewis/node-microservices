@@ -56,7 +56,6 @@ const initEnsuredWebhooks = async () => {
  * The main function.
  */
 const main = async () => {
-  config.validate();
   log.begin();
 
   try {
@@ -72,6 +71,8 @@ const main = async () => {
 
   setupHandler();
   await api.setup();
+
+  config.validate();
 };
 
 main();

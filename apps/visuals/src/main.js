@@ -6,7 +6,6 @@ const api = require('./modules/api');
  * The main function.
  */
 const main = async () => {
-  config.validate();
   log.begin();
 
   await api.setup();
@@ -17,6 +16,8 @@ const main = async () => {
     log.error('Failed to createSpotifyClient, credentials may be invalid');
     log.error(e);
   }
+
+  config.validate();
 };
 
 main();

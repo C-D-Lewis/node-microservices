@@ -10,7 +10,6 @@ const FLEET_CHECKIN_DELAY_MS = 30000;
  * The main function.
  */
 const main = async () => {
-  config.validate();
   log.begin();
 
   await api.setup();
@@ -19,6 +18,8 @@ const main = async () => {
 
   // Wait for Attic to come up
   setTimeout(scheduleCheckins, FLEET_CHECKIN_DELAY_MS);
+
+  config.validate();
 };
 
 main();

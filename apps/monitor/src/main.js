@@ -19,7 +19,6 @@ const main = async () => {
 
   plugins.loadAll();
 
-  // Uniquely, allow plugins to require node-common module with config schemas
   config.validate();
 };
 

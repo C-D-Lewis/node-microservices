@@ -6,13 +6,13 @@ const storage = require('./modules/storage');
  * The main function.
  */
 const main = async () => {
-  config.validate();
-
   log.begin();
 
   storage.init();
 
   await api.setup();
+
+  config.validate();
 };
 
 main();
