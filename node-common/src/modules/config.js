@@ -145,7 +145,7 @@ const get = (names) => names.reduce((acc, name) => {
  * @param {boolean} [opts.verbose] - Log details.
  * @throws {Error} if validation fails.
  */
-const validate = ({ verbose }) => {
+const validate = ({ verbose } = {}) => {
   // Schema valid?
   if (!schema(config, configSchema)) throw new Error('Schema failed validation.');
 
