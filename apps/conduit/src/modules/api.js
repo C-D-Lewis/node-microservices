@@ -28,6 +28,7 @@ const setup = async () => {
   app.post('/conduit', bodyParser.json(), require('../api/conduit'));
   app.get('/port', bodyParser.json(), require('../api/port'));
   app.post('/reboot', require('../api/reboot'));
+  app.post('/shutdown', require('../api/shutdown'));
   app.post('/kill', require('../api/kill'));
 };
 

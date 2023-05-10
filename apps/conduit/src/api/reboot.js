@@ -5,19 +5,15 @@ const { log } = require('../node-common')(['log']);
 const DELAY_MS = 10000;
 
 /**
- * Handle an API request to do a git upgrade.
+ * Handle an API request to reboot.
  *
  * @param {object} req - Express request object.
  * @param {object} res - Express response object.
  */
-const handleUpgradeRequest = async (req, res) => {
+const handleRebootRequest = async (req, res) => {
   try {
-    // Now, git pull is in launchConfig setup
-    // execSync('git checkout ../..');
-    // execSync('git reset --hard HEAD');
-    // execSync('git pull origin master');
-
     setTimeout(() => execSync('sudo reboot'), DELAY_MS);
+    log.info('Reboot command received');
 
     res.status(200).json({ content: `Restarting in ${DELAY_MS / 1000} seconds` });
   } catch (e) {
@@ -27,4 +23,4 @@ const handleUpgradeRequest = async (req, res) => {
   }
 };
 
-module.exports = handleUpgradeRequest;
+module.exports = handleRebootRequest;

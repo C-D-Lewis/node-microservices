@@ -12,23 +12,23 @@ const AllDevicesBreadcrumb = () => fabricate('p')
   .setText('All Devices');
 
 /**
- * Reboot this device.
+ * Send a device command by URL.
  *
- * @param {HTMLElement} el - Fabricate component.
  * @param {object} state - Current state.
  * @param {string} state.selectedIp - Selected IP.
  * @param {string} state.selectedDeviceName - Selected device name.
+ * @param {string} command - Command, either 'reboot' or 'shutdown'.
  */
-const rebootDevice = async (el, { selectedIp, selectedDeviceName }) => {
+const commandDevice = async ({ selectedIp, selectedDeviceName }, command) => {
   // eslint-disable-next-line no-restricted-globals
   if (!confirm('Caution: If devices share an IP this might not be the actual device - continue?')) return;
 
   try {
     // Public, then local
-    const { content, error } = await fetch(`http://${selectedIp}:5959/reboot`, { method: 'POST' }).then((r) => r.json());
+    const { content, error } = await fetch(`http://${selectedIp}:5959/${command}`, { method: 'POST' }).then((r) => r.json());
 
     if (content) {
-      fabricate.update('logEntries', ({ logEntries }) => [...logEntries, `Device ${selectedDeviceName} is rebooting now`]);
+      fabricate.update('logEntries', ({ logEntries }) => [...logEntries, `Device ${selectedDeviceName} command sent`]);
     } else {
       throw new Error(error);
     }
@@ -39,13 +39,30 @@ const rebootDevice = async (el, { selectedIp, selectedDeviceName }) => {
 };
 
 /**
+ * ToolbarButton component.
+ *
+ * @param {object} props - Component props.
+ * @param {string} props.src - Image src.
+ * @returns {HTMLElement} Fabricate component.
+ */
+const ToolbarButton = ({ src }) => fabricate('IconButton', { src })
+  .setStyles({ width: '18px', height: '18px' });
+
+/**
  * RebootButton component.
  *
  * @returns {HTMLElement} Fabricate component.
  */
-const RebootButton = () => fabricate('IconButton', { src: 'assets/restart.png' })
-  .setStyles({ width: '18px', height: '18px' })
-  .onClick(rebootDevice);
+const RebootButton = () => ToolbarButton({ src: 'assets/restart.png' })
+  .onClick((el, state) => commandDevice(state, 'reboot'));
+
+/**
+ * ShutdownButton component.
+ *
+ * @returns {HTMLElement} Fabricate component.
+ */
+const ShutdownButton = () => ToolbarButton({ src: 'assets/shutdown.png' })
+  .onClick((el, state) => commandDevice(state, 'shutdown'));
 
 /**
  * BackBreadcrumb component.
@@ -72,6 +89,7 @@ const BackBreadcrumb = () => {
       backButton,
       deviceSegment,
       RebootButton(),
+      ShutdownButton(),
     ])
     .onUpdate((el, { fleetList, selectedIp, selectedDeviceName }) => {
       const [found] = fleetList.filter(({ deviceName }) => deviceName === selectedDeviceName);

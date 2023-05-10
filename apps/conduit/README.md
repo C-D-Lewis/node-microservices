@@ -104,7 +104,3 @@ When using `node-common`, this is as simple as:
 ```js
 await conduit.register();
 ```
-
-### `POST /reboot`
-
-Ask the host to `reboot` without logging in.
