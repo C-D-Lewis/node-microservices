@@ -50,6 +50,7 @@ Constants.INITIAL_STATE = {
     metricNames: [],
     metric: '',
     metricHistory: [],
+    plugins: [],
   },
 };
 

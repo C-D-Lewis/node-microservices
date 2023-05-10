@@ -27,6 +27,29 @@ const ControlContainer = () => fabricate('Column')
   .setStyles({ backgroundColor: Theme.colors.AppControls.background });
 
 /**
+ * PluginPill component.
+ *
+ * @param {object} props - Component props.
+ * @param {string} props.FILE_NAME - Plugin file name.
+ * @param {string} [props.EVERY] - Plugin interval.
+ * @param {string} [props.AT] - Plugin time.
+ * @returns {HTMLElement} Fabricate component.
+ */
+const PluginPill = ({ FILE_NAME, EVERY, AT }) => {
+  let text = FILE_NAME;
+  if (EVERY) {
+    text += ` (~${EVERY})`;
+  }
+  if (AT) {
+    text += ` (at ${AT})`;
+  }
+
+  return fabricate('Pill', { highlight: false })
+    .setStyles({ cursor: 'default' })
+    .setText(text);
+};
+
+/**
  * AtticControls component.
  *
  * @returns {HTMLElement} Fabricate component.
@@ -419,6 +442,17 @@ const MonitorControls = () => {
 
   return ControlContainer()
     .setChildren([
+      fabricate('Row')
+        .onUpdate((el, state) => {
+          // Show running plugins
+          const { monitorData: { plugins } } = state;
+          el.setChildren(plugins.map(PluginPill));
+        }, ['monitorData'])
+        .onCreate(async (el, state) => {
+          // Fetch all plugins
+          const res = await ConduitService.sendPacket(state, { to: 'monitor', topic: 'getPlugins' });
+          setProp('plugins', res.message);
+        }),
       fabricate('Row')
         .onUpdate((el, state) => {
           const { monitorData: { metricNames } } = state;
