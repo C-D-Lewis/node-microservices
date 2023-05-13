@@ -5,5 +5,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: docker built -t node-microservices .
+      - run: docker build -t node-microservices .
       - run: docker run -t node-microservices
