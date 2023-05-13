@@ -24,18 +24,20 @@ const TEST_MESSAGE_STR = JSON.stringify(TEST_MESSAGE);
 const connect = () => new WebSocket(`ws://localhost:${PORT}`);
 
 describe('Tests', () => {
-  before(server.start);
-
-  after(server.stop);
+  if (!process.env.DOCKER_TEST) {
+    before(server.start);
+    after(server.stop);
+  }
 
   describe('WS Server', () => {
     it('should connect to the server, send, and recieve a message', (done) => {
-      const ws = connect();
-      ws.on('open', () => ws.send(TEST_MESSAGE_STR));
-      ws.on('message', (data) => {
+      const socket = connect();
+      socket.on('open', () => socket.send(TEST_MESSAGE_STR));
+      socket.on('message', (data) => {
+        const msg = data.toString();
         expect(data.toString()).to.equal(TEST_MESSAGE_STR);
 
-        ws.close();
+        socket.close();
         done();
       });
     });

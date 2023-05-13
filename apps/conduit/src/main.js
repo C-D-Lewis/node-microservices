@@ -16,8 +16,10 @@ const main = async () => {
 
   clacksRelay.setup();
 
-  // Wait for Attic to come up
-  setTimeout(scheduleCheckins, FLEET_CHECKIN_DELAY_MS);
+  if (!process.env.DOCKER_TEST) {
+    // Wait for Attic to come up
+    setTimeout(scheduleCheckins, FLEET_CHECKIN_DELAY_MS);
+  }
 
   config.validate();
 };

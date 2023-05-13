@@ -93,7 +93,7 @@ const sync = () => {
       throw e;
     }
   }
-  execSync('git push origin master', GIT_CONTEXT);
+  execSync('git push origin main', GIT_CONTEXT);
   log.debug('gistSync: sync completed');
 };
 

@@ -19,7 +19,7 @@ describe('API', () => {
       const url = `http://localhost:${SERVER.PORT}/port`;
       const data = await requestAsync({
         url,
-        json: { app: 'attic', pid: 0 },  // Next test depends on response from attic
+        json: { app: 'testApp', pid: 0 },  // Next test depends on response from attic
       });
 
       expect(data.response.statusCode).to.equal(200);
@@ -46,4 +46,9 @@ describe('API', () => {
   });
 
   // TODO guestlist authorize test for outside requests (fake hostname?)
+  describe('/conduit', () => {
+    it('should handle a valid packet');
+    it('should refuse an invalid packet');
+    it('should use guestlist to check tokens');
+  });
 });

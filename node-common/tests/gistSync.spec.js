@@ -1,9 +1,10 @@
 const { expect } = require('chai');
 const gistSync = require('../src/modules/gistSync');
 
-// Intended to work with https://gist.github.com/C-D-Lewis/6fa0a01d83dc170c480081f96b2955cd
-
 describe('gistSync.js', () => {
+  // TODO: Asks for username
+  if (process.env.DOCKER_TEST) return;
+
   it('should init the gist repository', () => {
     gistSync.init();
   });
@@ -13,7 +14,7 @@ describe('gistSync.js', () => {
   });
 
   it('should return file data', () => {
-    const file = gistSync.getFile('attic-db.json');
+    const file = gistSync.getFile('file.json');
 
     expect(file).to.be.an('object');
   });

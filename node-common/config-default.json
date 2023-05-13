@@ -10,7 +10,7 @@
     "APP": "node-common"
   },
   "GIST_SYNC": {
-    "URL": "",
+    "URL": "https://gist.github.com/C-D-Lewis/b01d24df220ae0a8ece6f8c7ebc46d2b",
     "DIR": "gist",
     "SYNC_INTERVAL_M": 5
   },

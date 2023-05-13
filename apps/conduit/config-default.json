@@ -3,7 +3,8 @@
     "FLEET": {
       "HOST": "",
       "DEVICE_TYPE": ""
-    }
+    },
+    "AUTH_TOKENS": false
   },
   "CONDUIT": {
     "APP": "conduit",
