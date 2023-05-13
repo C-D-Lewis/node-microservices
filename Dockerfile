@@ -43,8 +43,8 @@ ADD apps/visuals/ /code/apps/visuals/
 ADD apps/monitor/ /code/apps/monitor/
 
 # Configuration
-RUN rm /code/apps/**/config.json
-RUN rm /code/node-common/config.json
+RUN rm /code/apps/**/config.json || exit 0
+RUN rm /code/node-common/config.json || exit 0
 RUN echo "testPassword" >> /code/apps/guestlist/password
 RUN git config --global user.email "test@example.com" \
   && git config --global user.name "Test Name"
