@@ -263,6 +263,14 @@ Such an example request simply uses the token as the `auth` parameter:
 }
 ```
 
+## Run tests
+
+Run all app and common module tests in Docker:
+
+```shell
+./tools/docker-test.sh
+```
+
 
 ## History
 

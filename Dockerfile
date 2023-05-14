@@ -42,12 +42,62 @@ ADD apps/polaris/ /code/apps/polaris/
 ADD apps/visuals/ /code/apps/visuals/
 ADD apps/monitor/ /code/apps/monitor/
 
-# Configuration
+# Config cleanup
 RUN rm /code/apps/**/config.json || exit 0
 RUN rm /code/node-common/config.json || exit 0
-RUN echo "testPassword" >> /code/apps/guestlist/password
 RUN git config --global user.email "test@example.com" \
   && git config --global user.name "Test Name"
+
+# Set test data
+RUN echo "testPassword" >> /code/apps/guestlist/password
+COPY <<EOF /code/apps/conduit/config.json
+{
+  "OPTIONS": {
+    "FLEET": {
+      "HOST": "",
+      "DEVICE_TYPE": ""
+    },
+    "AUTH_TOKENS": true
+  },
+  "CONDUIT": {
+    "APP": "conduit",
+    "TOKEN": ""
+  },
+  "SERVER": {
+    "PORT": 5959
+  },
+  "LOG": {
+    "APP_NAME": "conduit"
+  },
+  "CLACKS": {
+    "SERVER": "localhost"
+  }
+}
+EOF
+
+COPY <<EOF /code/apps/attic/db.json
+{
+  "guestlist": {
+    "users": {
+      "value": [
+        {
+          "id": "6f482b3ba6a6d41a",
+          "name": "testUser",
+          "apps": [
+            "all"
+          ],
+          "topics": [
+            "all"
+          ],
+          "token": "32a77a47a43f67acd9b53f6b195842722bf3a2cb",
+          "createdAt": 1684063071964
+        }
+      ],
+      "timestamp": 1684063071967
+    }
+  }
+}
+EOF
 
 # Prepare tests
 ADD tools/test-all.sh /code/tools/

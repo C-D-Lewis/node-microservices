@@ -2,6 +2,16 @@
 
 set -eu
 
+function run () {
+  app=$1
+  cd apps/$app
+
+  npm start &
+  sleep 3
+
+  cd -
+}
+
 #
 # Test a given app
 #
@@ -9,23 +19,35 @@ function test () {
   app=$1
   cd apps/$app
 
-  npm start &
-  sleep 3
   npm test
 
   cd -
 }
 
+# Should be running for conduit guestlist check
+run conduit
+run attic
+run guestlist
 test conduit
 test attic
-test clacks
-test concierge
 test guestlist
+
+run concierge
+test concierge
+
+run clacks
+test clacks
+
+run visuals
 test visuals
+
+run monitor
 test monitor
-# test polaris needs mocking of AWS SDK
+
+# TODO: needs mocking of AWS SDK
+# run polaris
+# test polaris
 
 # Test node-common
-# TODO: Some test modules do not exit
-# cd node-common
-# npm test
+cd node-common
+npm test

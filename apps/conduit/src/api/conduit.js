@@ -30,15 +30,17 @@ const DEFAULT_HOST_LOCAL = 'localhost';
 /** Schema for all conduit message packets. */
 const PACKET_SCHEMA = {
   required: ['to', 'topic'],
+  additionalProperties: false,
   properties: {
-    status: { type: 'integer' },  // Response status code
-    to: { type: 'string' },       // Recipient Conduit client
-    topic: { type: 'string' },    // The message topic (i.e: channel)
-    message: { type: 'object' },  // The message object to send
-    error: { type: 'string' },    // Any response error
-    from: { type: 'string' },     // Sending Conduit client
-    host: { type: 'string' },     // Which other Conduit server to send to
-    auth: { type: 'string' },     // Authorization, if required
+    status: { type: 'integer' },          // Response status code
+    to: { type: 'string' },               // Recipient Conduit client
+    topic: { type: 'string' },            // The message topic (i.e: channel)
+    message: { type: 'object' },          // The message object to send
+    error: { type: 'string' },            // Any response error
+    from: { type: 'string' },             // Sending Conduit client
+    host: { type: 'string' },             // Which other Conduit server to send to
+    auth: { type: 'string' },             // Authorization, if required
+    ignoreHostname: { type: 'boolean' },  // Force auth token check
   },
 };
 /** Default response when the recipient does not provide one. */
@@ -62,11 +64,17 @@ const handlePacketRequest = async (req, res) => {
   }
 
   const {
-    to, topic, message, host = DEFAULT_HOST_LOCAL, auth,
+    to, topic, message, host = DEFAULT_HOST_LOCAL, auth, ignoreHostname,
   } = packet;
 
-  // Enforce only localhost need not supply a guestlist token
-  if (hostname !== 'localhost' && OPTIONS.AUTH_TOKENS) {
+  // Test endpoint
+  if (topic === 'test' && to === 'test') {
+    res.status(200).json({ ok: true });
+    return;
+  }
+
+  // Enforce only localhost need not supply a guestlist token (or during test)
+  if ((hostname !== 'localhost' || ignoreHostname) && OPTIONS.AUTH_TOKENS) {
     log.debug(`Origin: ${hostname} requires guestlist check`);
 
     if (!auth) {
