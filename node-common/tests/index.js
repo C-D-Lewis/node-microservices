@@ -1,7 +1,7 @@
 // TODO: Some test modules do not exit
 
 // App-specific
-// require('./conduit.spec');
+require('./conduit.spec');
 // require('./attic.spec');
 // require('./clacks.spec');
 
@@ -15,13 +15,10 @@ require('./extract.spec');
 require('./gpio.spec');
 require('./ip.spec');
 require('./leds.spec');
-// require('./log.spec');
-// require('./motePhat.spec');
-// require('./requestAsync.spec');
-// require('./schema.spec');
-// require('./server.spec');
-// require('./ses.spec');
-// require('./textDisplay.spec');
-
-// Not in use
-// None
+require('./log.spec');
+require('./motePhat.spec');
+require('./requestAsync.spec');
+require('./schema.spec');
+require('./server.spec');
+require('./ses.spec');
+require('./textDisplay.spec');

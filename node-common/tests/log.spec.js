@@ -1,9 +1,8 @@
-const { expect } = require('chai');
 const log = require('../src/modules/log');
 
 describe('log.js', () => {
   it('should begin the log', () => {
-    log.begin();
+    log.begin({ monitorLog: false });
   });
 
   it('should log info', () => {

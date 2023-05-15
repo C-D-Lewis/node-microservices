@@ -41,6 +41,7 @@ const RESPONSE_MESSAGE_SCHEMA = {
 // { topic, callback, schema }
 const registeredRoutes = [];
 let server;
+let handle;
 
 /**
  * Respond to a message.
@@ -166,7 +167,7 @@ const register = async () => {
 
   return new Promise((resolve) => {
     // Listen on the assigned port
-    server.listen(body.port, () => {
+    handle = server.listen(body.port, () => {
       // Register all apps to report their status
       on('status', onStatus, STATUS_MESSAGE_SCHEMA);
 
@@ -174,6 +175,14 @@ const register = async () => {
       resolve();
     });
   });
+};
+
+/**
+ * Close server that connects with conduit
+ */
+const disconnect = () => {
+  log.info('Disconnecting from Conduit');
+  handle.close();
 };
 
 module.exports = {
@@ -187,4 +196,5 @@ module.exports = {
    * @returns {object} Server object if allocated.
    */
   isRegistered: () => server,
+  disconnect,
 };

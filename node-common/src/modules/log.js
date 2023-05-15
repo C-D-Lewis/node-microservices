@@ -198,10 +198,13 @@ const monitorLogSize = () => {
 
 /**
  * Begin app logging, and handle uncaught errors.
+ *
+ * @param {object} opts - Function opts.
+ * @param {boolean} [opts.monitorLog] - Monitor log size.
  */
-const begin = () => {
+const begin = ({ monitorLog = true } = {}) => {
   printDecor();
-  monitorLogSize();
+  if (monitorLog) monitorLogSize();
 
   process.on('uncaughtException', (err) => {
     error('uncaughtException:');

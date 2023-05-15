@@ -2,8 +2,6 @@ const { expect } = require('chai');
 const conduit = require('../src/modules/conduit');
 
 describe('conduit.js', () => {
-  after(conduit.kill);
-
   it('should connect to Conduit service', async () => {
     await conduit.register();
   });
@@ -45,5 +43,9 @@ describe('conduit.js', () => {
 
   it('should be registered', () => {
     expect(conduit.isRegistered() !== undefined).to.equal(true);
+  });
+
+  it('should disconnect', () => {
+    expect(() => conduit.disconnect()).to.not.throw();
   });
 });
