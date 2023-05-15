@@ -2,8 +2,8 @@
 
 // App-specific
 require('./conduit.spec');
-// require('./attic.spec');
-// require('./clacks.spec');
+require('./attic.spec');
+require('./clacks.spec');
 
 // Specific order - in use
 require('./config.spec');
