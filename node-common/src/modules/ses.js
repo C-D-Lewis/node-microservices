@@ -1,7 +1,6 @@
 const AWS = require('aws-sdk');
 const os = require('os');
 const config = require('./config');
-const log = require('./log');
 
 config.addPartialSchema({
   required: ['SES'],
@@ -71,7 +70,7 @@ ${msg}
       },
     },
   }).promise();
-  log.info(`ses: Sent email ${res.MessageId}`);
+  console.log(`ses: Sent email ${res.MessageId}`);
 };
 
 module.exports = {
