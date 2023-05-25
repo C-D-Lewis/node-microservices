@@ -5,13 +5,18 @@
 import time
 import subprocess
 import os
-
-from board import SCL, SDA
+import socket
 import busio
-from PIL import Image, ImageDraw, ImageFont, ImageOps
 import adafruit_ssd1306
+from board import SCL, SDA
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), '.')
+
+def get_ip_address(ifname):
+  s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+  s.connect(('10.0.0.0', 0)) 
+  return s.getsockname()[0]
 
 # Create the I2C interface.
 i2c = busio.I2C(SCL, SDA)
@@ -51,10 +56,16 @@ while True:
   cmd = 'cut -f 11 -d " " /proc/mdstat | grep \'\[\''
   devices = subprocess.check_output(cmd, shell=True).decode("utf-8").replace('[', '').replace(']', '')
 
-  image_draw.text((x, top),      "CPU | " + cpuUsage, font=font, fill=255)
-  image_draw.text((x, top + 8),  "Disk| " + diskUsage, font=font, fill=255)
-  image_draw.text((x, top + 16), "RAID| " + devices, font=font, fill=255)
-  image_draw.text((x, top + 25),  "", font=font, fill=255)
+  # IP
+  address = get_ip_address('etho')
+  if '/' in address:
+    address = address.split('/')[0]
+  octets = address.split('.')
+
+  image_draw.text((x, top),      f"{socket.gethostname()} (.{octets[2]}.{octets[3]})", font=font, fill=255)  
+  image_draw.text((x, top + 8),  "CPU | " + cpuUsage, font=font, fill=255)
+  image_draw.text((x, top + 16), "Disk| " + diskUsage, font=font, fill=255)
+  image_draw.text((x, top + 25), "RAID| " + devices, font=font, fill=255)
 
   # Healthy if 2/2
   healthy = devices[0] == devices[2]
