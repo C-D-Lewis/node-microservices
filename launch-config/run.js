@@ -69,10 +69,11 @@ let report = '';
  * Add a log line to the report.
  *
  * @param {string} line - Line to add.
+ * @param {boolean} [newline] - Whether to add a newline.
  */
-const log = (line) => {
+const log = (line, newline = true) => {
   console.log(`log: ${line}`);
-  report += `${line}\n`;
+  report += `${line}${newline ? '\n' : ''}`;
 };
 
 /**
@@ -80,7 +81,6 @@ const log = (line) => {
  */
 const main = async () => {
   try {
-    // Wait for network
     log('Waiting for network...');
     execSync('until ping -c 1 -W 1 8.8.8.8; do sleep 1; done');
 
@@ -96,22 +96,31 @@ const main = async () => {
     const config = require('./launchConfig.json').hosts[HOSTNAME];
     log(JSON.stringify(config, null, 2));
 
-    // For each app
     for (let { location, start } of config) {
       // TODO: install / update?
 
       // Start
       const startCmd = `cd ${HOME}/${location} && ${start}`;
       log(`Starting ${startCmd}`);
-      spawn(startCmd, {
-        stdio: 'ignore',
+      const child = spawn(startCmd, {
         shell: true,
         detatched: true,
       });
+      child.stdout.on('data', (d) => log(d, false));
+      child.stderr.on('data', (d) => log(d, false));
+      child.unref();
 
       // Wait
       log(`Waiting ${WAIT_S}s`);
       await new Promise(r => setTimeout(r, WAIT_S * 1000));
+
+      // Detatch and stop logging
+      child.stderr.unpipe()
+      child.stderr.destroy()
+      child.stdout.unpipe()
+      child.stdout.destroy()
+      child.stdin.end()
+      child.stdin.destroy()
     };
 
     log(`Completed in ${(Date.now() - startTime) / 1000}s`);
