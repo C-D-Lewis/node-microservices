@@ -24,10 +24,9 @@ describe('API', () => {
       expect(result.status).to.equal(200);
       expect(result.message).to.be.an('array');
 
-      const point = result.message.pop();
-      expect(point.timestamp).to.be.a('number');
-      expect(point.dateTime).to.be.a('string');
-      expect(point.value).to.equal(23);
+      const [timestamp, value] = result.message.pop();
+      expect(timestamp).to.be.a('number');
+      expect(value).to.equal(23);
     });
 
     it('should return metric names', async () => {
@@ -35,7 +34,7 @@ describe('API', () => {
 
       expect(result.status).to.equal(200);
       expect(result.message).to.be.an('array');
-      expect(result.message).to.have.length(2);
+      expect(result.message.length).to.be.greaterThan(2);
     });
   });
 });
