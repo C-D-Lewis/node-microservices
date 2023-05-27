@@ -10,7 +10,7 @@ const ConduitService = {};
  * @throws {Error} Any error encountered.
  */
 ConduitService.sendPacket = async (state, packet, tokenOverride) => {
-  fabricate.update('logEntries', ({ logEntries }) => [...logEntries, 'Sending...']);
+  console.log('Sending...');
 
   const {
     token, selectedDeviceName, fleetList, selectedIp,
@@ -37,10 +37,10 @@ ConduitService.sendPacket = async (state, packet, tokenOverride) => {
       }),
     });
     const json = await res.json();
-    fabricate.update('logEntries', ({ logEntries }) => [...logEntries, JSON.stringify(json)]);
+    console.log(JSON.stringify(json));
     return json;
   } catch (error) {
-    fabricate.update('logEntries', ({ logEntries }) => [...logEntries, error.message]);
+    console.log(error.message);
     throw error;
   }
 };

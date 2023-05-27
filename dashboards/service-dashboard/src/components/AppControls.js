@@ -35,19 +35,13 @@ const ControlContainer = () => fabricate('Column')
  * @param {string} [props.AT] - Plugin time.
  * @returns {HTMLElement} Fabricate component.
  */
-const PluginPill = ({ FILE_NAME, EVERY, AT }) => {
-  let text = FILE_NAME;
-  if (EVERY) {
-    text += ` (~${EVERY})`;
-  }
-  if (AT) {
-    text += ` (at ${AT})`;
-  }
-
-  return fabricate('Pill', { highlight: false })
-    .setStyles({ cursor: 'default' })
-    .setText(text);
-};
+const PluginPill = ({ FILE_NAME, EVERY, AT }) => fabricate('Pill', { highlight: false })
+  .setStyles({
+    cursor: 'default',
+    fontSize: '0.9rem',
+    fontFamily: 'monospace',
+  })
+  .setText(`${FILE_NAME}${EVERY ? ` (~${EVERY})` : ` (at ${AT})`}`);
 
 /**
  * AtticControls component.
@@ -395,8 +389,6 @@ const ClacksControls = () => {
  * @returns {HTMLElement} Fabricate component.
  */
 const MonitorControls = () => {
-  // List metrics and show graph for chosen metric (all metrics?)
-
   /**
    * Set a property within the app controls state.
    *
@@ -425,12 +417,14 @@ const MonitorControls = () => {
 
     // Aggregate values
     const minValue = metricHistory.reduce(
-      (acc, p) => (p.value < acc ? p.value : acc),
+      (acc, [, value]) => (value < acc ? value : acc),
       9999999,
     );
-    const maxValue = metricHistory.reduce((acc, p) => (p.value > acc ? p.value : acc), 0);
-    const minTime = metricHistory[0].dateTime;
-    const maxTime = metricHistory[metricHistory.length - 1].dateTime;
+    const maxValue = metric.includes('Perc')
+      ? 100
+      : metricHistory.reduce((acc, [, value]) => (value > acc ? value : acc), 0);
+    const minTime = new Date(metricHistory[0][0]).toISOString();
+    const maxTime = new Date(metricHistory[metricHistory.length - 1][0]).toISOString();
 
     // Save data
     setProp('metricHistory', res.message);
@@ -443,6 +437,7 @@ const MonitorControls = () => {
   return ControlContainer()
     .setChildren([
       fabricate('Row')
+        .setStyles({ flexWrap: 'wrap' })
         .onUpdate((el, state) => {
           // Show running plugins
           const { monitorData: { plugins } } = state;

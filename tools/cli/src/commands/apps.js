@@ -53,7 +53,7 @@ const start = async (appName) => {
       return;
     }
 
-    console.log(`App ${found} failed to launch - check app logs for info`);
+    console.log(`App ${appName} failed to launch - check app logs for info`);
   }, 8000);
 };
 

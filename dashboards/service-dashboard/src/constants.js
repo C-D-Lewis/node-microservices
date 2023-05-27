@@ -18,7 +18,6 @@ Constants.INITIAL_STATE = {
   fleetList: [],
   selectedIp: FLEET_HOST,
   selectedDeviceName: undefined,
-  logEntries: ['Ready'],
   atticData: {
     app: '',
     key: '',

@@ -87,12 +87,12 @@ const GraphView = () => fabricate('Row')
     const copy = [...metricHistory];
     const buckets = [];
     while (copy.length) {
-      const items = copy.splice(0, BUCKET_SIZE);
-      const avgIndex = Math.floor(items.length / 2);
+      const points = copy.splice(0, BUCKET_SIZE);
+      const avgIndex = Math.floor(points.length / 2);
       buckets.push({
-        value: items.reduce((acc, p) => acc + p.value, 0) / items.length,
-        timestamp: items[avgIndex].timestamp,
-        dateTime: items[avgIndex].dateTime,
+        value: points.reduce((acc, [, value]) => acc + value, 0) / points.length,
+        timestamp: points[avgIndex][0],
+        dateTime: new Date(points[avgIndex][0]).toISOString(),
       });
     }
 

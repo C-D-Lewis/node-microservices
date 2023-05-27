@@ -28,7 +28,7 @@ const commandDevice = async ({ selectedIp, selectedDeviceName }, command) => {
     const { content, error } = await fetch(`http://${selectedIp}:5959/${command}`, { method: 'POST' }).then((r) => r.json());
 
     if (content) {
-      fabricate.update('logEntries', ({ logEntries }) => [...logEntries, `Device ${selectedDeviceName} command sent`]);
+      console.log(`Device ${selectedDeviceName} command sent`);
     } else {
       throw new Error(error);
     }

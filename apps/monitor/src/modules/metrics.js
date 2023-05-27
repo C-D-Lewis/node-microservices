@@ -63,14 +63,9 @@ const updateMetric = (metricDb, name, value) => {
     metricDb[name] = [];
   }
 
-  // Add new data point
+  // Add new data point, minimal size
   const now = new Date();
-  const [dateTime] = now.toISOString().split('.');
-  const point = {
-    timestamp: now.getTime(),
-    dateTime,
-    value,
-  };
+  const point = [now.getTime(), value];
   log.debug(`metric ${name}=${value}`);
   metricDb[name].push(point);
 };
@@ -107,7 +102,7 @@ const getMetricHistoryToday = (name) => {
   todayStart.setMinutes(0);
   todayStart.setSeconds(0);
   todayStart.setMilliseconds(0);
-  return metricDb[name].filter((p) => p.timestamp > todayStart.getTime());
+  return metricDb[name].filter(([timestamp]) => timestamp > todayStart.getTime());
 };
 
 /**
