@@ -77,3 +77,6 @@ echo $HOST_CONFIG | jq -c '.[]' | while read i; do
 done
 
 printf "\n>>> Launch complete!\n"
+
+# Email report
+$(which node) "$HOME/code/node-microservices/launch-config/email.js" >> "$HOME/cronlog.txt" 2>&1

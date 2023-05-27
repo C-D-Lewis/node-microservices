@@ -2,11 +2,6 @@ const { execSync, spawn } = require('child_process');
 const AWS = require('aws-sdk');
 const { hostname } = require('os');
 
-/** This device hostname */
-const HOSTNAME = hostname();
-
-//////////////////////////////////// Copied from ses.js module /////////////////////////////////////
-
 const {
   SES: {
     TO_ADDRESS,
@@ -16,15 +11,19 @@ const {
   },
 } = require('./config.json');
 
+const { HOME } = process.env;
+/** Time to wait between app launches */
+const WAIT_S = 15;
+/** This device hostname */
+const HOSTNAME = hostname();
+
+//////////////////////////////////// Copied from ses.js module /////////////////////////////////////
+
 const credentials = new AWS.Credentials({
   accessKeyId: AWS_ACCESS_KEY_ID,
   secretAccessKey: AWS_SECRET_ACCESS_KEY,
 });
-
-AWS.config.update({
-  region: 'eu-west-2',
-  credentials,
-});
+AWS.config.update({ region: 'eu-west-2', credentials });
 
 const sesApi = new AWS.SES({ apiVersion: '2010-12-01' });
 
@@ -58,10 +57,6 @@ ${report}
 
 ////////////////////////////////////////////// Script //////////////////////////////////////////////
 
-const { HOME } = process.env;
-/** Time to wait between app launches */
-const WAIT_S = 15;
-
 const startTime = Date.now();
 let report = '';
 
@@ -72,7 +67,7 @@ let report = '';
  * @param {boolean} [newline] - Whether to add a newline.
  */
 const log = (line, newline = true) => {
-  console.log(`log: ${line}`);
+  console.log(`log: ${line}`.trim());
   report += `${line}${newline ? '\n' : ''}`;
 };
 
@@ -96,6 +91,8 @@ const main = async () => {
     const config = require('./launchConfig.json').hosts[HOSTNAME];
     log(JSON.stringify(config, null, 2));
 
+    if (!config) throw new Error('No launch config for this host');
+
     for (let { location, start } of config) {
       // TODO: install / update?
 
@@ -106,9 +103,9 @@ const main = async () => {
         shell: true,
         detatched: true,
       });
+      child.unref();
       child.stdout.on('data', (d) => log(d, false));
       child.stderr.on('data', (d) => log(d, false));
-      child.unref();
 
       // Wait
       log(`Waiting ${WAIT_S}s`);

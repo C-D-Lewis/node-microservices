@@ -1,162 +1,66 @@
 {
   "hosts": {
     "stack-ext": [
-      {
-        "location": "code/node-microservices/apps/clacks",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/conduit",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/attic",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/guestlist",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/concierge",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/polaris",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/visuals",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/monitor",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/dashboards/lighting-dashboard",
-        "start": "http-server -p 54448 &"
-      },
-      {
-        "location": "code/node-microservices/dashboards/service-dashboard",
-        "start": "http-server -p 54449 &"
-      },
-      {
-        "location": "code/microdiary",
-        "start": "http-server -p 34279 &"
-      }
+      { "location": "code/node-microservices/apps/clacks",                   "start": "npm start &" },
+      { "location": "code/node-microservices/apps/conduit",                  "start": "npm start &" },
+      { "location": "code/node-microservices/apps/attic",                    "start": "npm start &" },
+      { "location": "code/node-microservices/apps/guestlist",                "start": "npm start &" },
+      { "location": "code/node-microservices/apps/concierge",                "start": "npm start &" },
+      { "location": "code/node-microservices/apps/polaris",                  "start": "npm start &" },
+      { "location": "code/node-microservices/apps/visuals",                  "start": "npm start &" },
+      { "location": "code/node-microservices/apps/monitor",                  "start": "npm start &" },
+      { "location": "code/node-microservices/dashboards/lighting-dashboard", "start": "http-server -p 54448 &" },
+      { "location": "code/node-microservices/dashboards/service-dashboard",  "start": "http-server -p 54449 &" },
+      { "location": "code/microdiary",                                       "start": "http-server -p 34279 &" }
     ],
     "stack-int": [
-      {
-        "location": "code/node-microservices/apps/conduit",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/attic",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/visuals",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/monitor",
-        "start": "npm start &"
-      },
+      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
+      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" },
       {
         "location": "code/discord-bot-norren",
-        "start_vanilla": "/home/pi/.nvm/versions/node/v16.17.1/bin/node src/index.js &",
         "start": "/home/pi/.nvm/versions/node/v16.20.0/bin/npm run build && /home/pi/.nvm/versions/node/v16.20.0/bin/node dist/src/index.js &"
       }
     ],
     "stack-util": [],
     "tv-mote-pi": [
-      {
-        "location": "code/node-microservices/apps/conduit",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/attic",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/visuals",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/monitor",
-        "start": "npm start &"
-      }
+      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
+      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
     ],
     "bedroom-pi": [
-      {
-        "location": "code/node-microservices/apps/conduit",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/attic",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/visuals",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/monitor",
-        "start": "npm start &"
-      }
+      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
+      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
     ],
     "e-paper-witham": [
-      {
-        "location": "code/node-microservices/apps/conduit",
-        "start": "npm start &"
-      }
+      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" }
     ],
     "e-paper-home": [
-      {
-        "location": "code/node-microservices/apps/conduit",
-        "start": "npm start &"
-      }
+      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" }
     ],
     "cirroc": [
-      {
-        "location": "code/node-microservices/apps/conduit",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/monitor",
-        "start": "npm start &"
-      }
+      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
     ],
     "INFERNO": [
-      {
-        "location": "code/node-microservices/apps/conduit",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/attic",
-        "start": "npm start &"
-      }
+      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" }
     ],
     "ad-blocker-home": [
-      {
-        "location": "code/node-microservices/apps/conduit",
-        "start": "npm start &"
-      }
+      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" }
     ],
     "test-blade": [
-      {
-        "location": "code/node-microservices/apps/conduit",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/visuals",
-        "start": "npm start &"
-      },
-      {
-        "location": "code/node-microservices/apps/monitor",
-        "start": "npm start &"
-      }
+      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
+    ],
+    "Marvin": [
+      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" }
     ]
   }
 }
