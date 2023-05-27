@@ -79,4 +79,5 @@ done
 printf "\n>>> Launch complete!\n"
 
 # Email report
+sleep 30
 $(which node) "$HOME/code/node-microservices/launch-config/email.js" >> "$HOME/cronlog.txt" 2>&1
