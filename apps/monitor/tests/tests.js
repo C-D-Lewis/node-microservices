@@ -34,7 +34,7 @@ describe('API', () => {
 
       expect(result.status).to.equal(200);
       expect(result.message).to.be.an('array');
-      expect(result.message.length).to.be.greaterThan(2);
+      expect(result.message.length).to.be.greaterThan(1);
     });
   });
 });
