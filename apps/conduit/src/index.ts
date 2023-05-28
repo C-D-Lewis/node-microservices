@@ -1,7 +1,9 @@
-const { log, config } = require('./node-common')(['log', 'config']);
-const api = require('./modules/api');
+import common from './node-common';
+import api from './modules/api';
 const clacksRelay = require('./modules/clacksRelay');
 const { scheduleCheckins } = require('./modules/fleet');
+
+const { log, config } = common(['log', 'config']);
 
 /** Time to wait before updating the fleet registry */
 const FLEET_CHECKIN_DELAY_MS = 30000;

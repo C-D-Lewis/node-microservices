@@ -1,5 +1,7 @@
-const bodyParser = require('body-parser');
-const { server } = require('../node-common')(['server']);
+import common from '../node-common';
+import handleApps from '../api/apps';
+
+const { server } = common(['server']);
 
 /**
  * Middleware to enable browser pre-flight requests.
@@ -17,21 +19,17 @@ const enablePreflight = (req, res, next) => {
 /**
  * Setup the API.
  */
-const setup = async () => {
+export const setup = async () => {
   await server.start();
 
   const app = server.getExpressApp();
   app.use(enablePreflight);
 
   // Register API routes and handlers
-  app.get('/apps', require('../api/apps'));
+  app.get('/apps', handleApps);
   app.post('/conduit', bodyParser.json(), require('../api/conduit'));
   app.get('/port', bodyParser.json(), require('../api/port'));
   app.post('/reboot', require('../api/reboot'));
   app.post('/shutdown', require('../api/shutdown'));
   app.post('/kill', require('../api/kill'));
-};
-
-module.exports = {
-  setup,
 };

@@ -1,6 +1,8 @@
-const { config } = require('../node-common')(['config']);
-const allocator = require('../modules/allocator');
-const util = require('../modules/util');
+import common from '../node-common';
+import allocator from '../modules/allocator';
+import util from '../modules/util';
+
+const { config } = require()
 
 const { SERVER } = config.get(['SERVER']);
 
@@ -24,7 +26,7 @@ const getAppStatus = async (item) => {
  * @param {object} req - Express request object.
  * @param {object} res - Express response object.
  */
-const respondWithApps = async (req, res) => {
+export const respondWithApps = async (req, res) => {
   const apps = allocator.getAll();
   const result = await Promise.all(apps.map(getAppStatus));
 
@@ -38,5 +40,3 @@ const respondWithApps = async (req, res) => {
 
   res.status(200).send(JSON.stringify(result, null, 2));
 };
-
-module.exports = respondWithApps;
