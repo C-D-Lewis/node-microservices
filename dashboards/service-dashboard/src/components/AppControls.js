@@ -35,13 +35,27 @@ const ControlContainer = () => fabricate('Column')
  * @param {string} [props.AT] - Plugin time.
  * @returns {HTMLElement} Fabricate component.
  */
-const PluginPill = ({ FILE_NAME, EVERY, AT }) => fabricate('Pill', { highlight: false })
+const PluginPill = ({ FILE_NAME, EVERY, AT }) => fabricate('Row')
   .setStyles({
     cursor: 'default',
-    fontSize: '0.9rem',
-    fontFamily: 'monospace',
+    borderRadius: '15px',
+    backgroundColor: Theme.colors.AppCard.titleBar,
+    margin: '5px',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    padding: '0px 5px',
   })
-  .setText(`${FILE_NAME}${EVERY ? ` (~${EVERY})` : ` (at ${AT})`}`);
+  .setChildren([
+    fabricate('Image', { src: 'assets/plugin.png' })
+      .setStyles({ width: '18px', height: '18px' }),
+    fabricate('Text')
+      .setStyles({
+        color: 'white',
+        fontSize: '0.9rem',
+        fontFamily: 'monospace',
+      })
+      .setText(`${FILE_NAME.replace('.js', '')}${EVERY ? ` (~${EVERY})` : ` (at ${AT})`}`),
+  ]);
 
 /**
  * AtticControls component.
@@ -439,8 +453,10 @@ const MonitorControls = () => {
       fabricate('Row')
         .setStyles({ flexWrap: 'wrap' })
         .onUpdate((el, state) => {
-          // Show running plugins
           const { monitorData: { plugins } } = state;
+          if (!plugins) return;
+
+          // Show running plugins
           el.setChildren(plugins.map(PluginPill));
         }, ['monitorData'])
         .onCreate(async (el, state) => {
@@ -451,7 +467,7 @@ const MonitorControls = () => {
       fabricate('Row')
         .onUpdate((el, state) => {
           const { monitorData: { metricNames } } = state;
-          if (!metricNames.length) return;
+          if (!metricNames || !metricNames.length) return;
 
           // Show button for each metric
           const buttons = metricNames.map((metric) => fabricate('TextButton')
@@ -466,7 +482,12 @@ const MonitorControls = () => {
           setProp('metricNames', res.message);
         }),
       fabricate('MetricGraph'),
-    ]);
+    ])
+    .onCreate(() => {
+      setProp('metricHistory', []);
+      setProp('metricNames', []);
+      setProp('plugins', []);
+    });
 };
 
 const controlsMap = {

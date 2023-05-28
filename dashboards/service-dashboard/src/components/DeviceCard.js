@@ -167,10 +167,10 @@ const DeviceCardContainer = () => fabricate('Card')
  * @param {object} props - Component props.
  * @returns {HTMLElement} Fabricate component.
  */
-fabricate.declare('DeviceCard', ({ itemData }) => {
+fabricate.declare('DeviceCard', ({ device }) => {
   const {
     deviceName, publicIp, localIp, deviceType = 'other', lastCheckIn,
-  } = itemData;
+  } = device;
   const publicIpValidKey = Utils.isReachableKey(deviceName, 'public');
   const localIpValidKey = Utils.isReachableKey(deviceName, 'local');
   const isUnreachableKey = Utils.isReachableKey(deviceName, 'isUnreachable');

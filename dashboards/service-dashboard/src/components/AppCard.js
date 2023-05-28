@@ -29,6 +29,7 @@ const AppName = () => fabricate('Text')
     color: 'white',
     margin: '6px 5px 5px 5px',
     fontFamily: Theme.fonts.code,
+    fontWeight: 'bold',
   });
 
 /**
