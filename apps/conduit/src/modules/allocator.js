@@ -4,6 +4,8 @@ const { log } = require('../node-common')(['log']);
 const PORT_MIN = 6000;
 /** Maximum port number */
 const PORT_MAX = 9000;
+/** Reserved ports */
+const RESERVED_PORTS = [5959, 7777];
 
 const configs = []; // Each item is: { app, port }
 
@@ -19,7 +21,8 @@ const findByApp = (app) => configs.find((p) => p.app === app);
  * Send a config over the network.
  *
  * @param {object} res - Express request object.
- * @Param {object} config - App config to send.
+ * @param {object} config - App config to send.
+ * @returns {void}
  */
 const sendConfig = (res, config) => res.status(200).send(config);
 
@@ -37,7 +40,8 @@ const roll = () => Math.round(Math.random() * (PORT_MAX - PORT_MIN)) + PORT_MIN;
  */
 const generatePortNumber = () => {
   let port = roll();
-  while (configs.find(p => p.port === port)) {
+  // eslint-disable-next-line no-loop-func
+  while (configs.find((p) => p.port === port) || RESERVED_PORTS.includes(port)) {
     port = roll();
   }
 
@@ -70,5 +74,10 @@ const sendPort = (req, res) => {
 module.exports = {
   findByApp,
   sendPort,
-  getAll: () => configs
+  /**
+   * Get all configs.
+   *
+   * @returns {Array<object>} All existing configs for apps.
+   */
+  getAll: () => configs,
 };
