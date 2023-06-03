@@ -33,13 +33,16 @@ const ControlContainer = () => fabricate('Column')
  * @param {string} props.FILE_NAME - Plugin file name.
  * @param {string} [props.EVERY] - Plugin interval.
  * @param {string} [props.AT] - Plugin time.
+ * @param {boolean} [props.ENABLED] - If plugin is enabled
  * @returns {HTMLElement} Fabricate component.
  */
-const PluginPill = ({ FILE_NAME, EVERY, AT }) => fabricate('Row')
+const PluginPill = ({
+  FILE_NAME, EVERY, AT, ENABLED,
+}) => fabricate('Row')
   .setStyles({
     cursor: 'default',
     borderRadius: '15px',
-    backgroundColor: Theme.colors.AppCard.titleBar,
+    backgroundColor: ENABLED !== false ? Theme.colors.AppCard.titleBar : '#333',
     margin: '5px',
     flexWrap: 'wrap',
     alignItems: 'center',
