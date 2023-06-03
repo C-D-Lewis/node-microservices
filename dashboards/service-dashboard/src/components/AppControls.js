@@ -433,10 +433,9 @@ const MonitorControls = () => {
     const { message: metricHistory } = res;
 
     // Aggregate values
-    const minValue = metricHistory.reduce(
-      (acc, [, value]) => (value < acc ? value : acc),
-      9999999,
-    );
+    const minValue = metric.includes('Perc')
+      ? 0
+      : metricHistory.reduce((acc, [, value]) => (value < acc ? value : acc), 9999999);
     const maxValue = metric.includes('Perc')
       ? 100
       : metricHistory.reduce((acc, [, value]) => (value > acc ? value : acc), 0);
