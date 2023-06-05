@@ -2,20 +2,6 @@ const fs = require('fs');
 const config = require('./config');
 require('colors');
 
-config.addPartialSchema({
-  required: ['LOG'],
-  properties: {
-    LOG: {
-      required: ['APP_NAME'],
-      properties: {
-        APP_NAME: { type: 'string' },
-      },
-    },
-  },
-});
-
-const { LOG } = config.get(['LOG']);
-
 /** Log start decor width */
 const DECOR_WIDTH = 80; // process.stdout.columns;
 /** Tag symbols */
@@ -29,8 +15,6 @@ const TAGS = {
 const MONITOR_INTERVAL_MS = 60 * 60 * 1000;
 /** Max log size */
 const MAX_SIZE_MB = 1;
-/** Log path */
-const FILE_PATH = `${config.getInstallPath()}/${LOG.APP_NAME.split(' ').join('-')}.log`;
 /** Log level color map */
 const LEVEL_COLOR_MAP = {
   info: 'white',
@@ -38,6 +22,15 @@ const LEVEL_COLOR_MAP = {
   error: 'red',
   fatal: 'magenta',
 };
+
+let thisAppName = 'unknown';
+
+/**
+ * Get file path to log.
+ *
+ * @returns {string} Log file path.
+ */
+const getFilePath = () => `${config.getInstallPath()}/${thisAppName.split(' ').join('-')}.log`;
 
 /**
  * Get a time string.
@@ -56,7 +49,7 @@ const getTimeString = () => {
  * @param {string} level - Log level.
  * @returns {string} Formatted log line prefix.
  */
-const buildPrefix = (level) => `[${getTimeString()} ${process.pid} ${LOG.APP_NAME} ${TAGS[level]}]`;
+const buildPrefix = (level) => `[${getTimeString()} ${process.pid} ${thisAppName} ${TAGS[level]}]`;
 
 /**
  * Write a log line to file.
@@ -64,13 +57,15 @@ const buildPrefix = (level) => `[${getTimeString()} ${process.pid} ${LOG.APP_NAM
  * @param {string} msg - Message to write.
  */
 const writeToFile = (msg) => {
+  const filePath = getFilePath();
+
   let stream;
-  if (!fs.existsSync(FILE_PATH)) {
-    stream = fs.createWriteStream(FILE_PATH, { flags: 'w' });
+  if (!fs.existsSync(filePath)) {
+    stream = fs.createWriteStream(filePath, { flags: 'w' });
     stream.end(`${buildPrefix('info')} New log file!\n`);
   }
 
-  stream = fs.createWriteStream(FILE_PATH, { flags: 'a' });
+  stream = fs.createWriteStream(filePath, { flags: 'a' });
   stream.end(`${msg}\n`);
 };
 
@@ -156,7 +151,7 @@ const fatal = (msg) => log('fatal', msg);
  * Print fancy decor when app starts.
  */
 const printDecor = () => {
-  const msg = ` ${LOG.APP_NAME} `;
+  const msg = ` ${thisAppName} `;
   const decorLength = Math.floor((DECOR_WIDTH - msg.length) / 2);
   process.stdout.write('='.repeat(decorLength));
   process.stdout.write(msg);
@@ -171,7 +166,7 @@ const printDecor = () => {
  */
 const getLogfileSizeMb = () => {
   try {
-    const { size } = fs.statSync(FILE_PATH);
+    const { size } = fs.statSync(getFilePath());
     return Math.round(size / (1024 * 1024));
   } catch (e) {
     // OK, not there yet
@@ -190,7 +185,7 @@ const monitorLogSize = () => {
     if (sizeMb < MAX_SIZE_MB) return;
 
     // Erase the file and start again
-    fs.unlinkSync(FILE_PATH);
+    fs.unlinkSync(getFilePath());
     info('Log file exceeded max size and was restarted');
   }, MONITOR_INTERVAL_MS);
   info(`Monitoring logfile size (currently ${getLogfileSizeMb()} MB)`);
@@ -201,9 +196,13 @@ const monitorLogSize = () => {
  *
  * @param {object} opts - Function opts.
  * @param {boolean} [opts.monitorLog] - Monitor log size.
+ * @param {string} [opts.appName] - This app's name.
  */
-const begin = ({ monitorLog = true } = {}) => {
+const begin = ({ appName, monitorLog = true } = {}) => {
+  thisAppName = appName;
+
   printDecor();
+
   if (monitorLog) monitorLogSize();
 
   process.on('uncaughtException', (err) => {

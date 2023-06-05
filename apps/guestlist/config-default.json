@@ -1,7 +1,4 @@
 {
-  "LOG": {
-    "APP_NAME": "guestlist"
-  },
   "CONDUIT": {
     "HOST": "localhost",
     "APP": "guestlist"

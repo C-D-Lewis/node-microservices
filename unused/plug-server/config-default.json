@@ -1,7 +1,4 @@
 {
-  "LOG": {
-    "APP_NAME": "plug-server"
-  },
   "CONDUIT": {
     "HOST": "localhost",
     "APP": "plug-server"

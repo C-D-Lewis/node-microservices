@@ -1,7 +1,4 @@
 {
-  "LOG": {
-    "APP_NAME": "visuals"
-  },
   "LEDS": {
     "ATTENUATION_FACTOR": 1,
     "BRIGHTNESS": 1,

@@ -1,7 +1,4 @@
 {
-  "LOG": {
-    "APP_NAME": "clacks"
-  },
   "CONDUIT": {
     "HOST": "localhost",
     "APP": "clacks"

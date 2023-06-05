@@ -6,9 +6,6 @@
       }
     ]
   },
-  "LOG": {
-    "APP_NAME": "concierge"
-  },
   "CONDUIT": {
     "HOST": "localhost",
     "APP": "concierge"

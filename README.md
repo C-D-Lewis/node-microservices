@@ -109,19 +109,18 @@ app's config file, or else it will not start. For example, app logging:
 
 ```js
 config.addPartialSchema({
-  required: ['LOG'],
+  required: ['DB'],
   properties: {
-    LOG: {
-      required: ['APP_NAME', 'LEVEL'],
+    DB: {
+      required: ['FILE'],
       properties: {
-        APP_NAME: { type: 'string' },
-        LEVEL: { type: 'string' },
+        FILE: { type: 'string' },
       },
     },
   },
 });
 
-const { LOG } = config.get(['LOG']);
+const { DB } = config.get(['DB']);
 ```
 
 Apps must then use `validate()` during startup to validate the whole and to

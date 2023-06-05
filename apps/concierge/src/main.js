@@ -56,7 +56,7 @@ const initEnsuredWebhooks = async () => {
  * The main function.
  */
 const main = async () => {
-  log.begin();
+  log.begin({ appName: 'concierge' });
 
   try {
     await conduit.register();

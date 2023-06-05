@@ -66,9 +66,6 @@ COPY <<EOF /code/apps/conduit/config.json
   "SERVER": {
     "PORT": 5959
   },
-  "LOG": {
-    "APP_NAME": "conduit"
-  },
   "CLACKS": {
     "SERVER": "localhost"
   }

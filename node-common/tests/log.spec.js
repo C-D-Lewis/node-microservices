@@ -2,7 +2,7 @@ const log = require('../src/modules/log');
 
 describe('log.js', () => {
   it('should begin the log', () => {
-    log.begin({ monitorLog: false });
+    log.begin({ appName: 'node-common', monitorLog: false });
   });
 
   it('should log info', () => {

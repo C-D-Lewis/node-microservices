@@ -10,7 +10,7 @@ const FLEET_CHECKIN_DELAY_MS = 30000;
  * The main function.
  */
 const main = async () => {
-  log.begin();
+  log.begin({ appName: 'conduit' });
 
   await api.setup();
 

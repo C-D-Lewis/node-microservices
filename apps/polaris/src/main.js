@@ -5,7 +5,7 @@ const ipMonitor = require('./modules/ipMonitor');
  * The main function.
  */
 const main = async () => {
-  log.begin();
+  log.begin({ appName: 'polaris' });
 
   await conduit.register();
 

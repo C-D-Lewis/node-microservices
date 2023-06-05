@@ -1,5 +1,7 @@
 const { log, gpio, temperature } = require('../node-common')(['log', 'gpio', 'temperature']);
 
+// Example: GPIO_PIN = 14, THRESHOLD = 40
+
 /**
  * Monitor temperature and control onboard fan.
  *

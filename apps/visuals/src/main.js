@@ -6,7 +6,7 @@ const api = require('./modules/api');
  * The main function.
  */
 const main = async () => {
-  log.begin();
+  log.begin({ appName: 'visuals' });
 
   await api.setup();
 

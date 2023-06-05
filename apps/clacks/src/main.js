@@ -5,7 +5,7 @@ const server = require('./modules/server');
  * The main function.
  */
 const main = () => {
-  log.begin();
+  log.begin({ appName: 'clacks' });
 
   // This should launch before conduit, but keep trying to connect
   const handle = setInterval(async () => {

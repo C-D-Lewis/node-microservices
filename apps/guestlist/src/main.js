@@ -6,7 +6,7 @@ const adminPassword = require('./modules/adminPassword');
  * The main function.
  */
 const main = async () => {
-  log.begin();
+  log.begin({ appName: 'guestlist' });
 
   await api.setup();
 

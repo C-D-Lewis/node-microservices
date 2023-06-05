@@ -9,14 +9,6 @@
       }
     },
     {
-      "FILE_NAME": "fan-control.js",
-      "EVERY": 1,
-      "ARGS": {
-        "GPIO_PIN": 14,
-        "THRESHOLD": 40
-      }
-    },
-    {
       "FILE_NAME": "visuals-scheduler.js",
       "EVERY": 1,
       "ARGS": {
@@ -34,9 +26,6 @@
       }
     }
   ],
-  "LOG": {
-    "APP_NAME": "monitor"
-  },
   "CONDUIT": {
     "HOST": "localhost",
     "APP": "monitor"

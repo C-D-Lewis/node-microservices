@@ -3,20 +3,21 @@ const config = require('../src/modules/config');
 
 describe('config.js', () => {
   it('should contain data from the config file', () => {
-    const { LOG } = config.get(['LOG']);
+    const { DB } = config.get(['DB']);
 
-    expect(LOG).to.be.an('object');
+    expect(DB).to.be.an('object');
   });
 
   it('should allow modules to require keys', () => {
     expect(config.addPartialSchema).to.be.a('function');
 
     config.addPartialSchema({
-      required: ['LOG'],
+      required: ['DB'],
       properties: {
-        LOG: {
+        DB: {
+          required: ['FILE'],
           properties: {
-            TEST: { type: 'string' },
+            FILE: { type: 'string' },
           },
         },
       },

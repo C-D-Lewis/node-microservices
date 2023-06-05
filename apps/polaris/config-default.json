@@ -9,9 +9,6 @@
     "HOSTED_ZONE_NAME": "",
     "RECORD_NAME_PREFIX": "polaris"
   },
-  "LOG": {
-    "APP_NAME": "polaris"
-  },
   "CONDUIT": {
     "HOST": "localhost",
     "APP": "polaris"

@@ -1,7 +1,4 @@
 {
-  "LOG": {
-    "APP_NAME": "attic"
-  },
   "STORAGE_MODE": "db",
   "GIST_SYNC": {
     "URL": "",
