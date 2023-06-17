@@ -11,5 +11,5 @@ jobs:
       #     sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
       #     sudo apt-get update
       #     sudo apt-get install docker-ce
-      - run: docker build -t node-microservices .
+      - run: DOCKER_BUILDKIT=1 docker build -t node-microservices .
       - run: docker run -t node-microservices
