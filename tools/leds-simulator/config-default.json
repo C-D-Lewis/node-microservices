@@ -1,6 +1,5 @@
 {
   "CONDUIT": {
-    "HOST": "localhost",
-    "APP": "led-simulator"
+    "HOST": "localhost"
   }
 }

@@ -7,8 +7,7 @@
     ]
   },
   "CONDUIT": {
-    "HOST": "localhost",
-    "APP": "concierge"
+    "HOST": "localhost"
   },
   "SERVER": {
     "PORT": 4665

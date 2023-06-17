@@ -138,7 +138,7 @@ other clients may attempt to send. For example, the `visuals` API:
 
 ```js
 // Connect and get port
-await conduit.register();
+await conduit.register({ appName: 'visuals' });
 
 // Register listeners for topics, and declare schema for those topic's messages
 conduit.on('setAll', require('../api/setAll'), SET_ALL_MESSAGE_SCHEMA);

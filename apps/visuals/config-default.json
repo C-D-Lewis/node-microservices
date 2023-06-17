@@ -6,8 +6,7 @@
     "HARDWARE_TYPE": "mote"
   },
   "CONDUIT": {
-    "HOST": "localhost",
-    "APP": "visuals"
+    "HOST": "localhost"
   },
   "TEXT_DISPLAY": {
     "USE_HARDWARE": false,

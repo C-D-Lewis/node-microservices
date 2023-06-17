@@ -102,5 +102,5 @@ Content-Type: application/json
 When using `node-common`, this is as simple as:
 
 ```js
-await conduit.register();
+await conduit.register({ appnName });
 ```

@@ -23,7 +23,7 @@ const NULL_SCHEMA = {};
  * Setup Conduit topic handlers.
  */
 const setup = async () => {
-  await conduit.register();
+  await conduit.register({ appName: 'monitor' });
 
   conduit.on('getMetricToday', require('../api/getMetricToday'), GET_METRIC_TODAY_MESSAGE_SCHEMA);
   conduit.on('updateMetrics', require('../api/updateMetrics'), UPDATE_METRICS_MESSAGE_SCHEMA);

@@ -10,7 +10,6 @@
     "RECORD_NAME_PREFIX": "polaris"
   },
   "CONDUIT": {
-    "HOST": "localhost",
-    "APP": "polaris"
+    "HOST": "localhost"
   }
 }

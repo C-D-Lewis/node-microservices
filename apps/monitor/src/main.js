@@ -1,4 +1,6 @@
-const { conduit, log, config } = require('./node-common')(['conduit', 'log', 'config']);
+const {
+  conduit, log, config, attic,
+} = require('./node-common')(['conduit', 'log', 'config', 'attic']);
 const plugins = require('./modules/plugins');
 const api = require('./modules/api');
 
@@ -7,6 +9,7 @@ const api = require('./modules/api');
  */
 const main = async () => {
   log.begin({ appName: 'monitor' });
+  attic.setAppName('monitor');
 
   await api.setup();
 

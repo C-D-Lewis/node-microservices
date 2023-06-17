@@ -1,5 +1,7 @@
 const AWSSDK = require('aws-sdk');
-const { config, log, ip } = require('../node-common')(['config', 'log', 'ip']);
+const {
+  config, log, ip, attic,
+} = require('../node-common')(['config', 'log', 'ip', 'attic']);
 
 config.addPartialSchema({
   required: ['OPTIONS', 'AWS'],
@@ -37,6 +39,9 @@ const {
     ACCESS_KEY_ID, SECRET_ACCESS_KEY, REGION, HOSTED_ZONE_NAME, RECORD_NAME_PREFIX,
   },
 } = config.get(['OPTIONS', 'AWS']);
+
+/** Attic key for IP history */
+const ATTIC_KEY_HISTORY = 'history';
 
 AWSSDK.config.update({
   accessKeyId: ACCESS_KEY_ID,
@@ -146,6 +151,11 @@ const onIpMonitorRefresh = async () => {
   // Read the Route53 record
   const { currentIp, hostedZoneId, recordFullName } = await fetchRecordData(publicIp);
   log.info(`Current record IP address: ${currentIp}`);
+
+  // Update history list
+  if (!await attic.exists(ATTIC_KEY_HISTORY)) await attic.set(ATTIC_KEY_HISTORY, []);
+  const list = await attic.get(ATTIC_KEY_HISTORY);
+  await attic.set(ATTIC_KEY_HISTORY, Array.from(new Set([...list, currentIp])));
 
   // Update if required
   if (publicIp === currentIp) {

@@ -17,7 +17,7 @@ const SET_PLUG_STATE_MESSAGE_SCHEMA = {
  * Setup the conduit API.
  */
 const setup = async () => {
-  await conduit.register();
+  await conduit.register({ 'plug-server' });
 
   conduit.on('getPlugs', require('../api/getPlugs'), EMPTY_MESSAGE_SCHEMA);
   conduit.on('setPlugState', require('../api/setPlugState'), SET_PLUG_STATE_MESSAGE_SCHEMA);

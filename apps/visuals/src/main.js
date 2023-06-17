@@ -1,4 +1,4 @@
-const { log, config } = require('./node-common')(['log', 'config']);
+const { log, config, attic } = require('./node-common')(['log', 'config', 'attic']);
 const { createSpotifyClient } = require('./modules/spotifyAuth');
 const api = require('./modules/api');
 
@@ -7,6 +7,7 @@ const api = require('./modules/api');
  */
 const main = async () => {
   log.begin({ appName: 'visuals' });
+  attic.setAppName('visuals');
 
   await api.setup();
 

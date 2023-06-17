@@ -9,7 +9,6 @@
     "FILE":  "./db.json"
   },
   "CONDUIT": {
-    "HOST": "localhost",
-    "APP": "attic"
+    "HOST": "localhost"
   }
 }

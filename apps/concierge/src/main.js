@@ -57,9 +57,10 @@ const initEnsuredWebhooks = async () => {
  */
 const main = async () => {
   log.begin({ appName: 'concierge' });
+  attic.setAppName('concierge');
 
   try {
-    await conduit.register();
+    await conduit.register({ appName: 'concierge' });
     await conduit.send({ to: 'attic', topic: 'status' });
   } catch (e) {
     log.error(e);

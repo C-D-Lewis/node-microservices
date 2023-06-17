@@ -1,6 +1,5 @@
 {
   "CONDUIT": {
-    "HOST": "localhost",
-    "APP": "plug-server"
+    "HOST": "localhost"
   }
 }

@@ -1,4 +1,4 @@
-const { log, config } = require('./node-common')(['log', 'config']);
+const { log, config, attic } = require('./node-common')(['log', 'config', 'attic']);
 const api = require('./modules/api');
 const adminPassword = require('./modules/adminPassword');
 
@@ -7,6 +7,7 @@ const adminPassword = require('./modules/adminPassword');
  */
 const main = async () => {
   log.begin({ appName: 'guestlist' });
+  attic.setAppName('guestlist');
 
   await api.setup();
 

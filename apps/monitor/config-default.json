@@ -27,8 +27,7 @@
     }
   ],
   "CONDUIT": {
-    "HOST": "localhost",
-    "APP": "monitor"
+    "HOST": "localhost"
   },
   "SES": {
     "TO_ADDRESS": "",

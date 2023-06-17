@@ -2,6 +2,8 @@ const { expect } = require('chai');
 const attic = require('../src/modules/attic');
 
 describe('attic.js', () => {
+  before(() => attic.setAppName('node-common'));
+
   it('should set a value in Attic service', async () => {
     const res = await attic.set('foo', 'bar');
 

@@ -10,7 +10,7 @@ const updateDisplay = (ledArr) => {
 };
 
 const main = async () => {
-  await conduit.register();
+  await conduit.register({ appName: 'leds-simulator' });
 
   setInterval(async () => {
     try {

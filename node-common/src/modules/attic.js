@@ -5,9 +5,7 @@ config.addPartialSchema({
   required: ['CONDUIT'],
   properties: {
     CONDUIT: {
-      required: ['APP'],
       properties: {
-        APP: { type: 'string' },
         TOKEN: { type: 'string' },
       },
     },
@@ -20,7 +18,7 @@ const { CONDUIT } = config.get(['CONDUIT']);
 const CONDUIT_PORT = 5959;
 
 let host = 'localhost';
-let appName = CONDUIT.APP || 'Unknown';
+let appName;
 
 /**
  * Send a conduit packet.
@@ -83,6 +81,8 @@ const set = async (key, value) => conduitSend({
  * @throws {Error} If key not found or some other error occurred.
  */
 const get = async (key) => {
+  if (!appName) throw new Error('attic.js: setAppName was not used');
+
   const res = await conduitSend({
     to: 'attic',
     topic: 'get',

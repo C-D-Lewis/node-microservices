@@ -3,7 +3,7 @@ const conduit = require('../src/modules/conduit');
 
 describe('conduit.js', () => {
   it('should connect to Conduit service', async () => {
-    await conduit.register();
+    await conduit.register({ appName: 'node-common' });
   });
 
   it('should register a topic with schema', async () => {

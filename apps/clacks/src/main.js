@@ -10,7 +10,7 @@ const main = () => {
   // This should launch before conduit, but keep trying to connect
   const handle = setInterval(async () => {
     try {
-      await conduit.register();
+      await conduit.register({ appName: 'clacks' });
       clearInterval(handle);
     } catch (e) {
       log.error(`Failed to register with conduit, is it up yet? ${e.message}`);

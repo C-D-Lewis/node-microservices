@@ -43,7 +43,7 @@ const EMPTY_PACKET_SCHEMA = { type: 'object' };
  * Register with conduit and setup packet topic handlers.
  */
 const setup = async () => {
-  await conduit.register();
+  await conduit.register({ appName: 'visuals' });
 
   conduit.on('setAll', require('../api/setAll'), SET_ALL_PACKET_SCHEMA);
   conduit.on('setPixel', require('../api/setPixel'), INDEXED_PACKET_SCHEMA);

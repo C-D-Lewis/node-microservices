@@ -3,8 +3,7 @@
     "FILE": "./db.json"
   },
   "CONDUIT": {
-    "HOST": "localhost",
-    "APP": "node-common"
+    "HOST": "localhost"
   },
   "GIST_SYNC": {
     "URL": "https://gist.github.com/C-D-Lewis/b01d24df220ae0a8ece6f8c7ebc46d2b",

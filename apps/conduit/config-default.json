@@ -6,10 +6,6 @@
     },
     "AUTH_TOKENS": false
   },
-  "CONDUIT": {
-    "APP": "conduit",
-    "TOKEN": ""
-  },
   "SERVER": {
     "PORT": 5959
   },

@@ -1,17 +1,15 @@
 # syntax=docker/dockerfile:1.4
 
-FROM 'node:16-slim'
-
-ENV DOCKER_TEST=1
-
-WORKDIR /code
+FROM 'node:16-slim' AS base
 
 # Install OS dependencies
 RUN apt-get update && apt-get install -y git python3
 
-# Install common dependencies
-ADD node-common/package* /code/node-common/
-RUN cd /code/node-common && npm ci
+FROM base
+
+ENV DOCKER_TEST=1
+
+WORKDIR /code
 
 # Install app dependencies
 ADD apps/conduit/package* /code/apps/conduit/
@@ -42,6 +40,10 @@ ADD apps/polaris/ /code/apps/polaris/
 ADD apps/visuals/ /code/apps/visuals/
 ADD apps/monitor/ /code/apps/monitor/
 
+# Install common dependencies (could change most often)
+ADD node-common/package* /code/node-common/
+RUN cd /code/node-common && npm ci
+
 # Config cleanup
 RUN rm /code/apps/**/config.json || exit 0
 RUN rm /code/node-common/config.json || exit 0
@@ -60,7 +62,6 @@ COPY <<EOF /code/apps/conduit/config.json
     "AUTH_TOKENS": true
   },
   "CONDUIT": {
-    "APP": "conduit",
     "TOKEN": ""
   },
   "SERVER": {

@@ -1,4 +1,6 @@
-const { log, conduit, config } = require('./node-common')(['log', 'conduit', 'config']);
+const {
+  log, conduit, config, attic,
+} = require('./node-common')(['log', 'conduit', 'config', 'attic']);
 const ipMonitor = require('./modules/ipMonitor');
 
 /**
@@ -6,8 +8,9 @@ const ipMonitor = require('./modules/ipMonitor');
  */
 const main = async () => {
   log.begin({ appName: 'polaris' });
+  attic.setAppName('polaris');
 
-  await conduit.register();
+  await conduit.register({ appName: 'polaris' });
 
   ipMonitor.start();
 

@@ -23,7 +23,7 @@ const SET_MESSAGE_SCHEMA = {
  * Setup Conduit topic handlers.
  */
 const setup = async () => {
-  await conduit.register();
+  await conduit.register({ appName: 'attic' });
 
   conduit.on('get', require('../api/get'), NO_VALUE_MESSAGE_SCHEMA);
   conduit.on('listApps', require('../api/listApps'), {});

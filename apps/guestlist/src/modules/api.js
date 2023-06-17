@@ -60,7 +60,7 @@ const GET_ALL_MESSAGE_SCHEMA = {
  * Setup Conduit topic handlers.
  */
 const setup = async () => {
-  await conduit.register();
+  await conduit.register({ appName: 'guestlist' });
 
   conduit.on('create', require('../api/create'), CREATE_MESSAGE_SCHEMA);
   conduit.on('get', require('../api/get'), GET_MESSAGE_SCHEMA);
