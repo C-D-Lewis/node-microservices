@@ -23,6 +23,7 @@ describe('API', () => {
       });
 
       expect(data.response.statusCode).to.equal(200);
+      console.log({ data })
       expect(data.body.port).to.be.a('number');
     });
   });

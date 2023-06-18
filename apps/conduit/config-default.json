@@ -9,6 +9,9 @@
   "SERVER": {
     "PORT": 5959
   },
+  "CONDUIT": {
+    "TOKEN": ""
+  },
   "CLACKS": {
     "SERVER": "localhost"
   }

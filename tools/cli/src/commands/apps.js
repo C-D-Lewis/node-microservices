@@ -2,6 +2,7 @@ const { existsSync } = require('fs');
 const { spawn } = require('child_process');
 const fetch = require('node-fetch').default;
 const printTable = require('../functions/printTable');
+const wait = require('../functions/wait');
 const switches = require('../modules/switches');
 
 /** Default conduit port */
@@ -14,7 +15,14 @@ const CONDUIT_PORT = 5959;
  */
 const fetchRunningApps = async () => {
   const finalHost = switches.HOST || 'localhost';
-  return fetch(`http://${finalHost}:${CONDUIT_PORT}/apps`).then((r) => r.json());
+  try {
+    const res = await fetch(`http://${finalHost}:${CONDUIT_PORT}/apps`);
+    return res.json();
+  } catch (e) {
+    if (e.message.includes('ECONNREFUSED')) throw new Error('Failed to list apps - is conduit running?');
+
+    throw e;
+  }
 };
 
 /**
@@ -43,18 +51,29 @@ const start = async (appName) => {
   console.log(`Starting ${appName}...`);
   child.unref();
 
-  // Check it worked
-  setTimeout(async () => {
-    console.log('Verifying launch...');
-    const apps = await fetchRunningApps();
-    const found = apps.find((p) => p.app === appName);
-    if (found && found.status === 'OK') {
-      console.log(`App ${appName} is running`);
-      return;
-    }
-
+  // Max attempts
+  const handle = setTimeout(async () => {
     console.log(`App ${appName} failed to launch - check app logs for info`);
-  }, 8000);
+    process.exit(1);
+  }, 10000);
+
+  // Check it worked
+  console.log('Verifying launch...');
+  while (true) {
+    await wait(500);
+
+    try {
+      const apps = await fetchRunningApps();
+      const found = apps.find((p) => p.app === appName);
+      if (found && found.status === 'OK') {
+        console.log(`App ${appName} is running`);
+        clearTimeout(handle);
+        return;
+      }
+    } catch (e) {
+      console.log(e.message);
+    }
+  }
 };
 
 /**
