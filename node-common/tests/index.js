@@ -9,7 +9,6 @@ require('./clacks.spec');
 require('./config.spec');
 require('./db.spec');
 require('./enviro.spec');
-require('./eventBus.spec');
 require('./extract.spec');
 // require('./gistSync.spec');
 require('./gpio.spec');

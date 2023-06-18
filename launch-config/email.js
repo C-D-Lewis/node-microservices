@@ -70,7 +70,7 @@ const main = async () => {
     report += e.message;
   }
   
-  notify();
+  await notify();
 };
 
 main();

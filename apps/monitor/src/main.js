@@ -1,6 +1,6 @@
 const {
-  conduit, log, config, attic,
-} = require('./node-common')(['conduit', 'log', 'config', 'attic']);
+  log, config, attic,
+} = require('./node-common')(['log', 'config', 'attic']);
 const plugins = require('./modules/plugins');
 const api = require('./modules/api');
 
@@ -12,13 +12,6 @@ const main = async () => {
   attic.setAppName('monitor');
 
   await api.setup();
-
-  // Clear any LEDs (still needed?)
-  await conduit.send({
-    to: 'visuals',
-    topic: 'setAll',
-    message: { all: [0, 0, 0] },
-  });
 
   plugins.loadAll();
 

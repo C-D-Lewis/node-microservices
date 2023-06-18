@@ -1,4 +1,6 @@
-const { log, config, attic } = require('./node-common')(['log', 'config', 'attic']);
+const {
+  log, config, attic, leds,
+} = require('./node-common')(['log', 'config', 'attic', 'leds']);
 const { createSpotifyClient } = require('./modules/spotifyAuth');
 const api = require('./modules/api');
 
@@ -17,6 +19,9 @@ const main = async () => {
     log.error('Failed to createSpotifyClient, credentials may be invalid');
     log.error(e);
   }
+
+  // Clear LEDs
+  await leds.setAll([0, 0, 0]);
 
   config.validate();
 };
