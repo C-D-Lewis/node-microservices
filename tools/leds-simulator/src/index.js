@@ -14,7 +14,7 @@ const main = async () => {
 
   setInterval(async () => {
     try {
-      const state = await conduit.send({ to: 'visuals', topic: 'state' });
+      const state = await conduit.send({ to: 'visuals', topic: 'state' }, { silent: true });
       updateDisplay(state.message.leds);
     } catch (e) {
       console.log('Disconnected');

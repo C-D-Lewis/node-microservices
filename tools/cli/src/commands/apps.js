@@ -93,10 +93,10 @@ const stop = async (appName) => {
   try {
     const res = await fetch(`http://${finalHost}:${port}/kill`, { method: 'POST' }).then((r) => r.json());
     if (!res.stop) throw new Error(`Failed to stop app: ${res}`);
-    console.log(`Stopped ${appName}`);
+    console.log(`Stopped ${appName}`.green);
   } catch (e) {
-    console.log(`Problem stopping ${appName}`);
-    console.log(e);
+    console.log(`Problem stopping ${appName} - is it already stopped?`.yellow);
+    console.log(e.message);
   }
 };
 
@@ -114,7 +114,7 @@ const stopAll = async () => {
     await stop(app);
   }
 
-  // Stop conduit
+  // Stop conduit last
   await stop('conduit');
 };
 

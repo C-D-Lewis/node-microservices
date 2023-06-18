@@ -60,10 +60,12 @@ const respond = async (res, packet) => {
  * Send a conduit packet to another app.
  *
  * @param {object} packet - Conduit packet ({ to, from, topic, message })
+ * @param {object} [opts] - Function options.
  * @returns {object} Response body.
  * @throws {Error} If not yet registered with the conduit app.
  */
-const send = async (packet) => {
+const send = async (packet, opts = {}) => {
+  const { silent } = opts;
   if (!server) throw new Error('conduit.js: Not yet registered');
 
   // Patch extras in
@@ -72,14 +74,15 @@ const send = async (packet) => {
 
   // Send the data
   const packetStr = JSON.stringify(packet);
-  log.debug(`conduit.js: >> ${packetStr}`);
+  if (!silent) log.debug(`conduit.js: >> ${packetStr}`);
+
   const { body } = await fetch({
     url: `http://${CONDUIT.HOST}:${PORT}/conduit`,
     method: 'POST',
     body: packetStr,
   });
 
-  log.debug(`conduit.js: << ${JSON.stringify(body)}`);
+  if (!silent) log.debug(`conduit.js: << ${JSON.stringify(body)}`);
   return JSON.parse(body);
 };
 

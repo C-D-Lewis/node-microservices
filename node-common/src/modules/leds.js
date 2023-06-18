@@ -168,7 +168,13 @@ const fadeAll = async (toRgb, fromRgb) => {
     }
   }
 
-  if (!hardwareAvailable()) return;
+  // No hardware, fade instantly in state for leds-simulator
+  if (!hardwareAvailable()) {
+    for (let i = 0; i < NUM_LEDS; i += 1) {
+      pixelsState[i] = toRgb;
+    }
+    return;
+  }
 
   if (HARDWARE_TYPE === 'blinkt') {
     throw new Error('Not implemented for blinkt currently');
@@ -186,9 +192,7 @@ const fadeAll = async (toRgb, fromRgb) => {
 };
 
 // OK to init mote straight away - Non-pi dev should specify 'blinkt' HARDWARE_TYPE
-(() => {
-  if (HARDWARE_TYPE === 'mote') init();
-})();
+if (HARDWARE_TYPE === 'mote') init();
 
 module.exports = {
   set,

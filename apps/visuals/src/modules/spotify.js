@@ -35,7 +35,7 @@ const startAnimation = async () => {
 
   // Set initial value
   const rgbArr = await getColor();
-  leds.fadeAll(rgbArr);
+  leds.fadeAll(rgbArr, rgbArr);
 
   return rgbArr;
 };
