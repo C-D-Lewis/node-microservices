@@ -1,5 +1,5 @@
 const os = require('os');
-const requestAsync = require('./requestAsync');
+const fetch = require('./fetch');
 const log = require('./log');
 
 /**
@@ -9,8 +9,8 @@ const log = require('./log');
  */
 const getPublic = async () => {
   try {
-    const { body } = await requestAsync('https://api.ipify.org?format=json');
-    return JSON.parse(body).ip;
+    const { data: { ip } } = await fetch('https://api.ipify.org?format=json');
+    return ip;
   } catch (e) {
     log.error('Failed to get public IP');
     log.error(e);

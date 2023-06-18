@@ -1,6 +1,6 @@
 const {
-  log, requestAsync, ses,
-} = require('../node-common')(['log', 'requestAsync', 'ses']);
+  log, fetch, ses,
+} = require('../node-common')(['log', 'fetch', 'ses']);
 const visuals = require('../modules/visuals');
 
 /** LED state for OK */
@@ -21,11 +21,10 @@ module.exports = async (args) => {
   const host = args.HOST || 'localhost';
 
   // Read apps list
-  const { body } = await requestAsync(`http://${host}:${PORT}/apps`);
-  const json = JSON.parse(body);
+  const { data } = await fetch(`http://${host}:${PORT}/apps`);
 
   // Find apps that are not OK
-  const downApps = json.reduce((result, item) => {
+  const downApps = data.reduce((result, item) => {
     log.debug(`Service ${item.app} returned ${item.status}`);
     if (item.status !== 'OK') result.push(item.app);
 
@@ -34,7 +33,7 @@ module.exports = async (args) => {
 
   // Set new LED indicator state
   const stateNow = downApps.length === 0;
-  const serviceList = json.map((p) => p.app).join(', ');
+  const serviceList = data.map((p) => p.app).join(', ');
   log.info(`Services up: ${stateNow} (${serviceList})`);
   visuals.setLed(
     args.LED,

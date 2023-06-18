@@ -1,5 +1,5 @@
 const config = require('./config');
-const requestAsync = require('./requestAsync');
+const fetch = require('./fetch');
 
 config.addPartialSchema({
   required: ['CONDUIT'],
@@ -30,12 +30,12 @@ const conduitSend = async (packet) => {
   // eslint-disable-next-line no-param-reassign
   packet.auth = CONDUIT.TOKEN || '';
 
-  const { body } = await requestAsync({
+  const { data } = await fetch({
     url: `http://${host}:${CONDUIT_PORT}/conduit`,
     method: 'post',
-    json: packet,
+    body: JSON.stringify(packet),
   });
-  return body;
+  return data;
 };
 
 /**

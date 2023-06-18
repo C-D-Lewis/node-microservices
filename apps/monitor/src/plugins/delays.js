@@ -1,6 +1,6 @@
 const {
-  requestAsync, log, extract,
-} = require('../node-common')(['requestAsync', 'config', 'log', 'extract']);
+  fetch, log, extract,
+} = require('../node-common')(['fetch', 'config', 'log', 'extract']);
 const visuals = require('../modules/visuals');
 
 /** LED state for OK */
@@ -32,7 +32,7 @@ const lastStates = {
  */
 const checkReasons = async (lineName) => {
   const url = 'http://www.nationalrail.co.uk/service_disruptions/indicator.aspx';
-  let { body } = await requestAsync(url);
+  let { body } = await fetch(url);
 
   // Get line section
   const begin = body.indexOf(lineName);
@@ -63,7 +63,7 @@ const checkReasons = async (lineName) => {
  */
 const checkDelays = async (lineName) => {
   const url = 'http://www.nationalrail.co.uk/service_disruptions/indicator.aspx';
-  const { body } = await requestAsync(url);
+  const { body } = await fetch(url);
   const stateNow = extract(body, [`${lineName}</td>`, '<td>'], '</td>').trim();
   log.info(`${lineName}: '${stateNow}'`);
 

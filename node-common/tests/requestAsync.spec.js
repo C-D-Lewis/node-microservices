@@ -1,10 +1,11 @@
 const { expect } = require('chai');
-const requestAsync = require('../src/modules/requestAsync');
+const fetch = require('../src/modules/fetch');
 
-describe('requestAsync.js', () => {
-  it('should perform asynchronous request', async () => {
-    const { response } = await requestAsync({ url: 'https://google.com' });
+describe('fetch.js', () => {
+  it('should perform asynchronous requests', async () => {
+    const { status, body } = await fetch({ url: 'https://google.com' });
 
-    expect(response.statusCode).to.equal(200);
+    expect(status).to.equal(200);
+    expect(body).to.contain('Google');
   });
 });

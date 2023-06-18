@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const config = require('./config');
 const log = require('./log');
-const requestAsync = require('./requestAsync');
+const fetch = require('./fetch');
 const schema = require('./schema');
 
 config.addPartialSchema({
@@ -71,15 +71,16 @@ const send = async (packet) => {
   packet.auth = CONDUIT.TOKEN || '';
 
   // Send the data
-  log.debug(`conduit.js: >> ${JSON.stringify(packet)}`);
-  const { body } = await requestAsync({
+  const packetStr = JSON.stringify(packet);
+  log.debug(`conduit.js: >> ${packetStr}`);
+  const { body } = await fetch({
     url: `http://${CONDUIT.HOST}:${PORT}/conduit`,
-    method: 'post',
-    json: packet,
+    method: 'POST',
+    body: packetStr,
   });
 
   log.debug(`conduit.js: << ${JSON.stringify(body)}`);
-  return body;
+  return JSON.parse(body);
 };
 
 /**
@@ -164,10 +165,12 @@ const register = async ({ appName }) => {
   }
 
   // Request a random port to be known by
-  const { body } = await requestAsync({
+  const { data } = await fetch({
     url: `http://${CONDUIT.HOST}:${PORT}/port`,
-    json: { app: thisAppName, pid: process.pid },
+    method: 'POST',
+    body: JSON.stringify({ app: thisAppName, pid: process.pid }),
   });
+  const { port } = data;
 
   // Start a local HTTP server and add routes
   server = express();
@@ -176,11 +179,11 @@ const register = async ({ appName }) => {
 
   return new Promise((resolve) => {
     // Listen on the assigned port
-    handle = server.listen(body.port, () => {
+    handle = server.listen(port, () => {
       // Register all apps to report their status
       on('status', onStatus, STATUS_MESSAGE_SCHEMA);
 
-      log.debug(`conduit.js: Registered with Conduit on ${body.port}`);
+      log.debug(`conduit.js: Registered with Conduit on ${port}`);
       resolve();
     });
   });

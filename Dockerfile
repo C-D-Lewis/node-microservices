@@ -29,8 +29,11 @@ RUN cd /code/apps/visuals && npm ci
 ADD apps/monitor/package* /code/apps/monitor/
 RUN cd /code/apps/monitor && npm ci
 
+# Install common dependencies (could change most often)
+ADD node-common/package* /code/node-common/
+RUN cd /code/node-common && npm ci
+
 # Add code
-ADD node-common/ /code/node-common/
 ADD apps/conduit/ /code/apps/conduit/
 ADD apps/attic/ /code/apps/attic/
 ADD apps/clacks/ /code/apps/clacks/
@@ -39,10 +42,7 @@ ADD apps/guestlist/ /code/apps/guestlist/
 ADD apps/polaris/ /code/apps/polaris/
 ADD apps/visuals/ /code/apps/visuals/
 ADD apps/monitor/ /code/apps/monitor/
-
-# Install common dependencies (could change most often)
-ADD node-common/package* /code/node-common/
-RUN cd /code/node-common && npm ci
+ADD node-common/ /code/node-common/
 
 # Config cleanup
 RUN rm /code/apps/**/config.json || exit 0

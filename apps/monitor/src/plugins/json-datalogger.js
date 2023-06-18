@@ -1,8 +1,6 @@
 const jsonPath = require('jsonpath');
 const fs = require('fs');
-const {
-  requestAsync, log,
-} = require('../node-common')(['requestAsync', 'log']);
+const { fetch, log } = require('../node-common')(['fetch', 'log']);
 
 /**
  * Log a JSON value from an API to CSV
@@ -20,14 +18,13 @@ module.exports = async (args) => {
   );
 
   try {
-    const { body } = await requestAsync({
+    const { data } = await fetch({
       url: URL,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0',
       },
     });
-    const json = JSON.parse(body);
-    const value = jsonPath.query(json, JSON_PATH);
+    const value = jsonPath.query(data, JSON_PATH);
     const now = Date.now();
 
     // Write CSV file

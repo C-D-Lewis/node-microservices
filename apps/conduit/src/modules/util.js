@@ -1,4 +1,4 @@
-const { config, log, requestAsync } = require('../node-common')(['config', 'log', 'requestAsync']);
+const { config, log, fetch } = require('../node-common')(['config', 'log', 'fetch']);
 
 config.addPartialSchema({
   required: ['SERVER'],
@@ -55,13 +55,13 @@ const sendNotAuthorized = (res, reason = 'None') => {
  * @returns {Promise<object>} The request response.
  */
 const sendPacket = async (json) => {
-  const { body } = await requestAsync({
+  const { data } = await fetch({
     url: `http://localhost:${SERVER.PORT}/conduit`,
     method: 'post',
-    json,
+    body: JSON.stringify(json),
   });
 
-  return body;
+  return data;
 };
 
 module.exports = {

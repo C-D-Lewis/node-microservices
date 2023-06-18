@@ -100,7 +100,7 @@ const updateRemoteAuthCode = async () => {
   const res = await conduit.send({
     to: 'attic',
     topic: 'get',
-    host: AUTH_ATTIC.HOST,
+    host: AUTH_ATTIC.HOST || undefined,
     message: { app: 'concierge', key: AUTH_ATTIC.KEY },
   });
   if (res.error) throw new Error(res.error);

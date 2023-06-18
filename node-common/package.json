@@ -13,8 +13,7 @@
     "colors": "^1.4.0",
     "express": "^4.16.2",
     "jsonschema": "^1.2.0",
-    "node-fetch": "^2.6.7",
-    "request": "^2.88.2",
+    "node-fetch": "^2.6.11",
     "ws": "^8.2.3"
   },
   "devDependencies": {

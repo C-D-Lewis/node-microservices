@@ -26,7 +26,7 @@ const setup = async () => {
   // Register API routes and handlers
   app.get('/apps', require('../api/apps'));
   app.post('/conduit', bodyParser.json(), require('../api/conduit'));
-  app.get('/port', bodyParser.json(), require('../api/port'));
+  app.post('/port', bodyParser.json(), require('../api/port'));
   app.post('/reboot', require('../api/reboot'));
   app.post('/shutdown', require('../api/shutdown'));
   app.post('/kill', require('../api/kill'));

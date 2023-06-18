@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const config = require('../src/modules/config');
-const requestAsync = require('../src/modules/requestAsync');
+const fetch = require('../src/modules/fetch');
 const server = require('../src/modules/server');
 
 const {
@@ -25,20 +25,19 @@ describe('server.js', () => {
       server.respondOk(res);
     });
 
-    const { body } = await requestAsync(`http://localhost:${SERVER.PORT}/ok`);
+    const { body } = await fetch(`http://localhost:${SERVER.PORT}/ok`);
     expect(body).to.equal('OK\n');
   });
 
   it('should handle /status', async () => {
-    const { body } = await requestAsync(`http://localhost:${SERVER.PORT}/status`);
+    const { body } = await fetch(`http://localhost:${SERVER.PORT}/status`);
     expect(body).to.equal('OK\n');
   });
 
   it('should handle /pid', async () => {
-    const { body } = await requestAsync(`http://localhost:${SERVER.PORT}/pid`);
-    const json = JSON.parse(body);
+    const { data } = await fetch(`http://localhost:${SERVER.PORT}/pid`);
 
-    expect(json.pid).to.be.a('number');
+    expect(data.pid).to.be.a('number');
   });
 
   it('should respond Bad Request', async () => {
@@ -46,7 +45,7 @@ describe('server.js', () => {
       server.respondBadRequest(res);
     });
 
-    const { body } = await requestAsync(`http://localhost:${SERVER.PORT}/br`);
+    const { body } = await fetch(`http://localhost:${SERVER.PORT}/br`);
     expect(body).to.equal('Bad Request\n');
   });
 
@@ -55,7 +54,7 @@ describe('server.js', () => {
       server.respondNotFound(res);
     });
 
-    const { body } = await requestAsync(`http://localhost:${SERVER.PORT}/nf`);
+    const { body } = await fetch(`http://localhost:${SERVER.PORT}/nf`);
     expect(body).to.equal('Not Found\n');
   });
 

@@ -1,6 +1,6 @@
 const {
-  requestAsync, log, extract, attic,
-} = require('../node-common')(['requestAsync', 'log', 'extract', 'attic']);
+  fetch, log, extract, attic,
+} = require('../node-common')(['fetch', 'log', 'extract', 'attic']);
 
 /**
  * Log a scraped value from a web page.
@@ -18,7 +18,7 @@ module.exports = async (args) => {
   );
 
   try {
-    const { body } = await requestAsync({ url: URL });
+    const { body } = await fetch(URL);
     const value = extract(body, BEFORES, AFTER).trim();
 
     let history = [];

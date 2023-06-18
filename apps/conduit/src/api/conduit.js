@@ -1,6 +1,6 @@
 const {
-  config, log, requestAsync, schema,
-} = require('../node-common')(['config', 'log', 'requestAsync', 'schema']);
+  config, log, fetch, schema,
+} = require('../node-common')(['config', 'log', 'fetch', 'schema']);
 const { findByApp } = require('../modules/allocator');
 const {
   sendBadRequest, sendNotFound, sendPacket, sendNotAuthorized,
@@ -114,12 +114,17 @@ const handlePacketRequest = async (req, res) => {
       delete packet.host;
     }
 
+    if (!host || host === '') {
+      console.log({ host });
+      throw new Error('host was not resolved');
+    }
+
     // Deliver the packet to the recipient
     log.debug(`>> (FWD) ${host} ${to} ${topic} ${JSON.stringify(message)}`);
-    const { body: response = NO_RESPONSE_PACKET } = await requestAsync({
+    const { data: response = NO_RESPONSE_PACKET } = await fetch({
       url: `http://${host}:${port}/conduit`,
       method: 'post',
-      json: packet,
+      body: JSON.stringify(packet),
     });
 
     // Send response from 'to' app to message sender

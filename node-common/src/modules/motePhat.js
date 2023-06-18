@@ -54,7 +54,7 @@ const fadeAll = (toRgb, fromRgb) => {
 //   log.assert(Array.isArray(rgb), `rgb must be an array. Was ${rgb}`);
 //
 //   try {
-//     await requestAsync({
+//     await fetch({
 //       url: `http://localhost:${MOTE_PHAT_SERVER_POST}/setall`,
 //       method: 'post',
 //       headers: { 'Content-Type': 'application/json' },

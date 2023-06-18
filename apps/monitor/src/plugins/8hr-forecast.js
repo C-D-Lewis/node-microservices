@@ -1,4 +1,4 @@
-const { requestAsync, log } = require('../node-common')(['requestAsync', 'log']);
+const { fetch, log } = require('../node-common')(['fetch', 'log']);
 const visuals = require('../modules/visuals');
 
 /** LED state for DOWN */
@@ -20,11 +20,9 @@ const LED_STATE_FAIR = [30, 30, 30];
  */
 const getForecastLedStates = async (args) => {
   const url = `https://api.darksky.net/forecast/${args.DARKSKY_KEY}/${args.LATITUDE},${args.LONGITUDE}?units=auto&exclude=minutely`;
-  const { body } = await requestAsync(url);
-  if (!body) throw new Error('Error checking weather: no body.');
+  const res = await fetch(url);
 
-  const json = JSON.parse(body);
-  const { data } = json.hourly;
+  const { data } = res.data.hourly;
   const forecast = data.slice(0, args.HOURS_AHEAD).map((p) => ({
     time: p.time * 1000,
     icon: p.icon,

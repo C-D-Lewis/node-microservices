@@ -1,4 +1,4 @@
-const { requestAsync, log } = require('../node-common')(['requestAsync', 'log']);
+const { fetch, log } = require('../node-common')(['fetch', 'log']);
 const visuals = require('../modules/visuals');
 
 /** LED state for OK */
@@ -20,10 +20,9 @@ const LED_STATE_HOT = [255, 165, 0];
  */
 const checkWeather = async (args) => {
   const url = `https://api.darksky.net/forecast/${args.DARKSKY_KEY}/${args.LATITUDE},${args.LONGITUDE}?units=auto&exclude=hourly`;
-  const { body } = await requestAsync(url);
-  if (!body) throw new Error('Error checking weather: no body.');
+  const { data } = await fetch(url);
 
-  const { currently } = JSON.parse(body);
+  const { currently } = data;
   const temperature = Math.round(currently.apparentTemperature);
   const isRaining = currently.icon.includes('rain');
   log.info(`It's ${temperature}C, and ${isRaining ? 'is' : 'not'} raining`);

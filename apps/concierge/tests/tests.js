@@ -1,8 +1,8 @@
 const { expect } = require('chai');
 
 const {
-  config, testing, requestAsync,
-} = require('../src/node-common')(['config', 'testing', 'requestAsync']);
+  config, testing, fetch,
+} = require('../src/node-common')(['config', 'testing', 'fetch']);
 
 const { SERVER } = config.get(['SERVER']);
 
@@ -23,11 +23,10 @@ describe('API', () => {
 
   describe('/status', () => {
     it('should return 200 / OK', async () => {
-      const url = `http://localhost:${SERVER.PORT}/status`;
-      const data = await requestAsync({ url });
+      const res = await fetch(`http://localhost:${SERVER.PORT}/status`);
 
-      expect(data.response.statusCode).to.equal(200);
-      expect(data.body).to.contain('OK');
+      expect(res.status).to.equal(200);
+      expect(res.body).to.contain('OK');
     });
   });
 
@@ -47,10 +46,10 @@ describe('API', () => {
   describe('Hit TEST_WEBHOOK', () => {
     it('should return 200 / OK', async () => {
       const url = `http://localhost:${SERVER.PORT}${TEST_WEBHOOK.url}`;
-      const data = await requestAsync({ url, method: 'POST' });
+      const res = await fetch({ url, method: 'POST' });
 
-      expect(data.response.statusCode).to.equal(200);
-      expect(data.body).to.contain('OK');
+      expect(res.status).to.equal(200);
+      expect(res.body).to.contain('OK');
     });
   });
 
@@ -83,10 +82,10 @@ describe('API', () => {
   describe('Miss TEST_WEBHOOK', () => {
     it('should return 404 / Not Found', async () => {
       const url = `http://localhost:${SERVER.PORT}${TEST_WEBHOOK.url}`;
-      const data = await requestAsync({ url, method: 'POST' });
+      const res = await fetch({ url, method: 'POST' });
 
-      expect(data.response.statusCode).to.equal(404);
-      expect(data.body).to.contain('No hook found');
+      expect(res.status).to.equal(404);
+      expect(res.body).to.contain('No hook found');
     });
   });
 });

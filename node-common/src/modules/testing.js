@@ -1,4 +1,4 @@
-const requestAsync = require('./requestAsync');
+const fetch = require('./fetch');
 
 module.exports = {
   /**
@@ -14,12 +14,12 @@ module.exports = {
   /**
    * Send a Conduit packet.
    *
-   * @param {object} json - The packet to send.
-   * @returns {Promise} Promise that resolves with the response.
+   * @param {object} packet - The packet to send.
+   * @returns {Promise<object>} Promise that resolves with the response.
    */
-  sendConduitPacket: async (json) => requestAsync({
+  sendConduitPacket: async (packet) => fetch({
     url: 'http://localhost:5959/conduit',
     method: 'post',
-    json,
-  }).then(({ body }) => body),
+    body: JSON.stringify(packet),
+  }).then(({ data }) => data),
 };
