@@ -83,10 +83,10 @@ const DeviceIcon = ({ deviceType }) => fabricate('Image', { src: `assets/${Const
  * Last checkin label component.
  *
  * @param {object} props - Component props.
- * @param {number} props.minsAgo - Last seem minutes ago.
+ * @param {number} props.lastCheckIn - Last seem minutes ago.
  * @returns {HTMLElement} Fabricate component.
  */
-const LastSeenLabel = ({ minsAgo }) => fabricate('Text')
+const LastSeenLabel = ({ lastCheckIn }) => fabricate('Text')
   .setStyles({
     color: Theme.colors.AppCard.lastSeen,
     fontStyle: 'italic',
@@ -95,19 +95,7 @@ const LastSeenLabel = ({ minsAgo }) => fabricate('Text')
     margin: '8px',
     marginTop: 'auto',
   })
-  .onCreate((el) => {
-    if (minsAgo > (60 * 24)) {
-      el.setText(`Last seen ${Math.round(minsAgo / (60 * 24))} days ago`);
-      return;
-    }
-
-    if (minsAgo > 60) {
-      el.setText(`Last seen ${Math.round(minsAgo / 60)} hours ago`);
-      return;
-    }
-
-    el.setText(`Last seen ${minsAgo} mins ago`);
-  });
+  .setText(`Last seen ${Utils.getTimeAgoStr(lastCheckIn)}`);
 
 /**
  * Set if IpTextButton components.
@@ -170,9 +158,7 @@ const DeviceCardContainer = () => fabricate('Card')
  * @returns {HTMLElement} Fabricate component.
  */
 const CommitView = ({ commit, commitDate }) => fabricate('Row')
-  .setStyles({
-    // backgroundColor: '#F1502F',
-  })
+  .setStyles({ alignItems: 'center' })
   .setChildren([
     fabricate('Image', { src: 'assets/commit.png' })
       .setStyles({
@@ -188,7 +174,7 @@ const CommitView = ({ commit, commitDate }) => fabricate('Row')
         fontFamily: Theme.fonts.code,
         cursor: 'pointer',
       })
-      .setText(commit ? `${commit} (${commitDate})` : 'Unknown'),
+      .setText(commit ? `${commit} (${Utils.getTimeAgoStr(new Date(commitDate).getTime())})` : 'Unknown'),
   ]);
 
 /**
@@ -242,7 +228,7 @@ fabricate.declare('DeviceCard', ({ device }) => {
       fabricate('Loader')
         .setStyles({ margin: 'auto', marginTop: '10px' })
         .when((state) => !reachable(state)),
-      LastSeenLabel({ minsAgo }),
+      LastSeenLabel({ lastCheckIn }),
     ])
     .onCreate(() => {
       testIp(publicIp, publicIpValidKey);
