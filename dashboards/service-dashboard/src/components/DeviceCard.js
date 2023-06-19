@@ -162,6 +162,36 @@ const DeviceCardContainer = () => fabricate('Card')
   });
 
 /**
+ * DeviceCardContainer component.
+ *
+ * @param {object} props - Component props.
+ * @param {string} [props.commit] - Most recent commit short hash.
+ * @param {string} [props.commitDate] - Most recent commit date.
+ * @returns {HTMLElement} Fabricate component.
+ */
+const CommitView = ({ commit, commitDate }) => fabricate('Row')
+  .setStyles({
+    // backgroundColor: '#F1502F',
+  })
+  .setChildren([
+    fabricate('Image', { src: 'assets/commit.png' })
+      .setStyles({
+        width: '18px',
+        height: '18px',
+        margin: '8px',
+      }),
+    fabricate('Text')
+      .setStyles({
+        color: 'lightgrey',
+        fontSize: '1rem',
+        margin: '5px 0px',
+        fontFamily: Theme.fonts.code,
+        cursor: 'pointer',
+      })
+      .setText(commit ? `${commit} (${commitDate})` : 'Unknown'),
+  ]);
+
+/**
  * DeviceCard component.
  *
  * @param {object} props - Component props.
@@ -169,34 +199,34 @@ const DeviceCardContainer = () => fabricate('Card')
  */
 fabricate.declare('DeviceCard', ({ device }) => {
   const {
-    deviceName, publicIp, localIp, deviceType = 'other', lastCheckIn,
+    deviceName, publicIp, localIp, deviceType = 'other', lastCheckIn, commit, commitDate,
   } = device;
   const publicIpValidKey = Utils.isReachableKey(deviceName, 'public');
   const localIpValidKey = Utils.isReachableKey(deviceName, 'local');
-  const isUnreachableKey = Utils.isReachableKey(deviceName, 'isUnreachable');
 
   const minsAgo = Math.round((Date.now() - lastCheckIn) / (1000 * 60));
   const isHealthy = minsAgo < 11;  // Based on default checkin interval of 10m
 
   /**
-   * Test publicIp is reachable.
+   * Test IP is reachable.
+   *
+   * @param {string} ip - IP to use.
+   * @param {string} stateKey - State to update.
    */
-  const testPublicIp = async () => {
+  const testIp = async (ip, stateKey) => {
     try {
-      await fetch(`http://${publicIp}:5959/apps`);
-      fabricate.update(publicIpValidKey, true);
+      await fetch(`http://${ip}:5959/apps`);
+      fabricate.update(stateKey, true);
     } catch (err) { /* It isn't available */ }
   };
 
   /**
-   * Test localIp is reachable.
+   * Determine if device was reachable.
+   *
+   * @param {object} state - App state.
+   * @returns {boolean} true if reachable, false otherwise.
    */
-  const testLocalIp = async () => {
-    try {
-      await fetch(`http://${localIp}:5959/apps`);
-      fabricate.update(localIpValidKey, true);
-    } catch (err) { /* It isn't available */ }
-  };
+  const reachable = (state) => state[publicIpValidKey] || state[localIpValidKey];
 
   return DeviceCardContainer()
     .setChildren([
@@ -206,16 +236,16 @@ fabricate.declare('DeviceCard', ({ device }) => {
           DeviceName().setText(deviceName),
         ]),
       IpButtons({ deviceName, publicIp, localIp })
-        .when((state) => state[publicIpValidKey] || state[localIpValidKey]),
+        .when(reachable),
+      CommitView({ commit, commitDate })
+        .when(reachable),
       fabricate('Loader')
         .setStyles({ margin: 'auto', marginTop: '10px' })
-        .when((state) => (
-          !state[publicIpValidKey] && !state[localIpValidKey] && !state[isUnreachableKey]
-        )),
+        .when((state) => !reachable(state)),
       LastSeenLabel({ minsAgo }),
     ])
     .onCreate(() => {
-      testPublicIp();
-      testLocalIp();
+      testIp(publicIp, publicIpValidKey);
+      testIp(localIp, localIpValidKey);
     });
 });

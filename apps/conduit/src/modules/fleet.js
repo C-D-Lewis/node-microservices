@@ -1,3 +1,4 @@
+const { execSync } = require('child_process');
 const { hostname } = require('os');
 const {
   config, attic, ip, log,
@@ -52,6 +53,10 @@ const checkIn = async () => {
     if (!(await attic.exists(FLEET_LIST_KEY))) await attic.set(FLEET_LIST_KEY, []);
 
     const now = new Date();
+    const commit = execSync('git rev-parse --short HEAD').toString().trim();
+    const commitDateStr = execSync('git log -1 --format=%ct').toString().trim();
+    const commitDate = new Date(parseInt(`${commitDateStr}000`, 10)).toISOString();
+
     const updatePayload = {
       deviceName: hostname(),
       lastCheckIn: now.getTime(),
@@ -59,6 +64,8 @@ const checkIn = async () => {
       publicIp: await ip.getPublic(),
       localIp: await ip.getLocal(),
       deviceType: OPTIONS.FLEET.DEVICE_TYPE,
+      commit,
+      commitDate,
     };
 
     const fleetList = await attic.get(FLEET_LIST_KEY);
