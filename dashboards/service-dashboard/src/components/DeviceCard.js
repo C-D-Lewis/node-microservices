@@ -172,7 +172,7 @@ const CommitView = ({ commit, commitDate }) => fabricate('Row')
         fontSize: '1rem',
         margin: '5px 0px',
         fontFamily: Theme.fonts.code,
-        cursor: 'pointer',
+        cursor: 'default',
       })
       .setText(commit ? `${commit} (${Utils.getTimeAgoStr(new Date(commitDate).getTime())})` : 'Unknown'),
   ]);
