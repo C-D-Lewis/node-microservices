@@ -44,24 +44,32 @@ const IpTextButton = ({ deviceName, deviceIp, type }) => {
       fontSize: '1rem',
       margin: '5px 0px',
       fontFamily: Theme.fonts.code,
-      cursor: 'pointer',
     })
     .setText(deviceIp)
     .onUpdate((el, state) => {
+      const isReachable = state[isReachableKey];
+
       // TODO: watchlist of [key] here breaks this for some reason
       el.setStyles({
-        color: state[isReachableKey]
+        color: isReachable
           ? Theme.colors.IpTextButton.reachable
           : Theme.colors.IpTextButton.unreachable,
+        cursor: isReachable ? 'pointer' : 'default',
       });
     })
-    .onClick(() => {
+    .onClick((el, state) => {
+      if (!state[isReachableKey]) return;
+
       // Select device, go to apps page
-      fabricate.update({ selectedIp: deviceIp, page: 'AppsPage', selectedDeviceName: deviceName });
+      fabricate.update({
+        selectedIp: deviceIp,
+        page: 'AppsPage',
+        selectedDeviceName: deviceName,
+      });
     });
 
   return fabricate('Row')
-    .setStyles({ alignItems: 'center', borderBottom: `solid 2px ${Theme.colors.consoleGrey}` })
+    .setStyles({ alignItems: 'center', borderBottom: `solid 1px ${Theme.colors.consoleGrey}` })
     .setChildren([icon, textButton]);
 };
 
@@ -93,43 +101,21 @@ const LastSeenLabel = ({ lastCheckIn }) => fabricate('Text')
     fontSize: '0.9rem',
     textAlign: 'end',
     margin: '8px',
+    paddingTop: '10px',
     marginTop: 'auto',
   })
-  .setText(`Last seen ${Utils.getTimeAgoStr(lastCheckIn)}`);
-
-/**
- * Set if IpTextButton components.
- *
- * @param {object} props - Component props.
- * @param {string} props.deviceName - Device name.
- * @param {string} props.publicIp - Public IP.
- * @param {string} props.localIp - Local IP.
- * @returns {HTMLElement} Fabricate component.
- */
-const IpButtons = ({ deviceName, publicIp, localIp }) => fabricate('Column')
-  .setChildren([
-    IpTextButton({
-      deviceName,
-      deviceIp: publicIp,
-      type: 'public',
-    }),
-    IpTextButton({
-      deviceName,
-      deviceIp: localIp,
-      type: 'local',
-    }),
-  ]);
+  .setText(Utils.getTimeAgoStr(lastCheckIn));
 
 /**
  * CardTitle component.
  *
  * @param {object} props - Component props.
- * @param {boolean} props.isHealthy - If the device is recently updated and presumed to be alive.
+ * @param {boolean} props.seenRecently - If the device is recently updated and presumed to be alive.
  * @returns {HTMLElement} Fabricate component.
  */
-const CardTitle = ({ isHealthy }) => fabricate('Row')
+const CardTitle = ({ seenRecently }) => fabricate('Row')
   .setStyles({
-    backgroundColor: isHealthy ? Theme.colors.instanceHealthy : Theme.colors.AppCard.titleBar,
+    backgroundColor: seenRecently ? Theme.colors.instanceHealthy : Theme.colors.AppCard.titleBar,
     alignItems: 'center',
     height: '35px',
     boxShadow: '2px 2px 3px 1px #0006',
@@ -168,7 +154,7 @@ const CommitView = ({ commit, commitDate }) => fabricate('Row')
       }),
     fabricate('Text')
       .setStyles({
-        color: 'lightgrey',
+        color: 'white',
         fontSize: '1rem',
         margin: '5px 0px',
         fontFamily: Theme.fonts.code,
@@ -191,7 +177,7 @@ fabricate.declare('DeviceCard', ({ device }) => {
   const localIpValidKey = Utils.isReachableKey(deviceName, 'local');
 
   const minsAgo = Math.round((Date.now() - lastCheckIn) / (1000 * 60));
-  const isHealthy = minsAgo < 11;  // Based on default checkin interval of 10m
+  const seenRecently = minsAgo < 12;  // Based on default checkin interval of 10m
 
   /**
    * Test IP is reachable.
@@ -206,29 +192,25 @@ fabricate.declare('DeviceCard', ({ device }) => {
     } catch (err) { /* It isn't available */ }
   };
 
-  /**
-   * Determine if device was reachable.
-   *
-   * @param {object} state - App state.
-   * @returns {boolean} true if reachable, false otherwise.
-   */
-  const reachable = (state) => state[publicIpValidKey] || state[localIpValidKey];
-
   return DeviceCardContainer()
     .setChildren([
-      CardTitle({ isHealthy })
+      CardTitle({ seenRecently })
         .setChildren([
           DeviceIcon({ deviceType }),
           DeviceName().setText(deviceName),
+          LastSeenLabel({ lastCheckIn }),
         ]),
-      IpButtons({ deviceName, publicIp, localIp })
-        .when(reachable),
-      CommitView({ commit, commitDate })
-        .when(reachable),
-      fabricate('Loader')
-        .setStyles({ margin: 'auto', marginTop: '10px' })
-        .when((state) => !reachable(state)),
-      LastSeenLabel({ lastCheckIn }),
+      IpTextButton({
+        deviceName,
+        deviceIp: publicIp,
+        type: 'public',
+      }),
+      IpTextButton({
+        deviceName,
+        deviceIp: localIp,
+        type: 'local',
+      }),
+      CommitView({ commit, commitDate }),
     ])
     .onCreate(() => {
       testIp(publicIp, publicIpValidKey);

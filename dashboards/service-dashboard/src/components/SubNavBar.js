@@ -15,23 +15,17 @@ const AllDevicesBreadcrumb = () => fabricate('p')
  * Send a device command by URL.
  *
  * @param {object} state - Current state.
- * @param {string} state.selectedIp - Selected IP.
- * @param {string} state.selectedDeviceName - Selected device name.
- * @param {string} command - Command, either 'reboot' or 'shutdown'.
+ * @param {string} topic - Command topic, either 'reboot' or 'shutdown'.
  */
-const commandDevice = async ({ selectedIp, selectedDeviceName }, command) => {
+const commandDevice = async (state, topic) => {
   // eslint-disable-next-line no-restricted-globals
-  if (!confirm('Caution: If devices share an IP this might not be the actual device - continue?')) return;
+  if (!confirm('Caution: If devices share a public IP this might not be the correct device - continue?')) return;
 
   try {
-    // Public, then local
-    const { content, error } = await fetch(`http://${selectedIp}:5959/${command}`, { method: 'POST' }).then((r) => r.json());
+    const { error } = await ConduitService.sendPacket(state, { to: 'conduit', topic });
+    if (error) throw new Error(error);
 
-    if (content) {
-      console.log(`Device ${selectedDeviceName} command sent`);
-    } else {
-      throw new Error(error);
-    }
+    alert(`Device ${state.selectedDeviceName} sent ${topic} command`);
   } catch (e) {
     alert(e);
     console.log(e);
@@ -46,7 +40,12 @@ const commandDevice = async ({ selectedIp, selectedDeviceName }, command) => {
  * @returns {HTMLElement} Fabricate component.
  */
 const ToolbarButton = ({ src }) => fabricate('IconButton', { src })
-  .setStyles({ width: '18px', height: '18px' });
+  .onHover((el, state, isHovered) => el.setStyles({ backgroundColor: isHovered ? 'red' : '#0003' }))
+  .setStyles({
+    width: '20px',
+    height: '20px',
+    marginRight: '10px',
+  });
 
 /**
  * RebootButton component.
@@ -81,15 +80,19 @@ const BackBreadcrumb = () => {
     .onClick(() => fabricate.update({ page: 'FleetPage' }));
 
   const deviceSegment = fabricate('p')
-    .setStyles({ color: 'white', margin: '10px 5px' });
+    .setStyles({ color: 'white', margin: '10px 5px', cursor: 'default' });
 
   return fabricate('Row')
     .setStyles({ alignItems: 'center' })
     .setChildren([
       backButton,
       deviceSegment,
-      RebootButton(),
-      ShutdownButton(),
+      fabricate('Row')
+        .setStyles({ position: 'absolute', right: '5px' })
+        .setChildren([
+          RebootButton(),
+          ShutdownButton(),
+        ]),
     ])
     .onUpdate((el, { fleetList, selectedIp, selectedDeviceName }) => {
       const [found] = fleetList.filter(({ deviceName }) => deviceName === selectedDeviceName);

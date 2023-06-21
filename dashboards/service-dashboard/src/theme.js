@@ -22,7 +22,7 @@ Theme.colors = {
   },
   IpTextButton: {
     reachable: 'white',
-    unreachable: '#333',
+    unreachable: '#222',
   },
   MetricGraph: {
     background: '#222',
