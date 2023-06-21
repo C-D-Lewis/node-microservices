@@ -1,3 +1,4 @@
+const { execSync } = require('child_process');
 const {
   config, log, fetch, schema,
 } = require('../node-common')(['config', 'log', 'fetch', 'schema']);
@@ -26,7 +27,7 @@ config.addPartialSchema({
 const { OPTIONS, SERVER } = config.get(['OPTIONS', 'SERVER']);
 
 /** Default destination host (same machine) */
-const DEFAULT_HOST_LOCAL = 'localhost';
+const HOST_LOCALHOST = 'localhost';
 /** Schema for all conduit message packets. */
 const PACKET_SCHEMA = {
   required: ['to', 'topic'],
@@ -45,6 +46,8 @@ const PACKET_SCHEMA = {
 };
 /** Default response when the recipient does not provide one. */
 const NO_RESPONSE_PACKET = { status: 204, message: { content: 'No content forwarded' } };
+/** Shutdown/reboot deleay time */
+const DELAY_MS = 10000;
 
 /**
  * Handle a packet request by forwarding to the intended recipient and returning
@@ -64,7 +67,7 @@ const handlePacketRequest = async (req, res) => {
   }
 
   const {
-    to, topic, message, host = DEFAULT_HOST_LOCAL, auth, ignoreHostname,
+    to, topic, message, host = HOST_LOCALHOST, auth, ignoreHostname,
   } = packet;
 
   // Test endpoint
@@ -74,7 +77,7 @@ const handlePacketRequest = async (req, res) => {
   }
 
   // Enforce only localhost need not supply a guestlist token (or during test)
-  if ((hostname !== 'localhost' || ignoreHostname) && OPTIONS.AUTH_TOKENS) {
+  if (OPTIONS.AUTH_TOKENS && (hostname !== 'localhost' || ignoreHostname)) {
     log.debug(`Origin: ${hostname} requires guestlist check`);
 
     if (!auth) {
@@ -97,24 +100,40 @@ const handlePacketRequest = async (req, res) => {
     }
   }
 
+  // Special command packets
+  if (topic === 'shutdown') {
+    setTimeout(() => execSync('sudo shutdown -h now'), DELAY_MS);
+    log.info('Shutdown command received');
+
+    res.status(200).json({ content: `Shutting down in ${DELAY_MS / 1000} seconds` });
+    return;
+  }
+  if (topic === 'reboot') {
+    setTimeout(() => execSync('sudo reboot'), DELAY_MS);
+    log.info('Reboot command received');
+
+    res.status(200).json({ content: `Restarting in ${DELAY_MS / 1000} seconds` });
+    return;
+  }
+
   // Extract data and forward to recipient
   const appConfig = findByApp(to);
-  if ((host === DEFAULT_HOST_LOCAL) && !appConfig) {
+  if ((host === HOST_LOCALHOST) && !appConfig) {
     log.error(`No app registered with name ${to}`);
     sendNotFound(res);
     return;
   }
 
   try {
-    // In case that the host is not this one, forward (all Conduit servers use 5959 currently)
-    const port = (host === DEFAULT_HOST_LOCAL) ? appConfig.port : SERVER.PORT;
+    // In case that the host is not this one, forward it
+    const port = (host === HOST_LOCALHOST) ? appConfig.port : SERVER.PORT;
 
     // Prevent forwarding loops by limiting to one redirection
-    if (host !== DEFAULT_HOST_LOCAL) {
+    if (host !== HOST_LOCALHOST) {
       delete packet.host;
     }
 
-    if (!host || host === '') {
+    if (!host) {
       console.log({ host });
       throw new Error('host was not resolved');
     }
@@ -127,7 +146,7 @@ const handlePacketRequest = async (req, res) => {
       body: JSON.stringify(packet),
     });
 
-    // Send response from 'to' app to message sender
+    // Send response back from 'to' app to message sender
     delete response.from;
     delete response.to;
     delete response.auth;
