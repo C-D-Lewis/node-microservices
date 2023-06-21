@@ -439,8 +439,8 @@ const MonitorControls = () => {
     const maxValue = metric.includes('Perc')
       ? 100
       : metricHistory.reduce((acc, [, value]) => (value > acc ? value : acc), 0);
-    const minTime = new Date(metricHistory[0][0]).toISOString();
-    const maxTime = new Date(metricHistory[metricHistory.length - 1][0]).toISOString();
+    const minTime = Utils.shortDateTime(metricHistory[0][0]);
+    const maxTime = Utils.shortDateTime(metricHistory[metricHistory.length - 1][0]);
 
     // Save data
     setProp('metricHistory', res.message);
@@ -453,7 +453,7 @@ const MonitorControls = () => {
   return ControlContainer()
     .setChildren([
       fabricate('Row')
-        .setStyles({ flexWrap: 'wrap' })
+        .setStyles({ flexWrap: 'wrap', padding: '7px' })
         .onUpdate((el, state) => {
           const { monitorData: { plugins } } = state;
           if (!plugins) return;

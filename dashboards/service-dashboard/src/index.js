@@ -29,7 +29,7 @@ const fetchFleetList = async (el, state) => {
 const fetchApps = async (el, state) => {
   fabricate.update({ apps: [] });
 
-  // TODO: How to fetch apps via the public host? conduit topic instead of GET?
+  // TODO: How to fetch apps via the public host? conduit topic with 'host' instead of GET?
 
   try {
     const res = await fetch(`http://${state.selectedIp}:${Constants.CONDUIT_PORT}/apps`);

@@ -20,13 +20,14 @@ const Label = ({ point }) => fabricate('Text')
   .setStyles({
     fontSize: '0.9rem',
     color: 'white',
-    backgroundColor: 'black',
+    backgroundColor: '#000A',
     padding: '5px',
     position: 'relative',
     bottom: '0px',
     width: 'fit-content',
+    minWidth: '160px',
   })
-  .setText(`${point.value}\n(${point.dateTime})`);
+  .setText(`${Math.round(point.value * 100) / 100}\n(${Utils.shortDateTime(point.dateTime)})`);
 
 /**
  * Graph DataPoint component.

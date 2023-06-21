@@ -27,3 +27,15 @@ Utils.getTimeAgoStr = (time) => {
 
   return `${minsAgo} mins ago`;
 };
+
+/**
+ * Shorter representation of a date time.
+ *
+ * @param {number} timestamp - Input time.
+ * @returns {string} Short date time.
+ */
+Utils.shortDateTime = (timestamp) => {
+  const [date, time] = new Date(timestamp).toISOString().split('T');
+  const shortTime = time.split(':').slice(0, 2).join(':');
+  return `${date} ${shortTime}`;
+};
