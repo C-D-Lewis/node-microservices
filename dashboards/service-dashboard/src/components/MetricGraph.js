@@ -10,17 +10,17 @@ const POINT_SIZE = 3;
 const BUCKET_SIZE = 5;
 
 /**
- * Label component.
+ * DataPointLabel component.
  *
  * @param {object} props - Component props.
  * @param {object} props.point - Data point.
  * @returns {HTMLElement} Fabricate component.
  */
-const Label = ({ point }) => fabricate('Text')
+const DataPointLabel = ({ point }) => fabricate('Text')
   .setStyles({
     fontSize: '0.9rem',
     color: 'white',
-    backgroundColor: '#000A',
+    backgroundColor: Theme.colors.DataPointLabel.background,
     padding: '5px',
     position: 'relative',
     bottom: '0px',
@@ -56,7 +56,7 @@ const DataPoint = ({ point, minValue, maxValue }) => {
        * @param {HTMLElement} el - This component.
        * @returns {void}
        */
-      start: (el) => el.setChildren([Label({ point })]),
+      start: (el) => el.setChildren([DataPointLabel({ point })]),
       /**
        * When hover ends.
        *

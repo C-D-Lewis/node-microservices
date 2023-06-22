@@ -30,6 +30,7 @@ const AppName = () => fabricate('Text')
     margin: '6px 5px 5px 5px',
     fontFamily: Theme.fonts.code,
     fontWeight: 'bold',
+    cursor: 'default',
   });
 
 /**
@@ -43,6 +44,7 @@ const StatusText = () => fabricate('Text')
     fontSize: '0.9rem',
     paddingTop: 1,
     marginBottom: '2px',
+    cursor: 'default',
   });
 
 /**

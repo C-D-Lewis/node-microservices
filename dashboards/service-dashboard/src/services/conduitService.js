@@ -20,7 +20,7 @@ ConduitService.sendPacket = async (state, packet, tokenOverride) => {
     let destination = selectedIp;
     let forwardHost;
     if (selectedDeviceName) {
-      // Destination is local if reachable, else local via public
+      // Destination is local if reachable, else forward local via public
       const { localIp, publicIp } = fleetList.find((p) => p.deviceName === selectedDeviceName);
       const isLocalReachable = state[Utils.isReachableKey(selectedDeviceName, 'local')];
       destination = isLocalReachable ? localIp : publicIp;

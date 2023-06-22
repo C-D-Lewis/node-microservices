@@ -8,6 +8,7 @@ Theme.colors = {
   },
   SubNavBar: {
     background: '#555',
+    button: '#0003',
   },
   AppCard: {
     titleBar: '#666',
@@ -30,6 +31,15 @@ Theme.colors = {
   },
   DataPoint: {
     background: 'orange',
+  },
+  PluginPill: {
+    disabled: '#333',
+  },
+  IconButton: {
+    background: '#333',
+  },
+  DataPointLabel: {
+    background: '#000A',
   },
   status: {
     ok: '#43D047',

@@ -14,18 +14,30 @@ const AllDevicesBreadcrumb = () => fabricate('p')
 /**
  * Send a device command by URL.
  *
+ * @param {HTMLElement} el - This element.
  * @param {object} state - Current state.
  * @param {string} topic - Command topic, either 'reboot' or 'shutdown'.
  */
-const commandDevice = async (state, topic) => {
-  // eslint-disable-next-line no-restricted-globals
-  if (!confirm('Caution: If devices share a public IP this might not be the correct device - continue?')) return;
+const commandDevice = async (el, state, topic) => {
+  const stateKey = `command:${topic}`;
+  const pressed = !!state[stateKey];
+
+  // Reset color regardless
+  setTimeout(() => {
+    el.setStyles({ backgroundColor: Theme.colors.IconButton.background });
+    fabricate.update(stateKey, false);
+  }, 3000);
+
+  el.setStyles({ backgroundColor: !pressed ? 'red' : '#0003' });
+  fabricate.update(stateKey, !pressed);
+  if (!pressed) return;
 
   try {
     const { error } = await ConduitService.sendPacket(state, { to: 'conduit', topic });
     if (error) throw new Error(error);
 
-    alert(`Device ${state.selectedDeviceName} sent ${topic} command`);
+    console.log(`Device ${state.selectedDeviceName} sent ${topic} command`);
+    el.setStyles({ backgroundColor: Theme.colors.status.ok });
   } catch (e) {
     alert(e);
     console.log(e);
@@ -40,11 +52,11 @@ const commandDevice = async (state, topic) => {
  * @returns {HTMLElement} Fabricate component.
  */
 const ToolbarButton = ({ src }) => fabricate('IconButton', { src })
-  .onHover((el, state, isHovered) => el.setStyles({ backgroundColor: isHovered ? 'red' : '#0003' }))
   .setStyles({
     width: '20px',
     height: '20px',
     marginRight: '10px',
+    transition: '0.5s',
   });
 
 /**
@@ -53,7 +65,7 @@ const ToolbarButton = ({ src }) => fabricate('IconButton', { src })
  * @returns {HTMLElement} Fabricate component.
  */
 const RebootButton = () => ToolbarButton({ src: 'assets/restart.png' })
-  .onClick((el, state) => commandDevice(state, 'reboot'));
+  .onClick((el, state) => commandDevice(el, state, 'reboot'));
 
 /**
  * ShutdownButton component.
@@ -61,7 +73,7 @@ const RebootButton = () => ToolbarButton({ src: 'assets/restart.png' })
  * @returns {HTMLElement} Fabricate component.
  */
 const ShutdownButton = () => ToolbarButton({ src: 'assets/shutdown.png' })
-  .onClick((el, state) => commandDevice(state, 'shutdown'));
+  .onClick((el, state) => commandDevice(el, state, 'shutdown'));
 
 /**
  * BackBreadcrumb component.

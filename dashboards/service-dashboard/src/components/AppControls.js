@@ -5,13 +5,6 @@ const buttonStyle = {
 };
 
 /**
- * Empty component.
- *
- * @returns {HTMLElement} Fabricate component.
- */
-const Empty = () => fabricate('div');
-
-/**
  * ControlRow component.
  *
  * @returns {HTMLElement} Fabricate component.
@@ -25,40 +18,6 @@ const ControlRow = () => fabricate('Row').setStyles({ padding: '0px 10px', align
  */
 const ControlContainer = () => fabricate('Column')
   .setStyles({ backgroundColor: Theme.colors.AppControls.background });
-
-/**
- * PluginPill component.
- *
- * @param {object} props - Component props.
- * @param {string} props.FILE_NAME - Plugin file name.
- * @param {string} [props.EVERY] - Plugin interval.
- * @param {string} [props.AT] - Plugin time.
- * @param {boolean} [props.ENABLED] - If plugin is enabled
- * @returns {HTMLElement} Fabricate component.
- */
-const PluginPill = ({
-  FILE_NAME, EVERY, AT, ENABLED,
-}) => fabricate('Row')
-  .setStyles({
-    cursor: 'default',
-    borderRadius: '15px',
-    backgroundColor: ENABLED !== false ? Theme.colors.AppCard.titleBar : '#333',
-    margin: '5px',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    padding: '0px 5px',
-  })
-  .setChildren([
-    fabricate('Image', { src: 'assets/plugin.png' })
-      .setStyles({ width: '18px', height: '18px' }),
-    fabricate('Text')
-      .setStyles({
-        color: 'white',
-        fontSize: '0.9rem',
-        fontFamily: 'monospace',
-      })
-      .setText(`${FILE_NAME.replace('.js', '')}${EVERY ? ` (~${EVERY})` : ` (at ${AT})`}`),
-  ]);
 
 /**
  * AtticControls component.
@@ -459,7 +418,7 @@ const MonitorControls = () => {
           if (!plugins) return;
 
           // Show running plugins
-          el.setChildren(plugins.map(PluginPill));
+          el.setChildren(plugins.map((plugin) => fabricate('PluginPill', { plugin })));
         }, ['monitorData'])
         .onCreate(async (el, state) => {
           // Fetch all plugins
@@ -480,8 +439,13 @@ const MonitorControls = () => {
         }, ['monitorData'])
         .onCreate(async (el, state) => {
           // Fetch all metric names
-          const res = await ConduitService.sendPacket(state, { to: 'monitor', topic: 'getMetricNames' });
-          setProp('metricNames', res.message);
+          const { message: metricNames } = await ConduitService.sendPacket(state, { to: 'monitor', topic: 'getMetricNames' });
+          setProp('metricNames', metricNames);
+
+          // Load the first
+          if (metricNames.length) {
+            fetchMetric(state, metricNames[0]);
+          }
         }),
       fabricate('MetricGraph'),
     ])
@@ -510,6 +474,6 @@ const controlsMap = {
  * @returns {HTMLElement} Fabricate component.
  */
 fabricate.declare('AppControls', ({ app }) => {
-  const Controls = controlsMap[app] || Empty;
+  const Controls = controlsMap[app] || (() => fabricate('div'));
   return Controls();
 });
