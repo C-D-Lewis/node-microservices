@@ -129,7 +129,9 @@ const handlePacketRequest = async (req, res) => {
 
   // Extract data and forward to recipient
   const appConfig = findByApp(to);
-  if ((host === HOST_LOCALHOST) && !appConfig) {
+
+  // Meant for a local app, not this device
+  if (host === HOST_LOCALHOST && to !== 'conduit' && !appConfig) {
     log.error(`No app registered with name ${to}`);
     sendNotFound(res);
     return;
