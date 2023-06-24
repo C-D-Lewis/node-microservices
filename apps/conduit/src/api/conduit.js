@@ -130,17 +130,20 @@ const handlePacketRequest = async (req, res) => {
   // Extract data and forward to recipient
   const appConfig = findByApp(to);
 
-  // Meant for a local app, not this device
-  if (host === HOST_LOCALHOST && to !== 'conduit' && !appConfig) {
-    log.error(`No app registered with name ${to}`);
-    sendNotFound(res);
-    return;
-  }
+  // Meant for a local apps
+  if (host === HOST_LOCALHOST) {
+    // Not for other app
+    if (to === 'conduit') {
+      await handleTopic(res, packet);
+      return;
+    }
 
-  // Not forwarding, and for this device
-  if (!host && to === 'conduit') {
-    await handleTopic(res, packet);
-    return;
+    // Not found locally
+    if (!appConfig) {
+      log.error(`No app registered with name ${to}`);
+      sendNotFound(res);
+      return;
+    }
   }
 
   try {
