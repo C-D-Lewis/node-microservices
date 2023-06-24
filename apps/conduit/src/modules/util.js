@@ -52,11 +52,12 @@ const sendNotAuthorized = (res, reason = 'None') => {
  * Send a packet.
  *
  * @param {object} json - Packet to send.
+ * @param {string} host - Override where to send.
  * @returns {Promise<object>} The request response.
  */
-const sendPacket = async (json) => {
+const sendPacket = async (json, host = 'localhost') => {
   const { data } = await fetch({
-    url: `http://localhost:${SERVER.PORT}/conduit`,
+    url: `http://${host}:${SERVER.PORT}/conduit`,
     method: 'post',
     body: JSON.stringify(json),
   });
