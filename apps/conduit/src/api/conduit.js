@@ -50,6 +50,33 @@ const NO_RESPONSE_PACKET = { status: 204, message: { content: 'No content forwar
 const DELAY_MS = 10000;
 
 /**
+ * Handle a topic meant for this conduit.
+ *
+ * @param {object} res - Express response object.
+ * @param {object} packet - Packet received.
+ * @returns {Promise<void>}
+ */
+const handleTopic = async (res, packet) => {
+  const { topic } = packet;
+
+  // Special command packets
+  if (topic === 'shutdown') {
+    setTimeout(() => execSync('sudo shutdown -h now'), DELAY_MS);
+    log.info('Shutdown command received');
+
+    res.status(200).json({ content: `Shutting down in ${DELAY_MS / 1000} seconds` });
+    return;
+  }
+
+  if (topic === 'reboot') {
+    setTimeout(() => execSync('sudo reboot'), DELAY_MS);
+    log.info('Reboot command received');
+
+    res.status(200).json({ content: `Restarting in ${DELAY_MS / 1000} seconds` });
+  }
+};
+
+/**
  * Handle a packet request by forwarding to the intended recipient and returning
  * the recipient's response.
  *
@@ -100,27 +127,17 @@ const handlePacketRequest = async (req, res) => {
     }
   }
 
-  // Special command packets
-  if (topic === 'shutdown') {
-    setTimeout(() => execSync('sudo shutdown -h now'), DELAY_MS);
-    log.info('Shutdown command received');
-
-    res.status(200).json({ content: `Shutting down in ${DELAY_MS / 1000} seconds` });
-    return;
-  }
-  if (topic === 'reboot') {
-    setTimeout(() => execSync('sudo reboot'), DELAY_MS);
-    log.info('Reboot command received');
-
-    res.status(200).json({ content: `Restarting in ${DELAY_MS / 1000} seconds` });
-    return;
-  }
-
   // Extract data and forward to recipient
   const appConfig = findByApp(to);
   if ((host === HOST_LOCALHOST) && !appConfig) {
     log.error(`No app registered with name ${to}`);
     sendNotFound(res);
+    return;
+  }
+
+  // Not forwarding, and for this device
+  if (!host && to === 'conduit') {
+    await handleTopic(res, packet);
     return;
   }
 

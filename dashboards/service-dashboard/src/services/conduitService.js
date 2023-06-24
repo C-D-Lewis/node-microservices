@@ -24,7 +24,7 @@ ConduitService.sendPacket = async (state, packet, tokenOverride) => {
       const { localIp, publicIp } = fleetList.find((p) => p.deviceName === selectedDeviceName);
       const isLocalReachable = state[Utils.isReachableKey(selectedDeviceName, 'local')];
       destination = isLocalReachable ? localIp : publicIp;
-      forwardHost = !isLocalReachable ? localIp : undefined;
+      forwardHost = destination === publicIp ? localIp : undefined;
     }
 
     const res = await fetch(`http://${destination}:${Constants.CONDUIT_PORT}/conduit`, {
