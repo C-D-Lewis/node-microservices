@@ -59,7 +59,7 @@ COPY <<EOF /code/apps/conduit/config.json
       "HOST": "",
       "DEVICE_TYPE": ""
     },
-    "AUTH_TOKENS": true
+    "AUTH_GUESTLIST": "localhost"
   },
   "CONDUIT": {
     "TOKEN": ""

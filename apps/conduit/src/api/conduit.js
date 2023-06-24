@@ -18,7 +18,7 @@ config.addPartialSchema({
     },
     OPTIONS: {
       properties: {
-        AUTH_TOKENS: { type: 'boolean' },
+        AUTH_GUESTLIST: { type: 'string' },
       },
     },
   },
@@ -104,7 +104,7 @@ const handlePacketRequest = async (req, res) => {
   }
 
   // Enforce only localhost need not supply a guestlist token (or during test)
-  if (OPTIONS.AUTH_TOKENS && (hostname !== 'localhost' || ignoreHostname)) {
+  if (OPTIONS.AUTH_GUESTLIST && (hostname !== 'localhost' || ignoreHostname)) {
     log.debug(`Origin: ${hostname} requires guestlist check`);
 
     if (!auth) {
@@ -115,6 +115,8 @@ const handlePacketRequest = async (req, res) => {
     const authCheckRes = await sendPacket({
       to: 'guestlist',
       topic: 'authorize',
+      host: OPTIONS.AUTH_GUESTLIST,
+      auth,
       message: {
         to,
         topic,

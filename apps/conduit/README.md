@@ -67,7 +67,7 @@ Content-Type: application/json
 For a host other than localhost, `host` may also be specified to relay the
 message to a remote instance of `conduit`.
 
-When `AUTH_TOKENS` is set to `true`, and tokens from `guestlist` are required to
+When `AUTH_GUESTLIST` is set, and tokens from `guestlist` are required to
 secure who can send messages, `auth` must also be provided.
 
 A further example using these features:

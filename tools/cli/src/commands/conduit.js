@@ -25,7 +25,7 @@ const send = async ({ packet, host }) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       ...packet,
-      auth: packet.auth || CONDUIT_TOKEN,
+      auth: packet.auth || switches.TOKEN || CONDUIT_TOKEN,
     }),
   });
   const json = await res.json();

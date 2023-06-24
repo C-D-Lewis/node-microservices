@@ -4,7 +4,7 @@
       "HOST": "",
       "DEVICE_TYPE": ""
     },
-    "AUTH_TOKENS": false
+    "AUTH_GUESTLIST": ""
   },
   "SERVER": {
     "PORT": 5959
