@@ -5,7 +5,7 @@ set -eu
 # HOME is platform and user dependent
 HOME=$1
 CONFIG_PATH="$HOME/code/node-microservices/launch-config/launchConfig.json"
-WAIT_S=15
+WAIT_S=5
 
 # Wait for network access
 echo "Waiting for network..."
@@ -80,4 +80,4 @@ printf "\n>>> Launch complete!\n"
 
 # Email report
 sleep 30
-$(which node) "$HOME/code/node-microservices/launch-config/email.js" >> "$HOME/cronlog.txt" 2>&1
+$(which node) "$HOME/code/node-microservices/launch-config/email/index.js" >> "$HOME/cronlog.txt" 2>&1

@@ -6,6 +6,7 @@ const config = require('./config');
 const log = require('./log');
 const fetch = require('./fetch');
 const schema = require('./schema');
+const wait = require('./wait');
 
 config.addPartialSchema({
   required: ['CONDUIT'],
@@ -167,13 +168,23 @@ const register = async ({ appName }) => {
     return undefined;
   }
 
-  // Request a random port to be known by
-  const { data } = await fetch({
-    url: `http://${CONDUIT.HOST}:${PORT}/port`,
-    method: 'POST',
-    body: JSON.stringify({ app: thisAppName, pid: process.pid }),
-  });
-  const { port } = data;
+  let port;
+
+  while (!port) {
+    try {
+      // Request a random port to be known by
+      const { data } = await fetch({
+        url: `http://${CONDUIT.HOST}:${PORT}/port`,
+        method: 'POST',
+        body: JSON.stringify({ app: thisAppName, pid: process.pid }),
+      });
+      ({ port } = data);
+    } catch (e) {
+      console.log(`Failed to get port - is conduit running yet? ${e.message}`);
+
+      await wait(1000);
+    }
+  }
 
   // Start a local HTTP server and add routes
   server = express();
