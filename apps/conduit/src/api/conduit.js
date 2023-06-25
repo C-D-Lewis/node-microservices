@@ -41,7 +41,7 @@ const PACKET_SCHEMA = {
     from: { type: 'string' },             // Sending Conduit client
     host: { type: 'string' },             // Which other Conduit server to send to
     auth: { type: 'string' },             // Authorization, if required
-    ignoreHostname: { type: 'boolean' },  // Force auth token check
+    forceAuthCheck: { type: 'boolean' },  // Force auth token check
   },
 };
 /** Default response when the recipient does not provide one. */
@@ -94,7 +94,7 @@ const handlePacketRequest = async (req, res) => {
   }
 
   const {
-    to, topic, message, host = HOST_LOCALHOST, auth, ignoreHostname,
+    to, topic, message, host = HOST_LOCALHOST, auth, forceAuthCheck,
   } = packet;
 
   // Test endpoint
@@ -104,7 +104,9 @@ const handlePacketRequest = async (req, res) => {
   }
 
   // Enforce only localhost need not supply a guestlist token (or during test)
-  if (OPTIONS.AUTH_GUESTLIST && (hostname !== 'localhost' || ignoreHostname)) {
+  const shouldCheckAuth = OPTIONS.AUTH_GUESTLIST && (hostname !== 'localhost' || forceAuthCheck);
+  const isAuthCheckPacket = to === 'guestlist' && topic === 'authorize';
+  if (shouldCheckAuth && !isAuthCheckPacket) {
     log.debug(`Origin: ${hostname} requires guestlist check`);
 
     if (!auth) {

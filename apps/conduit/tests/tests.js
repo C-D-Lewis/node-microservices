@@ -77,7 +77,7 @@ describe('API', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          to: 'attic', topic: 'status', auth: token, ignoreHostname: true,
+          to: 'attic', topic: 'status', auth: token, forceAuthCheck: true,
         }),
       });
 
@@ -90,7 +90,7 @@ describe('API', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          to: 'attic', topic: 'status', auth: 'invalid', ignoreHostname: true,
+          to: 'attic', topic: 'status', auth: 'invalid', forceAuthCheck: true,
         }),
       });
 
@@ -104,7 +104,7 @@ describe('API', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          to: 'attic', topic: 'status', ignoreHostname: true,
+          to: 'attic', topic: 'status', forceAuthCheck: true,
         }),
       });
 
