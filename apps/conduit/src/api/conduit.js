@@ -6,6 +6,7 @@ const { findByApp } = require('../modules/allocator');
 const {
   sendBadRequest, sendNotFound, sendPacket, sendNotAuthorized,
 } = require('../modules/util');
+const respondWithApps = require('../modules/apps');
 
 config.addPartialSchema({
   required: ['SERVER'],
@@ -52,11 +53,12 @@ const DELAY_MS = 10000;
 /**
  * Handle a topic meant for this conduit.
  *
+ * @param {object} req - Express request object.
  * @param {object} res - Express response object.
  * @param {object} packet - Packet received.
  * @returns {Promise<void>}
  */
-const handleTopic = async (res, packet) => {
+const handleTopic = async (req, res, packet) => {
   const { topic } = packet;
 
   // Special command packets
@@ -73,6 +75,10 @@ const handleTopic = async (res, packet) => {
     log.info('Reboot command received');
 
     res.status(200).json({ content: `Restarting in ${DELAY_MS / 1000} seconds` });
+  }
+
+  if (topic === 'getApps') {
+    await respondWithApps(req, res);
   }
 };
 
@@ -97,7 +103,7 @@ const handlePacketRequest = async (req, res) => {
     to, topic, message, host = HOST_LOCALHOST, auth, forceAuthCheck,
   } = packet;
 
-  // Test endpoint
+  // Test endpoint used during tests
   if (topic === 'test' && to === 'test') {
     res.status(200).json({ ok: true });
     return;
@@ -137,7 +143,7 @@ const handlePacketRequest = async (req, res) => {
   if (host === HOST_LOCALHOST) {
     // Not for other app
     if (to === 'conduit') {
-      await handleTopic(res, packet);
+      await handleTopic(req, res, packet);
       return;
     }
 

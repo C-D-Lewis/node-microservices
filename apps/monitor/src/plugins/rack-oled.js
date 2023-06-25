@@ -1,9 +1,8 @@
 const {
   hostname, loadavg, freemem, totalmem, uptime,
 } = require('os');
-const fetch = require('node-fetch');
 const visuals = require('../modules/visuals');
-const { ip, log } = require('../node-common')(['ip', 'log']);
+const { ip, log, conduit } = require('../node-common')(['ip', 'log', 'conduit']);
 
 /**
  * Monitor stats for display on rack-mounted OLED display
@@ -20,7 +19,7 @@ module.exports = async () => {
   const [, time] =  new Date().toISOString().split('T');
   const timeNow = time.split(':').slice(0, 2).join(':');
 
-  const apps = await fetch('http://localhost:5959/apps').then((r) => r.json());
+  const { message: apps } = await conduit.send({ to: 'conduit', topic: 'getApps' });
   const appsUp = apps.filter((p) => p.status === 'OK').length;
 
   const lines = [

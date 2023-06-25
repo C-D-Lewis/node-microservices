@@ -83,7 +83,7 @@ const send = async (packet, opts = {}) => {
     body: packetStr,
   });
 
-  if (!silent) log.debug(`conduit.js: << ${JSON.stringify(body)}`);
+  if (!silent) log.debug(`conduit.js: << ${body}`);
   return JSON.parse(body);
 };
 

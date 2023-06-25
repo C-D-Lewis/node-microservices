@@ -11,7 +11,6 @@ const CONDUIT_PORT = 5959;
 
 /**
  * Send a packet.
- * TODO: Support --host flag to override host
  *
  * @param {object} opts - Options.
  * @param {object} opts.packet - Packet to send.

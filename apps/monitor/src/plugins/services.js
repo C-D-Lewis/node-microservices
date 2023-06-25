@@ -1,14 +1,12 @@
 const {
-  log, fetch, ses,
-} = require('../node-common')(['log', 'fetch', 'ses']);
+  log, ses, conduit,
+} = require('../node-common')(['log', 'ses', 'conduit']);
 const visuals = require('../modules/visuals');
 
 /** LED state for OK */
 const LED_STATE_OK = [0, 255, 0];
 /** LED state for DOWN */
 const LED_STATE_DOWN = [255, 0, 0];
-/** Fixed conduit port */
-const PORT = 5959;
 
 let lastState = true;
 
@@ -21,10 +19,10 @@ module.exports = async (args) => {
   const host = args.HOST || 'localhost';
 
   // Read apps list
-  const { data } = await fetch(`http://${host}:${PORT}/apps`);
+  const { message: apps } = await conduit.send({ to: 'conduit', topic: 'getApps', host });
 
   // Find apps that are not OK
-  const downApps = data.reduce((result, item) => {
+  const downApps = apps.reduce((result, item) => {
     log.debug(`Service ${item.app} returned ${item.status}`);
     if (item.status !== 'OK') result.push(item.app);
 
@@ -33,7 +31,7 @@ module.exports = async (args) => {
 
   // Set new LED indicator state
   const stateNow = downApps.length === 0;
-  const serviceList = data.map((p) => p.app).join(', ');
+  const serviceList = apps.map((p) => p.app).join(', ');
   log.info(`Services up: ${stateNow} (${serviceList})`);
   visuals.setLed(
     args.LED,

@@ -4,9 +4,7 @@ const fetch = require('node-fetch').default;
 const printTable = require('../functions/printTable');
 const wait = require('../functions/wait');
 const switches = require('../modules/switches');
-
-/** Default conduit port */
-const CONDUIT_PORT = 5959;
+const conduit = require('./conduit');
 
 /**
  * Fetch the running apps list.
@@ -14,10 +12,11 @@ const CONDUIT_PORT = 5959;
  * @returns {Promise<Array<object>>} List of apps.
  */
 const fetchRunningApps = async () => {
-  const finalHost = switches.HOST || 'localhost';
   try {
-    const res = await fetch(`http://${finalHost}:${CONDUIT_PORT}/apps`);
-    return res.json();
+    const { message: apps } = await conduit.send({
+      packet: { to: 'conduit', topic: 'getApps' },
+    });
+    return apps;
   } catch (e) {
     if (e.message.includes('ECONNREFUSED')) throw new Error('Failed to list apps - is conduit running?');
 

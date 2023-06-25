@@ -32,9 +32,7 @@ const fetchApps = async (el, state) => {
   // TODO: How to fetch apps via the public host? conduit topic with 'host' instead of GET?
 
   try {
-    const res = await fetch(`http://${state.selectedIp}:${Constants.CONDUIT_PORT}/apps`);
-    const json = await res.json();
-    const apps =  json.sort((a, b) => (a.app < b.app ? -1 : 1));
+    const { message: apps } = await ConduitService.sendPacket(state, { to: 'conduit', topic: 'getApps' });
     fabricate.update({ apps });
   } catch (err) {
     console.error(err);

@@ -21,29 +21,9 @@ apps.
 
 This service provides the following HTTP API via Express:
 
-### `GET /apps`
+### `GET /ping`
 
-List all known apps and their status.
-
-```json
-[
-  {
-    "app": "attic",
-    "port": 6973,
-    "status": "OK"
-  },
-  {
-    "app": "visuals",
-    "port": 8236,
-    "status": "OK"
-  },
-  {
-    "app": "conduit",
-    "port": 5959,
-    "status": "OK"
-  }
-]
-```
+Check service is available. Responds `{ pong: true }`.
 
 ### `POST /conduit`
 

@@ -8,7 +8,7 @@ const { log } = require('../node-common')(['log']);
  * @param {object} res - Express response object.
  */
 const handleKill = async (req, res) => {
-  log.info('Proces kill requested, shutting down');
+  log.info('Process kill requested, shutting down');
   res.status(200).send({ stop: true });
 
   setTimeout(() => process.exit(), 1000);

@@ -24,7 +24,7 @@ const setup = async () => {
   app.use(enablePreflight);
 
   // Register API routes and handlers
-  app.get('/apps', require('../api/apps'));
+  app.get('/ping', require('../api/ping'));
   app.post('/conduit', bodyParser.json(), require('../api/conduit'));
   app.post('/port', bodyParser.json(), require('../api/port'));
   app.post('/kill', require('../api/kill'));

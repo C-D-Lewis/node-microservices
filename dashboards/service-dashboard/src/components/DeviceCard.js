@@ -188,7 +188,7 @@ fabricate.declare('DeviceCard', ({ device }) => {
    */
   const testIp = async (ip, stateKey) => {
     try {
-      await fetch(`http://${ip}:5959/apps`);
+      await fetch(`http://${ip}:5959/ping`);
       fabricate.update(stateKey, true);
     } catch (err) { /* It isn't available */ }
   };

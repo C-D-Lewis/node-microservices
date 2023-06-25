@@ -27,20 +27,32 @@ describe('API', () => {
     });
   });
 
-  describe('/apps', () => {
-    it('should return 200 / [{ app, port, status }]', async () => {
+  describe('topic: getApps', () => {
+    it('should respond with known apps, including itself', async () => {
+      const { data } = await fetch({
+        url: `http://localhost:${SERVER.PORT}/conduit`,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: 'conduit', topic: 'getApps' }),
+      });
+
+      expect(data.status).to.equal(200);
+      expect(data.message).to.be.an('array');
+      expect(data.message.length).to.be.gte(2);
+
+      const found = data.message.find(({ app }) => app === 'conduit');
+      expect(found.port).to.be.a('number');
+    });
+  });
+
+  describe('/ping', () => {
+    it('should return 200 / pong', async () => {
       const res = await fetch({
-        url: `http://localhost:${SERVER.PORT}/apps`,
+        url: `http://localhost:${SERVER.PORT}/ping`,
       });
 
       expect(res.status).to.equal(200);
-      expect(res.data).to.be.an('array');
-      expect(res.data).to.have.length.gte(1);
-
-      const [item] = res.data;
-      expect(item.app).to.be.a('string');
-      expect(item.port).to.be.a('number');
-      expect(item.status).to.be.a('string');
+      expect(res.data.pong).to.equal(true);
     });
   });
 
