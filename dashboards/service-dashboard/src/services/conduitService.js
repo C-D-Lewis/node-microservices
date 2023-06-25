@@ -38,6 +38,8 @@ ConduitService.sendPacket = async (state, packet, tokenOverride) => {
     });
     const json = await res.json();
     console.log(JSON.stringify(json));
+
+    Utils.addLogEntry(state, json);
     return json;
   } catch (error) {
     console.log(error);

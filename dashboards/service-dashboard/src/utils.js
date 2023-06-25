@@ -39,3 +39,18 @@ Utils.shortDateTime = (timestamp) => {
   const shortTime = time.split(':').slice(0, 2).join(':');
   return `${date} ${shortTime}`;
 };
+
+/**
+ * Add a log entry.
+ *
+ * @param {object} state - App state.
+ * @param {string|object} content - New item content.
+ */
+Utils.addLogEntry = (state, content) => {
+  const text = (typeof content === 'string' ? content : JSON.stringify(content, null, 2)).slice(0, 10000);
+  const logEntries = [
+    ...state.logEntries,
+    text,
+  ];
+  fabricate.update({ logEntries });
+};

@@ -29,8 +29,6 @@ const fetchFleetList = async (el, state) => {
 const fetchApps = async (el, state) => {
   fabricate.update({ apps: [] });
 
-  // TODO: How to fetch apps via the public host? conduit topic with 'host' instead of GET?
-
   try {
     const { message: apps } = await ConduitService.sendPacket(state, { to: 'conduit', topic: 'getApps' });
     fabricate.update({ apps });
@@ -58,7 +56,11 @@ const parseParams = () => {
 const AppNavBar = () => fabricate('NavBar', {
   title: 'Service Dashboard',
   backgroundColor: Theme.colors.AppNavBar.background,
-});
+})
+  .addChildren([
+    fabricate('IconButton', { src: 'assets/log.png' })
+      .onClick((el, state) => fabricate.update('logExpanded', !state.logExpanded)),
+  ]);
 
 /**
  * ServiceDashboard component.
@@ -71,6 +73,7 @@ const ServiceDashboard = () => fabricate('Column')
     fabricate('SubNavBar'),
     fabricate('FleetPage').when(({ page }) => page === 'FleetPage'),
     fabricate('AppsPage').when(({ page }) => page === 'AppsPage'),
+    fabricate('ResponseLog'),
   ])
   .onUpdate(parseParams, ['fabricate:init'])
   .onUpdate(fetchApps, ['selectedIp'])

@@ -13,6 +13,8 @@ Constants.APP_CARD_WIDTH = 375;
 
 /** Initial total app state */
 Constants.INITIAL_STATE = {
+  logEntries: [],
+  logExpanded: false,
   page: 'FleetPage',
   apps: [],
   fleetList: [],

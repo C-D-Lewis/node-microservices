@@ -3,7 +3,7 @@
  *
  * @param {object} props - Component props.
  * @param {string} props.text - Text to show, could be JSON.
- * @returns {HTMLElement}
+ * @returns {HTMLElement} LogEntry component.
  */
 const LogEntry = ({ text }) => {
   const wasError = text.includes('"error"');
@@ -35,18 +35,34 @@ const LogEntry = ({ text }) => {
  */
 fabricate.declare('ResponseLog', () => fabricate('Column')
   .setStyles({
+    position: 'absolute',
+    right: 0,
+    top: 0,
     backgroundColor: Theme.colors.consoleGrey,
-    minWidth: '600px',
-    height: '100%',
+    minWidth: '0px',
+    maxWidth: '0px',
+    height: '100vh',
     flex: 1,
     padding: '10px 0px',
     overflowY: 'scroll',
+    transition: '0.3s',
   })
   .onUpdate(
-    (el, { logEntries }) => {
-      // TODO: Only add new items based on content or timestamp, not all
-      const reversed = logEntries.slice().reverse();
-      el.setChildren(reversed.map((text) => LogEntry({ text })));
+    (el, { logEntries, logExpanded }, keys) => {
+      if (keys.includes('logEntries')) {
+        // TODO: Only add new items based on content or timestamp, not all
+        const reversed = logEntries.slice().reverse();
+        el.setChildren(reversed.map((text) => LogEntry({ text })));
+        return;
+      }
+
+      if (keys.includes('logExpanded')) {
+        const newWidth = logExpanded ? '600px' : '0px';
+        el.setStyles({
+          minWidth: newWidth,
+          maxWidth: newWidth,
+        });
+      }
     },
-    ['logEntries'],
+    ['logEntries', 'logExpanded'],
   ));
