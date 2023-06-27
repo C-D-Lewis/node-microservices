@@ -110,6 +110,9 @@ const handlePacketRequest = async (req, res) => {
     return;
   }
 
+  // TODO: How to allow a device to use service-dashboard for just their device?
+  //       Fails because device:undefined at least
+
   // Enforce only localhost need not supply a guestlist token (or during test)
   const shouldCheckAuth = OPTIONS.AUTH_GUESTLIST && (hostname !== 'localhost' || forceAuthCheck);
   const isAuthCheckPacket = to === 'guestlist' && topic === 'authorize';
