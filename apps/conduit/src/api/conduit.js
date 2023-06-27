@@ -42,6 +42,7 @@ const PACKET_SCHEMA = {
     from: { type: 'string' },             // Sending Conduit client
     host: { type: 'string' },             // Which other Conduit server to send to
     auth: { type: 'string' },             // Authorization, if required
+    device: { type: 'string' },           // Destination device hostname, used for auth check
     forceAuthCheck: { type: 'boolean' },  // Force auth token check
   },
 };
@@ -100,7 +101,7 @@ const handlePacketRequest = async (req, res) => {
   }
 
   const {
-    to, topic, message, host = HOST_LOCALHOST, auth, forceAuthCheck,
+    to, topic, message, host = HOST_LOCALHOST, auth, forceAuthCheck, device,
   } = packet;
 
   // Test endpoint used during tests
@@ -128,6 +129,7 @@ const handlePacketRequest = async (req, res) => {
         to,
         topic,
         auth,
+        device,
       },
     }, OPTIONS.AUTH_GUESTLIST);
     if (authCheckRes.error) {

@@ -15,8 +15,15 @@ const list = async () => {
   // Print users
   const users = res.message;
   printTable(
-    ['id', 'name', 'apps', 'topics', 'createdAt'],
-    users.map((p) => [p.id, p.name, p.apps, p.topics, new Date(p.createdAt).toISOString()]),
+    ['id', 'name', 'apps', 'topics', 'devices', 'createdAt'],
+    users.map((p) => [
+      p.id,
+      p.name,
+      p.apps,
+      p.topics,
+      p.devices,
+      new Date(p.createdAt).toISOString(),
+    ]),
   );
 };
 
@@ -26,14 +33,15 @@ const list = async () => {
  * @param {string} name - User name.
  * @param {Array<string>} apps - Apps to permit.
  * @param {Array<string>} topics - Topics to permit.
+ * @param {Array<string>} devices - Devices to permit.
  * @param {string} adminPassword - Admin password for user creation.
  */
-const create = async (name, apps, topics, adminPassword) => {
+const create = async (name, apps, topics, devices, adminPassword) => {
   const packet = {
     to: 'guestlist',
     topic: 'create',
     message: {
-      name, apps, topics, adminPassword,
+      name, apps, topics, devices, adminPassword,
     },
   };
   const res = await send({ packet });
@@ -81,8 +89,14 @@ module.exports = {
        * @param {Array<string>} args - Command args.
        * @returns {Promise<void>}
        */
-      execute: async ([, name, apps, topics, adminPassword]) => create(name, apps.split(','), topics.split(','), adminPassword),
-      pattern: 'create $name $apps $topics $adminPassword',
+      execute: async ([, name, apps, topics, devices, adminPassword]) => create(
+        name,
+        apps.split(','),
+        topics.split(','),
+        devices.split(','),
+        adminPassword,
+      ),
+      pattern: 'create $name $apps $topics $devices $adminPassword',
     },
     delete: {
       /**

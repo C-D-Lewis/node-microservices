@@ -34,6 +34,7 @@ ConduitService.sendPacket = async (state, packet, tokenOverride) => {
         ...packet,
         auth: tokenOverride || token || '',
         host: forwardHost,
+        device: selectedDeviceName,
       }),
     });
     const json = await res.json();

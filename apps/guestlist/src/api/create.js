@@ -20,7 +20,7 @@ const chance = new Chance();
 const handleCreatePacket = async (packet, res) => {
   const { message } = packet;
   const {
-    name, apps, topics, adminPassword: inputPassword,
+    name, apps, topics, devices = [], adminPassword: inputPassword,
   } = message;
 
   // Only the administrator can create users (for now)
@@ -59,6 +59,7 @@ const handleCreatePacket = async (packet, res) => {
     name,
     apps,
     topics,
+    devices,
     token: chance.hash(),
     createdAt: Date.now(),
   };

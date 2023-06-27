@@ -14,13 +14,14 @@ from the Attic service:
 }
 ```
 
-Or a super-admin:
+Or a super-admin for just one device:
 
 ```json
 {
   "name": "superadmin",
   "apps": ["all"],
-  "topics": ["all"]
+  "topics": ["all"],
+  "devices": ["desk-pi"]
 }
 ```
 
@@ -57,6 +58,7 @@ password:
     "name": "BacklightUser",
     "apps": ["ambience"],
     "topics": ["set", "fade", "off"],
+    "devices": ["desk-pi"],
     "adminPassword": "MyAdminPassword",
   }
 }
@@ -72,7 +74,8 @@ at this one time**:
     "id": "165dacd16a253b28",
     "name": "BacklightUser",
     "apps": ["ambience"],
-    "topics": ["set","fade","off"],
+    "topics": ["set", "fade", "off"],
+    "devices": ["desk-pi"],
     "token": "b6aacf6f46dbdd24659b537f7754506eb4aa5638",
     "createdAt": 1586599862140
   }
@@ -89,12 +92,16 @@ by including their token as the `auth` field in a `conduit` request:
 {
   "to": "ambience",
   "topic": "off",
+  "device": "desk-pi",
   "auth": "b6aacf6f46dbdd24659b537f7754506eb4aa5638"
 }
 ```
 
 Apps that communicate with a token should include it as `TOKEN` in their
 `conduit` config.
+
+> Users that have no `devices` set (pre June 2023) will not have devices
+> considered when being authorized.
 
 
 ## API

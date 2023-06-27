@@ -87,7 +87,22 @@ COPY <<EOF /code/apps/attic/db.json
           "topics": [
             "all"
           ],
+          "devices": [
+            "all"
+          ],
           "token": "32a77a47a43f67acd9b53f6b195842722bf3a2cb",
+          "createdAt": 1684063071964
+        },
+        {
+          "id": "6f482b3ba6a6d41a",
+          "name": "legacyNoDevices",
+          "apps": [
+            "all"
+          ],
+          "topics": [
+            "all"
+          ],
+          "token": "32a77a47a43f67acd9b53f6b195842722bf3a299",
           "createdAt": 1684063071964
         }
       ],

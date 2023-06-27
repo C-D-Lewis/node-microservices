@@ -42,6 +42,7 @@ describe('API', () => {
         name: TEST_USER_NAME,
         apps: ['attic'],
         topics: ['get'],
+        devices: ['stack-ext'],
         adminPassword: inputPassword,
       };
       const response = await testing.sendConduitPacket({
@@ -54,6 +55,7 @@ describe('API', () => {
       expect(message.name).to.equal(payload.name);
       expect(message.password).to.equal(undefined);
       expect(message.apps).to.deep.equal(payload.apps);
+      expect(message.devices).to.deep.equal(payload.devices);
       expect(message.topics).to.deep.equal(payload.topics);
       expect(message.token).to.be.a('string');
       expect(status).to.equal(201);
@@ -88,6 +90,7 @@ describe('API', () => {
         message: {
           to: 'attic',
           topic: 'get',
+          device: 'stack-ext',
           auth: token,
         },
       });
@@ -143,6 +146,42 @@ describe('API', () => {
       const { status, error } = response;
       expect(error).to.equal('User is not permitted for topic set');
       expect(status).to.equal(401);
+    });
+
+    it('should return 401 / Not Authorized for invalid device', async () => {
+      const response = await testing.sendConduitPacket({
+        to: 'guestlist',
+        topic: 'authorize',
+        message: {
+          to: 'attic',
+          topic: 'get',
+          device: 'invalid',
+          auth: token,
+        },
+      });
+
+      const { status, error } = response;
+      expect(error).to.equal('User is not permitted for device invalid');
+      expect(status).to.equal(401);
+    });
+
+    it('should allow legacy user with devices unset', async () => {
+      // Set in Dockerfile
+      const noDevicesToken = '32a77a47a43f67acd9b53f6b195842722bf3a299';
+
+      const response = await testing.sendConduitPacket({
+        to: 'guestlist',
+        topic: 'authorize',
+        message: {
+          to: 'attic',
+          topic: 'get',
+          auth: noDevicesToken,
+        },
+      });
+
+      const { status, message } = response;
+      expect(message.content).to.equal('OK');
+      expect(status).to.equal(200);
     });
   });
 

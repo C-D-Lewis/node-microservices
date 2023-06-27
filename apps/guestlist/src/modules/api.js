@@ -3,7 +3,7 @@ const { conduit } = require('../node-common')(['conduit']);
 /** Schema for messages to create users */
 const CREATE_MESSAGE_SCHEMA = {
   additionalProperties: false,
-  required: ['name', 'apps', 'topics', 'adminPassword'],
+  required: ['name', 'apps', 'topics', 'devices', 'adminPassword'],
   properties: {
     name: { type: 'string' },
     apps: {
@@ -12,6 +12,11 @@ const CREATE_MESSAGE_SCHEMA = {
       minItems: 1,
     },
     topics: {
+      type: 'array',
+      items: { type: 'string' },
+      minItems: 1,
+    },
+    devices: {
       type: 'array',
       items: { type: 'string' },
       minItems: 1,
@@ -38,6 +43,7 @@ const AUTHORIZE_MESSAGE_SCHEMA = {
     to: { type: 'string' },
     topic: { type: 'string' },
     auth: { type: 'string' },
+    device: { type: 'string' },
   },
 };
 

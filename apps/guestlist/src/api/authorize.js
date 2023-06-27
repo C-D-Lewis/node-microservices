@@ -8,7 +8,9 @@ const { ATTIC_KEY_USERS } = require('../constants');
  * @param {object} res - Express response object.
  */
 const handleAuthorizePacket = async (packet, res) => {
-  const { auth, to, topic } = packet.message;
+  const {
+    auth, to, topic, device,
+  } = packet.message;
 
   // Fetch user list
   const list = (await attic.exists(ATTIC_KEY_USERS))
@@ -31,6 +33,12 @@ const handleAuthorizePacket = async (packet, res) => {
   // Check topics
   if (!(user.topics.includes(topic) || user.topics.includes('all'))) {
     conduit.respond(res, { status: 401, error: `User is not permitted for topic ${topic}` });
+    return;
+  }
+
+  // Check devices - only if key has a restrictive list
+  if (user.devices && !(user.devices.includes(device) || user.devices.includes('all'))) {
+    conduit.respond(res, { status: 401, error: `User is not permitted for device ${device}` });
     return;
   }
 
