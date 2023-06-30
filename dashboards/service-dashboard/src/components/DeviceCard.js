@@ -29,12 +29,13 @@ const ConnectionIcon = () => fabricate('Image', { src: 'assets/plug-off.png' })
  * IpTextButton component.
  *
  * @param {object} props - Component props.
- * @param {string} props.deviceName - Device name.
+ * @param {object} props.device - Device name.
  * @param {string} props.deviceIp - Device IP.
  * @param {string} props.type - Device type, 'local' or 'public'.
  * @returns {HTMLElement} Fabricate component.
  */
-const IpTextButton = ({ deviceName, deviceIp, type }) => {
+const IpText = ({ device, deviceIp, type }) => {
+  const { deviceName } = device;
   const isReachableKey = Utils.isReachableKey(deviceName, type);
 
   const icon = ConnectionIcon({ isReachable: false }).setAttributes({ src: `assets/${type}.png` });
@@ -48,24 +49,14 @@ const IpTextButton = ({ deviceName, deviceIp, type }) => {
     })
     .setText(deviceIp)
     .onUpdate((el, state) => {
+      // TODO: watchlist of [key] here breaks this for some reason
       const isReachable = state[isReachableKey];
 
-      // TODO: watchlist of [key] here breaks this for some reason
       el.setStyles({
         color: isReachable
           ? Theme.colors.IpTextButton.reachable
           : Theme.colors.IpTextButton.unreachable,
-        cursor: isReachable ? 'pointer' : 'default',
-      });
-    })
-    .onClick((el, state) => {
-      if (!state[isReachableKey]) return;
-
-      // Select device, go to apps page
-      fabricate.update({
-        selectedIp: deviceIp,
-        page: 'AppsPage',
-        selectedDeviceName: deviceName,
+        cursor: 'default',
       });
     });
 
@@ -105,7 +96,7 @@ const LastSeenLabel = ({ lastCheckIn }) => fabricate('Text')
     paddingTop: '10px',
     marginTop: 'auto',
   })
-  .setText(Utils.getTimeAgoStr(lastCheckIn));
+  .setText(`${Utils.getTimeAgoStr(lastCheckIn)} ago`);
 
 /**
  * CardTitle component.
@@ -129,7 +120,7 @@ const CardTitle = ({ seenRecently }) => fabricate('Row')
  */
 const DeviceCardContainer = () => fabricate('Card')
   .setStyles({
-    minWidth: '300px',
+    minWidth: '500px',
     minHeight: '150px',
     margin: '10px',
     boxShadow: '2px 2px 3px 1px #0004',
@@ -145,7 +136,7 @@ const DeviceCardContainer = () => fabricate('Card')
  * @returns {HTMLElement} Fabricate component.
  */
 const CommitView = ({ commit, commitDate }) => fabricate('Row')
-  .setStyles({ alignItems: 'center' })
+  .setStyles({ alignItems: 'center', borderBottom: `solid 1px ${Theme.colors.consoleGrey}` })
   .setChildren([
     fabricate('Image', { src: 'assets/commit.png' })
       .setStyles({
@@ -165,14 +156,81 @@ const CommitView = ({ commit, commitDate }) => fabricate('Row')
   ]);
 
 /**
+ * DeviceDetailsColumn component.
+ *
+ * @param {object} props - Component props.
+ * @param {object} props.device - Device for these details.
+ * @returns {HTMLElement} DeviceDetailsColumn component.
+ */
+const DeviceDetailsColumn = ({ device }) => {
+  const {
+    publicIp, localIp, commit, commitDate,
+  } = device;
+
+  return fabricate('Column')
+    .setStyles({ flex: 2, borderRight: `solid 1px ${Theme.colors.consoleGrey}` })
+    .setChildren([
+      IpText({
+        device,
+        deviceIp: publicIp,
+        type: 'public',
+      }),
+      IpText({
+        device,
+        deviceIp: localIp,
+        type: 'local',
+      }),
+      CommitView({ commit, commitDate }),
+      fabricate('TextButton')
+        .setText('Select')
+        .setStyles({
+          margin: 0,
+          width: 'auto',
+          borderRadius: 0,
+        })
+        .onClick(() => {
+          fabricate.update({
+            page: 'AppsPage',
+            selectedDevice: device,
+          });
+        }),
+    ]);
+};
+
+/**
+ * AppChipList component.
+ *
+ * @param {object} props - Component props.
+ * @param {object} props.device - Device for this app list.
+ * @returns {HTMLElement} AppChipList component.
+ */
+const AppChipList = ({ device }) => {
+  const { deviceName } = device;
+
+  return fabricate('Row')
+    .setStyles({ flex: 3, flexWrap: 'wrap' })
+    .onUpdate((el, { deviceApps }) => {
+      const apps = deviceApps[deviceName];
+      if (!apps) return;
+
+      el.setChildren(apps.map((app) => fabricate('ItemPill', {
+        src: 'assets/app.png',
+        text: app.app,
+      })));
+    }, ['deviceApps']);
+};
+
+/**
  * DeviceCard component.
  *
  * @param {object} props - Component props.
+ * @param {object} props.state - App state.
+ * @param {object} props.device - Device for this card.
  * @returns {HTMLElement} Fabricate component.
  */
 fabricate.declare('DeviceCard', ({ device }) => {
   const {
-    deviceName, publicIp, localIp, deviceType = 'other', lastCheckIn, commit, commitDate,
+    deviceName, publicIp, localIp, lastCheckIn, deviceType,
   } = device;
   const publicIpValidKey = Utils.isReachableKey(deviceName, 'public');
   const localIpValidKey = Utils.isReachableKey(deviceName, 'local');
@@ -201,17 +259,11 @@ fabricate.declare('DeviceCard', ({ device }) => {
           DeviceName().setText(deviceName),
           LastSeenLabel({ lastCheckIn }),
         ]),
-      IpTextButton({
-        deviceName,
-        deviceIp: publicIp,
-        type: 'public',
-      }),
-      IpTextButton({
-        deviceName,
-        deviceIp: localIp,
-        type: 'local',
-      }),
-      CommitView({ commit, commitDate }),
+      fabricate('Row')
+        .setChildren([
+          DeviceDetailsColumn({ device }),
+          AppChipList({ device }),
+        ]),
     ])
     .onCreate(() => {
       testIp(publicIp, publicIpValidKey);

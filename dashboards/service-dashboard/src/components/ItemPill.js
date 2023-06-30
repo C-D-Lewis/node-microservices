@@ -1,31 +1,28 @@
 /**
- * PluginPill component.
+ * ItemPill component.
  *
  * @param {object} props - Component props.
- * @param {object} props.plugin - Plugin object.
+ * @param {string} props.src - Item icon.
+ * @param {string} props.text - Item text.
  * @returns {HTMLElement} Fabricate component.
  */
-fabricate.declare('PluginPill', ({ plugin }) => {
-  const {
-    FILE_NAME, EVERY, AT, ENABLED,
-  } = plugin;
+fabricate.declare('ItemPill', ({ src, text }) => {
   const {
     AppCard: { titleBar },
-    PluginPill: { disabled },
   } = Theme.colors;
 
   return fabricate('Row')
     .setStyles({
       cursor: 'default',
       borderRadius: '15px',
-      backgroundColor: ENABLED !== false ? titleBar : disabled,
+      backgroundColor: titleBar,
       margin: '5px',
-      flexWrap: 'wrap',
       alignItems: 'center',
       padding: '0px 5px',
+      height: 'fit-content',
     })
     .setChildren([
-      fabricate('Image', { src: 'assets/plugin.png' })
+      fabricate('Image', { src })
         .setStyles({ width: '18px', height: '18px' }),
       fabricate('Text')
         .setStyles({
@@ -33,6 +30,6 @@ fabricate.declare('PluginPill', ({ plugin }) => {
           fontSize: '0.9rem',
           fontFamily: 'monospace',
         })
-        .setText(`${FILE_NAME.replace('.js', '')}${EVERY ? ` (~${EVERY})` : ` (at ${AT})`}`),
+        .setText(text),
     ]);
 });

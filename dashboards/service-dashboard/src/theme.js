@@ -32,7 +32,7 @@ Theme.colors = {
   DataPoint: {
     background: 'orange',
   },
-  PluginPill: {
+  ItemPill: {
     disabled: '#333',
   },
   IconButton: {

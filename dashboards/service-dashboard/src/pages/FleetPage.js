@@ -35,11 +35,13 @@ const GroupLabel = ({ publicIp }) => fabricate('Row')
  * FleetPage component, column of public IPs with devices inside them.
  */
 fabricate.declare('FleetPage', () => fabricate('Column')
-  .onUpdate((el, { fleetList }) => {
-    const buckets = {};
+  .onUpdate(async (el, state) => {
+    const { fleet } = state;
+    if (!fleet.length) return;
 
     // Sort fleet into publicIp buckets
-    fleetList.forEach((device) => {
+    const buckets = {};
+    fleet.forEach((device) => {
       const { publicIp } = device;
       if (!buckets[publicIp]) {
         buckets[publicIp] = [];
@@ -70,4 +72,7 @@ fabricate.declare('FleetPage', () => fabricate('Column')
             ]),
         ])
     )));
-  }, ['fleetList']));
+
+    // Fetch apps for all devices at once
+    Utils.fetchApps(state);
+  }, ['fleet']));

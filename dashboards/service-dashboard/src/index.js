@@ -5,7 +5,7 @@
  * @param {object} state - App state.
  */
 const fetchFleetList = async (el, state) => {
-  fabricate.update({ fleetList: [] });
+  fabricate.update({ fleet: [] });
 
   try {
     const { message } = await ConduitService.sendPacket(state, {
@@ -13,27 +13,10 @@ const fetchFleetList = async (el, state) => {
       topic: 'get',
       message: { app: 'conduit', key: 'fleetList' },
     });
-    fabricate.update({ fleetList: message.value });
+    fabricate.update({ fleet: message.value });
   } catch (err) {
     console.error(err);
     alert(err);
-  }
-};
-
-/**
- * Load apps for the selected IP address.
- *
- * @param {HTMLElement} el - This element.
- * @param {object} state - App state.
- */
-const fetchApps = async (el, state) => {
-  fabricate.update({ apps: [] });
-
-  try {
-    const { message: apps } = await ConduitService.sendPacket(state, { to: 'conduit', topic: 'getApps' });
-    fabricate.update({ apps });
-  } catch (err) {
-    console.error(err);
   }
 };
 
@@ -76,7 +59,6 @@ const ServiceDashboard = () => fabricate('Column')
     fabricate('ResponseLog'),
   ])
   .onUpdate(parseParams, ['fabricate:init'])
-  .onUpdate(fetchApps, ['selectedIp'])
   .onUpdate(fetchFleetList, ['token']);
 
 fabricate.app(ServiceDashboard(), Constants.INITIAL_STATE);

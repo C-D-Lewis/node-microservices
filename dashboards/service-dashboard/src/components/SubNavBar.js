@@ -36,7 +36,7 @@ const commandDevice = async (el, state, topic) => {
     const { error } = await ConduitService.sendPacket(state, { to: 'conduit', topic });
     if (error) throw new Error(error);
 
-    console.log(`Device ${state.selectedDeviceName} sent ${topic} command`);
+    console.log(`Device ${state.selectedDevice.deviceName} sent ${topic} command`);
     el.setStyles({ backgroundColor: Theme.colors.status.ok });
   } catch (e) {
     alert(e);
@@ -106,10 +106,13 @@ const BackBreadcrumb = () => {
           ShutdownButton(),
         ]),
     ])
-    .onUpdate((el, { fleetList, selectedIp, selectedDeviceName }) => {
-      const [found] = fleetList.filter(({ deviceName }) => deviceName === selectedDeviceName);
-      if (found) deviceSegment.setText(`< ${found.deviceName} (${selectedIp})`);
-    }, ['fleetList', 'selectedIp']);
+    .onUpdate((el, state) => {
+      const { fleet, selectedDevice } = state;
+      if (!selectedDevice) return;
+
+      const found = fleet.find(({ deviceName }) => deviceName === selectedDevice.deviceName);
+      if (found) deviceSegment.setText(`< ${found.deviceName} (${Utils.getReachableIp(state)})`);
+    }, ['fleet', 'selectedDevice']);
 };
 
 /**

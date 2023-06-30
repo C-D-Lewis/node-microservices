@@ -352,10 +352,12 @@ const ClacksControls = () => {
             })),
         ]),
     ])
-    .onCreate((el, { clacksData, selectedIp }) => {
+    .onCreate((el, state) => {
+      const { clacksData } = state;
+
       // Try and connect if not connected
       if (clacksData.connected) ClacksService.disconnect();
-      setTimeout(() => ClacksService.connect(selectedIp), 500);
+      setTimeout(() => ClacksService.connect(Utils.getReachableIp(state)), 500);
     });
 };
 
@@ -418,7 +420,20 @@ const MonitorControls = () => {
           if (!plugins) return;
 
           // Show running plugins
-          el.setChildren(plugins.map((plugin) => fabricate('PluginPill', { plugin })));
+          el.setChildren(plugins.map((plugin) => {
+            const {
+              FILE_NAME, EVERY, AT, ENABLED,
+            } = plugin;
+            const {
+              AppCard: { titleBar },
+              ItemPill: { disabled },
+            } = Theme.colors;
+            return fabricate('ItemPill', {
+              src: 'assets/plugin.png',
+              text: `${FILE_NAME.replace('.js', '')}${EVERY ? ` (~${EVERY})` : ` (at ${AT})`}`,
+            })
+              .setStyles({ backgroundColor: ENABLED !== false ? titleBar : disabled });
+          }));
         }, ['monitorData'])
         .onCreate(async (el, state) => {
           // Fetch all plugins

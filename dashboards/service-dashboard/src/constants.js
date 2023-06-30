@@ -13,13 +13,18 @@ Constants.APP_CARD_WIDTH = 375;
 
 /** Initial total app state */
 Constants.INITIAL_STATE = {
+  // App data
+  host: FLEET_HOST,
+  deviceApps: {},
+  fleet: [],
   logEntries: [],
   logExpanded: false,
+
+  // Selections
   page: 'FleetPage',
-  apps: [],
-  fleetList: [],
-  selectedIp: FLEET_HOST,
-  selectedDeviceName: undefined,
+  selectedDevice: undefined,
+
+  // App data
   atticData: {
     app: '',
     key: '',
