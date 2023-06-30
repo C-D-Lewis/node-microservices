@@ -6,11 +6,11 @@ const ConduitService = {};
  * @param {object} state - App state.
  * @param {object} packet - Packet to send.
  * @param {string} [tokenOverride] - Override auth token sent.
- * @param {string} [deviceOverride] - Override selectedDevice.
+ * @param {string} [deviceNameOverride] - Override selectedDevice.
  * @returns {Promise<object>} Response.
  * @throws {Error} Any error encountered.
  */
-ConduitService.sendPacket = async (state, packet, tokenOverride, deviceOverride) => {
+ConduitService.sendPacket = async (state, packet, tokenOverride, deviceNameOverride) => {
   console.log('Sending...');
 
   const { token, selectedDevice, fleet } = state;
@@ -20,8 +20,8 @@ ConduitService.sendPacket = async (state, packet, tokenOverride, deviceOverride)
     let destination = state.host;
     let forwardHost;
 
-    const finalDevice = deviceOverride
-      ? fleet.find(({ deviceName }) => deviceName === deviceOverride)
+    const finalDevice = deviceNameOverride
+      ? fleet.find(({ deviceName }) => deviceName === deviceNameOverride)
       : selectedDevice;
     if (finalDevice) {
       const { localIp, publicIp, deviceName } = finalDevice;

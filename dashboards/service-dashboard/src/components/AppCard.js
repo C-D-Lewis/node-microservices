@@ -61,7 +61,10 @@ const StatusLED = ({ app }) => fabricate('div')
     borderRadius: '9px',
     marginRight: '5px',
   })
-  .onCreate((el, { apps }) => {
+  .onCreate((el, { selectedDevice, deviceApps }) => {
+    if (!selectedDevice) return;
+
+    const apps = deviceApps[selectedDevice.deviceName];
     const { status } = apps.find((p) => p.app === app);
     el.setStyles({
       backgroundColor: status.includes('OK') ? Theme.colors.status.ok : Theme.colors.status.down,
@@ -84,7 +87,10 @@ const CardStatus = ({ app }) => fabricate('Row')
   .setChildren([
     StatusLED({ app }),
     StatusText()
-      .onCreate((el, { apps }) => {
+      .onCreate((el, { selectedDevice, deviceApps }) => {
+        if (!selectedDevice) return;
+
+        const apps = deviceApps[selectedDevice.deviceName];
         const { status, port } = apps.find((p) => p.app === app);
         el.setText(`${status} (${port})`);
       }),

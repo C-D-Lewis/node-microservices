@@ -120,7 +120,8 @@ const CardTitle = ({ seenRecently }) => fabricate('Row')
  */
 const DeviceCardContainer = () => fabricate('Card')
   .setStyles({
-    minWidth: '500px',
+    minWidth: '550px',
+    maxWidth: '550px',
     minHeight: '150px',
     margin: '10px',
     boxShadow: '2px 2px 3px 1px #0004',
@@ -208,10 +209,19 @@ const AppChipList = ({ device }) => {
   const { deviceName } = device;
 
   return fabricate('Row')
-    .setStyles({ flex: 3, flexWrap: 'wrap' })
+    .setStyles({
+      flex: 3,
+      flexWrap: 'wrap',
+      padding: '5px',
+    })
     .onUpdate((el, { deviceApps }) => {
       const apps = deviceApps[deviceName];
-      if (!apps) return;
+      if (!apps) {
+        el.setChildren([
+          fabricate('Loader').setStyles({ margin: 'auto' }),
+        ]);
+        return;
+      }
 
       el.setChildren(apps.map((app) => fabricate('ItemPill', {
         src: 'assets/app.png',

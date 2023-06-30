@@ -101,6 +101,7 @@ Utils.fetchApps = async (state) => {
       fabricate.update('deviceApps', result);
     } catch (err) {
       console.error(err);
+      result[deviceName] = { error: err.message };
     }
   }));
 };

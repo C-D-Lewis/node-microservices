@@ -67,9 +67,7 @@ fabricate.declare('FleetPage', () => fabricate('Column')
               flexWrap: 'wrap',
               paddingBottom: '10px',
             })
-            .setChildren([
-              ...devices.map((device) => fabricate('DeviceCard', { device })),
-            ]),
+            .setChildren(devices.map((device) => fabricate('DeviceCard', { device }))),
         ])
     )));
 
