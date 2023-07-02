@@ -18,7 +18,7 @@ fabricate.declare('ItemPill', ({ src, text }) => {
       backgroundColor: titleBar,
       margin: '5px',
       alignItems: 'center',
-      padding: '0px 5px',
+      padding: '2px 6px',
       height: 'fit-content',
     })
     .setChildren([

@@ -212,6 +212,7 @@ const AppChipList = ({ device }) => {
     .setStyles({
       flex: 3,
       flexWrap: 'wrap',
+      alignContent: 'flex-start',
       padding: '5px',
     })
     .onUpdate((el, { deviceApps }) => {
