@@ -1,4 +1,8 @@
-const Utils = {};
+import { AppState, IPType, DeviceApp } from './types';
+import { Fabricate } from '../node_modules/fabricate.js/types/fabricate';
+import { sendConduitPacket } from './services/conduitService';
+
+declare const fabricate: Fabricate<AppState>;
 
 /**
  * Create state key for if a device's IP type is reachable.
@@ -7,21 +11,21 @@ const Utils = {};
  * @param {string} type - public or local
  * @returns {string} Key
  */
-Utils.isReachableKey = (deviceName, type) => `isReachable:${deviceName}:${type}`;
+export const isReachableKey = (deviceName: string, type: IPType) => `isReachable:${deviceName}:${type}`;
 
 /**
  * Get the best reachable IP for the selected device.
  *
- * @param {object} state - App state.
+ * @param {AppState} state - App state.
  * @returns {string|undefined} Preferred IP to use.
  */
-Utils.getReachableIp = (state) => {
+export const getReachableIp = (state: AppState) => {
   const { selectedDevice } = state;
   if (!selectedDevice) throw new Error('No selectedDevice yet');
 
   const { publicIp, localIp, deviceName } = selectedDevice;
-  const publicIpValidKey = Utils.isReachableKey(deviceName, 'public');
-  const localIpValidKey = Utils.isReachableKey(deviceName, 'local');
+  const publicIpValidKey = isReachableKey(deviceName, 'public');
+  const localIpValidKey = isReachableKey(deviceName, 'local');
 
   if (state[localIpValidKey]) return localIp;
 
@@ -34,7 +38,7 @@ Utils.getReachableIp = (state) => {
  * @param {number} time - Time to use.
  * @returns {string} Friendly time ago.
  */
-Utils.getTimeAgoStr = (time) => {
+export const getTimeAgoStr = (time: number) => {
   const minsAgo = Math.round((Date.now() - time) / (1000 * 60));
   if (minsAgo > (60 * 24)) {
     return `${Math.round(minsAgo / (60 * 24))} days`;
@@ -53,7 +57,7 @@ Utils.getTimeAgoStr = (time) => {
  * @param {number} timestamp - Input time.
  * @returns {string} Short date time.
  */
-Utils.shortDateTime = (timestamp) => {
+export const shortDateTime = (timestamp: string) => {
   const [date, time] = new Date(timestamp).toISOString().split('T');
   const shortTime = time.split(':').slice(0, 2).join(':');
   return `${date} ${shortTime}`;
@@ -62,10 +66,10 @@ Utils.shortDateTime = (timestamp) => {
 /**
  * Add a log entry.
  *
- * @param {object} state - App state.
+ * @param {AppState} state - App state.
  * @param {string|object} content - New item content.
  */
-Utils.addLogEntry = (state, content) => {
+export const addLogEntry = (state: AppState, content: string|object) => {
   const text = (typeof content === 'string' ? content : JSON.stringify(content, null, 2)).slice(0, 10000);
   const logEntries = [
     ...state.logEntries,
@@ -77,20 +81,19 @@ Utils.addLogEntry = (state, content) => {
 /**
  * Load apps for all fleet devices.
  *
- * @param {object} state - App state.
+ * @param {AppState} state - App state.
  */
-Utils.fetchApps = async (state) => {
+export const fetchApps = async (state: AppState) => {
   fabricate.update('deviceApps', []);
 
   const { fleet } = state;
-  const result = {};
+  const result: Record<string, DeviceApp> = {};
 
-  // eslint-disable-next-line no-restricted-syntax
-  await Promise.all(fleet.map(async (device) => {
+  const promises = fleet.map(async (device) => {
     const { deviceName } = device;
 
     try {
-      const { message: apps } = await ConduitService.sendPacket(
+      const { message: apps } = await sendConduitPacket(
         state,
         { to: 'conduit', topic: 'getApps' },
         undefined,
@@ -99,9 +102,11 @@ Utils.fetchApps = async (state) => {
 
       result[deviceName] = apps;
       fabricate.update('deviceApps', result);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       result[deviceName] = { error: err.message };
     }
-  }));
+  });
+
+  await Promise.all(promises);
 };

@@ -1,3 +1,9 @@
+import { Fabricate, FabricateComponent } from "../../node_modules/fabricate.js/types/fabricate";
+import Theme from "../theme";
+import { AppState } from "../types";
+
+declare const fabricate: Fabricate<AppState>;
+
 /**
  * LogEntry component.
  *
@@ -5,7 +11,7 @@
  * @param {string} props.text - Text to show, could be JSON.
  * @returns {HTMLElement} LogEntry component.
  */
-const LogEntry = ({ text }) => {
+const LogEntry = ({ text }: { text: string }) => {
   const wasError = text.includes('"error"');
 
   let finalText = text.slice(0, 1000);
@@ -31,9 +37,9 @@ const LogEntry = ({ text }) => {
 /**
  * ResponseBar component.
  *
- * @returns {HTMLElement}
+ * @returns {FabricateComponent}
  */
-fabricate.declare('ResponseLog', () => fabricate('Column')
+const ResponseLog = () => fabricate('Column')
   .setStyles({
     position: 'absolute',
     right: 0,
@@ -65,4 +71,6 @@ fabricate.declare('ResponseLog', () => fabricate('Column')
       }
     },
     ['logEntries', 'logExpanded'],
-  ));
+  );
+
+export default ResponseLog;

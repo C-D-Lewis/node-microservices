@@ -1,18 +1,16 @@
-const {
-  /* Where the fleet list can be found. */
-  FLEET_HOST = 'localhost',
-} = window.Config;
+import { AppState } from "./types";
 
-const Constants = {};
+/** Fleet host URL. TODO: Use env config */
+const FLEET_HOST = 'polaris.chrislewis.me.uk';
 
 /** Port to look for conduit apps */
-Constants.CONDUIT_PORT = 5959;
+export const CONDUIT_PORT = 5959;
 
 /** App card width */
-Constants.APP_CARD_WIDTH = 375;
+export const APP_CARD_WIDTH = 375;
 
 /** Initial total app state */
-Constants.INITIAL_STATE = {
+export const INITIAL_STATE: AppState = {
   // App data
   host: FLEET_HOST,
   deviceApps: {},
@@ -51,17 +49,22 @@ Constants.INITIAL_STATE = {
   clacksData: {
     topic: '',
     message: '{}',
+    connected: false,
   },
   monitorData: {
     metricNames: [],
     metric: '',
     metricHistory: [],
     plugins: [],
+    minValue: 0,
+    maxValue: 99999,
+    minTime: 0,
+    maxTime: 99999,
   },
 };
 
 /** Icon type names */
-Constants.ICON_NAMES = {
+export const ICON_NAMES: Record<string, string> = {
   other: 'other',
   pc: 'pc',
   pi: 'raspberrypi',

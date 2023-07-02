@@ -1,3 +1,12 @@
+import { Fabricate, FabricateComponent } from "../../node_modules/fabricate.js/types/fabricate";
+import { sendConduitPacket } from "../services/conduitService";
+import Theme from "../theme";
+import { AppState } from "../types";
+import { getReachableIp } from "../utils";
+import IconButton from "./IconButton";
+
+declare const fabricate: Fabricate<AppState>;
+
 /**
  * AllDevicesBreadcrumb component.
  *
@@ -18,7 +27,11 @@ const AllDevicesBreadcrumb = () => fabricate('p')
  * @param {object} state - Current state.
  * @param {string} topic - Command topic, either 'reboot' or 'shutdown'.
  */
-const commandDevice = async (el, state, topic) => {
+const commandDevice = async (
+  el: FabricateComponent<AppState>,
+  state: AppState,
+  topic: string,
+) => {
   const stateKey = `command:${topic}`;
   const pressed = !!state[stateKey];
 
@@ -33,10 +46,10 @@ const commandDevice = async (el, state, topic) => {
   if (!pressed) return;
 
   try {
-    const { error } = await ConduitService.sendPacket(state, { to: 'conduit', topic });
+    const { error } = await sendConduitPacket(state, { to: 'conduit', topic });
     if (error) throw new Error(error);
 
-    console.log(`Device ${state.selectedDevice.deviceName} sent ${topic} command`);
+    console.log(`Device ${state.selectedDevice?.deviceName} sent ${topic} command`);
     el.setStyles({ backgroundColor: Theme.colors.status.ok });
   } catch (e) {
     alert(e);
@@ -51,7 +64,7 @@ const commandDevice = async (el, state, topic) => {
  * @param {string} props.src - Image src.
  * @returns {HTMLElement} Fabricate component.
  */
-const ToolbarButton = ({ src }) => fabricate('IconButton', { src })
+const ToolbarButton = ({ src }: { src: string }) => IconButton({ src })
   .setStyles({
     width: '20px',
     height: '20px',
@@ -111,14 +124,16 @@ const BackBreadcrumb = () => {
       if (!selectedDevice) return;
 
       const found = fleet.find(({ deviceName }) => deviceName === selectedDevice.deviceName);
-      if (found) deviceSegment.setText(`< ${found.deviceName} (${Utils.getReachableIp(state)})`);
+      if (found) deviceSegment.setText(`< ${found.deviceName} (${getReachableIp(state)})`);
     }, ['fleet', 'selectedDevice']);
 };
 
 /**
  * SubNavBar component.
+ *
+ * @returns {FabricateComponent} SubNavBar component.
  */
-fabricate.declare('SubNavBar', () => fabricate('Row')
+const SubNavBar = () => fabricate('Row')
   .setStyles({
     backgroundColor: Theme.colors.SubNavBar.background,
     paddingLeft: '8px',
@@ -127,4 +142,6 @@ fabricate.declare('SubNavBar', () => fabricate('Row')
   .setChildren([
     AllDevicesBreadcrumb().when(({ page }) => page === 'FleetPage'),
     BackBreadcrumb().when(({ page }) => page === 'AppsPage'),
-  ]));
+  ]);
+
+export default SubNavBar;

@@ -1,5 +1,13 @@
+import { Fabricate } from "../../node_modules/fabricate.js/types/fabricate";
+import { APP_CARD_WIDTH } from "../constants";
+import Theme from "../theme";
+import { AppState, DataPoint } from "../types";
+import { shortDateTime } from "../utils";
+
+declare const fabricate: Fabricate<AppState>;
+
 /** Graph width */
-const GRAPH_WIDTH = 2 * Constants.APP_CARD_WIDTH;
+const GRAPH_WIDTH = 2 * APP_CARD_WIDTH;
 /** Graph height */
 const GRAPH_HEIGHT = 250;
 /** Y axis marign */
@@ -16,7 +24,7 @@ const BUCKET_SIZE = 5;
  * @param {object} props.point - Data point.
  * @returns {HTMLElement} Fabricate component.
  */
-const DataPointLabel = ({ point }) => fabricate('Text')
+const DataPointLabel = ({ point }: { point: DataPoint }) => fabricate('Text')
   .setStyles({
     fontSize: '0.9rem',
     color: 'white',
@@ -27,18 +35,25 @@ const DataPointLabel = ({ point }) => fabricate('Text')
     width: 'fit-content',
     minWidth: '160px',
   })
-  .setText(`${Math.round(point.value * 100) / 100}\n(${Utils.shortDateTime(point.dateTime)})`);
+  .setText(`${Math.round(point.value * 100) / 100}\n(${shortDateTime(point.dateTime)})`);
+
+/** DataPoint prop types */
+type DataPointPropTypes = {
+  point: DataPoint;
+  minValue: number;
+  maxValue: number;
+};
 
 /**
  * Graph DataPoint component.
  *
  * @param {object} props - Component props.
- * @param {object} props.point - Data point.
+ * @param {DataPoint} props.point - Data point.
  * @param {number} props.minValue - Min dataset value.
  * @param {number} props.maxValue - Max dataset value.
  * @returns {HTMLElement} Fabricate component.
  */
-const DataPoint = ({ point, minValue, maxValue }) => {
+const DataPoint = ({ point, minValue, maxValue }: DataPointPropTypes) => {
   const range = maxValue - minValue;
   const height = ((point.value - minValue) * GRAPH_HEIGHT) / range;
   return fabricate('div')
@@ -49,21 +64,10 @@ const DataPoint = ({ point, minValue, maxValue }) => {
       backgroundColor: Theme.colors.DataPoint.background,
       marginBottom: `${height}px`,
     })
-    .onHover({
-      /**
-       * When hover starts.
-       *
-       * @param {HTMLElement} el - This component.
-       * @returns {void}
-       */
-      start: (el) => el.setChildren([DataPointLabel({ point })]),
-      /**
-       * When hover ends.
-       *
-       * @param {HTMLElement} el - This component.
-       * @returns {void}
-       */
-      end: (el) => el.setChildren([]),
+    .onHover((el, state, isHovered) => {
+      el.setChildren(
+        isHovered ? [DataPointLabel({ point })] : [],
+      );
     });
 };
 
@@ -117,14 +121,14 @@ const YAxisLabels = () => fabricate('Column')
       .onUpdate((el, { monitorData: { metricHistory, maxValue } }) => {
         if (!metricHistory.length) return;
 
-        el.setText(maxValue);
+        el.setText(String(maxValue));
       }, ['monitorData']),
     fabricate('Text')
       .setStyles({ fontSize: '0.9rem', color: 'white', marginTop: 'auto' })
       .onUpdate((el, { monitorData: { metricHistory, minValue } }) => {
         if (!metricHistory.length) return;
 
-        el.setText(minValue);
+        el.setText(String(minValue));
       }, ['monitorData']),
   ]);
 
@@ -141,14 +145,14 @@ const HAxisLabels = () => fabricate('Row')
       .onUpdate((el, { monitorData: { metricHistory, minTime } }) => {
         if (!metricHistory.length) return;
 
-        el.setText(minTime);
+        el.setText(String(minTime));
       }, ['monitorData']),
     fabricate('Text')
       .setStyles({ fontSize: '0.9rem', color: 'white', marginLeft: 'auto' })
       .onUpdate((el, { monitorData: { metricHistory, maxTime } }) => {
         if (!metricHistory.length) return;
 
-        el.setText(maxTime);
+        el.setText(String(maxTime));
       }, ['monitorData']),
   ]);
 
@@ -157,7 +161,7 @@ const HAxisLabels = () => fabricate('Row')
  *
  * @returns {HTMLElement} Fabricate component.
  */
-fabricate.declare('MetricGraph', () => fabricate('Column')
+const MetricGraph = () => fabricate('Column')
   .setStyles({ width: `${GRAPH_WIDTH}px` })
   .setChildren([
     fabricate('Row')
@@ -167,4 +171,6 @@ fabricate.declare('MetricGraph', () => fabricate('Column')
       ]),
     HAxisLabels(),
   ])
-  .when(({ monitorData }) => monitorData.metricHistory.length));
+  .when(({ monitorData }) => !!monitorData.metricHistory.length);
+
+export default MetricGraph;

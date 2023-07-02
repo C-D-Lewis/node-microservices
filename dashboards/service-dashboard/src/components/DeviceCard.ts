@@ -1,3 +1,13 @@
+import { Fabricate } from "../../node_modules/fabricate.js/types/fabricate";
+import { ICON_NAMES } from "../constants";
+import Theme from "../theme";
+import { AppState, Device, DeviceApp, IPType } from "../types";
+import { getTimeAgoStr, isReachableKey } from "../utils";
+import ItemPill from "./ItemPill";
+import TextButton from "./TextButton";
+
+declare const fabricate: Fabricate<AppState>;
+
 /**
  * DeviceName component.
  *
@@ -25,6 +35,13 @@ const ConnectionIcon = () => fabricate('Image', { src: 'assets/plug-off.png' })
     margin: '8px',
   });
 
+/** IpText prop types */
+type IpTextPropTypes = {
+  device: Device;
+  deviceIp: string;
+  type: IPType;
+}
+
 /**
  * IpTextButton component.
  *
@@ -34,11 +51,11 @@ const ConnectionIcon = () => fabricate('Image', { src: 'assets/plug-off.png' })
  * @param {string} props.type - Device type, 'local' or 'public'.
  * @returns {HTMLElement} Fabricate component.
  */
-const IpText = ({ device, deviceIp, type }) => {
+const IpText = ({ device, deviceIp, type }: IpTextPropTypes) => {
   const { deviceName } = device;
-  const isReachableKey = Utils.isReachableKey(deviceName, type);
+  const reachableKey = isReachableKey(deviceName, type);
 
-  const icon = ConnectionIcon({ isReachable: false }).setAttributes({ src: `assets/${type}.png` });
+  const icon = ConnectionIcon().setAttributes({ src: `assets/${type}.png` });
 
   const textButton = fabricate('span')
     .setStyles({
@@ -50,7 +67,7 @@ const IpText = ({ device, deviceIp, type }) => {
     .setText(deviceIp)
     .onUpdate((el, state) => {
       // TODO: watchlist of [key] here breaks this for some reason
-      const isReachable = state[isReachableKey];
+      const isReachable = state[reachableKey];
 
       el.setStyles({
         color: isReachable
@@ -72,12 +89,13 @@ const IpText = ({ device, deviceIp, type }) => {
  * @param {string} props.deviceType - Device type.
  * @returns {HTMLElement} Fabricate component.
  */
-const DeviceIcon = ({ deviceType }) => fabricate('Image', { src: `assets/${Constants.ICON_NAMES[deviceType]}.png` })
-  .setStyles({
-    margin: '4px 4px 4px 8px',
-    width: '20px',
-    height: '20px',
-  });
+const DeviceIcon = ({ deviceType }: { deviceType: string }) =>
+  fabricate('Image', { src: `assets/${ICON_NAMES[deviceType]}.png` })
+    .setStyles({
+      margin: '4px 4px 4px 8px',
+      width: '20px',
+      height: '20px',
+    });
 
 /**
  * Last checkin label component.
@@ -86,7 +104,7 @@ const DeviceIcon = ({ deviceType }) => fabricate('Image', { src: `assets/${Const
  * @param {number} props.lastCheckIn - Last seem minutes ago.
  * @returns {HTMLElement} Fabricate component.
  */
-const LastSeenLabel = ({ lastCheckIn }) => fabricate('Text')
+const LastSeenLabel = ({ lastCheckIn }: { lastCheckIn: number }) => fabricate('Text')
   .setStyles({
     color: Theme.colors.AppCard.lastSeen,
     fontStyle: 'italic',
@@ -96,7 +114,7 @@ const LastSeenLabel = ({ lastCheckIn }) => fabricate('Text')
     paddingTop: '10px',
     marginTop: 'auto',
   })
-  .setText(`${Utils.getTimeAgoStr(lastCheckIn)} ago`);
+  .setText(`${getTimeAgoStr(lastCheckIn)} ago`);
 
 /**
  * CardTitle component.
@@ -105,7 +123,7 @@ const LastSeenLabel = ({ lastCheckIn }) => fabricate('Text')
  * @param {boolean} props.seenRecently - If the device is recently updated and presumed to be alive.
  * @returns {HTMLElement} Fabricate component.
  */
-const CardTitle = ({ seenRecently }) => fabricate('Row')
+const CardTitle = ({ seenRecently }: { seenRecently: boolean }) => fabricate('Row')
   .setStyles({
     backgroundColor: seenRecently ? Theme.colors.instanceHealthy : Theme.colors.AppCard.titleBar,
     alignItems: 'center',
@@ -136,24 +154,25 @@ const DeviceCardContainer = () => fabricate('Card')
  * @param {string} [props.commitDate] - Most recent commit date.
  * @returns {HTMLElement} Fabricate component.
  */
-const CommitView = ({ commit, commitDate }) => fabricate('Row')
-  .setStyles({ alignItems: 'center', borderBottom: `solid 1px ${Theme.colors.consoleGrey}` })
-  .setChildren([
-    fabricate('Image', { src: 'assets/commit.png' })
-      .setStyles({
-        width: '18px',
-        height: '18px',
-        margin: '8px',
-      }),
-    fabricate('Text')
-      .setStyles({
-        color: 'white',
-        fontSize: '1rem',
-        margin: '5px 0px',
-        fontFamily: Theme.fonts.code,
-        cursor: 'default',
-      })
-      .setText(commit ? `${commit} (${Utils.getTimeAgoStr(new Date(commitDate).getTime())})` : 'Unknown'),
+const CommitView = ({ commit, commitDate }: { commit: string, commitDate: string }) =>
+  fabricate('Row')
+    .setStyles({ alignItems: 'center', borderBottom: `solid 1px ${Theme.colors.consoleGrey}` })
+    .setChildren([
+      fabricate('Image', { src: 'assets/commit.png' })
+        .setStyles({
+          width: '18px',
+          height: '18px',
+          margin: '8px',
+        }),
+      fabricate('Text')
+        .setStyles({
+          color: 'white',
+          fontSize: '1rem',
+          margin: '5px 0px',
+          fontFamily: Theme.fonts.code,
+          cursor: 'default',
+        })
+        .setText(commit ? `${commit} (${getTimeAgoStr(new Date(commitDate).getTime())})` : 'Unknown'),
   ]);
 
 /**
@@ -163,7 +182,7 @@ const CommitView = ({ commit, commitDate }) => fabricate('Row')
  * @param {object} props.device - Device for these details.
  * @returns {HTMLElement} DeviceDetailsColumn component.
  */
-const DeviceDetailsColumn = ({ device }) => {
+const DeviceDetailsColumn = ({ device }: { device: Device }) => {
   const {
     publicIp, localIp, commit, commitDate,
   } = device;
@@ -182,7 +201,7 @@ const DeviceDetailsColumn = ({ device }) => {
         type: 'local',
       }),
       CommitView({ commit, commitDate }),
-      fabricate('TextButton')
+      TextButton()
         .setText('Select')
         .setStyles({
           margin: 0,
@@ -205,7 +224,7 @@ const DeviceDetailsColumn = ({ device }) => {
  * @param {object} props.device - Device for this app list.
  * @returns {HTMLElement} AppChipList component.
  */
-const AppChipList = ({ device }) => {
+const AppChipList = ({ device }: { device: Device }) => {
   const { deviceName } = device;
 
   return fabricate('Row')
@@ -224,10 +243,10 @@ const AppChipList = ({ device }) => {
         return;
       }
 
-      el.setChildren(apps.map((app) => fabricate('ItemPill', {
-        src: 'assets/app.png',
-        text: app.app,
-      })));
+      el.setChildren(apps.map((app: DeviceApp) => ItemPill({
+          src: 'assets/app.png',
+          text: app.app!,
+        })));
     }, ['deviceApps']);
 };
 
@@ -239,12 +258,12 @@ const AppChipList = ({ device }) => {
  * @param {object} props.device - Device for this card.
  * @returns {HTMLElement} Fabricate component.
  */
-fabricate.declare('DeviceCard', ({ device }) => {
+const DeviceCard = ({ device }: { device: Device }) => {
   const {
     deviceName, publicIp, localIp, lastCheckIn, deviceType,
   } = device;
-  const publicIpValidKey = Utils.isReachableKey(deviceName, 'public');
-  const localIpValidKey = Utils.isReachableKey(deviceName, 'local');
+  const publicIpValidKey = isReachableKey(deviceName, 'public');
+  const localIpValidKey = isReachableKey(deviceName, 'local');
 
   const minsAgo = Math.round((Date.now() - lastCheckIn) / (1000 * 60));
   const seenRecently = minsAgo < 12;  // Based on default checkin interval of 10m
@@ -255,7 +274,7 @@ fabricate.declare('DeviceCard', ({ device }) => {
    * @param {string} ip - IP to use.
    * @param {string} stateKey - State to update.
    */
-  const testIp = async (ip, stateKey) => {
+  const testIp = async (ip: string, stateKey: string) => {
     try {
       await fetch(`http://${ip}:5959/ping`);
       fabricate.update(stateKey, true);
@@ -280,4 +299,6 @@ fabricate.declare('DeviceCard', ({ device }) => {
       testIp(publicIp, publicIpValidKey);
       testIp(localIp, localIpValidKey);
     });
-});
+};
+
+export default DeviceCard;

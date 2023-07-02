@@ -1,16 +1,23 @@
-const ConduitService = {};
+import { CONDUIT_PORT } from "../constants";
+import { AppState, Packet } from "../types";
+import { addLogEntry, isReachableKey } from "../utils";
 
 /**
  * Send a conduit packet.
  *
- * @param {object} state - App state.
- * @param {object} packet - Packet to send.
+ * @param {AppState} state - App state.
+ * @param {Packet} packet - Packet to send.
  * @param {string} [tokenOverride] - Override auth token sent.
  * @param {string} [deviceNameOverride] - Override selectedDevice.
  * @returns {Promise<object>} Response.
  * @throws {Error} Any error encountered.
  */
-ConduitService.sendPacket = async (state, packet, tokenOverride, deviceNameOverride) => {
+export const sendConduitPacket = async (
+  state: AppState,
+  packet: Packet,
+  tokenOverride?: string,
+  deviceNameOverride?: string,
+) => {
   console.log('Sending...');
 
   const { token, selectedDevice, fleet } = state;
@@ -25,14 +32,14 @@ ConduitService.sendPacket = async (state, packet, tokenOverride, deviceNameOverr
       : selectedDevice;
     if (finalDevice) {
       const { localIp, publicIp, deviceName } = finalDevice;
-      const isLocalReachable = state[Utils.isReachableKey(deviceName, 'local')];
+      const isLocalReachable = state[isReachableKey(deviceName, 'local')];
 
       // Destination is local if reachable, else forward local via public
       destination = isLocalReachable ? localIp : publicIp;
       forwardHost = destination === publicIp ? localIp : undefined;
     }
 
-    const res = await fetch(`http://${destination}:${Constants.CONDUIT_PORT}/conduit`, {
+    const res = await fetch(`http://${destination}:${CONDUIT_PORT}/conduit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -45,7 +52,7 @@ ConduitService.sendPacket = async (state, packet, tokenOverride, deviceNameOverr
     const json = await res.json();
     console.log(JSON.stringify(json));
 
-    Utils.addLogEntry(state, json);
+    addLogEntry(state, json);
     return json;
   } catch (error) {
     console.log(error);

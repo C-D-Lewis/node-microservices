@@ -1,3 +1,9 @@
+import { AppState } from '../types';
+import Theme from '../theme';
+import { Fabricate } from '../../node_modules/fabricate.js/types/fabricate';
+
+declare const fabricate: Fabricate<AppState>;
+
 /**
  * ItemPill component.
  *
@@ -6,7 +12,7 @@
  * @param {string} props.text - Item text.
  * @returns {HTMLElement} Fabricate component.
  */
-fabricate.declare('ItemPill', ({ src, text }) => {
+const ItemPill = ({ src, text }: { src: string, text: string }) => {
   const {
     AppCard: { titleBar },
   } = Theme.colors;
@@ -32,4 +38,6 @@ fabricate.declare('ItemPill', ({ src, text }) => {
         })
         .setText(text),
     ]);
-});
+};
+
+export default ItemPill;

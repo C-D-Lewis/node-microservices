@@ -1,3 +1,10 @@
+import { Fabricate } from "../../node_modules/fabricate.js/types/fabricate";
+import DeviceCard from "../components/DeviceCard";
+import { AppState, Device } from "../types";
+import { fetchApps } from "../utils";
+
+declare const fabricate: Fabricate<AppState>;
+
 /**
  * GroupLabel component.
  *
@@ -5,7 +12,7 @@
  * @param {string} props.publicIp - Public IP.
  * @returns {HTMLElement} GroupLabel component.
  */
-const GroupLabel = ({ publicIp }) => fabricate('Row')
+const GroupLabel = ({ publicIp }: { publicIp: string }) => fabricate('Row')
   .setStyles({
     borderRadius: '10px 10px 0px 0px',
     marginBottom: '10px',
@@ -34,13 +41,13 @@ const GroupLabel = ({ publicIp }) => fabricate('Row')
 /**
  * FleetPage component, column of public IPs with devices inside them.
  */
-fabricate.declare('FleetPage', () => fabricate('Column')
+const FleetPage = () => fabricate('Column')
   .onUpdate(async (el, state) => {
     const { fleet } = state;
     if (!fleet.length) return;
 
     // Sort fleet into publicIp buckets
-    const buckets = {};
+    const buckets: Record<string, Device[]> = {};
     fleet.forEach((device) => {
       const { publicIp } = device;
       if (!buckets[publicIp]) {
@@ -67,10 +74,12 @@ fabricate.declare('FleetPage', () => fabricate('Column')
               flexWrap: 'wrap',
               paddingBottom: '10px',
             })
-            .setChildren(devices.map((device) => fabricate('DeviceCard', { device }))),
+            .setChildren(devices.map((device) => DeviceCard({ device }))),
         ])
     )));
 
     // Fetch apps for all devices at once
-    Utils.fetchApps(state);
-  }, ['fleet']));
+    fetchApps(state); 
+  }, ['fleet']);
+
+export default FleetPage;

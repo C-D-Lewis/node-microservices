@@ -1,12 +1,15 @@
+import { Fabricate } from '../../node_modules/fabricate.js/types/fabricate';
+import { AppState } from '../types';
+
+declare const fabricate: Fabricate<AppState>;
+
 /** WebSocket server port */
 const WS_PORT = 7777;
 /** Heartbeat interval */
 const HEARTBEAT_INTERVAL_MS = 30000;
 
-let socket;
-let heartbeatHandle;
-
-const ClacksService = {};
+let socket: WebSocket;
+let heartbeatHandle: NodeJS.Timer;
 
 /**
  * Set the connected state.
@@ -14,7 +17,10 @@ const ClacksService = {};
  * @param {boolean} connected - true if now connected.
  * @returns {void}
  */
-const setConnectedState = (connected) => fabricate.update('clacksData', ({ clacksData }) => ({ ...clacksData, connected }));
+export const setConnectedState = (connected: boolean) => fabricate.update(
+  'clacksData',
+  ({ clacksData }) => ({ ...clacksData, connected }),
+);
 
 /**
  * When a message is received.
@@ -22,7 +28,7 @@ const setConnectedState = (connected) => fabricate.update('clacksData', ({ clack
  * @param {string} topic - Message topic.
  * @param {object} data - Message data.
  */
-const onClacksMessage = (topic, data) => {
+const onClacksMessage = (topic: string, data: object) => {
   console.log(JSON.stringify({ topic, data }));
 };
 
@@ -44,7 +50,7 @@ const startHeartbeat = () => {
  * @param {string} host - IP to connect to.
  * @returns {Promise<void>}
  */
-ClacksService.connect = (host) => new Promise((resolve) => {
+export const connectClacks = (host: string) => new Promise((resolve) => {
   socket = new WebSocket(`ws://${host}:${WS_PORT}`);
 
   /**
@@ -54,7 +60,7 @@ ClacksService.connect = (host) => new Promise((resolve) => {
     console.log('Connected');
     startHeartbeat();
     setConnectedState(true);
-    resolve();
+    resolve(undefined);
   };
 
   /**
@@ -73,7 +79,7 @@ ClacksService.connect = (host) => new Promise((resolve) => {
    */
   socket.onclose = () => {
     setConnectedState(false);
-    setTimeout(() => ClacksService.connect(host), 5000);
+    setTimeout(() => connectClacks(host), 5000);
   };
 
   /**
@@ -92,15 +98,15 @@ ClacksService.connect = (host) => new Promise((resolve) => {
  *
  * @returns {void}
  */
-ClacksService.disconnect = () => socket.close();
+export const disconnectClacks = () => socket.close();
 
 /**
  * Send a clacks WebSocket message.
  *
  * @param {string} topic - Topic to use.
- * @param {string} message - Message to send, must be JSON
+ * @param {string} message - Message to send, must be JSON string.
  */
-ClacksService.sendMessage = (topic, message) => {
+export const sendClacksMessage = (topic: string, message: string) => {
   const payload = { topic, data: JSON.parse(message) };
   socket.send(JSON.stringify(payload));
   console.log(`Sent: ${JSON.stringify(payload)}`);

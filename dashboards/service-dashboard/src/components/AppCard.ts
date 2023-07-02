@@ -1,3 +1,11 @@
+import { Fabricate } from "../../node_modules/fabricate.js/types/fabricate";
+import { APP_CARD_WIDTH } from "../constants";
+import Theme from "../theme";
+import { AppState } from "../types";
+import AppControls from "./AppControls";
+
+declare const fabricate: Fabricate<AppState>;
+
 /**
  * CardContainer component.
  *
@@ -8,7 +16,7 @@
 const CardContainer = ({ size = 1 }) => fabricate('Card')
   .asFlex('column')
   .setStyles({
-    width: `${Constants.APP_CARD_WIDTH * size}px`,
+    width: `${APP_CARD_WIDTH * size}px`,
     margin: '10px 0px 10px 20px',
     opacity: 0,
     visibility: 'hidden',
@@ -54,7 +62,7 @@ const StatusText = () => fabricate('Text')
  * @param {string} props.app - App.
  * @returns {HTMLElement} Fabricate component.
  */
-const StatusLED = ({ app }) => fabricate('div')
+const StatusLED = ({ app }: { app: string }) => fabricate('div')
   .setStyles({
     width: '15px',
     height: '15px',
@@ -65,9 +73,9 @@ const StatusLED = ({ app }) => fabricate('div')
     if (!selectedDevice) return;
 
     const apps = deviceApps[selectedDevice.deviceName];
-    const { status } = apps.find((p) => p.app === app);
+    const { status } = apps.find((p) => p.app === app)!;
     el.setStyles({
-      backgroundColor: status.includes('OK') ? Theme.colors.status.ok : Theme.colors.status.down,
+      backgroundColor: status?.includes('OK') ? Theme.colors.status.ok : Theme.colors.status.down,
     });
   });
 
@@ -78,7 +86,7 @@ const StatusLED = ({ app }) => fabricate('div')
  * @param {string} props.app - App.
  * @returns {HTMLElement} Fabricate component.
  */
-const CardStatus = ({ app }) => fabricate('Row')
+const CardStatus = ({ app }: { app: string }) => fabricate('Row')
   .setStyles({
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -91,7 +99,7 @@ const CardStatus = ({ app }) => fabricate('Row')
         if (!selectedDevice) return;
 
         const apps = deviceApps[selectedDevice.deviceName];
-        const { status, port } = apps.find((p) => p.app === app);
+        const { status, port } = apps.find((p) => p.app === app)!;
         el.setText(`${status} (${port})`);
       }),
   ]);
@@ -114,7 +122,7 @@ const CardTitleRow = () => fabricate('Row')
  * @param {object} props - Component props.
  * @returns {HTMLElement} Fabricate component.
  */
-fabricate.declare('AppCard', ({ app }) => {
+const AppCard = ({ app }: { app: string }) => {
   const size = app === 'monitor' ? 2 : 1;
   const container = CardContainer({ size });
 
@@ -128,6 +136,8 @@ fabricate.declare('AppCard', ({ app }) => {
           AppName().setText(app),
           CardStatus({ app }),
         ]),
-      fabricate('AppControls', { app }),
+      AppControls({ app }),
     ]);
-});
+};
+
+export default AppCard;
