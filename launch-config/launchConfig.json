@@ -41,7 +41,10 @@
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" }
     ],
     "e-paper-home": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" }
+      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      {
+        "location": "code/e-paper-dashboard",
+        "start": "pip3 install spotipy termcolor && python3 main.py >> /home/pi/cronlog.txt 2>&1 &" }
     ],
     "cirroc": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
