@@ -21,7 +21,7 @@ export const isReachableKey = (deviceName: string, type: IPType) => `isReachable
  */
 export const getReachableIp = (state: AppState) => {
   const { selectedDevice } = state;
-  if (!selectedDevice) throw new Error('No selectedDevice yet');
+  if (selectedDevice === null) throw new Error('No selectedDevice yet');
 
   const { publicIp, localIp, deviceName } = selectedDevice;
   const publicIpValidKey = isReachableKey(deviceName, 'public');

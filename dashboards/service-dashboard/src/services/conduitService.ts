@@ -28,7 +28,7 @@ export const sendConduitPacket = async (
     let forwardHost;
 
     const finalDevice = deviceNameOverride
-      ? fleet.find(({ deviceName }) => deviceName === deviceNameOverride)
+      ? fleet.find(({ deviceName }) => deviceName === deviceNameOverride)!
       : selectedDevice;
     if (finalDevice) {
       const { localIp, publicIp, deviceName } = finalDevice;

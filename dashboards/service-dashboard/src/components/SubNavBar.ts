@@ -121,7 +121,7 @@ const BackBreadcrumb = () => {
     ])
     .onUpdate((el, state) => {
       const { fleet, selectedDevice } = state;
-      if (!selectedDevice) return;
+      if (selectedDevice === null) return;
 
       const found = fleet.find(({ deviceName }) => deviceName === selectedDevice.deviceName);
       if (found) deviceSegment.setText(`< ${found.deviceName} (${getReachableIp(state)})`);

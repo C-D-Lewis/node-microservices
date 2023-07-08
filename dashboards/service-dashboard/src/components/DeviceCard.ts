@@ -278,6 +278,8 @@ const DeviceCard = ({ device }: { device: Device }) => {
     try {
       await fetch(`http://${ip}:5959/ping`);
       fabricate.update(stateKey, true);
+
+      // TODO: Fetch local apps now?
     } catch (err) { /* It isn't available */ }
   };
 

@@ -1,7 +1,7 @@
 import { Fabricate } from '../node_modules/fabricate.js/types/fabricate';
 import { AppState } from './types';
 import Theme from './theme';
-import { INITIAL_STATE } from './constants';
+import { CONDUIT_PORT, INITIAL_STATE } from './constants';
 import { sendConduitPacket } from './services/conduitService';
 import SubNavBar from './components/SubNavBar';
 import FleetPage from './pages/FleetPage';
@@ -17,14 +17,21 @@ declare const fabricate: Fabricate<AppState>;
  * @param {object} state - App state.
  */
 const fetchFleetList = async (el: HTMLElement, state: AppState) => {
+  const { host, token } = state;
   fabricate.update({ fleet: [] });
 
   try {
-    const { message } = await sendConduitPacket(state, {
-      to: 'attic',
-      topic: 'get',
-      message: { app: 'conduit', key: 'fleetList' },
+    const res = await fetch(`http://${host}:${CONDUIT_PORT}/conduit`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: 'attic',
+        topic: 'get',
+        message: { app: 'conduit', key: 'fleetList' },
+        auth: token || '',
+      }),
     });
+    const { message } = await res.json();
     fabricate.update({ fleet: message.value });
   } catch (err) {
     console.error(err);
@@ -73,4 +80,4 @@ const ServiceDashboard = () => fabricate('Column')
   .onUpdate(parseParams, ['fabricate:init'])
   .onUpdate(fetchFleetList, ['token']);
 
-fabricate.app(ServiceDashboard(), INITIAL_STATE);
+fabricate.app(ServiceDashboard(), INITIAL_STATE, { strict: true });

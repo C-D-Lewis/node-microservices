@@ -50,6 +50,7 @@ export type AppState = {
   [key: string]: any;
 
   // App data
+  token: string;
   host: string;
   deviceApps: Record<string, DeviceApp[]>;
   fleet: Device[];
@@ -58,7 +59,7 @@ export type AppState = {
 
   // Selections
   page: 'FleetPage' | 'AppsPage',
-  selectedDevice?: Device,
+  selectedDevice: Device | null,
 
   // App data
   atticData: {

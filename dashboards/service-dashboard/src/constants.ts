@@ -12,6 +12,7 @@ export const APP_CARD_WIDTH = 375;
 /** Initial total app state */
 export const INITIAL_STATE: AppState = {
   // App data
+  token: '',
   host: FLEET_HOST,
   deviceApps: {},
   fleet: [],
@@ -20,7 +21,7 @@ export const INITIAL_STATE: AppState = {
 
   // Selections
   page: 'FleetPage',
-  selectedDevice: undefined,
+  selectedDevice: null,
 
   // App data
   atticData: {

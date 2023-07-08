@@ -70,7 +70,7 @@ const StatusLED = ({ app }: { app: string }) => fabricate('div')
     marginRight: '5px',
   })
   .onCreate((el, { selectedDevice, deviceApps }) => {
-    if (!selectedDevice) return;
+    if (selectedDevice === null) return;
 
     const apps = deviceApps[selectedDevice.deviceName];
     const { status } = apps.find((p) => p.app === app)!;
@@ -96,7 +96,7 @@ const CardStatus = ({ app }: { app: string }) => fabricate('Row')
     StatusLED({ app }),
     StatusText()
       .onCreate((el, { selectedDevice, deviceApps }) => {
-        if (!selectedDevice) return;
+        if (selectedDevice === null) return;
 
         const apps = deviceApps[selectedDevice.deviceName];
         const { status, port } = apps.find((p) => p.app === app)!;

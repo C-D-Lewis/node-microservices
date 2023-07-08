@@ -14,7 +14,7 @@ const AppsPage = () => fabricate('Row')
     paddingTop: '15px',
   })
   .onUpdate((el, { selectedDevice, deviceApps }) => {
-    if (!selectedDevice) return;
+    if (selectedDevice === null) return;
 
     const apps = deviceApps[selectedDevice.deviceName];
     el.setChildren(apps.map((app) => AppCard({ app: app.app! })));
