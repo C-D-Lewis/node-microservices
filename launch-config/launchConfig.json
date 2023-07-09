@@ -25,13 +25,6 @@
         "_note": "Must be node 16"
       }
     ],
-    "stack-util": [],
-    "tv-mote-pi": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
-      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
-    ],
     "bedroom-pi": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
       { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
@@ -54,6 +47,13 @@
     ],
     "cirroc": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
+    ],
+    "stack-util": [],
+    "tv-mote-pi": [
+      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
+      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
     ],
     "INFERNO": [
