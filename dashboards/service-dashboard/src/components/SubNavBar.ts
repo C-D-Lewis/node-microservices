@@ -32,7 +32,7 @@ const commandDevice = async (
   state: AppState,
   topic: string,
 ) => {
-  const stateKey = `command:${topic}`;
+  const stateKey = fabricate.buildKey('command', topic);
   const pressed = !!state[stateKey];
 
   // Reset color regardless

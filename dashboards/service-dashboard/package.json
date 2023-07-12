@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "@chris-lewis/eslint-config": "^1.0.3",
-    "fabricate.js": "^2.6.0",
+    "fabricate.js": "^2.6.1",
     "http-server": "^14.1.1",
     "ts-loader": "^9.4.4",
     "typescript": "^5.1.6",
