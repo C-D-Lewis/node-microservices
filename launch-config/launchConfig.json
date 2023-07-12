@@ -6,23 +6,23 @@
       { "location": "code/node-microservices/apps/attic",                    "start": "npm start &" },
       { "location": "code/node-microservices/apps/guestlist",                "start": "npm start &" },
       { "location": "code/node-microservices/apps/concierge",                "start": "npm start &" },
-      { "location": "code/node-microservices/apps/polaris",                  "start": "npm start &" },
       { "location": "code/node-microservices/apps/visuals",                  "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor",                  "start": "npm start &" },
       { "location": "code/node-microservices/dashboards/lighting-dashboard", "start": "http-server -p 54448 &" },
       { "location": "code/node-microservices/dashboards/service-dashboard",  "start": "npm run build && http-server -p 54449 &" },
-      { "location": "code/xeno",                                             "start": "npm run build && http-server -p 9366 &" },
-      { "location": "code/microdiary",                                       "start": "http-server -p 34279 &" }
+      { "location": "code/microdiary",                                       "start": "http-server -p 34279 &" },
+      { "location": "code/xeno",                                             "start": "npm run build && http-server -p 9366 &" }
     ],
     "stack-int": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
       { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
       { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/polaris", "start": "npm start &" },
       {
         "location": "code/discord-bot-norren",
         "start": "/home/pi/.nvm/versions/node/v16.20.0/bin/npm run build && /home/pi/.nvm/versions/node/v16.20.0/bin/node dist/src/index.js &",
-        "_note": "Must be node 16"
+        "_note": "Must be node 16+"
       }
     ],
     "bedroom-pi": [
@@ -65,6 +65,7 @@
     ],
     "test-blade": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
       { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
     ],
