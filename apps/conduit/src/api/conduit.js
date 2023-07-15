@@ -113,8 +113,12 @@ const handlePacketRequest = async (req, res) => {
   // TODO: How to allow a device to use service-dashboard for just their device?
   //       Fails because device:undefined at least
 
+  if (!hostname) {
+    log.error('Hostname unknown');
+  }
+
   // Enforce only localhost need not supply a guestlist token (or during test)
-  const shouldCheckAuth = OPTIONS.AUTH_GUESTLIST && (hostname !== 'localhost' || forceAuthCheck);
+  const shouldCheckAuth = OPTIONS.AUTH_GUESTLIST && hostname && (hostname !== 'localhost' || forceAuthCheck);
   const isAuthCheckPacket = to === 'guestlist' && topic === 'authorize';
   if (shouldCheckAuth && !isAuthCheckPacket) {
     log.debug(`Origin: ${hostname} requires guestlist check`);
