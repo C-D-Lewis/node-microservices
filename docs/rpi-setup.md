@@ -46,6 +46,7 @@ nano ~/.bash_aliases
 sudo apt install git
 git config --global credential.helper store
 git config --global pull.rebase false
+git config --global --add safe.directory /home/pi/code/node-microservices
 ```
 
 # jq
