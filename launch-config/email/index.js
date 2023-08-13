@@ -15,7 +15,7 @@ const { HOME } = process.env;
 /** This device hostname */
 const HOSTNAME = hostname();
 /** Name of the log saved by cron */
-const CRONLOG_NAME = 'cronlog.txt';
+const CRONLOG_NAME = 'crontab.log';
 
 let report = '';
 
