@@ -43,7 +43,7 @@ nano ~/.bash_aliases
 
 # git
 ```
-sudo apt install git
+sudo apt install -y git
 git config --global credential.helper store
 git config --global pull.rebase false
 git config --global --add safe.directory /home/pi/code/node-microservices
@@ -51,7 +51,7 @@ git config --global --add safe.directory /home/pi/code/node-microservices
 
 # jq
 ```
-sudo apt install jq
+sudo apt install -y jq
 ```
 
 # node (nvm) & npm (Pi 3 is armv7, Zero is armv6)
@@ -161,7 +161,7 @@ sudo i2cdetect -y 1
 ```
 Dependencies:
 ```
-sudo apt install -y python3-dev python-smbus i2c-tools python3-pil python3-pip python3-setuptools python3-rpi.gpio
+sudo apt install -y python3-dev python3-smbus i2c-tools python3-pil python3-pip python3-setuptools python3-rpi.gpio
 ```
 Test with an example:
 ```
@@ -176,7 +176,7 @@ sudo chmod g+rw /dev/i2c-1
 sudo usermod -aG i2c root
 sudo usermod -aG i2c pi
 ```
-Add udev rule (/etc/udev/rules.d/local.rules`):
+Add udev rule (`/etc/udev/rules.d/local.rules`):
 ```
 ACTION=="add", KERNEL=="spidev0.0", MODE="0666"
 ACTION=="add", KERNEL=="i2c-[0-1]*", MODE="0666"
