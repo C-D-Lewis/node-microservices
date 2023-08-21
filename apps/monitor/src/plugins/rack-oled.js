@@ -2,10 +2,14 @@ const {
   hostname, loadavg, freemem, totalmem, uptime,
 } = require('os');
 const visuals = require('../modules/visuals');
-const { ip, log, conduit } = require('../node-common')(['ip', 'log', 'conduit']);
+const {
+  ip, log, conduit, wait,
+} = require('../node-common')(['ip', 'log', 'conduit', 'wait']);
 
 /**
- * Monitor stats for display on rack-mounted OLED display
+ * Monitor stats for display on rack-mounted OLED display.
+ *
+ * Should be called with EVERY: 1
  */
 module.exports = async () => {
   const ipLastTwoOctets = ip.getLocal().split('.').slice(2, 4).join('.');
@@ -29,5 +33,10 @@ module.exports = async () => {
     `C:${cpuMinute} / M:${memoryPerc} / A:${appsUp}/${apps.length}`,
   ];
   log.debug(lines);
+
   await visuals.setText(lines);
+
+  // Preserve oled burn-in
+  await wait(10000);
+  await visuals.setText([]);
 };
