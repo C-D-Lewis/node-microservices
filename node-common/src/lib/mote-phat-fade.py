@@ -30,7 +30,12 @@ def main():
   print(current)
   print(target)
 
+  # Initial set
+  mote.set_all(current[0], current[1], current[2])
+  mote.show()
+
   while current != target:
+    time.sleep(INTERVAL)
     mote.set_all(current[0], current[1], current[2])
     mote.show()
 
@@ -40,7 +45,6 @@ def main():
     current[1] += (STEP if diff > STEP else diff) * (-1 if current[1] > target[1] else 1)
     diff = abs(current[2] - target[2])
     current[2] += (STEP if diff > STEP else diff) * (-1 if current[2] > target[2] else 1)
-    time.sleep(INTERVAL)
 
 if '__main__' in __name__:
   main()

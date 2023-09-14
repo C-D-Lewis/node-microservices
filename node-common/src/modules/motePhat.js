@@ -11,7 +11,12 @@ const log = require('./log');
 const setAll = (rgb) => {
   log.assert(Array.isArray(rgb), `rgb must be an array. Was ${rgb}`);
 
-  execSync(`python3 ${`${__dirname}/../lib/mote-phat-all.py`} ${rgb[0]} ${rgb[1]} ${rgb[2]}`);
+  try {
+    const res = execSync(`python3 ${`${__dirname}/../lib/mote-phat-all.py`} ${rgb[0]} ${rgb[1]} ${rgb[2]}`);
+    log.debug(res.toString());
+  } catch (e) {
+    log.error(e);
+  }
 };
 
 /**
@@ -23,7 +28,12 @@ const setPixels = (leds) => {
   log.assert(Array.isArray(leds), `leds must be an array. Was ${leds}`);
   leds.forEach((rgb) => log.assert(Array.isArray(rgb), `rgb must be an array. Was ${rgb}`));
 
-  execSync(`python3 ${`${__dirname}/../lib/mote-phat-pixels.py`} ${JSON.stringify(leds)}`);
+  try {
+    const res = execSync(`python3 ${`${__dirname}/../lib/mote-phat-pixels.py`} ${JSON.stringify(leds)}`);
+    log.debug(res.toString());
+  } catch (e) {
+    log.error(e);
+  }
 };
 
 /**
@@ -36,7 +46,12 @@ const fadeAll = (toRgb, fromRgb) => {
   log.assert(Array.isArray(toRgb), `toRgb must be an array. Was ${toRgb}`);
   log.assert(Array.isArray(fromRgb), `fromRgb must be an array. Was ${fromRgb}`);
 
-  execSync(`python3 ${`${__dirname}/../lib/mote-phat-fade.py`} ${fromRgb[0]} ${fromRgb[1]} ${fromRgb[2]} ${toRgb[0]} ${toRgb[1]} ${toRgb[2]}`);
+  try {
+    const res = execSync(`python3 ${`${__dirname}/../lib/mote-phat-fade.py`} ${fromRgb[0]} ${fromRgb[1]} ${fromRgb[2]} ${toRgb[0]} ${toRgb[1]} ${toRgb[2]}`);
+    log.debug(res.toString());
+  } catch (e) {
+    log.error(e);
+  }
 };
 
 // This is still slower (and buggy) compared to fading in Python

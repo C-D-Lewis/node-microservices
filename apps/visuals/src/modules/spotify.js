@@ -3,7 +3,7 @@ const { getColor } = require('./spotifyColor');
 const handles = require('./handles');
 
 /** Interval between spotify API updates */
-const SPOTIFY_INTERVAL_S = 10;
+const SPOTIFY_INTERVAL_S = 15;
 
 /**
  * Perform a color update using Spotify color.
