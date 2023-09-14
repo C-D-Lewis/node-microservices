@@ -1,4 +1,4 @@
-import { Fabricate } from "../../node_modules/fabricate.js/types/fabricate";
+import { Fabricate, FabricateComponent } from "../../node_modules/fabricate.js/types/fabricate";
 import { ICON_NAMES } from "../constants";
 import Theme from "../theme";
 import { AppState, Device, DeviceApp, IPType } from "../types";
@@ -219,6 +219,28 @@ const DeviceDetailsColumn = ({ device }: { device: Device }) => {
 const AppChipList = ({ device }: { device: Device }) => {
   const { deviceName } = device;
 
+  /**
+   * Update the layout.
+   *
+   * @param {FabricateComponent} el - Page element.
+   * @param {AppState} state - App state.
+   */
+  const updateLayout = (el: FabricateComponent<AppState>, state: AppState) => {
+    const { deviceApps } = state;
+    const apps = deviceApps[deviceName];
+    if (!apps) {
+      el.setChildren([
+        fabricate('Loader').setStyles({ margin: 'auto' }),
+      ]);
+      return;
+    }
+
+    el.setChildren(apps.map((app: DeviceApp) => ItemPill({
+        src: 'assets/app.png',
+        text: app.app!,
+      })));
+  };
+
   return fabricate('Row')
     .setStyles({
       flex: '3',
@@ -226,20 +248,8 @@ const AppChipList = ({ device }: { device: Device }) => {
       alignContent: 'flex-start',
       padding: '5px',
     })
-    .onUpdate((el, { deviceApps }) => {
-      const apps = deviceApps[deviceName];
-      if (!apps) {
-        el.setChildren([
-          fabricate('Loader').setStyles({ margin: 'auto' }),
-        ]);
-        return;
-      }
-
-      el.setChildren(apps.map((app: DeviceApp) => ItemPill({
-          src: 'assets/app.png',
-          text: app.app!,
-        })));
-    }, ['deviceApps']);
+    .onCreate(updateLayout)
+    .onUpdate(updateLayout, ['deviceApps']);
 };
 
 /**
@@ -289,6 +299,8 @@ const DeviceCard = ({ device }: { device: Device }) => {
     .onCreate(() => {
       testIp(publicIp, publicIpValidKey);
       testIp(localIp, localIpValidKey);
+
+
     });
 };
 
