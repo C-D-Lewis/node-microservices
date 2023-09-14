@@ -12,8 +12,7 @@ const setAll = (rgb) => {
   log.assert(Array.isArray(rgb), `rgb must be an array. Was ${rgb}`);
 
   try {
-    const res = execSync(`python3 ${`${__dirname}/../lib/mote-phat-all.py`} ${rgb[0]} ${rgb[1]} ${rgb[2]}`);
-    log.debug(res.toString());
+    execSync(`python3 ${`${__dirname}/../lib/mote-phat-all.py`} ${rgb[0]} ${rgb[1]} ${rgb[2]}`);
   } catch (e) {
     log.error(e);
   }
@@ -29,8 +28,7 @@ const setPixels = (leds) => {
   leds.forEach((rgb) => log.assert(Array.isArray(rgb), `rgb must be an array. Was ${rgb}`));
 
   try {
-    const res = execSync(`python3 ${`${__dirname}/../lib/mote-phat-pixels.py`} ${JSON.stringify(leds)}`);
-    log.debug(res.toString());
+    execSync(`python3 ${`${__dirname}/../lib/mote-phat-pixels.py`} ${JSON.stringify(leds)}`);
   } catch (e) {
     log.error(e);
   }
@@ -47,8 +45,7 @@ const fadeAll = (toRgb, fromRgb) => {
   log.assert(Array.isArray(fromRgb), `fromRgb must be an array. Was ${fromRgb}`);
 
   try {
-    const res = execSync(`python3 ${`${__dirname}/../lib/mote-phat-fade.py`} ${fromRgb[0]} ${fromRgb[1]} ${fromRgb[2]} ${toRgb[0]} ${toRgb[1]} ${toRgb[2]}`);
-    log.debug(res.toString());
+    execSync(`python3 ${`${__dirname}/../lib/mote-phat-fade.py`} ${fromRgb[0]} ${fromRgb[1]} ${fromRgb[2]} ${toRgb[0]} ${toRgb[1]} ${toRgb[2]}`);
   } catch (e) {
     log.error(e);
   }
