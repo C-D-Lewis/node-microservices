@@ -107,6 +107,20 @@ const BackBreadcrumb = () => {
   const deviceSegment = fabricate('p')
     .setStyles({ color: 'white', margin: '10px 5px', cursor: 'default' });
 
+  /**
+   * Update the layout.
+   *
+   * @param {FabricateComponent} el - Page element.
+   * @param {AppState} state - App state.
+   */
+  const updateLayout = (el: FabricateComponent<AppState>, state: AppState) => {
+    const { fleet, selectedDevice } = state;
+    if (selectedDevice === null) return;
+
+    const found = fleet.find(({ deviceName }) => deviceName === selectedDevice.deviceName);
+    if (found) deviceSegment.setText(`< ${found.deviceName} (${getReachableIp(state)})`);
+  };
+
   return fabricate('Row')
     .setStyles({ alignItems: 'center' })
     .setChildren([
@@ -119,13 +133,8 @@ const BackBreadcrumb = () => {
           ShutdownButton(),
         ]),
     ])
-    .onUpdate((el, state) => {
-      const { fleet, selectedDevice } = state;
-      if (selectedDevice === null) return;
-
-      const found = fleet.find(({ deviceName }) => deviceName === selectedDevice.deviceName);
-      if (found) deviceSegment.setText(`< ${found.deviceName} (${getReachableIp(state)})`);
-    }, ['fleet', 'selectedDevice']);
+    .onCreate(updateLayout)
+    .onUpdate(updateLayout, ['fleet', 'selectedDevice']);
 };
 
 /**
