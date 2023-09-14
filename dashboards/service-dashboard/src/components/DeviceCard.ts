@@ -20,7 +20,6 @@ const DeviceName = () => fabricate('span')
     fontSize: '1rem',
     padding: '2px 2px 0px 2px',
     fontFamily: 'monospace',
-    cursor: 'default',
   });
 
 /**
@@ -120,16 +119,22 @@ const LastSeenLabel = ({ lastCheckIn }: { lastCheckIn: number }) => fabricate('T
  * CardTitle component.
  *
  * @param {object} props - Component props.
+ * @param {Device} props.device - Selected device.
  * @param {boolean} props.seenRecently - If the device is recently updated and presumed to be alive.
  * @returns {HTMLElement} Fabricate component.
  */
-const CardTitle = ({ seenRecently }: { seenRecently: boolean }) => fabricate('Row')
+const CardTitle = ({ device, seenRecently }: { device: Device, seenRecently: boolean }) => fabricate('Row')
   .setStyles({
     backgroundColor: seenRecently ? Theme.colors.instanceHealthy : Theme.colors.AppCard.titleBar,
     alignItems: 'center',
     height: '35px',
     boxShadow: '2px 2px 3px 1px #0006',
-  });
+    cursor: 'pointer',
+  })
+  .onClick(() => fabricate.update({
+    page: 'AppsPage',
+    selectedDevice: device,
+  }));
 
 /**
  * DeviceCardContainer component.
@@ -138,8 +143,8 @@ const CardTitle = ({ seenRecently }: { seenRecently: boolean }) => fabricate('Ro
  */
 const DeviceCardContainer = () => fabricate('Card')
   .setStyles({
-    minWidth: '550px',
-    maxWidth: '550px',
+    minWidth: '320px',
+    maxWidth: '320px',
     minHeight: '150px',
     margin: '10px',
     boxShadow: '2px 2px 3px 1px #0004',
@@ -201,19 +206,6 @@ const DeviceDetailsColumn = ({ device }: { device: Device }) => {
         type: 'local',
       }),
       CommitView({ commit, commitDate }),
-      TextButton()
-        .setText('Select')
-        .setStyles({
-          margin: '0',
-          width: 'auto',
-          borderRadius: '0',
-        })
-        .onClick(() => {
-          fabricate.update({
-            page: 'AppsPage',
-            selectedDevice: device,
-          });
-        }),
     ]);
 };
 
@@ -285,17 +277,14 @@ const DeviceCard = ({ device }: { device: Device }) => {
 
   return DeviceCardContainer()
     .setChildren([
-      CardTitle({ seenRecently })
+      CardTitle({ device, seenRecently })
         .setChildren([
           DeviceIcon({ deviceType }),
           DeviceName().setText(deviceName),
           LastSeenLabel({ lastCheckIn }),
         ]),
-      fabricate('Row')
-        .setChildren([
-          DeviceDetailsColumn({ device }),
-          AppChipList({ device }),
-        ]),
+        DeviceDetailsColumn({ device }),
+        AppChipList({ device }),
     ])
     .onCreate(() => {
       testIp(publicIp, publicIpValidKey);

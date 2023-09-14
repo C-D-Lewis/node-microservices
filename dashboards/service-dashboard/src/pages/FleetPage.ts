@@ -1,4 +1,4 @@
-import { Fabricate } from "../../node_modules/fabricate.js/types/fabricate";
+import { Fabricate, FabricateComponent } from "../../node_modules/fabricate.js/types/fabricate";
 import DeviceCard from "../components/DeviceCard";
 import { AppState, Device } from "../types";
 import { fetchApps } from "../utils";
@@ -41,8 +41,14 @@ const GroupLabel = ({ publicIp }: { publicIp: string }) => fabricate('Row')
 /**
  * FleetPage component, column of public IPs with devices inside them.
  */
-const FleetPage = () => fabricate('Column')
-  .onUpdate(async (el, state) => {
+const FleetPage = () => {
+  /**
+   * Update fleet cards.
+   *
+   * @param {FabricateComponent} el - Page element.
+   * @param {AppState} state - App state.
+   */
+  const updateLayout = async (el: FabricateComponent<AppState>, state: AppState) => {
     const { fleet } = state;
     if (!fleet.length) return;
 
@@ -77,9 +83,18 @@ const FleetPage = () => fabricate('Column')
             .setChildren(devices.map((device) => DeviceCard({ device }))),
         ])
     )));
+  };
+  
+  return fabricate('Column')
+    .onCreate(updateLayout)
+    .onUpdate((el, state, keys) => {
+      updateLayout(el, state);
 
-    // Fetch apps for all devices at once
-    fetchApps(state); 
-  }, ['fleet']);
+      if (keys.includes('fleet')) {
+        // Fetch apps for all devices at once
+        fetchApps(state);
+      }
+    }, ['fleet']);
+};
 
 export default FleetPage;

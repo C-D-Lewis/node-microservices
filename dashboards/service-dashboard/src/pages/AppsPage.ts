@@ -1,4 +1,4 @@
-import { Fabricate } from "../../node_modules/fabricate.js/types/fabricate";
+import { Fabricate, FabricateComponent } from "../../node_modules/fabricate.js/types/fabricate";
 import AppCard from "../components/AppCard";
 import { AppState } from "../types";
 
@@ -7,17 +7,29 @@ declare const fabricate: Fabricate<AppState>;
 /**
  * AppsPage component.
  */
-const AppsPage = () => fabricate('Row')
-  .setStyles({
-    alignItems: 'flex-start',
-    flexWrap: 'wrap',
-    paddingTop: '15px',
-  })
-  .onUpdate((el, { selectedDevice, deviceApps }) => {
-    if (selectedDevice === null) return;
+const AppsPage = () => {
+  /**
+   * Update the layout.
+   *
+   * @param {FabricateComponent} el - Page element.
+   * @param {AppState} state - App state.
+   */
+  const updateLayout = (el: FabricateComponent<AppState>, state: AppState) => {
+    const { selectedDevice, deviceApps } = state;
+    if (!selectedDevice) return;
 
     const apps = deviceApps[selectedDevice.deviceName];
     el.setChildren(apps.map((app) => AppCard({ app: app.app! })));
-  }, ['selectedDevice', 'deviceApps']);
+  };
+  
+  return fabricate('Row')
+    .setStyles({
+      alignItems: 'flex-start',
+      flexWrap: 'wrap',
+      paddingTop: '15px',
+    })
+    .onCreate(updateLayout)
+    .onUpdate(updateLayout, ['selectedDevice', 'deviceApps']);
+};
 
 export default AppsPage;
