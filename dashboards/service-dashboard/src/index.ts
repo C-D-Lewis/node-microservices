@@ -73,8 +73,8 @@ const ServiceDashboard = () => fabricate('Column')
   .setChildren([
     AppNavBar(),
     SubNavBar(),
-    FleetPage().when(({ page }) => page === 'FleetPage'),
-    AppsPage().when(({ page }) => page === 'AppsPage'),
+    fabricate.conditional(({ page }) => page === 'FleetPage', FleetPage),
+    fabricate.conditional(({ page }) => page === 'AppsPage', AppsPage),
     ResponseLog(),
   ])
   .onUpdate(parseParams, ['fabricate:init'])

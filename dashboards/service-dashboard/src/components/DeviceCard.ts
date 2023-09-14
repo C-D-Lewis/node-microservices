@@ -75,7 +75,7 @@ const IpText = ({ device, deviceIp, type }: IpTextPropTypes) => {
           : Theme.colors.IpTextButton.unreachable,
         cursor: 'default',
       });
-    });
+    }, [reachableKey]);
 
   return fabricate('Row')
     .setStyles({ alignItems: 'center', borderBottom: `solid 1px ${Theme.colors.consoleGrey}` })
@@ -188,7 +188,7 @@ const DeviceDetailsColumn = ({ device }: { device: Device }) => {
   } = device;
 
   return fabricate('Column')
-    .setStyles({ flex: 2, borderRight: `solid 1px ${Theme.colors.consoleGrey}` })
+    .setStyles({ flex: '2', borderRight: `solid 1px ${Theme.colors.consoleGrey}` })
     .setChildren([
       IpText({
         device,
@@ -204,9 +204,9 @@ const DeviceDetailsColumn = ({ device }: { device: Device }) => {
       TextButton()
         .setText('Select')
         .setStyles({
-          margin: 0,
+          margin: '0',
           width: 'auto',
-          borderRadius: 0,
+          borderRadius: '0',
         })
         .onClick(() => {
           fabricate.update({
@@ -229,7 +229,7 @@ const AppChipList = ({ device }: { device: Device }) => {
 
   return fabricate('Row')
     .setStyles({
-      flex: 3,
+      flex: '3',
       flexWrap: 'wrap',
       alignContent: 'flex-start',
       padding: '5px',

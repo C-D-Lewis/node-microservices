@@ -18,7 +18,7 @@ const CardContainer = ({ size = 1 }) => fabricate('Card')
   .setStyles({
     width: `${APP_CARD_WIDTH * size}px`,
     margin: '10px 0px 10px 20px',
-    opacity: 0,
+    opacity: '0',
     visibility: 'hidden',
     transition: '0.6s',
     backgroundColor: Theme.colors.AppCard.titleBar,
@@ -33,7 +33,7 @@ const CardContainer = ({ size = 1 }) => fabricate('Card')
 const AppName = () => fabricate('Text')
   .setStyles({
     fontSize: '1.1rem',
-    flex: 1,
+    flex: '1',
     color: 'white',
     margin: '6px 5px 5px 5px',
     fontFamily: Theme.fonts.code,
@@ -50,7 +50,7 @@ const StatusText = () => fabricate('Text')
   .setStyles({
     color: Theme.colors.AppCard.status,
     fontSize: '0.9rem',
-    paddingTop: 1,
+    paddingTop: '1',
     marginBottom: '2px',
     cursor: 'default',
   });
@@ -90,7 +90,7 @@ const CardStatus = ({ app }: { app: string }) => fabricate('Row')
   .setStyles({
     alignItems: 'center',
     justifyContent: 'flex-end',
-    flex: 2,
+    flex: '2',
   })
   .setChildren([
     StatusLED({ app }),
@@ -127,7 +127,7 @@ const AppCard = ({ app }: { app: string }) => {
   const container = CardContainer({ size });
 
   // Become visible shortly after creation
-  setTimeout(() => container.setStyles({ opacity: 1, visibility: 'visible' }), 50);
+  setTimeout(() => container.setStyles({ opacity: '1', visibility: 'visible' }), 50);
 
   return container
     .setChildren([

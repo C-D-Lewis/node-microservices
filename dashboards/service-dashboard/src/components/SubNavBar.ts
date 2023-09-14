@@ -140,8 +140,8 @@ const SubNavBar = () => fabricate('Row')
     boxShadow: '2px 2px 3px 1px #0004',
   })
   .setChildren([
-    AllDevicesBreadcrumb().when(({ page }) => page === 'FleetPage'),
-    BackBreadcrumb().when(({ page }) => page === 'AppsPage'),
+    fabricate.conditional(({ page }) => page === 'FleetPage', AllDevicesBreadcrumb),
+    fabricate.conditional(({ page }) => page === 'AppsPage', BackBreadcrumb),
   ]);
 
 export default SubNavBar;

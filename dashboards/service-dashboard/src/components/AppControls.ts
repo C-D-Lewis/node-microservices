@@ -12,8 +12,8 @@ import TextButton from "./TextButton";
 declare const fabricate: Fabricate<AppState>;
 
 const buttonStyle = {
-  borderRadius: 0,
-  margin: 0,
+  borderRadius: '0',
+  margin: '0',
   minWidth: '50px',
 };
 
@@ -118,18 +118,18 @@ const ConduitControls = () => {
       ControlRow()
         .setChildren([
           TextBox({ placeholder: 'App name' })
-            .onUpdate((el, { conduitData }) => el.setText(conduitData.app))
+            .onUpdate((el, { conduitData }) => el.setText(conduitData.app), ['conduitData'])
             .setStyles({ width: '40%' })
             .onChange((el, state, value) => setProp('app', value)),
           TextBox({ placeholder: 'Topic' })
-            .onUpdate((el, { conduitData }) => el.setText(conduitData.topic))
+            .onUpdate((el, { conduitData }) => el.setText(conduitData.topic), ['conduitData'])
             .setStyles({ width: '60%' })
             .onChange((el, state, value) => setProp('topic', value)),
         ]),
       ControlRow()
         .setChildren([
           TextBox({ placeholder: 'Message (JSON)' })
-            .onUpdate((el, { conduitData }) => el.setText(conduitData.message))
+            .onUpdate((el, { conduitData }) => el.setText(conduitData.message), ['conduitData'])
             .setStyles({ width: '100%' })
             .onChange((el, state, value) => setProp('message', value)),
         ]),
@@ -168,22 +168,22 @@ const VisualsControls = () => {
       ControlRow()
         .setChildren([
           TextBox({ placeholder: 'Red' })
-            .onUpdate((el, { visualsData: { red } }) => el.setText(String(red)))
+            .onUpdate((el, { visualsData: { red } }) => el.setText(String(red)), ['visualsData'])
             .setStyles({ width: '30%' })
             .onChange((el, state, value) => setProp('red', parseInt(value, 10))),
           TextBox({ placeholder: 'Green' })
-            .onUpdate((el, { visualsData: { green } }) => el.setText(String(green)))
+            .onUpdate((el, { visualsData: { green } }) => el.setText(String(green)), ['visualsData'])
             .setStyles({ width: '30%' })
             .onChange((el, state, value) => setProp('green', parseInt(value, 10))),
           TextBox({ placeholder: 'Blue' })
-            .onUpdate((el, { visualsData: { blue } }) => el.setText(String(blue)))
+            .onUpdate((el, { visualsData: { blue } }) => el.setText(String(blue)), ['visualsData'])
             .setStyles({ width: '30%' })
             .onChange((el, state, value) => setProp('blue', parseInt(value, 10))),
         ]),
       ControlRow()
         .setChildren([
           TextBox({ placeholder: 'Text' })
-            .onUpdate((el, { visualsData: { text } }) => el.setText(text))
+            .onUpdate((el, { visualsData: { text } }) => el.setText(text), ['visualsData'])
             .setStyles({ width: '100%' })
             .onChange((el, state, value) => setProp('text', value)),
         ]),
@@ -258,22 +258,22 @@ const GuestlistControls = () => {
       ControlRow()
         .setChildren([
           TextBox({ placeholder: 'Name' })
-            .onUpdate((el, { guestlistData: { name } }) => el.setText(name))
+            .onUpdate((el, { guestlistData: { name } }) => el.setText(name), ['guestlistData'])
             .setStyles({ width: '30%' })
             .onChange((el, state, value) => setProp('name', value)),
           TextBox({ placeholder: 'Apps' })
-            .onUpdate((el, { guestlistData: { apps } }) => el.setText(apps))
+            .onUpdate((el, { guestlistData: { apps } }) => el.setText(apps), ['guestlistData'])
             .setStyles({ width: '30%' })
             .onChange((el, state, value) => setProp('apps', value)),
           TextBox({ placeholder: 'Topics' })
-            .onUpdate((el, { guestlistData: { topics } }) => el.setText(topics))
+            .onUpdate((el, { guestlistData: { topics } }) => el.setText(topics), ['guestlistData'])
             .setStyles({ width: '30%' })
             .onChange((el, state, value) => setProp('topics', value)),
         ]),
       ControlRow()
         .setChildren([
           TextBox({ placeholder: 'Admin password' })
-            .onUpdate((el, { guestlistData: { adminPassword } }) => el.setText(adminPassword))
+            .onUpdate((el, { guestlistData: { adminPassword } }) => el.setText(adminPassword), ['guestlistData'])
             .setStyles({ width: '100%' })
             .onChange((el, state, value) => setProp('adminPassword', value)),
         ]),
@@ -340,14 +340,14 @@ const ClacksControls = () => {
       ControlRow()
         .setChildren([
           TextBox({ placeholder: 'Topic' })
-            .onUpdate((el, { clacksData: { topic } }) => el.setText(topic))
+            .onUpdate((el, { clacksData: { topic } }) => el.setText(topic), ['clacksData'])
             .setStyles({ width: '100%' })
             .onChange((el, state, value) => setProp('topic', value)),
         ]),
       ControlRow()
         .setChildren([
           TextBox({ placeholder: 'Message' })
-            .onUpdate((el, { clacksData: { message } }) => el.setText(message))
+            .onUpdate((el, { clacksData: { message } }) => el.setText(message), ['clacksData'])
             .setStyles({ width: '100%' })
             .onChange((el, state, value) => setProp('message', value))
             .onCreate((el) => {
@@ -367,7 +367,7 @@ const ClacksControls = () => {
             })
             .onUpdate((el, { clacksData: { connected } }) => el.setStyles({
               backgroundColor: connected ? Theme.colors.primary : Theme.colors.AppNavBar.background,
-            })),
+            }), ['clacksData']),
         ]),
     ])
     .onCreate((el, state) => {
@@ -481,7 +481,7 @@ const MonitorControls = () => {
             fetchMetric(state, metricNames[0]);
           }
         }),
-      MetricGraph(),
+      fabricate.conditional(({ monitorData }) => !!monitorData.metricHistory.length, MetricGraph),
     ])
     .onCreate(() => {
       setProp('metricHistory', []);

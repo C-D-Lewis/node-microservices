@@ -170,7 +170,6 @@ const MetricGraph = () => fabricate('Column')
         GraphView(),
       ]),
     HAxisLabels(),
-  ])
-  .when(({ monitorData }) => !!monitorData.metricHistory.length);
+  ]);
 
 export default MetricGraph;
