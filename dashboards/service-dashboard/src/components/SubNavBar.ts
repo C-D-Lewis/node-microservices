@@ -1,9 +1,9 @@
-import { Fabricate, FabricateComponent } from "../../node_modules/fabricate.js/types/fabricate";
-import { sendConduitPacket } from "../services/conduitService";
-import Theme from "../theme";
-import { AppState } from "../types";
-import { getReachableIp } from "../utils";
-import IconButton from "./IconButton";
+import { Fabricate, FabricateComponent } from 'fabricate.js';
+import { sendConduitPacket } from '../services/conduitService';
+import Theme from '../theme';
+import { AppState } from '../types';
+import { getReachableIp } from '../utils';
+import IconButton from './IconButton';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -37,7 +37,7 @@ const commandDevice = async (
 
   // Reset color regardless
   setTimeout(() => {
-    el.setStyles({ backgroundColor: Theme.colors.IconButton.background });
+    el.setStyles({ backgroundColor: Theme.palette.grey3 });
     fabricate.update(stateKey, false);
   }, 3000);
 
@@ -50,7 +50,7 @@ const commandDevice = async (
     if (error) throw new Error(error);
 
     console.log(`Device ${state.selectedDevice?.deviceName} sent ${topic} command`);
-    el.setStyles({ backgroundColor: Theme.colors.status.ok });
+    el.setStyles({ backgroundColor: Theme.palette.statusOk });
   } catch (e) {
     alert(e);
     console.log(e);
@@ -102,7 +102,10 @@ const BackBreadcrumb = () => {
       textDecoration: 'underline',
     })
     .setText('All Devices')
-    .onClick(() => fabricate.update({ page: 'FleetPage' }));
+    .onClick(async () => {
+      // TODO: Why await needed here?
+      await fabricate.update({ page: 'FleetPage' });
+    });
 
   const deviceSegment = fabricate('p')
     .setStyles({ color: 'white', margin: '10px 5px', cursor: 'default' });
@@ -144,7 +147,7 @@ const BackBreadcrumb = () => {
  */
 const SubNavBar = () => fabricate('Row')
   .setStyles({
-    backgroundColor: Theme.colors.SubNavBar.background,
+    backgroundColor: Theme.palette.grey3,
     paddingLeft: '8px',
     boxShadow: '2px 2px 3px 1px #0004',
   })

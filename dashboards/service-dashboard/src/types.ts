@@ -47,6 +47,7 @@ export type MonitorPlugin = {
 
 /** App state type */
 export type AppState = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 
   // App data
@@ -100,4 +101,11 @@ export type AppState = {
     minTime: number;
     maxTime: number;
   };
+};
+
+/** Fake type for WebSocket message event */
+export type WSMessageEvent = {
+  data: {
+    text: () => Promise<string>,
+  },
 };

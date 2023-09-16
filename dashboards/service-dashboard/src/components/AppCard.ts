@@ -1,8 +1,8 @@
-import { Fabricate } from "../../node_modules/fabricate.js/types/fabricate";
-import { APP_CARD_WIDTH } from "../constants";
-import Theme from "../theme";
-import { AppState } from "../types";
-import AppControls from "./AppControls";
+import { Fabricate } from 'fabricate.js';
+import { APP_CARD_WIDTH } from '../constants';
+import Theme from '../theme';
+import { AppState } from '../types';
+import AppControls from './AppControls';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -13,7 +13,7 @@ declare const fabricate: Fabricate<AppState>;
  * @param {number} [props.size] - Grid size.
  * @returns {HTMLElement} Fabricate component.
  */
-const CardContainer = ({ size = 1 }) => fabricate('Card')
+const CardContainer = ({ size = 1 }: { size: number }) => fabricate('Card')
   .asFlex('column')
   .setStyles({
     width: `${APP_CARD_WIDTH * size}px`,
@@ -21,7 +21,7 @@ const CardContainer = ({ size = 1 }) => fabricate('Card')
     opacity: '0',
     visibility: 'hidden',
     transition: '0.6s',
-    backgroundColor: Theme.colors.AppCard.titleBar,
+    backgroundColor: Theme.palette.grey5,
     boxShadow: '2px 2px 3px 1px #0004',
   });
 
@@ -48,7 +48,7 @@ const AppName = () => fabricate('Text')
  */
 const StatusText = () => fabricate('Text')
   .setStyles({
-    color: Theme.colors.AppCard.status,
+    color: Theme.palette.lightGrey,
     fontSize: '0.9rem',
     paddingTop: '1',
     marginBottom: '2px',
@@ -75,7 +75,7 @@ const StatusLED = ({ app }: { app: string }) => fabricate('div')
     const apps = deviceApps[selectedDevice.deviceName];
     const { status } = apps.find((p) => p.app === app)!;
     el.setStyles({
-      backgroundColor: status?.includes('OK') ? Theme.colors.status.ok : Theme.colors.status.down,
+      backgroundColor: status?.includes('OK') ? Theme.palette.statusOk : Theme.palette.statusDown,
     });
   });
 
@@ -112,7 +112,7 @@ const CardStatus = ({ app }: { app: string }) => fabricate('Row')
 const CardTitleRow = () => fabricate('Row')
   .setStyles({
     alignItems: 'center',
-    backgroundColor: Theme.colors.AppCard.titleBar,
+    backgroundColor: Theme.palette.grey5,
     padding: '5px 10px',
   });
 
@@ -120,6 +120,7 @@ const CardTitleRow = () => fabricate('Row')
  * AppCard component.
  *
  * @param {object} props - Component props.
+ * @param props.app
  * @returns {HTMLElement} Fabricate component.
  */
 const AppCard = ({ app }: { app: string }) => {

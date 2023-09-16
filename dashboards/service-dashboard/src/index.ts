@@ -1,12 +1,12 @@
-import { Fabricate } from '../node_modules/fabricate.js/types/fabricate';
+import { Fabricate } from 'fabricate.js';
 import { AppState } from './types';
 import Theme from './theme';
 import { CONDUIT_PORT, INITIAL_STATE } from './constants';
-import { sendConduitPacket } from './services/conduitService';
 import SubNavBar from './components/SubNavBar';
 import FleetPage from './pages/FleetPage';
 import AppsPage from './pages/AppsPage';
 import ResponseLog from './components/ResponseLog';
+import IconButton from './components/IconButton';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -57,10 +57,10 @@ const parseParams = () => {
  */
 const AppNavBar = () => fabricate('NavBar', {
   title: 'Service Dashboard',
-  backgroundColor: Theme.colors.AppNavBar.background,
+  backgroundColor: Theme.palette.primary,
 })
   .addChildren([
-    fabricate('IconButton', { src: 'assets/log.png' })
+    IconButton({ src: 'assets/log.png' })
       .onClick((el, state) => fabricate.update('logExpanded', !state.logExpanded)),
   ]);
 

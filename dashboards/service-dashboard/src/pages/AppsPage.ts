@@ -1,11 +1,13 @@
-import { Fabricate, FabricateComponent } from "../../node_modules/fabricate.js/types/fabricate";
-import AppCard from "../components/AppCard";
-import { AppState } from "../types";
+import { Fabricate, FabricateComponent } from 'fabricate.js';
+import AppCard from '../components/AppCard';
+import { AppState } from '../types';
 
 declare const fabricate: Fabricate<AppState>;
 
 /**
  * AppsPage component.
+ *
+ * @returns {FabricateComponent} AppsPage component.
  */
 const AppsPage = () => {
   /**
@@ -21,7 +23,7 @@ const AppsPage = () => {
     const apps = deviceApps[selectedDevice.deviceName];
     el.setChildren(apps.map((app) => AppCard({ app: app.app! })));
   };
-  
+
   return fabricate('Row')
     .setStyles({
       alignItems: 'flex-start',

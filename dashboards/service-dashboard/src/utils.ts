@@ -1,5 +1,5 @@
+import { Fabricate } from 'fabricate.js';
 import { AppState, IPType, DeviceApp } from './types';
-import { Fabricate } from '../node_modules/fabricate.js/types/fabricate';
 import { sendConduitPacket } from './services/conduitService';
 
 declare const fabricate: Fabricate<AppState>;
@@ -102,6 +102,7 @@ export const fetchApps = async (state: AppState) => {
 
       result[deviceName] = apps;
       fabricate.update('deviceApps', result);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.error(err);
       result[deviceName] = { error: err.message };

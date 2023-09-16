@@ -1,7 +1,8 @@
-import { Fabricate, FabricateComponent } from "../../node_modules/fabricate.js/types/fabricate";
-import DeviceCard from "../components/DeviceCard";
-import { AppState, Device } from "../types";
-import { fetchApps } from "../utils";
+import { Fabricate, FabricateComponent } from 'fabricate.js';
+import DeviceCard from '../components/DeviceCard';
+import Theme from '../theme';
+import { AppState, Device } from '../types';
+import { fetchApps } from '../utils';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -40,6 +41,8 @@ const GroupLabel = ({ publicIp }: { publicIp: string }) => fabricate('Row')
 
 /**
  * FleetPage component, column of public IPs with devices inside them.
+ *
+ * @returns {FabricateComponent} FleetPage component.
  */
 const FleetPage = () => {
   /**
@@ -67,10 +70,10 @@ const FleetPage = () => {
     el.setChildren(Object.entries(buckets).map(([publicIp, devices]) => (
       fabricate('Column')
         .setStyles({
-          backgroundColor: '#0004',
+          backgroundColor: Theme.palette.translucentGrey,
           borderRadius: '10px',
           margin: '15px',
-          boxShadow: '2px 2px 3px 1px #0004',
+          boxShadow: Theme.styles.boxShadow,
           width: 'fit-content',
         })
         .setChildren([
@@ -84,7 +87,7 @@ const FleetPage = () => {
         ])
     )));
   };
-  
+
   return fabricate('Column')
     .onCreate(updateLayout)
     .onUpdate((el, state, keys) => {

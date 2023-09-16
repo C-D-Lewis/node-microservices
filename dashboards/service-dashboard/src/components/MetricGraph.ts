@@ -1,8 +1,8 @@
-import { Fabricate } from "../../node_modules/fabricate.js/types/fabricate";
-import { APP_CARD_WIDTH } from "../constants";
-import Theme from "../theme";
-import { AppState, DataPoint } from "../types";
-import { shortDateTime } from "../utils";
+import { Fabricate } from 'fabricate.js';
+import { APP_CARD_WIDTH } from '../constants';
+import Theme from '../theme';
+import { AppState, DataPoint } from '../types';
+import { shortDateTime } from '../utils';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -28,7 +28,7 @@ const DataPointLabel = ({ point }: { point: DataPoint }) => fabricate('Text')
   .setStyles({
     fontSize: '0.9rem',
     color: 'white',
-    backgroundColor: Theme.colors.DataPointLabel.background,
+    backgroundColor: Theme.palette.translucentGrey,
     padding: '5px',
     position: 'relative',
     bottom: '0px',
@@ -61,7 +61,7 @@ const DataPoint = ({ point, minValue, maxValue }: DataPointPropTypes) => {
       width: `${POINT_SIZE}px`,
       height: `${POINT_SIZE}px`,
       borderRadius: '10px',
-      backgroundColor: Theme.colors.DataPoint.background,
+      backgroundColor: Theme.palette.secondary,
       marginBottom: `${height}px`,
     })
     .onHover((el, state, isHovered) => {
@@ -78,9 +78,9 @@ const DataPoint = ({ point, minValue, maxValue }: DataPointPropTypes) => {
  */
 const GraphView = () => fabricate('Row')
   .setStyles({
-    backgroundColor: Theme.colors.MetricGraph.background,
-    borderBottom: `solid 2px ${Theme.colors.MetricGraph.border}`,
-    borderLeft: `solid 2px ${Theme.colors.MetricGraph.border}`,
+    backgroundColor: Theme.palette.grey2,
+    borderBottom: `solid 2px ${Theme.palette.lightGrey}`,
+    borderLeft: `solid 2px ${Theme.palette.lightGrey}`,
     alignItems: 'end',
     width: '100%',
     height: `${GRAPH_HEIGHT}px`,

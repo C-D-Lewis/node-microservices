@@ -1,6 +1,6 @@
-import { CONDUIT_PORT } from "../constants";
-import { AppState, Packet } from "../types";
-import { addLogEntry, isReachableKey } from "../utils";
+import { CONDUIT_PORT } from '../constants';
+import { AppState, Packet } from '../types';
+import { addLogEntry, isReachableKey } from '../utils';
 
 /**
  * Send a conduit packet.
@@ -12,6 +12,7 @@ import { addLogEntry, isReachableKey } from "../utils";
  * @returns {Promise<object>} Response.
  * @throws {Error} Any error encountered.
  */
+// eslint-disable-next-line import/prefer-default-export
 export const sendConduitPacket = async (
   state: AppState,
   packet: Packet,

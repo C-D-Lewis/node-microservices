@@ -1,10 +1,11 @@
-import { Fabricate, FabricateComponent } from "../../node_modules/fabricate.js/types/fabricate";
-import { ICON_NAMES } from "../constants";
-import Theme from "../theme";
-import { AppState, Device, DeviceApp, IPType } from "../types";
-import { getTimeAgoStr, isReachableKey } from "../utils";
-import ItemPill from "./ItemPill";
-import TextButton from "./TextButton";
+import { Fabricate, FabricateComponent } from 'fabricate.js';
+import { ICON_NAMES } from '../constants';
+import Theme from '../theme';
+import {
+  AppState, Device, DeviceApp, IPType,
+} from '../types';
+import { getTimeAgoStr, isReachableKey } from '../utils';
+import ItemPill from './ItemPill';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -65,19 +66,18 @@ const IpText = ({ device, deviceIp, type }: IpTextPropTypes) => {
     })
     .setText(deviceIp)
     .onUpdate((el, state) => {
-      // TODO: watchlist of [key] here breaks this for some reason
       const isReachable = state[reachableKey];
 
       el.setStyles({
         color: isReachable
-          ? Theme.colors.IpTextButton.reachable
-          : Theme.colors.IpTextButton.unreachable,
+          ? Theme.palette.text
+          : Theme.palette.grey2,
         cursor: 'default',
       });
     }, [reachableKey]);
 
   return fabricate('Row')
-    .setStyles({ alignItems: 'center', borderBottom: `solid 1px ${Theme.colors.consoleGrey}` })
+    .setStyles({ alignItems: 'center', borderBottom: `solid 1px ${Theme.palette.grey2}` })
     .setChildren([icon, textButton]);
 };
 
@@ -88,13 +88,12 @@ const IpText = ({ device, deviceIp, type }: IpTextPropTypes) => {
  * @param {string} props.deviceType - Device type.
  * @returns {HTMLElement} Fabricate component.
  */
-const DeviceIcon = ({ deviceType }: { deviceType: string }) =>
-  fabricate('Image', { src: `assets/${ICON_NAMES[deviceType]}.png` })
-    .setStyles({
-      margin: '4px 4px 4px 8px',
-      width: '20px',
-      height: '20px',
-    });
+const DeviceIcon = ({ deviceType }: { deviceType: string }) => fabricate('Image', { src: `assets/${ICON_NAMES[deviceType]}.png` })
+  .setStyles({
+    margin: '4px 4px 4px 8px',
+    width: '20px',
+    height: '20px',
+  });
 
 /**
  * Last checkin label component.
@@ -105,7 +104,7 @@ const DeviceIcon = ({ deviceType }: { deviceType: string }) =>
  */
 const LastSeenLabel = ({ lastCheckIn }: { lastCheckIn: number }) => fabricate('Text')
   .setStyles({
-    color: Theme.colors.AppCard.lastSeen,
+    color: Theme.palette.lightGrey,
     fontStyle: 'italic',
     fontSize: '0.9rem',
     textAlign: 'end',
@@ -125,7 +124,7 @@ const LastSeenLabel = ({ lastCheckIn }: { lastCheckIn: number }) => fabricate('T
  */
 const CardTitle = ({ device, seenRecently }: { device: Device, seenRecently: boolean }) => fabricate('Row')
   .setStyles({
-    backgroundColor: seenRecently ? Theme.colors.instanceHealthy : Theme.colors.AppCard.titleBar,
+    backgroundColor: seenRecently ? Theme.palette.instanceHealthy : Theme.palette.grey5,
     alignItems: 'center',
     height: '35px',
     boxShadow: '2px 2px 3px 1px #0006',
@@ -148,7 +147,7 @@ const DeviceCardContainer = () => fabricate('Card')
     minHeight: '150px',
     margin: '10px',
     boxShadow: '2px 2px 3px 1px #0004',
-    backgroundColor: Theme.colors.DeviceCard.background,
+    backgroundColor: Theme.palette.grey3,
   });
 
 /**
@@ -159,25 +158,24 @@ const DeviceCardContainer = () => fabricate('Card')
  * @param {string} [props.commitDate] - Most recent commit date.
  * @returns {HTMLElement} Fabricate component.
  */
-const CommitView = ({ commit, commitDate }: { commit: string, commitDate: string }) =>
-  fabricate('Row')
-    .setStyles({ alignItems: 'center', borderBottom: `solid 1px ${Theme.colors.consoleGrey}` })
-    .setChildren([
-      fabricate('Image', { src: 'assets/commit.png' })
-        .setStyles({
-          width: '18px',
-          height: '18px',
-          margin: '8px',
-        }),
-      fabricate('Text')
-        .setStyles({
-          color: 'white',
-          fontSize: '1rem',
-          margin: '5px 0px',
-          fontFamily: Theme.fonts.code,
-          cursor: 'default',
-        })
-        .setText(commit ? `${commit} (${getTimeAgoStr(new Date(commitDate).getTime())})` : 'Unknown'),
+const CommitView = ({ commit, commitDate }: { commit: string, commitDate: string }) => fabricate('Row')
+  .setStyles({ alignItems: 'center', borderBottom: `solid 1px ${Theme.palette.grey2}` })
+  .setChildren([
+    fabricate('Image', { src: 'assets/commit.png' })
+      .setStyles({
+        width: '18px',
+        height: '18px',
+        margin: '8px',
+      }),
+    fabricate('Text')
+      .setStyles({
+        color: 'white',
+        fontSize: '1rem',
+        margin: '5px 0px',
+        fontFamily: Theme.fonts.code,
+        cursor: 'default',
+      })
+      .setText(commit ? `${commit} (${getTimeAgoStr(new Date(commitDate).getTime())})` : 'Unknown'),
   ]);
 
 /**
@@ -193,7 +191,7 @@ const DeviceDetailsColumn = ({ device }: { device: Device }) => {
   } = device;
 
   return fabricate('Column')
-    .setStyles({ flex: '2', borderRight: `solid 1px ${Theme.colors.consoleGrey}` })
+    .setStyles({ flex: '2', borderRight: `solid 1px ${Theme.palette.grey3}` })
     .setChildren([
       IpText({
         device,
@@ -236,9 +234,9 @@ const AppChipList = ({ device }: { device: Device }) => {
     }
 
     el.setChildren(apps.map((app: DeviceApp) => ItemPill({
-        src: 'assets/app.png',
-        text: app.app!,
-      })));
+      src: 'assets/app.png',
+      text: app.app!,
+    })));
   };
 
   return fabricate('Row')
@@ -256,7 +254,6 @@ const AppChipList = ({ device }: { device: Device }) => {
  * DeviceCard component.
  *
  * @param {object} props - Component props.
- * @param {object} props.state - App state.
  * @param {object} props.device - Device for this card.
  * @returns {HTMLElement} Fabricate component.
  */
@@ -293,14 +290,12 @@ const DeviceCard = ({ device }: { device: Device }) => {
           DeviceName().setText(deviceName),
           LastSeenLabel({ lastCheckIn }),
         ]),
-        DeviceDetailsColumn({ device }),
-        AppChipList({ device }),
+      DeviceDetailsColumn({ device }),
+      AppChipList({ device }),
     ])
     .onCreate(() => {
       testIp(publicIp, publicIpValidKey);
       testIp(localIp, localIpValidKey);
-
-
     });
 };
 

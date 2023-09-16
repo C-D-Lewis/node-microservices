@@ -1,4 +1,4 @@
-import { AppState } from "./types";
+import { AppState } from './types';
 
 /** Fleet host URL. TODO: Use env config */
 const FLEET_HOST = 'polaris.chrislewis.me.uk';

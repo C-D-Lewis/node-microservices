@@ -1,17 +1,17 @@
-import { Fabricate } from "../../node_modules/fabricate.js/types/fabricate";
-import { AppState } from "../types";
-import Theme from "../theme";
+import { Fabricate } from 'fabricate.js';
+import { AppState } from '../types';
+import Theme from '../theme';
 
 declare const fabricate: Fabricate<AppState>;
 
 /**
  * TextButton component.
  *
- * @returns {HTMLElement}
+ * @returns {HTMLElement} TextButton component.
  */
 const TextButton = () => fabricate('Button', {
   color: 'white',
-  backgroundColor: Theme.colors.primary,
+  backgroundColor: Theme.palette.primary,
 })
   .setStyles({ height: '25px', fontSize: '1rem' });
 

@@ -1,5 +1,5 @@
-import { Fabricate } from '../../node_modules/fabricate.js/types/fabricate';
-import { AppState } from '../types';
+import { Fabricate } from 'fabricate.js';
+import { AppState, WSMessageEvent } from '../types';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -68,7 +68,7 @@ export const connectClacks = (host: string) => new Promise((resolve) => {
    *
    * @param {object} event - WS event.
    */
-  socket.onmessage = async (event) => {
+  socket.onmessage = async (event: WSMessageEvent) => {
     const str = await event.data.text();
     const { topic, data } = JSON.parse(str);
     onClacksMessage(topic, data);
@@ -87,7 +87,7 @@ export const connectClacks = (host: string) => new Promise((resolve) => {
    *
    * @param {*} err - Error.
    */
-  socket.onerror = (err) => {
+  socket.onerror = (err: unknown) => {
     console.log(err);
     socket.close();
   };

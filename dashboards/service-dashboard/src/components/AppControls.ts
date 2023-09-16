@@ -1,13 +1,13 @@
-import { Fabricate, FabricateComponent } from "../../node_modules/fabricate.js/types/fabricate";
-import { connectClacks, disconnectClacks, sendClacksMessage } from "../services/clacksService";
-import { sendConduitPacket } from "../services/conduitService";
-import Theme from "../theme";
-import { AppState, DataPoint, MetricPoint } from "../types";
-import { getReachableIp, shortDateTime } from "../utils";
-import ItemPill from "./ItemPill";
-import MetricGraph from "./MetricGraph";
-import TextBox from "./TextBox";
-import TextButton from "./TextButton";
+import { Fabricate } from 'fabricate.js';
+import { connectClacks, disconnectClacks, sendClacksMessage } from '../services/clacksService';
+import { sendConduitPacket } from '../services/conduitService';
+import Theme from '../theme';
+import { AppState, MetricPoint } from '../types';
+import { getReachableIp, shortDateTime } from '../utils';
+import ItemPill from './ItemPill';
+import MetricGraph from './MetricGraph';
+import TextBox from './TextBox';
+import TextButton from './TextButton';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -30,7 +30,7 @@ const ControlRow = () => fabricate('Row').setStyles({ padding: '0px 10px', align
  * @returns {HTMLElement} Fabricate component.
  */
 const ControlContainer = () => fabricate('Column')
-  .setStyles({ backgroundColor: Theme.colors.AppControls.background });
+  .setStyles({ backgroundColor: Theme.palette.grey4 });
 
 /**
  * AtticControls component.
@@ -45,8 +45,7 @@ const AtticControls = () => {
    * @param {*} v - Prop value.
    * @returns {void}
    */
-  const setProp = (k: string, v: string) =>
-    fabricate.update('atticData', ({ atticData }) => ({ ...atticData, [k]: v }));
+  const setProp = (k: string, v: string) => fabricate.update('atticData', ({ atticData }) => ({ ...atticData, [k]: v }));
 
   return ControlContainer()
     .setChildren([
@@ -110,8 +109,7 @@ const ConduitControls = () => {
    * @param {*} v - Prop value.
    * @returns {void}
    */
-  const setProp = (k: string, v: string) =>
-    fabricate.update('conduitData', ({ conduitData }) => ({ ...conduitData, [k]: v }));
+  const setProp = (k: string, v: string) => fabricate.update('conduitData', ({ conduitData }) => ({ ...conduitData, [k]: v }));
 
   return ControlContainer()
     .setChildren([
@@ -160,8 +158,7 @@ const VisualsControls = () => {
    * @param {*} v - Prop value.
    * @returns {void}
    */
-  const setProp = (k: string, v: string | number) =>
-    fabricate.update('visualsData', ({ visualsData }) => ({ ...visualsData, [k]: v }));
+  const setProp = (k: string, v: string | number) => fabricate.update('visualsData', ({ visualsData }) => ({ ...visualsData, [k]: v }));
 
   return ControlContainer()
     .setChildren([
@@ -250,8 +247,7 @@ const GuestlistControls = () => {
    * @param {*} v - Prop value.
    * @returns {void}
    */
-  const setProp = (k: string, v: string) =>
-    fabricate.update('guestlistData', ({ guestlistData }) => ({ ...guestlistData, [k]: v }));
+  const setProp = (k: string, v: string) => fabricate.update('guestlistData', ({ guestlistData }) => ({ ...guestlistData, [k]: v }));
 
   return ControlContainer()
     .setChildren([
@@ -332,8 +328,7 @@ const ClacksControls = () => {
    * @param {*} v - Prop value.
    * @returns {void}
    */
-  const setProp = (k: string, v: string) =>
-    fabricate.update('clacksData', ({ clacksData }) => ({ ...clacksData, [k]: v }));
+  const setProp = (k: string, v: string) => fabricate.update('clacksData', ({ clacksData }) => ({ ...clacksData, [k]: v }));
 
   return ControlContainer()
     .setChildren([
@@ -351,7 +346,8 @@ const ClacksControls = () => {
             .setStyles({ width: '100%' })
             .onChange((el, state, value) => setProp('message', value))
             .onCreate((el) => {
-              // Default value
+              // Default value is JSON
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               el.value = '{}';
             }),
@@ -360,13 +356,13 @@ const ClacksControls = () => {
         .setChildren([
           TextButton()
             .setText('Send')
-            .setStyles({ ...buttonStyle, width: '100%', backgroundColor: Theme.colors.AppNavBar.background })
+            .setStyles({ ...buttonStyle, width: '100%', backgroundColor: Theme.palette.grey3 })
             .onClick((el, { clacksData }) => {
               const { topic, message } = clacksData;
               sendClacksMessage(topic, message);
             })
             .onUpdate((el, { clacksData: { connected } }) => el.setStyles({
-              backgroundColor: connected ? Theme.colors.primary : Theme.colors.AppNavBar.background,
+              backgroundColor: connected ? Theme.palette.primary : Theme.palette.grey3,
             }), ['clacksData']),
         ]),
     ])
@@ -392,8 +388,7 @@ const MonitorControls = () => {
    * @param {*} v - Prop value.
    * @returns {void}
    */
-  const setProp = (k: string, v: string | []) =>
-    fabricate.update('monitorData', ({ monitorData }) => ({ ...monitorData, [k]: v }));
+  const setProp = (k: string, v: string | []) => fabricate.update('monitorData', ({ monitorData }) => ({ ...monitorData, [k]: v }));
 
   /**
    * Fetch data for a metric.
@@ -415,10 +410,16 @@ const MonitorControls = () => {
     // Aggregate values
     const minValue = metric.includes('Perc')
       ? 0
-      : metricHistory.reduce((acc: number, [, value]: MetricPoint) => (value < acc ? value : acc), 9999999);
+      : metricHistory.reduce(
+        (acc: number, [, value]: MetricPoint) => (value < acc ? value : acc),
+        9999999,
+      );
     const maxValue = metric.includes('Perc')
       ? 100
-      : metricHistory.reduce((acc: number, [, value]: MetricPoint) => (value > acc ? value : acc), 0);
+      : metricHistory.reduce(
+        (acc: number, [, value]: MetricPoint) => (value > acc ? value : acc),
+        0,
+      );
     const minTime = shortDateTime(metricHistory[0][0]);
     const maxTime = shortDateTime(metricHistory[metricHistory.length - 1][0]);
 
@@ -443,15 +444,13 @@ const MonitorControls = () => {
             const {
               FILE_NAME, EVERY, AT, ENABLED,
             } = plugin;
-            const {
-              AppCard: { titleBar },
-              ItemPill: { disabled },
-            } = Theme.colors;
             return ItemPill({
               src: 'assets/plugin.png',
               text: `${FILE_NAME.replace('.js', '')}${EVERY ? ` (~${EVERY})` : ` (at ${AT})`}`,
             })
-              .setStyles({ backgroundColor: ENABLED !== false ? titleBar : disabled });
+              .setStyles({
+                backgroundColor: ENABLED !== false ? Theme.palette.grey5 : Theme.palette.grey3,
+              });
           }));
         }, ['monitorData'])
         .onCreate(async (el, state) => {
@@ -490,6 +489,7 @@ const MonitorControls = () => {
     });
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 const controlsMap: Record<string, Function> = {
   attic: AtticControls,
   conduit: ConduitControls,
@@ -505,6 +505,7 @@ const controlsMap: Record<string, Function> = {
  * AppControls component.
  *
  * @param {object} props - Component props.
+ * @param {string} props.app - App name
  * @returns {HTMLElement} Fabricate component.
  */
 const AppControls = ({ app }: { app: string }) => {

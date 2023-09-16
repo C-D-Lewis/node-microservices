@@ -10,23 +10,39 @@
   },
   "devDependencies": {
     "@chris-lewis/eslint-config": "^1.0.3",
-    "fabricate.js": "^2.11.2",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
+    "eslint-import-resolver-typescript": "^3.6.0",
     "http-server": "^14.1.1",
     "ts-loader": "^9.4.4",
     "typescript": "^5.1.6",
     "webpack": "^5.88.1",
     "webpack-cli": "^5.1.4"
   },
+  "dependencies": {
+    "fabricate.js": "^2.11.2"
+  },
   "eslintConfig": {
-    "extends": "@chris-lewis/eslint-config",
+    "extends": [
+      "@chris-lewis/eslint-config",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "settings": {
+      "import/resolver": {
+        "typescript": {}
+      }
+    },
+    "rules": {
+      "import/extensions": 0,
+      "no-param-reassign": 0
+    },
     "globals": {
-      "fabricate": "readonly",
-      "confirm": "readonly",
-      "Constants": "readonly",
-      "Theme": "readonly",
-      "ConduitService": "readonly",
-      "Utils": "readonly",
-      "ClacksService": "readonly"
+      "confirm": "readonly"
     }
   }
 }

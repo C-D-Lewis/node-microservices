@@ -1,6 +1,6 @@
-import { Fabricate, FabricateComponent } from "../../node_modules/fabricate.js/types/fabricate";
-import Theme from "../theme";
-import { AppState } from "../types";
+import { Fabricate, FabricateComponent } from 'fabricate.js';
+import Theme from '../theme';
+import { AppState } from '../types';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -24,7 +24,7 @@ const LogEntry = ({ text }: { text: string }) => {
       fontFamily: Theme.fonts.code,
       color: 'white',
       fontSize: '0.8rem',
-      backgroundColor: wasError ? Theme.colors.status.down : Theme.colors.consoleGrey,
+      backgroundColor: wasError ? Theme.palette.statusDown : Theme.palette.grey3,
       margin: '0',
       padding: '5px 15px',
       borderTop: 'solid 2px #555',
@@ -35,16 +35,16 @@ const LogEntry = ({ text }: { text: string }) => {
 };
 
 /**
- * ResponseBar component.
+ * ResponseLog component.
  *
- * @returns {FabricateComponent}
+ * @returns {FabricateComponent} ResponseLog component.
  */
 const ResponseLog = () => fabricate('Column')
   .setStyles({
     position: 'absolute',
     right: '0',
     top: '0',
-    backgroundColor: Theme.colors.consoleGrey,
+    backgroundColor: Theme.palette.grey3,
     minWidth: '0px',
     maxWidth: '0px',
     height: '100vh',
