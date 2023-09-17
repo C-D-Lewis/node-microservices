@@ -3,7 +3,7 @@
   "exclude": ["src/types.ts"],
   "compilerOptions": {
     "target": "ES2016",
-    "module": "ES2015",
+    "module": "NodeNext",
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
