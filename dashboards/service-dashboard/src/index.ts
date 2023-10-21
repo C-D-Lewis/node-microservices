@@ -47,7 +47,12 @@ const parseParams = () => {
 
   // Token
   const token = params.get('token');
-  if (token) fabricate.update({ token });
+  if (!token) {
+    alert('Please provide token param');
+    return;
+  }
+
+  fabricate.update({ token });
 };
 
 /**
