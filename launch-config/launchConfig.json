@@ -8,7 +8,6 @@
       { "location": "code/node-microservices/apps/concierge",                "start": "npm start &" },
       { "location": "code/node-microservices/apps/visuals",                  "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor",                  "start": "npm start &" },
-      { "location": "code/node-microservices/dashboards/lighting-dashboard", "start": "http-server -p 54448 &" },
       { "location": "code/node-microservices/dashboards/service-dashboard",  "start": "npm run build && http-server -p 54449 &" },
       { "location": "code/microdiary",                                       "start": "http-server -p 34279 &" }
     ],
@@ -24,7 +23,14 @@
         "_note": "Must be node 16+"
       }
     ],
+    "stack-util": [],
     "bedroom-pi": [
+      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
+      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
+    ],
+    "tv-mote-pi": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
       { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
       { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
@@ -55,14 +61,11 @@
       { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
     ],
-    "stack-util": [],
-    "tv-mote-pi": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
-      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
-    ],
     "INFERNO": [
+      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" }
+    ],
+    "Marvin": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
       { "location": "code/node-microservices/apps/attic",   "start": "npm start &" }
     ],
@@ -74,10 +77,6 @@
       { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
       { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
-    ],
-    "Marvin": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" }
     ]
   }
 }
