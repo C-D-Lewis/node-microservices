@@ -233,10 +233,14 @@ const AppChipList = ({ device }: { device: Device }) => {
       return;
     }
 
-    el.setChildren(apps.map((app: DeviceApp) => ItemPill({
-      src: 'assets/app.png',
-      text: app.app!,
-    })));
+    try {
+      el.setChildren(apps.map((app: DeviceApp) => ItemPill({
+        src: 'assets/app.png',
+        text: app.app!,
+      })));
+    } catch (e: unknown) {
+      console.log(e);
+    }
   };
 
   return fabricate('Row')

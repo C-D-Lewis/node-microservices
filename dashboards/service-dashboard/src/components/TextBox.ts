@@ -10,7 +10,7 @@ declare const fabricate: Fabricate<AppState>;
  * @param {string} props.placeholder - Placeholder text.
  * @returns {FabricateComponent} TextBox component.
  */
-const TextBox = ({ placeholder = '' }: { placeholder: string }) => fabricate('TextInput', { placeholder, color: 'black' })
+const TextBox = ({ placeholder = '' }: { placeholder: string }) => fabricate('TextInput', { placeholder, color: 'white' })
   .setStyles({
     height: '25px',
     border: '0',
@@ -19,6 +19,7 @@ const TextBox = ({ placeholder = '' }: { placeholder: string }) => fabricate('Te
     margin: '10px 5px',
     outline: 'none',
     fontFamily: 'monospace',
+    backgroundColor: '#1115',
   });
 
 export default TextBox;

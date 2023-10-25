@@ -1,10 +1,41 @@
 import { Fabricate } from 'fabricate.js';
 import { APP_CARD_WIDTH } from '../constants';
 import Theme from '../theme';
-import { AppState } from '../types';
+import { AppState, RequestState } from '../types';
 import AppControls from './AppControls';
+import { appRequestStateKey } from '../utils';
 
 declare const fabricate: Fabricate<AppState>;
+
+/**
+ * Get status color for a given app.
+ *
+ * @param {AppState} state - App state.
+ * @param {string} app - App name.
+ * @returns {string} Status color.
+ */
+const getAppStatusColor = (state: AppState, app: string): string => {
+  const { selectedDevice, deviceApps } = state;
+  if (selectedDevice === null) return 'pink';
+
+  const { deviceName } = selectedDevice;
+  const apps = deviceApps[deviceName];
+  const { status } = apps.find((p) => p.app === app)!;
+  return status?.includes('OK') ? Theme.palette.statusOk : Theme.palette.statusDown;
+};
+
+/**
+ * Get color for request state.
+ *
+ * @param {RequestState} reqState - Request state.
+ * @returns {string} Color
+ */
+const getReqStateColor = (reqState: RequestState) => {
+  if (reqState === 'success') return Theme.palette.statusOk;
+  if (reqState === 'pending') return Theme.palette.statusPending;
+  if (reqState === 'error') return Theme.palette.statusDown;
+  return 'pink';
+};
 
 /**
  * CardContainer component.
@@ -62,22 +93,32 @@ const StatusText = () => fabricate('Text')
  * @param {string} props.app - App.
  * @returns {HTMLElement} Fabricate component.
  */
-const StatusLED = ({ app }: { app: string }) => fabricate('div')
-  .setStyles({
-    width: '15px',
-    height: '15px',
-    borderRadius: '9px',
-    marginRight: '5px',
-  })
-  .onCreate((el, { selectedDevice, deviceApps }) => {
-    if (selectedDevice === null) return;
+const StatusLED = ({ app }: { app: string }) => {
+  const reqStateKey = appRequestStateKey(app);
 
-    const apps = deviceApps[selectedDevice.deviceName];
-    const { status } = apps.find((p) => p.app === app)!;
-    el.setStyles({
-      backgroundColor: status?.includes('OK') ? Theme.palette.statusOk : Theme.palette.statusDown,
-    });
-  });
+  return fabricate('div')
+    .setStyles({
+      width: '15px',
+      height: '15px',
+      borderRadius: '9px',
+      marginRight: '5px',
+    })
+    .onCreate((el, state) => {
+      const { selectedDevice } = state;
+      if (selectedDevice === null) return;
+
+      el.setStyles({ backgroundColor: getAppStatusColor(state, app) });
+    })
+    .onUpdate((el, state) => {
+      const { selectedDevice } = state;
+      if (selectedDevice === null) return;
+
+      const pending = state[reqStateKey] === 'pending';
+      const reqStateColor = getReqStateColor(state[reqStateKey]);
+      const statusColor = getAppStatusColor(state, app);
+      el.setStyles({ backgroundColor: pending ? reqStateColor : statusColor });
+    }, [reqStateKey]);
+};
 
 /**
  * CardStatus component.
@@ -120,7 +161,7 @@ const CardTitleRow = () => fabricate('Row')
  * AppCard component.
  *
  * @param {object} props - Component props.
- * @param props.app
+ * @param {string} props.app - App name.
  * @returns {HTMLElement} Fabricate component.
  */
 const AppCard = ({ app }: { app: string }) => {

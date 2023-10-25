@@ -1,6 +1,9 @@
+import { Fabricate } from 'fabricate.js';
 import { CONDUIT_PORT } from '../constants';
 import { AppState, Packet } from '../types';
-import { addLogEntry, isReachableKey } from '../utils';
+import { addLogEntry, appRequestStateKey, isReachableKey } from '../utils';
+
+declare const fabricate: Fabricate<AppState>;
 
 /**
  * Send a conduit packet.
@@ -22,6 +25,7 @@ export const sendConduitPacket = async (
   console.log('Sending...');
 
   const { token, selectedDevice, fleet } = state;
+  const reqStateKey = appRequestStateKey(packet.to);
 
   try {
     // Begin with host unless some device is selected to drill down
@@ -40,6 +44,8 @@ export const sendConduitPacket = async (
       forwardHost = destination === publicIp ? localIp : undefined;
     }
 
+    fabricate.update(reqStateKey, 'pending');
+
     const res = await fetch(`http://${destination}:${CONDUIT_PORT}/conduit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -54,9 +60,11 @@ export const sendConduitPacket = async (
     console.log(JSON.stringify(json));
 
     addLogEntry(state, json);
+    fabricate.update(reqStateKey, 'success');
     return json;
   } catch (error) {
     console.log(error);
+    fabricate.update(reqStateKey, 'error');
     throw error;
   }
 };

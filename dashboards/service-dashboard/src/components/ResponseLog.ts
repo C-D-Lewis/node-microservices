@@ -39,38 +39,42 @@ const LogEntry = ({ text }: { text: string }) => {
  *
  * @returns {FabricateComponent} ResponseLog component.
  */
-const ResponseLog = () => fabricate('Column')
-  .setStyles({
-    position: 'absolute',
-    right: '0',
-    top: '0',
-    backgroundColor: Theme.palette.grey3,
-    minWidth: '0px',
-    maxWidth: '0px',
-    height: '100vh',
-    flex: '1',
-    padding: '10px 0px',
-    overflowY: 'scroll',
-    transition: '0.3s',
-  })
-  .onUpdate(
-    (el, { logEntries, logExpanded }, keys) => {
-      if (keys.includes('logEntries')) {
-        // TODO: Only add new items based on content or timestamp, not all
-        const reversed = logEntries.slice().reverse();
-        el.setChildren(reversed.map((text) => LogEntry({ text })));
-        return;
-      }
+const ResponseLog = () => {
+  const maxWidth = fabricate.isNarrow() ? '300px' : '600px';
 
-      if (keys.includes('logExpanded')) {
-        const newWidth = logExpanded ? '600px' : '0px';
-        el.setStyles({
-          minWidth: newWidth,
-          maxWidth: newWidth,
-        });
-      }
-    },
-    ['logEntries', 'logExpanded'],
-  );
+  return fabricate('Column')
+    .setStyles({
+      position: 'absolute',
+      right: '0',
+      top: '0',
+      backgroundColor: Theme.palette.grey3,
+      minWidth: '0px',
+      maxWidth: '0px',
+      height: '100vh',
+      flex: '1',
+      padding: '10px 0px',
+      overflowY: 'scroll',
+      transition: '0.3s',
+    })
+    .onUpdate(
+      (el, { logEntries, logExpanded }, keys) => {
+        if (keys.includes('logEntries')) {
+          // TODO: Only add new items based on content or timestamp, not all
+          const reversed = logEntries.slice().reverse();
+          el.setChildren(reversed.map((text) => LogEntry({ text })));
+          return;
+        }
+
+        if (keys.includes('logExpanded')) {
+          const newWidth = logExpanded ? maxWidth : '0px';
+          el.setStyles({
+            minWidth: newWidth,
+            maxWidth: newWidth,
+          });
+        }
+      },
+      ['logEntries', 'logExpanded'],
+    );
+};
 
 export default ResponseLog;

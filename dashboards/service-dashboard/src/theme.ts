@@ -13,10 +13,16 @@ const Theme = {
     lightGrey: '#eee',
     statusOk: '#43D047',
     statusDown: '#DD6E40',
+    statusPending: 'orange',
     translucentGrey: '#0006',
   },
   styles: {
     boxShadow: '2px 2px 3px 1px #0004',
+    controlButton: {
+      borderRadius: '0',
+      margin: '0',
+      minWidth: '50px',
+    },
   },
   fonts: {
     body: 'sans-serif',

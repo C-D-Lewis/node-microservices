@@ -14,6 +14,14 @@ declare const fabricate: Fabricate<AppState>;
 export const isReachableKey = (deviceName: string, type: IPType) => `isReachable:${deviceName}:${type}`;
 
 /**
+ * Is app request state key.
+ *
+ * @param {string} app - App name.
+ * @returns {string} Status color.
+ */
+export const appRequestStateKey = (app: string) => fabricate.buildKey('appRequestState', app);
+
+/**
  * Get the best reachable IP for the selected device.
  *
  * @param {AppState} state - App state.
@@ -93,14 +101,24 @@ export const fetchApps = async (state: AppState) => {
     const { deviceName } = device;
 
     try {
-      const { message: apps } = await sendConduitPacket(
+      const { message } = await sendConduitPacket(
         state,
         { to: 'conduit', topic: 'getApps' },
         undefined,
         deviceName,
       );
 
-      result[deviceName] = apps;
+      console.log({ message });
+      if (message && message.error) {
+        console.error(message.error);
+        result[deviceName] = { error: message.error };
+      } else if (!message) {
+        console.error('No response in fetchApps');
+        result[deviceName] = { error: 'Error fetching apps' };
+      } else {
+        result[deviceName] = message;
+      }
+
       fabricate.update('deviceApps', result);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

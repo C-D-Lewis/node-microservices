@@ -109,3 +109,6 @@ export type WSMessageEvent = {
     text: () => Promise<string>,
   },
 };
+
+/** Request states */
+export type RequestState = 'pending' | 'success' | 'error';

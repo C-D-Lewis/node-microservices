@@ -90,13 +90,11 @@ const FleetPage = () => {
 
   return fabricate('Column')
     .onCreate(updateLayout)
-    .onUpdate((el, state, keys) => {
+    .onUpdate((el, state) => {
       updateLayout(el, state);
 
-      if (keys.includes('fleet')) {
-        // Fetch apps for all devices at once
-        fetchApps(state);
-      }
+      // Fetch apps for all devices at once
+      fetchApps(state);
     }, ['fleet']);
 };
 
