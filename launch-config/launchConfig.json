@@ -1,6 +1,6 @@
 {
   "hosts": {
-    "stack-ext-8g": [
+    "stack-ext": [
       { "location": "code/node-microservices/apps/clacks",                   "start": "npm start &" },
       { "location": "code/node-microservices/apps/conduit",                  "start": "npm start &" },
       { "location": "code/node-microservices/apps/attic",                    "start": "npm start &" },
