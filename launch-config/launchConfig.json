@@ -52,7 +52,8 @@
     ],
     "cirroc": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
+      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" },
+      { "location": "code/node-microservices/tools/cirroc_oled", "start": "python3 main.py &"}
     ],
     "peter-pi": [
       { "location": "code/node-microservices/apps/clacks", "start": "npm start &" },
