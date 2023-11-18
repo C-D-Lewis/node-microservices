@@ -2,17 +2,18 @@
 # Drives display for Cirroc project - icon, CPU, disk usage and RAID status
 #
 
+import platform
 import time
 import subprocess
 import os
 import socket
-import busio
-import adafruit_ssd1306
 from datetime import datetime
-from board import SCL, SDA
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), '.')
+
+# If we're running on a Pi
+RUNNING_ON_PI = 'arm' in platform.machine()
 
 #
 # Get local IP address
@@ -22,17 +23,31 @@ def get_ip_address(ifname):
   s.connect(('10.0.0.0', 0))
   return s.getsockname()[0]
 
-# Create the I2C interface.
-i2c = busio.I2C(SCL, SDA)
+#
+# Prepare hardware libraries
+#
+def prepare_hardware():
+  import busio
+  import adafruit_ssd1306
+  from board import SCL, SDA
 
-# Create the SSD1306 OLED class.
-disp = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c)
-disp.fill(0)
-disp.show()
+  # Create the I2C interface.
+  i2c = busio.I2C(SCL, SDA)
+
+  # Create the SSD1306 OLED class.
+  disp = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c)
+  disp.fill(0)
+  disp.show()
+
+if RUNNING_ON_PI:
+  prepare_hardware()
+  width = disp.width
+  height = disp.height
+else:
+  width = 128
+  height = 32
 
 # Create blank image for drawing with mode '1' for 1-bit color.
-width = disp.width
-height = disp.height
 image = Image.new("1", (width, height))
 image_draw = ImageDraw.Draw(image)
 
@@ -52,14 +67,20 @@ icon_bg = Image.open(os.path.join(DIR, 'cloud.bmp'))
 # Display all stats
 #
 def draw_display():
-  cmd = 'cut -f 1 -d " " /proc/loadavg'
-  cpuUsage = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
-  cmd = 'df -h | awk \'$NF=="/mnt/raid1"{printf "%d/%d", $3,$2}\''
-  diskUsage = subprocess.check_output(cmd, shell=True).decode("utf-8")
-  cmd = 'df -h | awk \'$NF=="/mnt/raid1"{printf "%s", $5}\''
-  diskPercent = subprocess.check_output(cmd, shell=True).decode("utf-8").replace('%', '').strip()
-  cmd = 'cut -f 11 -d " " /proc/mdstat | grep \'\[\''
-  devices = subprocess.check_output(cmd, shell=True).decode("utf-8").replace('[', '').replace(']', '')
+  if RUNNING_ON_PI:
+    cmd = 'cut -f 1 -d " " /proc/loadavg'
+    cpuUsage = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
+    cmd = 'df -h | awk \'$NF=="/mnt/raid1"{printf "%d/%d", $3,$2}\''
+    diskUsage = subprocess.check_output(cmd, shell=True).decode("utf-8")
+    cmd = 'df -h | awk \'$NF=="/mnt/raid1"{printf "%s", $5}\''
+    diskPercent = subprocess.check_output(cmd, shell=True).decode("utf-8").replace('%', '').strip()
+    cmd = 'cut -f 11 -d " " /proc/mdstat | grep \'\[\''
+    devices = subprocess.check_output(cmd, shell=True).decode("utf-8").replace('[', '').replace(']', '')
+  else:
+    cpuUsage = '1.00'
+    diskUsage = '450/900'
+    diskPercent = 50
+    devices = '2/2'
 
   # IP
   address = get_ip_address('etho')
@@ -90,16 +111,22 @@ def draw_display():
 
 # Main loop
 while True:
-  time.sleep(10)
-
   # Blank
   image_draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
-  # Conserve OLED burn-in
-  now = datetime.now()
-  if now.second >= 0 and now.second < 10:
-    draw_display()
-
   # Display
-  disp.image(image)
-  disp.show()
+  if RUNNING_ON_PI:
+    # Conserve OLED burn-in
+    now = datetime.now()
+    if now.second >= 0 and now.second < 10:
+      draw_display()
+
+    disp.image(image)
+    disp.show()
+  else:
+    draw_display()
+    image.save('render.png')
+    print('Saved render.png')
+    exit()
+
+  time.sleep(10)

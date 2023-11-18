@@ -7,3 +7,5 @@ apps.txt
 *.pyc
 dist
 *.log
+render.png
+
