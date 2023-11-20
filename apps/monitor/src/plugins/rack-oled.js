@@ -3,8 +3,8 @@ const {
 } = require('os');
 const visuals = require('../modules/visuals');
 const {
-  ip, log, conduit, wait,
-} = require('../node-common')(['ip', 'log', 'conduit', 'wait']);
+  ip, log, temperature,
+} = require('../node-common')(['ip', 'log', 'temperature']);
 
 /**
  * Monitor stats for display on rack-mounted OLED display.
@@ -23,20 +23,23 @@ module.exports = async () => {
   const [, time] =  new Date().toISOString().split('T');
   const timeNow = time.split(':').slice(0, 2).join(':');
 
-  const { message: apps } = await conduit.send({ to: 'conduit', topic: 'getApps' });
-  const appsUp = apps.filter((p) => p.status === 'OK').length;
+  // Running conduit apps
+  // const { message: apps } = await conduit.send({ to: 'conduit', topic: 'getApps' });
+  // const appsUp = apps.filter((p) => p.status === 'OK').length;
+
+  const temp = temperature.get();
 
   const lines = [
     `${hostname} (.${ipLastTwoOctets})`,
     '',
     `${timeNow} (Up ${uptimeStr} hrs)`,
-    `C:${cpuMinute} / M:${memoryPerc} / A:${appsUp}/${apps.length}`,
+    `C:${cpuMinute} | M:${memoryPerc} | T:${temp}`,
   ];
   log.debug(lines);
 
   await visuals.setText(lines);
 
-  // Preserve oled burn-in
-  await wait(10000);
-  await visuals.setText([]);
+  // Prevent oled burn-in
+  // await wait(10000);
+  // await visuals.setText([]);
 };

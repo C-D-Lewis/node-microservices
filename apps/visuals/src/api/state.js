@@ -1,6 +1,6 @@
 const handles = require('../modules/handles');
 
-const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
+const { leds, conduit, textDisplay } = require('../node-common')(['leds', 'conduit', 'textDisplay']);
 
 /**
  * Handle a 'state' topic packet.
@@ -11,6 +11,7 @@ const { leds, conduit } = require('../node-common')(['leds', 'conduit']);
 const handleStatePacket = async (packet, res) => {
   const message = {
     leds: leds.getState(),
+    text: textDisplay.getLinesState(),
     handles: Object.entries(handles.getAll()).map(([k, v]) => ({ [k]: !!v })),
   };
   await conduit.respond(res, { status: 200, message });
