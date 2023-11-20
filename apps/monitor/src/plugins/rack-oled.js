@@ -3,8 +3,8 @@ const {
 } = require('os');
 const visuals = require('../modules/visuals');
 const {
-  ip, log, temperature,
-} = require('../node-common')(['ip', 'log', 'temperature']);
+  ip, log, temperature, wait,
+} = require('../node-common')(['ip', 'log', 'temperature', 'wait']);
 
 /**
  * Monitor stats for display on rack-mounted OLED display.
