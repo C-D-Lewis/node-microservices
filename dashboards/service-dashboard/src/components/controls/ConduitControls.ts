@@ -3,7 +3,6 @@ import { AppState } from '../../types';
 import TextButton from '../TextButton';
 import { ControlContainer, ControlRow } from '../AppControls';
 import TextBox from '../TextBox';
-import Theme from '../../theme';
 import { sendConduitPacket } from '../../services/conduitService';
 
 declare const fabricate: Fabricate<AppState>;
@@ -47,7 +46,7 @@ const ConduitControls = () => {
         .setChildren([
           TextButton()
             .setText('Send')
-            .setStyles({ ...Theme.styles.controlButton, width: '100%' })
+            .setStyles(({ styles }) => ({ ...styles.controlButton, width: '100%' }))
             .onClick((el, state) => {
               const { conduitData } = state;
               const { app: to, topic, message } = conduitData;

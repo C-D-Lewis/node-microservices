@@ -18,6 +18,7 @@ export const INITIAL_STATE: AppState = {
   fleet: [],
   logEntries: [],
   logExpanded: false,
+  metricHistory: [],
 
   // Selections
   page: 'FleetPage',
@@ -55,7 +56,6 @@ export const INITIAL_STATE: AppState = {
   monitorData: {
     metricNames: [],
     metric: '',
-    metricHistory: [],
     plugins: [],
     minValue: 0,
     maxValue: 99999,

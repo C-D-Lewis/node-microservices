@@ -1,5 +1,4 @@
 import { Fabricate } from 'fabricate.js';
-import Theme from '../../theme';
 import { AppState } from '../../types';
 import TextButton from '../TextButton';
 import { ControlContainer, ControlRow } from '../AppControls';
@@ -41,34 +40,41 @@ const ClacksControls = () => {
             .onUpdate((el, { clacksData: { message } }) => el.setText(message), ['clacksData'])
             .setStyles({ width: '100%' })
             .onChange((el, state, value) => setProp('message', value))
-            .onCreate((el) => {
+            .onUpdate((el) => {
               // Default value is JSON
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               el.value = '{}';
-            }),
+            }, ['fabricate:created']),
         ]),
       fabricate('Row')
         .setChildren([
           TextButton()
             .setText('Send')
-            .setStyles({ ...Theme.styles.controlButton, width: '100%', backgroundColor: Theme.palette.grey3 })
+            .setStyles(({ palette, styles }) => ({
+              ...styles.controlButton,
+              width: '100%',
+              backgroundColor: palette.grey3,
+            }))
             .onClick((el, { clacksData }) => {
               const { topic, message } = clacksData;
               sendClacksMessage(topic, message);
             })
-            .onUpdate((el, { clacksData: { connected } }) => el.setStyles({
-              backgroundColor: connected ? Theme.palette.primary : Theme.palette.grey3,
-            }), ['clacksData']),
+            .onUpdate((el, state) => {
+              const { clacksData: { connected } } = state;
+              el.setStyles(({ palette }) => ({
+                backgroundColor: connected ? palette.primary : palette.grey3,
+              }));
+            }, ['clacksData']),
         ]),
     ])
-    .onCreate((el, state) => {
+    .onUpdate((el, state) => {
       const { clacksData } = state;
 
       // Try and connect if not connected
       if (clacksData.connected) disconnectClacks();
       setTimeout(() => connectClacks(getReachableIp(state)!), 500);
-    });
+    }, ['fabricate:created']);
 };
 
 export default ClacksControls;

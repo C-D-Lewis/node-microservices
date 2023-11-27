@@ -1,13 +1,12 @@
 import { Fabricate } from 'fabricate.js';
 import { APP_CARD_WIDTH } from '../constants';
-import Theme from '../theme';
 import { AppState, DataPoint } from '../types';
 import { shortDateTime } from '../utils';
 
 declare const fabricate: Fabricate<AppState>;
 
 /** Graph width */
-const GRAPH_WIDTH = 2 * APP_CARD_WIDTH;
+export const GRAPH_WIDTH = 2 * APP_CARD_WIDTH;
 /** Graph height */
 const GRAPH_HEIGHT = 250;
 /** Y axis marign */
@@ -25,16 +24,16 @@ const BUCKET_SIZE = 5;
  * @returns {HTMLElement} Fabricate component.
  */
 const DataPointLabel = ({ point }: { point: DataPoint }) => fabricate('Text')
-  .setStyles({
+  .setStyles(({ palette }) => ({
     fontSize: '0.9rem',
     color: 'white',
-    backgroundColor: Theme.palette.translucentGrey,
+    backgroundColor: palette.translucentGrey,
     padding: '5px',
     position: 'relative',
     bottom: '0px',
     width: 'fit-content',
     minWidth: '160px',
-  })
+  }))
   .setText(`${Math.round(point.value * 100) / 100}\n(${shortDateTime(point.dateTime)})`);
 
 /** DataPoint prop types */
@@ -57,13 +56,13 @@ const DataPoint = ({ point, minValue, maxValue }: DataPointPropTypes) => {
   const range = maxValue - minValue;
   const height = ((point.value - minValue) * GRAPH_HEIGHT) / range;
   return fabricate('div')
-    .setStyles({
+    .setStyles(({ palette }) => ({
       width: `${POINT_SIZE}px`,
       height: `${POINT_SIZE}px`,
       borderRadius: '10px',
-      backgroundColor: Theme.palette.secondary,
+      backgroundColor: palette.secondary,
       marginBottom: `${height}px`,
-    })
+    }))
     .onHover((el, state, isHovered) => {
       el.setChildren(
         isHovered ? [DataPointLabel({ point })] : [],
@@ -77,15 +76,15 @@ const DataPoint = ({ point, minValue, maxValue }: DataPointPropTypes) => {
  * @returns {HTMLElement} Fabricate component.
  */
 const GraphView = () => fabricate('Row')
-  .setStyles({
-    backgroundColor: Theme.palette.grey2,
-    borderBottom: `solid 2px ${Theme.palette.lightGrey}`,
-    borderLeft: `solid 2px ${Theme.palette.lightGrey}`,
+  .setStyles(({ palette }) => ({
+    backgroundColor: palette.grey2,
+    borderBottom: `solid 2px ${palette.lightGrey}`,
+    borderLeft: `solid 2px ${palette.lightGrey}`,
     alignItems: 'end',
     width: '100%',
     height: `${GRAPH_HEIGHT}px`,
-  })
-  .onUpdate((el, { monitorData: { metricHistory, minValue, maxValue } }) => {
+  }))
+  .onUpdate((el, { metricHistory, monitorData: { minValue, maxValue } }) => {
     if (!metricHistory.length) return;
 
     // Average into buckets
@@ -106,7 +105,7 @@ const GraphView = () => fabricate('Row')
       .slice(-GRAPH_WIDTH)
       .map((point) => DataPoint({ point, minValue, maxValue }));
     el.setChildren(points);
-  }, ['monitorData']);
+  }, ['metricHistory']);
 
 /**
  * YAxisLabels component.
@@ -118,16 +117,12 @@ const YAxisLabels = () => fabricate('Column')
   .setChildren([
     fabricate('Text')
       .setStyles({ fontSize: '0.9rem', color: 'white' })
-      .onUpdate((el, { monitorData: { metricHistory, maxValue } }) => {
-        if (!metricHistory.length) return;
-
+      .onUpdate((el, { monitorData: { maxValue } }) => {
         el.setText(String(maxValue));
       }, ['monitorData']),
     fabricate('Text')
       .setStyles({ fontSize: '0.9rem', color: 'white', marginTop: 'auto' })
-      .onUpdate((el, { monitorData: { metricHistory, minValue } }) => {
-        if (!metricHistory.length) return;
-
+      .onUpdate((el, { monitorData: { minValue } }) => {
         el.setText(String(minValue));
       }, ['monitorData']),
   ]);
@@ -142,16 +137,12 @@ const HAxisLabels = () => fabricate('Row')
   .setChildren([
     fabricate('Text')
       .setStyles({ fontSize: '0.9rem', color: 'white' })
-      .onUpdate((el, { monitorData: { metricHistory, minTime } }) => {
-        if (!metricHistory.length) return;
-
+      .onUpdate((el, { monitorData: { minTime } }) => {
         el.setText(String(minTime));
       }, ['monitorData']),
     fabricate('Text')
       .setStyles({ fontSize: '0.9rem', color: 'white', marginLeft: 'auto' })
-      .onUpdate((el, { monitorData: { metricHistory, maxTime } }) => {
-        if (!metricHistory.length) return;
-
+      .onUpdate((el, { monitorData: { maxTime } }) => {
         el.setText(String(maxTime));
       }, ['monitorData']),
   ]);

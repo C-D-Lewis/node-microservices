@@ -13,10 +13,9 @@ declare const fabricate: Fabricate<AppState>;
 /**
  * Re-load the fleet list data.
  *
- * @param {HTMLElement} el - This element.
  * @param {object} state - App state.
  */
-const fetchFleetList = async (el: HTMLElement, state: AppState) => {
+const fetchFleetList = async (state: AppState) => {
   const { host, token } = state;
   fabricate.update({ fleet: [] });
 
@@ -82,7 +81,21 @@ const ServiceDashboard = () => fabricate('Column')
     fabricate.conditional(({ page }) => page === 'AppsPage', AppsPage),
     ResponseLog(),
   ])
-  .onUpdate(parseParams, ['fabricate:init'])
-  .onUpdate(fetchFleetList, ['token']);
+  .onUpdate((el, state, keys) => {
+    if (keys.includes('fabricate:init')) {
+      parseParams();
+      return;
+    }
 
-fabricate.app(ServiceDashboard(), INITIAL_STATE, { strict: true });
+    if (keys.includes('token')) {
+      fetchFleetList(state);
+    }
+  }, ['fabricate:init', 'token']);
+
+fabricate.app(
+  ServiceDashboard,
+  INITIAL_STATE,
+  {
+    theme: Theme,
+  },
+);

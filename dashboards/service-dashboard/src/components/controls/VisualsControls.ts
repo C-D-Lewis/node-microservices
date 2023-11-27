@@ -3,7 +3,6 @@ import { AppState } from '../../types';
 import TextButton from '../TextButton';
 import { ControlContainer, ControlRow } from '../AppControls';
 import TextBox from '../TextBox';
-import Theme from '../../theme';
 import { sendConduitPacket } from '../../services/conduitService';
 import SwatchButton from '../SwatchButton';
 
@@ -86,7 +85,7 @@ const VisualsControls = () => {
         .setChildren([
           TextButton()
             .setText('All')
-            .setStyles({ ...Theme.styles.controlButton, width: '20%' })
+            .setStyles(({ styles }) => ({ ...styles.controlButton, width: '20%' }))
             .onClick((el, state) => {
               const { visualsData } = state;
               const { red, green, blue } = visualsData;
@@ -95,7 +94,7 @@ const VisualsControls = () => {
             }),
           TextButton()
             .setText('Pixel')
-            .setStyles({ ...Theme.styles.controlButton, width: '20%' })
+            .setStyles(({ styles }) => ({ ...styles.controlButton, width: '20%' }))
             .onClick((el, state) => {
               const { visualsData } = state;
               const {
@@ -106,7 +105,7 @@ const VisualsControls = () => {
             }),
           TextButton()
             .setText('Blink')
-            .setStyles({ ...Theme.styles.controlButton, width: '20%' })
+            .setStyles(({ styles }) => ({ ...styles.controlButton, width: '20%' }))
             .onClick((el, state) => {
               const { visualsData } = state;
               const {
@@ -117,7 +116,7 @@ const VisualsControls = () => {
             }),
           TextButton()
             .setText('Text')
-            .setStyles({ ...Theme.styles.controlButton, width: '20%' })
+            .setStyles(({ styles }) => ({ ...styles.controlButton, width: '20%' }))
             .onClick((el, state) => {
               const { visualsData } = state;
               const { text } = visualsData;
@@ -126,7 +125,7 @@ const VisualsControls = () => {
             }),
           TextButton()
             .setText('State')
-            .setStyles({ ...Theme.styles.controlButton, width: '20%' })
+            .setStyles(({ styles }) => ({ ...styles.controlButton, width: '20%' }))
             .onClick((el, state) => sendConduitPacket(state, { to: 'visuals', topic: 'state' })),
         ]),
     ]);

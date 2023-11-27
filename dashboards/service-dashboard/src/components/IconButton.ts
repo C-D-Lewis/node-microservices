@@ -1,5 +1,4 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
-import Theme from '../theme';
 import { AppState } from '../types';
 
 declare const fabricate: Fabricate<AppState>;
@@ -12,14 +11,14 @@ declare const fabricate: Fabricate<AppState>;
  * @returns {FabricateComponent} IconButton component.
  */
 const IconButton = ({ src }: { src: string }) => fabricate('Image', { src })
-  .setStyles({
+  .setStyles(({ palette }) => ({
     width: '26px',
     height: '26px',
-    backgroundColor: Theme.palette.grey3,
+    backgroundColor: palette.grey3,
     padding: '3px',
     borderRadius: '3px',
     marginRight: '5px',
     cursor: 'pointer',
-  });
+  }));
 
 export default IconButton;

@@ -1,6 +1,6 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
-import Theme from '../theme';
 import { AppState } from '../types';
+import Theme from '../theme';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -20,17 +20,17 @@ const LogEntry = ({ text }: { text: string }) => {
   } catch (e) { /** Not JSON */ }
 
   return fabricate('pre')
-    .setStyles({
+    .setStyles(({ palette }) => ({
       fontFamily: Theme.fonts.code,
       color: 'white',
       fontSize: '0.8rem',
-      backgroundColor: wasError ? Theme.palette.statusDown : Theme.palette.grey3,
+      backgroundColor: wasError ? palette.statusDown : palette.grey3,
       margin: '0',
       padding: '5px 15px',
       borderTop: 'solid 2px #555',
       borderBottom: 'solid 2px #111',
       marginBottom: '3px',
-    })
+    }))
     .setText(finalText);
 };
 
@@ -43,11 +43,11 @@ const ResponseLog = () => {
   const maxWidth = fabricate.isNarrow() ? '300px' : '600px';
 
   return fabricate('Column')
-    .setStyles({
+    .setStyles(({ palette }) => ({
       position: 'absolute',
       right: '0',
       top: '0',
-      backgroundColor: Theme.palette.grey3,
+      backgroundColor: palette.grey3,
       minWidth: '0px',
       maxWidth: '0px',
       height: '100vh',
@@ -55,7 +55,7 @@ const ResponseLog = () => {
       padding: '10px 0px',
       overflowY: 'scroll',
       transition: '0.3s',
-    })
+    }))
     .onUpdate(
       (el, { logEntries, logExpanded }, keys) => {
         if (keys.includes('logEntries')) {

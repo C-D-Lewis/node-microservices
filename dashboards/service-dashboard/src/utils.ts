@@ -34,7 +34,6 @@ export const getReachableIp = (state: AppState) => {
   const { publicIp, localIp, deviceName } = selectedDevice;
   const publicIpValidKey = isReachableKey(deviceName, 'public');
   const localIpValidKey = isReachableKey(deviceName, 'local');
-
   if (state[localIpValidKey]) return localIp;
 
   return state[publicIpValidKey] ? publicIp : undefined;

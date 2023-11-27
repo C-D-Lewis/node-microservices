@@ -46,15 +46,15 @@ const getReqStateColor = (reqState: RequestState) => {
  */
 const CardContainer = ({ size = 1 }: { size: number }) => fabricate('Card')
   .asFlex('column')
-  .setStyles({
+  .setStyles(({ palette }) => ({
     width: `${APP_CARD_WIDTH * size}px`,
     margin: '10px 0px 10px 20px',
     opacity: '0',
     visibility: 'hidden',
     transition: '0.6s',
-    backgroundColor: Theme.palette.grey5,
+    backgroundColor: palette.grey5,
     boxShadow: '2px 2px 3px 1px #0004',
-  });
+  }));
 
 /**
  * AppName component.
@@ -78,13 +78,13 @@ const AppName = () => fabricate('Text')
  * @returns {HTMLElement} Fabricate component.
  */
 const StatusText = () => fabricate('Text')
-  .setStyles({
-    color: Theme.palette.lightGrey,
+  .setStyles(({ palette }) => ({
+    color: palette.lightGrey,
     fontSize: '0.9rem',
     paddingTop: '1',
     marginBottom: '2px',
     cursor: 'default',
-  });
+  }));
 
 /**
  * StatusLED component.
@@ -103,12 +103,12 @@ const StatusLED = ({ app }: { app: string }) => {
       borderRadius: '9px',
       marginRight: '5px',
     })
-    .onCreate((el, state) => {
-      const { selectedDevice } = state;
-      if (selectedDevice === null) return;
+    // .onCreate((el, state) => {
+    //   const { selectedDevice } = state;
+    //   if (selectedDevice === null) return;
 
-      el.setStyles({ backgroundColor: getAppStatusColor(state, app) });
-    })
+    //   el.setStyles({ backgroundColor: getAppStatusColor(state, app) });
+    // })
     .onUpdate((el, state) => {
       const { selectedDevice } = state;
       if (selectedDevice === null) return;
@@ -117,7 +117,7 @@ const StatusLED = ({ app }: { app: string }) => {
       const reqStateColor = getReqStateColor(state[reqStateKey]);
       const statusColor = getAppStatusColor(state, app);
       el.setStyles({ backgroundColor: pending ? reqStateColor : statusColor });
-    }, [reqStateKey]);
+    }, ['fabricate:created', reqStateKey]);
 };
 
 /**
@@ -136,13 +136,13 @@ const CardStatus = ({ app }: { app: string }) => fabricate('Row')
   .setChildren([
     StatusLED({ app }),
     StatusText()
-      .onCreate((el, { selectedDevice, deviceApps }) => {
+      .onUpdate((el, { selectedDevice, deviceApps }) => {
         if (selectedDevice === null) return;
 
         const apps = deviceApps[selectedDevice.deviceName];
         const { status, port } = apps.find((p) => p.app === app)!;
         el.setText(`${status} (${port})`);
-      }),
+      }, ['fabricate:created']),
   ]);
 
 /**
@@ -151,11 +151,11 @@ const CardStatus = ({ app }: { app: string }) => fabricate('Row')
  * @returns {HTMLElement} Fabricate component.
  */
 const CardTitleRow = () => fabricate('Row')
-  .setStyles({
+  .setStyles(({ palette }) => ({
     alignItems: 'center',
-    backgroundColor: Theme.palette.grey5,
+    backgroundColor: palette.grey5,
     padding: '5px 10px',
-  });
+  }));
 
 /**
  * AppCard component.

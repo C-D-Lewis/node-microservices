@@ -1,11 +1,11 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
 import { ICON_NAMES } from '../constants';
-import Theme from '../theme';
 import {
   AppState, Device, DeviceApp, IPType,
 } from '../types';
 import { getTimeAgoStr, isReachableKey } from '../utils';
 import ItemPill from './ItemPill';
+import Theme from '../theme';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -77,7 +77,10 @@ const IpText = ({ device, deviceIp, type }: IpTextPropTypes) => {
     }, [reachableKey]);
 
   return fabricate('Row')
-    .setStyles({ alignItems: 'center', borderBottom: `solid 1px ${Theme.palette.grey2}` })
+    .setStyles(({ palette }) => ({
+      alignItems: 'center',
+      borderBottom: `solid 1px ${palette.grey2}`,
+    }))
     .setChildren([icon, textButton]);
 };
 
@@ -103,15 +106,15 @@ const DeviceIcon = ({ deviceType }: { deviceType: string }) => fabricate('Image'
  * @returns {HTMLElement} Fabricate component.
  */
 const LastSeenLabel = ({ lastCheckIn }: { lastCheckIn: number }) => fabricate('Text')
-  .setStyles({
-    color: Theme.palette.lightGrey,
+  .setStyles(({ palette }) => ({
+    color: palette.lightGrey,
     fontStyle: 'italic',
     fontSize: '0.9rem',
     textAlign: 'end',
     margin: '8px',
     paddingTop: '10px',
     marginTop: 'auto',
-  })
+  }))
   .setText(`${getTimeAgoStr(lastCheckIn)} ago`);
 
 /**
@@ -123,13 +126,13 @@ const LastSeenLabel = ({ lastCheckIn }: { lastCheckIn: number }) => fabricate('T
  * @returns {HTMLElement} Fabricate component.
  */
 const CardTitle = ({ device, seenRecently }: { device: Device, seenRecently: boolean }) => fabricate('Row')
-  .setStyles({
-    backgroundColor: seenRecently ? Theme.palette.instanceHealthy : Theme.palette.grey5,
+  .setStyles(({ palette }) => ({
+    backgroundColor: seenRecently ? palette.instanceHealthy : palette.grey5,
     alignItems: 'center',
     height: '35px',
     boxShadow: '2px 2px 3px 1px #0006',
     cursor: 'pointer',
-  })
+  }))
   .onClick(() => fabricate.update({
     page: 'AppsPage',
     selectedDevice: device,
@@ -141,14 +144,14 @@ const CardTitle = ({ device, seenRecently }: { device: Device, seenRecently: boo
  * @returns {HTMLElement} Fabricate component.
  */
 const DeviceCardContainer = () => fabricate('Card')
-  .setStyles({
+  .setStyles(({ palette }) => ({
     minWidth: '320px',
     maxWidth: '320px',
     minHeight: '150px',
     margin: '10px',
     boxShadow: '2px 2px 3px 1px #0004',
-    backgroundColor: Theme.palette.grey3,
-  });
+    backgroundColor: palette.grey3,
+  }));
 
 /**
  * DeviceCardContainer component.
@@ -159,7 +162,10 @@ const DeviceCardContainer = () => fabricate('Card')
  * @returns {HTMLElement} Fabricate component.
  */
 const CommitView = ({ commit, commitDate }: { commit: string, commitDate: string }) => fabricate('Row')
-  .setStyles({ alignItems: 'center', borderBottom: `solid 1px ${Theme.palette.grey2}` })
+  .setStyles(({ palette }) => ({
+    alignItems: 'center',
+    borderBottom: `solid 1px ${palette.grey2}`,
+  }))
   .setChildren([
     fabricate('Image', { src: 'assets/commit.png' })
       .setStyles({
@@ -191,7 +197,10 @@ const DeviceDetailsColumn = ({ device }: { device: Device }) => {
   } = device;
 
   return fabricate('Column')
-    .setStyles({ flex: '2', borderRight: `solid 1px ${Theme.palette.grey3}` })
+    .setStyles(({ palette }) => ({
+      flex: '2',
+      borderRight: `solid 1px ${palette.grey3}`,
+    }))
     .setChildren([
       IpText({
         device,
@@ -226,7 +235,7 @@ const AppChipList = ({ device }: { device: Device }) => {
   const updateLayout = (el: FabricateComponent<AppState>, state: AppState) => {
     const { deviceApps } = state;
     const apps = deviceApps[deviceName];
-    if (!apps) {
+    if (!apps || !apps.length) {
       el.setChildren([
         fabricate('Loader').setStyles({ margin: 'auto' }),
       ]);
@@ -250,8 +259,7 @@ const AppChipList = ({ device }: { device: Device }) => {
       alignContent: 'flex-start',
       padding: '5px',
     })
-    .onCreate(updateLayout)
-    .onUpdate(updateLayout, ['deviceApps']);
+    .onUpdate(updateLayout, ['fabricate:created', 'deviceApps']);
 };
 
 /**
@@ -297,10 +305,10 @@ const DeviceCard = ({ device }: { device: Device }) => {
       DeviceDetailsColumn({ device }),
       AppChipList({ device }),
     ])
-    .onCreate(() => {
+    .onUpdate(() => {
       testIp(publicIp, publicIpValidKey);
       testIp(localIp, localIpValidKey);
-    });
+    }, ['fabricate:created']);
 };
 
 export default DeviceCard;

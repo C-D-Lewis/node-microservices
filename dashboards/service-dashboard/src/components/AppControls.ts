@@ -1,5 +1,4 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
-import Theme from '../theme';
 import { AppState } from '../types';
 import MonitorControls from './controls/MonitorControls';
 import ClacksControls from './controls/ClacksControls';
@@ -27,7 +26,7 @@ export const ControlRow = () => fabricate('Row')
  * @returns {HTMLElement} Fabricate component.
  */
 export const ControlContainer = () => fabricate('Column')
-  .setStyles({ backgroundColor: Theme.palette.grey4 });
+  .setStyles(({ palette }) => ({ backgroundColor: palette.grey4 }));
 
 const controlsMap: Record<string, () => FabricateComponent<AppState>> = {
   attic: AtticControls,

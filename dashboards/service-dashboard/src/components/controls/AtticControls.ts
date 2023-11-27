@@ -3,7 +3,6 @@ import { AppState } from '../../types';
 import TextButton from '../TextButton';
 import { ControlContainer, ControlRow } from '../AppControls';
 import TextBox from '../TextBox';
-import Theme from '../../theme';
 import { sendConduitPacket } from '../../services/conduitService';
 
 declare const fabricate: Fabricate<AppState>;
@@ -47,7 +46,7 @@ const AtticControls = () => {
         .setChildren([
           TextButton()
             .setText('Get')
-            .setStyles({ ...Theme.styles.controlButton, width: '33%' })
+            .setStyles(({ styles }) => ({ ...styles.controlButton, width: '33%' }))
             .onClick(async (el, state) => {
               const { atticData } = state;
               const { app, key } = atticData;
@@ -56,7 +55,7 @@ const AtticControls = () => {
             }),
           TextButton()
             .setText('Set')
-            .setStyles({ ...Theme.styles.controlButton, width: '33%' })
+            .setStyles(({ styles }) => ({ ...styles.controlButton, width: '33%' }))
             .onClick((el, state) => {
               const { atticData } = state;
               const { app, key, value } = atticData;
@@ -64,7 +63,7 @@ const AtticControls = () => {
             }),
           TextButton()
             .setText('List Apps')
-            .setStyles({ ...Theme.styles.controlButton, width: '33%' })
+            .setStyles(({ styles }) => ({ ...styles.controlButton, width: '33%' }))
             .onClick((el, state) => {
               sendConduitPacket(state, { to: 'attic', topic: 'listApps', message: {} });
             }),

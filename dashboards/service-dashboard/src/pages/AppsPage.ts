@@ -18,10 +18,12 @@ const AppsPage = () => {
    */
   const updateLayout = (el: FabricateComponent<AppState>, state: AppState) => {
     const { selectedDevice, deviceApps } = state;
-    if (!selectedDevice) return;
+    if (!selectedDevice || !deviceApps) return;
 
     const apps = deviceApps[selectedDevice.deviceName];
-    el.setChildren(apps.map((app) => AppCard({ app: app.app! })));
+    if (apps) {
+      el.setChildren(apps.map((app) => AppCard({ app: app.app! })));
+    }
   };
 
   return fabricate('Row')
@@ -30,8 +32,7 @@ const AppsPage = () => {
       flexWrap: 'wrap',
       paddingTop: '15px',
     })
-    .onCreate(updateLayout)
-    .onUpdate(updateLayout, ['selectedDevice', 'deviceApps']);
+    .onUpdate(updateLayout, ['fabricate:created', 'selectedDevice', 'deviceApps']);
 };
 
 export default AppsPage;

@@ -3,7 +3,6 @@ import { AppState } from '../../types';
 import TextButton from '../TextButton';
 import { ControlContainer, ControlRow } from '../AppControls';
 import TextBox from '../TextBox';
-import Theme from '../../theme';
 import { sendConduitPacket } from '../../services/conduitService';
 
 declare const fabricate: Fabricate<AppState>;
@@ -51,11 +50,11 @@ const GuestlistControls = () => {
         .setChildren([
           TextButton()
             .setText('List Users')
-            .setStyles({ ...Theme.styles.controlButton, width: '33%' })
+            .setStyles(({ styles }) => ({ ...styles.controlButton, width: '33%' }))
             .onClick((el, state) => sendConduitPacket(state, { to: 'guestlist', topic: 'getAll' })),
           TextButton()
             .setText('Create User')
-            .setStyles({ ...Theme.styles.controlButton, width: '33%' })
+            .setStyles(({ styles }) => ({ ...styles.controlButton, width: '33%' }))
             .onClick((el, state) => {
               const { guestlistData } = state;
               const {
@@ -71,7 +70,7 @@ const GuestlistControls = () => {
             }),
           TextButton()
             .setText('Delete User')
-            .setStyles({ ...Theme.styles.controlButton, width: '33%' })
+            .setStyles(({ styles }) => ({ ...styles.controlButton, width: '33%' }))
             .onClick((el, state) => {
               const { guestlistData } = state;
               const {

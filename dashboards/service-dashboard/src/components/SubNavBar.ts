@@ -1,6 +1,5 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
 import { sendConduitPacket } from '../services/conduitService';
-import Theme from '../theme';
 import { AppState } from '../types';
 import { getReachableIp } from '../utils';
 import IconButton from './IconButton';
@@ -37,7 +36,7 @@ const commandDevice = async (
 
   // Reset color regardless
   setTimeout(() => {
-    el.setStyles({ backgroundColor: Theme.palette.grey3 });
+    el.setStyles(({ palette }) => ({ backgroundColor: palette.grey3 }));
     fabricate.update(stateKey, false);
   }, 3000);
 
@@ -50,7 +49,7 @@ const commandDevice = async (
     if (error) throw new Error(error);
 
     console.log(`Device ${state.selectedDevice?.deviceName} sent ${topic} command`);
-    el.setStyles({ backgroundColor: Theme.palette.statusOk });
+    el.setStyles(({ palette }) => ({ backgroundColor: palette.statusOk }));
   } catch (e) {
     alert(e);
     console.log(e);
@@ -136,8 +135,7 @@ const BackBreadcrumb = () => {
           ShutdownButton(),
         ]),
     ])
-    .onCreate(updateLayout)
-    .onUpdate(updateLayout, ['fleet', 'selectedDevice']);
+    .onUpdate(updateLayout, ['fabricate:created', 'fleet', 'selectedDevice']);
 };
 
 /**
@@ -146,11 +144,11 @@ const BackBreadcrumb = () => {
  * @returns {FabricateComponent} SubNavBar component.
  */
 const SubNavBar = () => fabricate('Row')
-  .setStyles({
-    backgroundColor: Theme.palette.grey3,
+  .setStyles(({ palette }) => ({
+    backgroundColor: palette.grey3,
     paddingLeft: '8px',
     boxShadow: '2px 2px 3px 1px #0004',
-  })
+  }))
   .setChildren([
     fabricate.conditional(({ page }) => page === 'FleetPage', AllDevicesBreadcrumb),
     fabricate.conditional(({ page }) => page === 'AppsPage', BackBreadcrumb),

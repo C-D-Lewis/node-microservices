@@ -57,6 +57,7 @@ export type AppState = {
   fleet: Device[];
   logEntries: string[];
   logExpanded: boolean;
+  metricHistory: MetricPoint[];
 
   // Selections
   page: 'FleetPage' | 'AppsPage',
@@ -94,7 +95,6 @@ export type AppState = {
   monitorData: {
     metricNames: string[];
     metric: string;
-    metricHistory: MetricPoint[];
     plugins: MonitorPlugin[];
     minValue: number;
     maxValue: number;
