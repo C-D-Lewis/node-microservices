@@ -28,7 +28,7 @@ module.exports = async () => {
     });
 
     const json = await res.json();
-    const { value } = json.data.fundraisingEvent.amountRaised;
+    const { value } = json.data.fundraisingEvent.totalAmountRaised;
     const now = Date.now();
 
     // Write CSV file
