@@ -23,6 +23,8 @@ sudo parted /dev/sda
   ```
 > `raid1` is the drive name, here and after
 
+Possibly need to reboot here?
+
 # Make partition (1 on sda as example)
 ```
 sudo mkfs.ext4 /dev/sda1
@@ -51,6 +53,13 @@ sudo nano /etc/fstab
 ```
 sudo mount -t ext4 /dev/sda1 /mnt/usb/raid1
 sudo chown -R pi /mnt/usb/raid1
+```
+
+# Permissions
+
+```
+sudo chown pi:pi -R /mnt/usb/raid1
+sudo chmod a+rwx /mnt/usb/raid1
 ```
 
 # Reboot

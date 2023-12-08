@@ -60,9 +60,6 @@ sudo apt install -y jq
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 ```
 > Use tools/install-node-*.sh for armv6l (Zero)
-```
-npm i -g npm@^7
-```
 
 # npm not found?
 > or if not found as sudo in crontab (after nvm installation and nvm alias default)
