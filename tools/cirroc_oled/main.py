@@ -13,7 +13,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), '.')
 
 # If we're running on a Pi
-RUNNING_ON_PI = 'arm' in platform.machine()
+RUNNING_ON_PI = 'arm' in platform.machine() or 'aarch64' in platform.machine()
 
 #
 # Get local IP address
@@ -27,6 +27,8 @@ def get_ip_address(ifname):
 # Prepare hardware libraries
 #
 def prepare_hardware():
+  global disp
+
   import busio
   import adafruit_ssd1306
   from board import SCL, SDA

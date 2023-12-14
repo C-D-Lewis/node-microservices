@@ -52,13 +52,12 @@ sudo nano /etc/fstab
 # First mount
 ```
 sudo mount -t ext4 /dev/sda1 /mnt/usb/raid1
-sudo chown -R pi /mnt/usb/raid1
 ```
 
 # Permissions
 
 ```
-sudo chown pi:pi -R /mnt/usb/raid1
+sudo chown pi -R /mnt/usb/raid1
 sudo chmod a+rwx /mnt/usb/raid1
 ```
 
