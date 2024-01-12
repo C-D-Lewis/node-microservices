@@ -45,6 +45,9 @@ export type MonitorPlugin = {
   ENABLED?: boolean;
 };
 
+/** App pages */
+type Pages = 'FleetPage' | 'AppsPage';
+
 /** App state type */
 export type AppState = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,7 +63,7 @@ export type AppState = {
   metricHistory: MetricPoint[];
 
   // Selections
-  page: 'FleetPage' | 'AppsPage',
+  page: Pages,
   selectedDevice: Device | null,
 
   // App data

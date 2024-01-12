@@ -1,4 +1,4 @@
-import { Fabricate } from 'fabricate.js';
+import { Fabricate, FabricateComponent } from 'fabricate.js';
 import { APP_CARD_WIDTH } from '../constants';
 import Theme from '../theme';
 import { AppState, RequestState } from '../types';
@@ -96,6 +96,22 @@ const StatusText = () => fabricate('Text')
 const StatusLED = ({ app }: { app: string }) => {
   const reqStateKey = appRequestStateKey(app);
 
+  /**
+   * Update the LED color.
+   *
+   * @param {FabricateComponent<AppState>} el - This element.
+   * @param {AppState} state - App state.
+   */
+  const updateColor = (el: FabricateComponent<AppState>, state: AppState) => {
+    const { selectedDevice } = state;
+    if (selectedDevice === null) return;
+
+    const pending = state[reqStateKey] === 'pending';
+    const reqStateColor = getReqStateColor(state[reqStateKey]);
+    const statusColor = getAppStatusColor(state, app);
+    el.setStyles({ backgroundColor: pending ? reqStateColor : statusColor });
+  };
+
   return fabricate('div')
     .setStyles({
       width: '15px',
@@ -103,21 +119,8 @@ const StatusLED = ({ app }: { app: string }) => {
       borderRadius: '9px',
       marginRight: '5px',
     })
-    // .onCreate((el, state) => {
-    //   const { selectedDevice } = state;
-    //   if (selectedDevice === null) return;
-
-    //   el.setStyles({ backgroundColor: getAppStatusColor(state, app) });
-    // })
-    .onUpdate((el, state) => {
-      const { selectedDevice } = state;
-      if (selectedDevice === null) return;
-
-      const pending = state[reqStateKey] === 'pending';
-      const reqStateColor = getReqStateColor(state[reqStateKey]);
-      const statusColor = getAppStatusColor(state, app);
-      el.setStyles({ backgroundColor: pending ? reqStateColor : statusColor });
-    }, ['fabricate:created', reqStateKey]);
+    .onCreate(updateColor)
+    .onUpdate(updateColor, [reqStateKey]);
 };
 
 /**
@@ -136,13 +139,13 @@ const CardStatus = ({ app }: { app: string }) => fabricate('Row')
   .setChildren([
     StatusLED({ app }),
     StatusText()
-      .onUpdate((el, { selectedDevice, deviceApps }) => {
+      .onCreate((el, { selectedDevice, deviceApps }) => {
         if (selectedDevice === null) return;
 
         const apps = deviceApps[selectedDevice.deviceName];
         const { status, port } = apps.find((p) => p.app === app)!;
         el.setText(`${status} (${port})`);
-      }, ['fabricate:created']),
+      }),
   ]);
 
 /**

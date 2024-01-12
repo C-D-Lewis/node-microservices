@@ -40,12 +40,12 @@ const ClacksControls = () => {
             .onUpdate((el, { clacksData: { message } }) => el.setText(message), ['clacksData'])
             .setStyles({ width: '100%' })
             .onChange((el, state, value) => setProp('message', value))
-            .onUpdate((el) => {
+            .onCreate((el) => {
               // Default value is JSON
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               el.value = '{}';
-            }, ['fabricate:created']),
+            }),
         ]),
       fabricate('Row')
         .setChildren([
@@ -68,13 +68,13 @@ const ClacksControls = () => {
             }, ['clacksData']),
         ]),
     ])
-    .onUpdate((el, state) => {
+    .onCreate((el, state) => {
       const { clacksData } = state;
 
       // Try and connect if not connected
       if (clacksData.connected) disconnectClacks();
       setTimeout(() => connectClacks(getReachableIp(state)!), 500);
-    }, ['fabricate:created']);
+    });
 };
 
 export default ClacksControls;

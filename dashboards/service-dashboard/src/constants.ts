@@ -1,6 +1,6 @@
 import { AppState } from './types';
 
-/** Fleet host URL. TODO: Use env config */
+/** Fleet host URL */
 const FLEET_HOST = 'polaris.chrislewis.me.uk';
 
 /** Port to look for conduit apps */

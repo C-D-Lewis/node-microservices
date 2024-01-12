@@ -135,7 +135,8 @@ const BackBreadcrumb = () => {
           ShutdownButton(),
         ]),
     ])
-    .onUpdate(updateLayout, ['fabricate:created', 'fleet', 'selectedDevice']);
+    .onCreate(updateLayout)
+    .onUpdate(updateLayout, ['fleet', 'selectedDevice']);
 };
 
 /**

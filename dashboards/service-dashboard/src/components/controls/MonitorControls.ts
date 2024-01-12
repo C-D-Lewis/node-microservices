@@ -84,11 +84,11 @@ const PluginRow = ({ setProp }: PluginRowPropTypes) => fabricate('Row')
         }));
     }));
   }, ['monitorData'])
-  .onUpdate(async (el, state) => {
+  .onCreate(async (el, state) => {
     // Fetch all plugins
     const res = await sendConduitPacket(state, { to: 'monitor', topic: 'getPlugins' });
     setProp('plugins', res.message);
-  }, ['fabricate:created']);
+  });
 
 /** MetricRow prop types */
 type MetricRowPropTypes = {
@@ -102,31 +102,24 @@ type MetricRowPropTypes = {
  * @returns {FabricateComponent} MetricRow component.
  */
 const MetricRow = ({ setProp }: MetricRowPropTypes) => fabricate('Row')
-  .onUpdate(async (el, state, keys) => {
+  .onCreate(async (el, state) => {
+    const { message: newNames } = await sendConduitPacket(state, { to: 'monitor', topic: 'getMetricNames' });
+    setProp('metricNames', newNames);
+
+    // Load the first
+    if (newNames.length) fetchMetric(state, newNames[0], setProp);
+  })
+  .onUpdate((el, state) => {
     const { monitorData: { metricNames } } = state;
-
-    // Fetch all metric names, load the first
-    if (keys.includes('fabricate:created')) {
-      const { message: newNames } = await sendConduitPacket(state, { to: 'monitor', topic: 'getMetricNames' });
-      setProp('metricNames', newNames);
-
-      // Load the first
-      if (newNames.length) {
-        fetchMetric(state, newNames[0], setProp);
-      }
-      return;
-    }
+    if (!metricNames || !metricNames.length) return;
 
     // Show button for each metric once loaded
-    if (!metricNames || !metricNames.length) return;
-    if (keys.includes('monitorData')) {
-      const buttons = metricNames.map((metric) => TextButton()
-        .setText(metric)
-        .setStyles(({ styles }) => ({ ...styles.controlButton, width: '25%' }))
-        .onClick(() => fetchMetric(state, metric, setProp)));
-      el.setChildren(buttons);
-    }
-  }, ['fabricate:created', 'monitorData']);
+    const buttons = metricNames.map((metric) => TextButton()
+      .setText(metric)
+      .setStyles(({ styles }) => ({ ...styles.controlButton, width: '25%' }))
+      .onClick(() => fetchMetric(state, metric, setProp)));
+    el.setChildren(buttons);
+  }, ['monitorData']);
 
 /**
  * MonitorControls component.
@@ -149,11 +142,11 @@ const MonitorControls = () => {
       MetricRow({ setProp }),
       fabricate.conditional(({ metricHistory }) => !!metricHistory.length, MetricGraph),
     ])
-    .onUpdate(() => {
+    .onCreate(() => {
       setProp('metricHistory', []);
       setProp('metricNames', []);
       setProp('plugins', []);
-    }, ['fabricate:created']);
+    });
 };
 
 export default MonitorControls;

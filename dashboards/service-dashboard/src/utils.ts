@@ -11,7 +11,7 @@ declare const fabricate: Fabricate<AppState>;
  * @param {string} type - public or local
  * @returns {string} Key
  */
-export const isReachableKey = (deviceName: string, type: IPType) => `isReachable:${deviceName}:${type}`;
+export const isReachableKey = (deviceName: string, type: IPType) => fabricate.buildKey('isReachable', deviceName, type);
 
 /**
  * Is app request state key.

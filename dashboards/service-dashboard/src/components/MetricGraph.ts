@@ -60,7 +60,7 @@ const DataPoint = ({ point, minValue, maxValue }: DataPointPropTypes) => {
       width: `${POINT_SIZE}px`,
       height: `${POINT_SIZE}px`,
       borderRadius: '10px',
-      backgroundColor: palette.secondary,
+      backgroundColor: palette.datapoint,
       marginBottom: `${height}px`,
     }))
     .onHover((el, state, isHovered) => {

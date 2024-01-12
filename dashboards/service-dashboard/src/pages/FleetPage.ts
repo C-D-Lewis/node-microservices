@@ -98,12 +98,13 @@ const FleetPage = () => {
   };
 
   return fabricate('Column')
+    .onCreate(updateLayout)
     .onUpdate((el, state) => {
       updateLayout(el, state);
 
       // Fetch apps for all devices at once
       if (!Object.keys(state.deviceApps).length) fetchApps(state);
-    }, ['fabricate:created', 'fleet']);
+    }, ['fleet']);
 };
 
 export default FleetPage;

@@ -43,8 +43,6 @@ const fetchFleetList = async (state: AppState) => {
  */
 const parseParams = () => {
   const params = new URLSearchParams(window.location.search);
-
-  // Token
   const token = params.get('token');
   if (!token) {
     alert('Please provide token param');
@@ -95,7 +93,5 @@ const ServiceDashboard = () => fabricate('Column')
 fabricate.app(
   ServiceDashboard,
   INITIAL_STATE,
-  {
-    theme: Theme,
-  },
+  { theme: Theme },
 );

@@ -32,7 +32,8 @@ const AppsPage = () => {
       flexWrap: 'wrap',
       paddingTop: '15px',
     })
-    .onUpdate(updateLayout, ['fabricate:created', 'selectedDevice', 'deviceApps']);
+    .onCreate(updateLayout)
+    .onUpdate(updateLayout, ['selectedDevice', 'deviceApps']);
 };
 
 export default AppsPage;

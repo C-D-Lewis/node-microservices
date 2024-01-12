@@ -259,7 +259,8 @@ const AppChipList = ({ device }: { device: Device }) => {
       alignContent: 'flex-start',
       padding: '5px',
     })
-    .onUpdate(updateLayout, ['fabricate:created', 'deviceApps']);
+    .onCreate(updateLayout)
+    .onUpdate(updateLayout, ['deviceApps']);
 };
 
 /**
@@ -305,10 +306,10 @@ const DeviceCard = ({ device }: { device: Device }) => {
       DeviceDetailsColumn({ device }),
       AppChipList({ device }),
     ])
-    .onUpdate(() => {
+    .onCreate(() => {
       testIp(publicIp, publicIpValidKey);
       testIp(localIp, localIpValidKey);
-    }, ['fabricate:created']);
+    });
 };
 
 export default DeviceCard;

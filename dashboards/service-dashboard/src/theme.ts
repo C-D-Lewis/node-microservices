@@ -2,7 +2,7 @@
 const Theme = {
   palette: {
     primary: '#303F9F',
-    secondary: 'orange',
+    datapoint: 'orange',
     instanceHealthy: '#007800',
     text: 'white',
     grey1: '#111',
