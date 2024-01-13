@@ -16,8 +16,6 @@ export const INITIAL_STATE: AppState = {
   host: FLEET_HOST,
   deviceApps: {},
   fleet: [],
-  logEntries: [],
-  logExpanded: false,
   metricHistory: [],
 
   // Selections

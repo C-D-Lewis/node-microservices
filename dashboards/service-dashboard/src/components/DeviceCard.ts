@@ -5,7 +5,6 @@ import {
 } from '../types';
 import { getTimeAgoStr, isReachableKey } from '../utils';
 import ItemPill from './ItemPill';
-import Theme from '../theme';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -21,18 +20,6 @@ const DeviceName = () => fabricate('span')
     fontSize: '1rem',
     padding: '2px 2px 0px 2px',
     fontFamily: 'monospace',
-  });
-
-/**
- * ConnectionIcon component.
- *
- * @returns {HTMLElement} Fabricate component.
- */
-const ConnectionIcon = () => fabricate('Image', { src: 'assets/plug-off.png' })
-  .setStyles({
-    width: '18px',
-    height: '18px',
-    margin: '8px',
   });
 
 /** IpText prop types */
@@ -55,25 +42,30 @@ const IpText = ({ device, deviceIp, type }: IpTextPropTypes) => {
   const { deviceName } = device;
   const reachableKey = isReachableKey(deviceName, type);
 
-  const icon = ConnectionIcon().setAttributes({ src: `assets/${type}.png` });
+  const icon = fabricate('Image', { src: 'assets/local.png' })
+    .setStyles({
+      width: '18px',
+      height: '18px',
+      margin: '8px',
+    });
 
   const textButton = fabricate('span')
-    .setStyles({
+    .setStyles(({ fonts }) => ({
       color: 'lightgrey',
       fontSize: '1rem',
       margin: '5px 0px',
-      fontFamily: Theme.fonts.code,
-    })
+      fontFamily: fonts.code,
+    }))
     .setText(deviceIp)
     .onUpdate((el, state) => {
       const isReachable = state[reachableKey];
 
-      el.setStyles({
+      el.setStyles(({ palette }) => ({
         color: isReachable
-          ? Theme.palette.text
-          : Theme.palette.grey2,
+          ? palette.text
+          : palette.grey2,
         cursor: 'default',
-      });
+      }));
     }, [reachableKey]);
 
   return fabricate('Row')
@@ -174,13 +166,13 @@ const CommitView = ({ commit, commitDate }: { commit: string, commitDate: string
         margin: '8px',
       }),
     fabricate('Text')
-      .setStyles({
+      .setStyles(({ fonts }) => ({
         color: 'white',
         fontSize: '1rem',
         margin: '5px 0px',
-        fontFamily: Theme.fonts.code,
+        fontFamily: fonts.code,
         cursor: 'default',
-      })
+      }))
       .setText(commit ? `${commit} (${getTimeAgoStr(new Date(commitDate).getTime())})` : 'Unknown'),
   ]);
 
@@ -193,7 +185,7 @@ const CommitView = ({ commit, commitDate }: { commit: string, commitDate: string
  */
 const DeviceDetailsColumn = ({ device }: { device: Device }) => {
   const {
-    publicIp, localIp, commit, commitDate,
+    localIp, commit, commitDate,
   } = device;
 
   return fabricate('Column')
@@ -202,11 +194,6 @@ const DeviceDetailsColumn = ({ device }: { device: Device }) => {
       borderRight: `solid 1px ${palette.grey3}`,
     }))
     .setChildren([
-      IpText({
-        device,
-        deviceIp: publicIp,
-        type: 'public',
-      }),
       IpText({
         device,
         deviceIp: localIp,

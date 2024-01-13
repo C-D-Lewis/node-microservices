@@ -1,7 +1,7 @@
 import { Fabricate } from 'fabricate.js';
 import { CONDUIT_PORT } from '../constants';
 import { AppState, Packet } from '../types';
-import { addLogEntry, appRequestStateKey, isReachableKey } from '../utils';
+import { appRequestStateKey, isReachableKey } from '../utils';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -22,7 +22,8 @@ export const sendConduitPacket = async (
   tokenOverride?: string,
   deviceNameOverride?: string,
 ) => {
-  console.log('Sending...');
+  console.log('================================ Sending ================================');
+  console.table(JSON.stringify(packet));
 
   const { token, selectedDevice, fleet } = state;
   const reqStateKey = appRequestStateKey(packet.to);
@@ -57,9 +58,9 @@ export const sendConduitPacket = async (
       }),
     });
     const json = await res.json();
+    console.log('================================ RECEIVED ================================');
     console.log(JSON.stringify(json));
 
-    addLogEntry(state, json);
     fabricate.update(reqStateKey, 'success');
     return json;
   } catch (error) {

@@ -71,21 +71,6 @@ export const shortDateTime = (timestamp: string) => {
 };
 
 /**
- * Add a log entry.
- *
- * @param {AppState} state - App state.
- * @param {string|object} content - New item content.
- */
-export const addLogEntry = (state: AppState, content: string|object) => {
-  const text = (typeof content === 'string' ? content : JSON.stringify(content, null, 2)).slice(0, 10000);
-  const logEntries = [
-    ...state.logEntries,
-    text,
-  ];
-  fabricate.update({ logEntries });
-};
-
-/**
  * Load apps for all fleet devices.
  *
  * @param {AppState} state - App state.
@@ -107,7 +92,6 @@ export const fetchApps = async (state: AppState) => {
         deviceName,
       );
 
-      console.log({ message });
       if (message && message.error) {
         console.error(message.error);
         result[deviceName] = { error: message.error };

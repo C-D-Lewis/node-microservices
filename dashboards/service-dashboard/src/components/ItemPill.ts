@@ -16,7 +16,7 @@ const ItemPill = ({ src, text }: { src: string, text: string }) => fabricate('Ro
     cursor: 'default',
     borderRadius: '15px',
     backgroundColor: palette.grey5,
-    margin: '5px',
+    margin: '3px',
     alignItems: 'center',
     padding: '2px 6px',
     height: 'fit-content',

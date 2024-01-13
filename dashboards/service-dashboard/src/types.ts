@@ -58,8 +58,6 @@ export type AppState = {
   host: string;
   deviceApps: Record<string, DeviceApp[]>;
   fleet: Device[];
-  logEntries: string[];
-  logExpanded: boolean;
   metricHistory: MetricPoint[];
 
   // Selections

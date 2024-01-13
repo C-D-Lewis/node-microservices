@@ -62,15 +62,15 @@ const CardContainer = ({ size = 1 }: { size: number }) => fabricate('Card')
  * @returns {HTMLElement} Fabricate component.
  */
 const AppName = () => fabricate('Text')
-  .setStyles({
+  .setStyles(({ fonts }) => ({
     fontSize: '1.1rem',
     flex: '1',
     color: 'white',
     margin: '6px 5px 5px 5px',
-    fontFamily: Theme.fonts.code,
+    fontFamily: fonts.code,
     fontWeight: 'bold',
     cursor: 'default',
-  });
+  }));
 
 /**
  * StatusText component.

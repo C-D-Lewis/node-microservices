@@ -5,8 +5,6 @@ import { CONDUIT_PORT, INITIAL_STATE } from './constants';
 import SubNavBar from './components/SubNavBar';
 import FleetPage from './pages/FleetPage';
 import AppsPage from './pages/AppsPage';
-import ResponseLog from './components/ResponseLog';
-import IconButton from './components/IconButton';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -60,11 +58,7 @@ const parseParams = () => {
 const AppNavBar = () => fabricate('NavBar', {
   title: 'Service Dashboard',
   backgroundColor: Theme.palette.primary,
-})
-  .addChildren([
-    IconButton({ src: 'assets/log.png' })
-      .onClick((el, state) => fabricate.update('logExpanded', !state.logExpanded)),
-  ]);
+});
 
 /**
  * ServiceDashboard component.
@@ -77,7 +71,6 @@ const ServiceDashboard = () => fabricate('Column')
     SubNavBar(),
     fabricate.conditional(({ page }) => page === 'FleetPage', FleetPage),
     fabricate.conditional(({ page }) => page === 'AppsPage', AppsPage),
-    ResponseLog(),
   ])
   .onUpdate((el, state, keys) => {
     if (keys.includes('fabricate:init')) {

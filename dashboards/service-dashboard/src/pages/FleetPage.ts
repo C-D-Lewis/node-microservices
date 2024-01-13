@@ -53,9 +53,9 @@ const GroupContainer = () => fabricate('Column')
   }));
 
 /**
- * FleetPage component, column of public IPs with devices inside them.
+ * FleetCardList component, column of public IPs with devices inside them.
  *
- * @returns {FabricateComponent} FleetPage component.
+ * @returns {FabricateComponent} FleetCardList component.
  */
 const FleetPage = () => {
   /**
