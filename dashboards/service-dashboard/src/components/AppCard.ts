@@ -1,60 +1,36 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
 import { APP_CARD_WIDTH } from '../constants';
-import Theme from '../theme';
-import { AppState, RequestState } from '../types';
+import { AppState } from '../types';
 import AppControls from './AppControls';
-import { appRequestStateKey } from '../utils';
+import { appRequestStateKey, getAppStatusColor, getReqStateColor } from '../utils';
 
 declare const fabricate: Fabricate<AppState>;
 
 /**
- * Get status color for a given app.
- *
- * @param {AppState} state - App state.
- * @param {string} app - App name.
- * @returns {string} Status color.
- */
-const getAppStatusColor = (state: AppState, app: string): string => {
-  const { selectedDevice, deviceApps } = state;
-  if (selectedDevice === null) return 'pink';
-
-  const { deviceName } = selectedDevice;
-  const apps = deviceApps[deviceName];
-  const { status } = apps.find((p) => p.app === app)!;
-  return status?.includes('OK') ? Theme.palette.statusOk : Theme.palette.statusDown;
-};
-
-/**
- * Get color for request state.
- *
- * @param {RequestState} reqState - Request state.
- * @returns {string} Color
- */
-const getReqStateColor = (reqState: RequestState) => {
-  if (reqState === 'success') return Theme.palette.statusOk;
-  if (reqState === 'pending') return Theme.palette.statusPending;
-  if (reqState === 'error') return Theme.palette.statusDown;
-  return 'pink';
-};
-
-/**
  * CardContainer component.
  *
- * @param {object} props - Component props.
- * @param {number} [props.size] - Grid size.
  * @returns {HTMLElement} Fabricate component.
  */
-const CardContainer = ({ size = 1 }: { size: number }) => fabricate('Card')
+const CardContainer = () => fabricate('Card')
   .asFlex('column')
   .setStyles(({ palette }) => ({
-    width: `${APP_CARD_WIDTH * size}px`,
+    width: `${APP_CARD_WIDTH}px`,
     margin: '10px 0px 10px 20px',
-    opacity: '0',
-    visibility: 'hidden',
-    transition: '0.6s',
     backgroundColor: palette.grey5,
     boxShadow: '2px 2px 3px 1px #0004',
   }));
+
+/**
+ * DeviceIcon component.
+ *
+ * @returns {HTMLElement} Fabricate component.
+ */
+const AppIcon = () => fabricate('Image', { src: 'assets/app.png' })
+  .setStyles({
+    margin: '4px 4px 4px',
+    width: '24px',
+    height: '24px',
+  });
 
 /**
  * AppName component.
@@ -157,7 +133,8 @@ const CardTitleRow = () => fabricate('Row')
   .setStyles(({ palette }) => ({
     alignItems: 'center',
     backgroundColor: palette.grey5,
-    padding: '5px 10px',
+    padding: '3px 5px',
+    height: '35px',
   }));
 
 /**
@@ -167,22 +144,15 @@ const CardTitleRow = () => fabricate('Row')
  * @param {string} props.app - App name.
  * @returns {HTMLElement} Fabricate component.
  */
-const AppCard = ({ app }: { app: string }) => {
-  const size = app === 'monitor' ? 2 : 1;
-  const container = CardContainer({ size });
-
-  // Become visible shortly after creation
-  setTimeout(() => container.setStyles({ opacity: '1', visibility: 'visible' }), 50);
-
-  return container
-    .setChildren([
-      CardTitleRow()
-        .setChildren([
-          AppName().setText(app),
-          CardStatus({ app }),
-        ]),
-      AppControls({ app }),
-    ]);
-};
+const AppCard = ({ app }: { app: string }) => CardContainer()
+  .setChildren([
+    CardTitleRow()
+      .setChildren([
+        AppIcon(),
+        AppName().setText(app),
+        CardStatus({ app }),
+      ]),
+    AppControls({ app }),
+  ]);
 
 export default AppCard;

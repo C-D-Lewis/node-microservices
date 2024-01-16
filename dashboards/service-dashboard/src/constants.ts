@@ -13,7 +13,7 @@ export const APP_CARD_WIDTH = 375;
 export const INITIAL_STATE: AppState = {
   // App data
   token: '',
-  host: FLEET_HOST,
+  fleetHost: FLEET_HOST,
   deviceApps: {},
   fleet: [],
   metricHistory: [],

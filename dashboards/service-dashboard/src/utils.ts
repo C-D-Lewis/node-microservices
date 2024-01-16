@@ -1,6 +1,7 @@
 import { Fabricate } from 'fabricate.js';
-import { AppState, IPType, DeviceApp } from './types';
+import { AppState, IPType, DeviceApp, Device, RequestState } from './types';
 import { sendConduitPacket } from './services/conduitService';
+import Theme from './theme';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -88,7 +89,6 @@ export const fetchApps = async (state: AppState) => {
       const { message } = await sendConduitPacket(
         state,
         { to: 'conduit', topic: 'getApps' },
-        undefined,
         deviceName,
       );
 
@@ -111,4 +111,52 @@ export const fetchApps = async (state: AppState) => {
   });
 
   await Promise.all(promises);
+};
+
+/**
+ * Sort devices by deviceName.
+ *
+ * @param {Device} a - Device to compare.
+ * @param {Device} b - Device to compare.
+ * @returns {number} Sort ordering.
+ */
+export const sortDeviceByName = (a: Device, b: Device) => a.deviceName > b.deviceName ? 1 : -1;
+
+/**
+ * Sort apps by name.
+ *
+ * @param {Device} a - Device to compare.
+ * @param {Device} b - Device to compare.
+ * @returns {number} Sort ordering.
+ */
+export const sortAppByName = (a: DeviceApp, b: DeviceApp) => a.app! > b.app! ? 1 : -1;
+
+/**
+ * Get status color for a given app.
+ *
+ * @param {AppState} state - App state.
+ * @param {string} app - App name.
+ * @returns {string} Status color.
+ */
+export const getAppStatusColor = (state: AppState, app: string): string => {
+  const { selectedDevice, deviceApps } = state;
+  if (selectedDevice === null) return 'pink';
+
+  const { deviceName } = selectedDevice;
+  const apps = deviceApps[deviceName];
+  const { status } = apps.find((p) => p.app === app)!;
+  return status?.includes('OK') ? Theme.palette.statusOk : Theme.palette.statusDown;
+};
+
+/**
+ * Get color for request state.
+ *
+ * @param {RequestState} reqState - Request state.
+ * @returns {string} Color
+ */
+export const getReqStateColor = (reqState: RequestState) => {
+  if (reqState === 'success') return Theme.palette.statusOk;
+  if (reqState === 'pending') return Theme.palette.statusPending;
+  if (reqState === 'error') return Theme.palette.statusDown;
+  return 'pink';
 };

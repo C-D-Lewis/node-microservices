@@ -1,7 +1,7 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
 import DeviceCard from '../components/DeviceCard';
 import { AppState, Device } from '../types';
-import { fetchApps } from '../utils';
+import { fetchApps, sortDeviceByName } from '../utils';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -15,11 +15,12 @@ declare const fabricate: Fabricate<AppState>;
 const GroupLabel = ({ publicIp }: { publicIp: string }) => fabricate('Row')
   .setStyles({
     borderRadius: '10px 10px 0px 0px',
-    marginBottom: '10px',
     backgroundColor: '#0004',
     padding: '10px',
     alignItems: 'center',
     justifyContent: 'center',
+    fontSize: '1.1rem',
+    fontFamily: 'monospace',
   })
   .setChildren([
     fabricate('Image', { src: 'assets/network.png' })
@@ -66,7 +67,6 @@ const FleetPage = () => {
    */
   const updateLayout = async (el: FabricateComponent<AppState>, state: AppState) => {
     const { fleet } = state;
-    if (!fleet.length) return;
 
     // Sort fleet into publicIp buckets
     const buckets: Record<string, Device[]> = {};
@@ -88,11 +88,12 @@ const FleetPage = () => {
             .setChildren([
               GroupLabel({ publicIp }),
               fabricate('Row')
-                .setStyles({
-                  flexWrap: 'wrap',
-                  paddingBottom: '10px',
-                })
-                .setChildren(devices.map((device) => DeviceCard({ device }))),
+                .setStyles({ flexWrap: 'wrap', paddingBottom: '10px' })
+                .setChildren(
+                  devices
+                    .sort(sortDeviceByName)
+                    .map((device) => DeviceCard({ device })),
+                ),
             ]))),
     );
   };
@@ -100,10 +101,11 @@ const FleetPage = () => {
   return fabricate('Column')
     .onCreate(updateLayout)
     .onUpdate((el, state) => {
+      const { fleet } = state;
+      if (!fleet.length) return;
+    
       updateLayout(el, state);
-
-      // Fetch apps for all devices at once
-      if (!Object.keys(state.deviceApps).length) fetchApps(state);
+      fetchApps(state);
     }, ['fleet']);
 };
 

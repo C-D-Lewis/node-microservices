@@ -16,7 +16,7 @@ declare const fabricate: Fabricate<AppState>;
  */
 export const ControlRow = () => fabricate('Row')
   .setStyles({
-    padding: '0px 10px',
+    padding: '5px',
     alignItems: 'center',
   });
 

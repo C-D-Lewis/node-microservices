@@ -38,6 +38,11 @@ const getInterfaceAddress = (ifName) => {
     return undefined;
   }
 
+  if (!v4.address.includes('192.168')) {
+    log.debug(`Address doesn't look like a local network address: ${v4.address}`);
+    return undefined;
+  }
+
   return v4.address;
 };
 
@@ -48,8 +53,8 @@ const getInterfaceAddress = (ifName) => {
  */
 const getLocal = () => {
   const address = getInterfaceAddress('eth0') // Ethernet
-    || getInterfaceAddress('wlan0')           // WLAN
     || getInterfaceAddress('wlan1')           // WLAN (dongle)
+    || getInterfaceAddress('wlan0')           // WLAN
     || getInterfaceAddress('en0')             // Mac OS WLAN
     || getInterfaceAddress('enp0s3');         // Ubuntu VM Wired
   if (!address) throw new Error('No interface available for ip.getLocal()');

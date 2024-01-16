@@ -1,6 +1,7 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
 import AppCard from '../components/AppCard';
 import { AppState } from '../types';
+import { sortAppByName } from '../utils';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -22,7 +23,11 @@ const AppsPage = () => {
 
     const apps = deviceApps[selectedDevice.deviceName];
     if (apps) {
-      el.setChildren(apps.map((app) => AppCard({ app: app.app! })));
+      el.setChildren(
+        apps
+          .sort(sortAppByName)
+          .map((app) => AppCard({ app: app.app! })),
+      );
     }
   };
 
@@ -32,8 +37,7 @@ const AppsPage = () => {
       flexWrap: 'wrap',
       paddingTop: '15px',
     })
-    .onCreate(updateLayout)
-    .onUpdate(updateLayout, ['selectedDevice', 'deviceApps']);
+    .onCreate(updateLayout);
 };
 
 export default AppsPage;

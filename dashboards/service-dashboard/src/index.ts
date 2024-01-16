@@ -14,11 +14,11 @@ declare const fabricate: Fabricate<AppState>;
  * @param {object} state - App state.
  */
 const fetchFleetList = async (state: AppState) => {
-  const { host, token } = state;
+  const { fleetHost, token } = state;
   fabricate.update({ fleet: [] });
 
   try {
-    const res = await fetch(`http://${host}:${CONDUIT_PORT}/conduit`, {
+    const res = await fetch(`http://${fleetHost}:${CONDUIT_PORT}/conduit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -61,11 +61,11 @@ const AppNavBar = () => fabricate('NavBar', {
 });
 
 /**
- * ServiceDashboard component.
+ * App component.
  *
  * @returns {HTMLElement} Fabricate component.
  */
-const ServiceDashboard = () => fabricate('Column')
+const App = () => fabricate('Column')
   .setChildren([
     AppNavBar(),
     SubNavBar(),
@@ -84,7 +84,7 @@ const ServiceDashboard = () => fabricate('Column')
   }, ['fabricate:init', 'token']);
 
 fabricate.app(
-  ServiceDashboard,
+  App,
   INITIAL_STATE,
   { theme: Theme },
 );

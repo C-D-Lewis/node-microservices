@@ -17,17 +17,10 @@ const DeviceName = () => fabricate('span')
   .setStyles({
     color: 'white',
     fontWeight: 'bold',
-    fontSize: '1rem',
+    fontSize: '1.1rem',
     padding: '2px 2px 0px 2px',
     fontFamily: 'monospace',
   });
-
-/** IpText prop types */
-type IpTextPropTypes = {
-  device: Device;
-  deviceIp: string;
-  type: IPType;
-}
 
 /**
  * IpTextButton component.
@@ -38,7 +31,15 @@ type IpTextPropTypes = {
  * @param {string} props.type - Device type, 'local' or 'public'.
  * @returns {HTMLElement} Fabricate component.
  */
-const IpText = ({ device, deviceIp, type }: IpTextPropTypes) => {
+const IpText = ({
+  device,
+  deviceIp,
+  type,
+}: {
+  device: Device;
+  deviceIp: string;
+  type: IPType;
+}) => {
   const { deviceName } = device;
   const reachableKey = isReachableKey(deviceName, type);
 
@@ -50,8 +51,8 @@ const IpText = ({ device, deviceIp, type }: IpTextPropTypes) => {
     });
 
   const textButton = fabricate('span')
-    .setStyles(({ fonts }) => ({
-      color: 'lightgrey',
+    .setStyles(({ palette, fonts }) => ({
+      color: palette.grey2,
       fontSize: '1rem',
       margin: '5px 0px',
       fontFamily: fonts.code,
@@ -85,9 +86,9 @@ const IpText = ({ device, deviceIp, type }: IpTextPropTypes) => {
  */
 const DeviceIcon = ({ deviceType }: { deviceType: string }) => fabricate('Image', { src: `assets/${ICON_NAMES[deviceType]}.png` })
   .setStyles({
-    margin: '4px 4px 4px 8px',
-    width: '20px',
-    height: '20px',
+    margin: '4px 4px 4px',
+    width: '24px',
+    height: '24px',
   });
 
 /**
@@ -106,22 +107,24 @@ const LastSeenLabel = ({ lastCheckIn }: { lastCheckIn: number }) => fabricate('T
     margin: '8px',
     paddingTop: '10px',
     marginTop: 'auto',
+    flex: '1',
   }))
   .setText(`${getTimeAgoStr(lastCheckIn)} ago`);
 
 /**
- * CardTitle component.
+ * CardTitleRow component.
  *
  * @param {object} props - Component props.
  * @param {Device} props.device - Selected device.
  * @param {boolean} props.seenRecently - If the device is recently updated and presumed to be alive.
  * @returns {HTMLElement} Fabricate component.
  */
-const CardTitle = ({ device, seenRecently }: { device: Device, seenRecently: boolean }) => fabricate('Row')
+const CardTitleRow = ({ device, seenRecently }: { device: Device, seenRecently: boolean }) => fabricate('Row')
   .setStyles(({ palette }) => ({
     backgroundColor: seenRecently ? palette.instanceHealthy : palette.grey5,
     alignItems: 'center',
     height: '35px',
+    padding: '3px 8px',
     boxShadow: '2px 2px 3px 1px #0006',
     cursor: 'pointer',
   }))
@@ -143,6 +146,7 @@ const DeviceCardContainer = () => fabricate('Card')
     margin: '10px',
     boxShadow: '2px 2px 3px 1px #0004',
     backgroundColor: palette.grey3,
+    height: 'fit-content',
   }));
 
 /**
@@ -277,14 +281,12 @@ const DeviceCard = ({ device }: { device: Device }) => {
     try {
       await fetch(`http://${ip}:5959/ping`);
       fabricate.update(stateKey, true);
-
-      // TODO: Fetch local apps now?
     } catch (err) { /* It isn't available */ }
   };
 
   return DeviceCardContainer()
     .setChildren([
-      CardTitle({ device, seenRecently })
+      CardTitleRow({ device, seenRecently })
         .setChildren([
           DeviceIcon({ deviceType }),
           DeviceName().setText(deviceName),

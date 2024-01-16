@@ -75,13 +75,12 @@ const PluginRow = ({ setProp }: PluginRowPropTypes) => fabricate('Row')
       const {
         FILE_NAME, EVERY, AT, ENABLED,
       } = plugin;
+      const disabled = ENABLED === false;
       return ItemPill({
         src: 'assets/plugin.png',
         text: `${FILE_NAME.replace('.js', '')}${EVERY ? ` (~${EVERY})` : ` (at ${AT})`}`,
-      })
-        .setStyles(({ palette }) => ({
-          backgroundColor: ENABLED !== false ? palette.grey5 : palette.grey3,
-        }));
+        disabled,
+      });
     }));
   }, ['monitorData'])
   .onCreate(async (el, state) => {
@@ -102,6 +101,7 @@ type MetricRowPropTypes = {
  * @returns {FabricateComponent} MetricRow component.
  */
 const MetricRow = ({ setProp }: MetricRowPropTypes) => fabricate('Row')
+  .setStyles({ flexWrap: 'wrap' })
   .onCreate(async (el, state) => {
     const { message: newNames } = await sendConduitPacket(state, { to: 'monitor', topic: 'getMetricNames' });
     setProp('metricNames', newNames);
@@ -111,12 +111,12 @@ const MetricRow = ({ setProp }: MetricRowPropTypes) => fabricate('Row')
   })
   .onUpdate((el, state) => {
     const { monitorData: { metricNames } } = state;
-    if (!metricNames || !metricNames.length) return;
+    if (!metricNames?.length) return;
 
     // Show button for each metric once loaded
     const buttons = metricNames.map((metric) => TextButton()
       .setText(metric)
-      .setStyles(({ styles }) => ({ ...styles.controlButton, width: '25%' }))
+      .setStyles(({ styles }) => ({ ...styles.controlButton, minWidth: '25%', flex: 1 }))
       .onClick(() => fetchMetric(state, metric, setProp)));
     el.setChildren(buttons);
   }, ['monitorData']);
@@ -140,7 +140,7 @@ const MonitorControls = () => {
     .setChildren([
       PluginRow({ setProp }),
       MetricRow({ setProp }),
-      fabricate.conditional(({ metricHistory }) => !!metricHistory.length, MetricGraph),
+      MetricGraph(),
     ])
     .onCreate(() => {
       setProp('metricHistory', []);

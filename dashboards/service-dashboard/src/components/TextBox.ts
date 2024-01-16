@@ -16,7 +16,7 @@ const TextBox = ({ placeholder = '' }: { placeholder: string }) => fabricate('Te
     border: '0',
     fontSize: '1rem',
     padding: '5px 5px 2px 10px',
-    margin: '10px 5px',
+    margin: '5px 5px 0px',
     outline: 'none',
     fontFamily: 'monospace',
     backgroundColor: '#1115',

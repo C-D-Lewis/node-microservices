@@ -8,9 +8,9 @@ declare const fabricate: Fabricate<AppState>;
 /** Graph width */
 export const GRAPH_WIDTH = 2 * APP_CARD_WIDTH;
 /** Graph height */
-const GRAPH_HEIGHT = 250;
+const GRAPH_HEIGHT = 180;
 /** Y axis marign */
-const Y_AXIS_MARGIN = 60;
+const Y_AXIS_MARGIN = 32;
 /** Point size */
 const POINT_SIZE = 3;
 /** Number of points in a bucket */
@@ -153,7 +153,7 @@ const HAxisLabels = () => fabricate('Row')
  * @returns {HTMLElement} Fabricate component.
  */
 const MetricGraph = () => fabricate('Column')
-  .setStyles({ width: `${GRAPH_WIDTH}px` })
+  .setStyles({ width: '100%' })
   .setChildren([
     fabricate('Row')
       .setChildren([

@@ -10,8 +10,8 @@ declare const fabricate: Fabricate<AppState>;
  *
  * @param {AppState} state - App state.
  * @param {Packet} packet - Packet to send.
+ * @param {string} [deviceName] - Override device name.
  * @param {string} [tokenOverride] - Override auth token sent.
- * @param {string} [deviceNameOverride] - Override selectedDevice.
  * @returns {Promise<object>} Response.
  * @throws {Error} Any error encountered.
  */
@@ -19,33 +19,30 @@ declare const fabricate: Fabricate<AppState>;
 export const sendConduitPacket = async (
   state: AppState,
   packet: Packet,
-  tokenOverride?: string,
   deviceNameOverride?: string,
+  tokenOverride?: string,
 ) => {
-  console.log('================================ Sending ================================');
-  console.table(JSON.stringify(packet));
-
-  const { token, selectedDevice, fleet } = state;
+  const { token, selectedDevice, fleet, fleetHost } = state;
   const reqStateKey = appRequestStateKey(packet.to);
+  fabricate.update(reqStateKey, 'pending');
 
   try {
     // Begin with host unless some device is selected to drill down
-    let destination = state.host;
+    let destination = fleetHost;
     let forwardHost;
 
     const finalDevice = deviceNameOverride
       ? fleet.find(({ deviceName }) => deviceName === deviceNameOverride)!
       : selectedDevice;
-    if (finalDevice) {
-      const { localIp, publicIp, deviceName } = finalDevice;
-      const isLocalReachable = state[isReachableKey(deviceName, 'local')];
+    if (!finalDevice) throw new Error('Unable to identify device to send message to.');
 
-      // Destination is local if reachable, else forward local via public
-      destination = isLocalReachable ? localIp : publicIp;
-      forwardHost = destination === publicIp ? localIp : undefined;
-    }
+    const { localIp, publicIp, deviceName } = finalDevice;
+    const isLocalReachable = state[isReachableKey(deviceName, 'local')];
 
-    fabricate.update(reqStateKey, 'pending');
+    // Destination is local if reachable, else forward local via public
+    destination = isLocalReachable ? localIp : publicIp;
+    forwardHost = destination === publicIp ? localIp : undefined;
+    console.log(`${finalDevice?.deviceName} >>> ${JSON.stringify(packet)}`);
 
     const res = await fetch(`http://${destination}:${CONDUIT_PORT}/conduit`, {
       method: 'POST',
@@ -58,8 +55,7 @@ export const sendConduitPacket = async (
       }),
     });
     const json = await res.json();
-    console.log('================================ RECEIVED ================================');
-    console.log(JSON.stringify(json));
+    console.log(`<<< ${finalDevice?.deviceName} ${JSON.stringify(json)}`);
 
     fabricate.update(reqStateKey, 'success');
     return json;
