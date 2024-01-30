@@ -1,9 +1,11 @@
+> Assuming SSD-setup.md is completed
+
 # Install mdadm
 ```
 sudo apt-get install mdadm
 ```
 
-# Find mount points (assuming NAS-setup.md already completed to fstab update)
+# Find mount points
 ```
 lsblk
 ```
