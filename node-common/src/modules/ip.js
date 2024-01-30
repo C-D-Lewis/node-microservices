@@ -22,10 +22,12 @@ const getPublic = async () => {
  * Get address from an interface.
  *
  * @param {string} ifName - Interface name, such as wlan0
+ * @param {boolean} ignoreLocalCheck - true if local network-likeness check should be skipped (CI)
  * @returns {string} Address of the interface.
  */
-const getInterfaceAddress = (ifName) => {
+const getInterfaceAddress = (ifName, ignoreLocalCheck) => {
   const interfaces = os.networkInterfaces();
+  log.debug(`Available interfaces: ${Object.keys(interfaces)}`);
   const iface = interfaces[ifName];
   if (!iface) {
     log.debug(`Interface ${ifName} not available`);
@@ -38,7 +40,7 @@ const getInterfaceAddress = (ifName) => {
     return undefined;
   }
 
-  if (!v4.address.includes('192.168')) {
+  if (!v4.address.includes('192.168') && !ignoreLocalCheck) {
     log.debug(`Address doesn't look like a local network address: ${v4.address}`);
     return undefined;
   }
@@ -56,7 +58,9 @@ const getLocal = () => {
     || getInterfaceAddress('wlan1')           // WLAN (dongle)
     || getInterfaceAddress('wlan0')           // WLAN
     || getInterfaceAddress('en0')             // Mac OS WLAN
-    || getInterfaceAddress('enp0s3');         // Ubuntu VM Wired
+    || getInterfaceAddress('enp0s3')          // Ubuntu VM Wired
+    || getInterfaceAddress('eth0', true)      // Ethernet anyway
+    || getInterfaceAddress('lo', true)        // Loopback last resort
   if (!address) throw new Error('No interface available for ip.getLocal()');
 
   return address;
