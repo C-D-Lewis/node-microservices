@@ -1,6 +1,7 @@
 const { log, config, attic } = require('./node-common')(['log', 'config', 'attic']);
 const api = require('./modules/api');
 const adminPassword = require('./modules/adminPassword');
+const { migrateTokenUsers } = require('./modules/util');
 
 /**
  * The main function.
@@ -10,6 +11,8 @@ const main = async () => {
   attic.setAppName('guestlist');
 
   await api.setup();
+
+  await migrateTokenUsers();
 
   adminPassword.waitForFile();
 

@@ -102,7 +102,7 @@ COPY <<EOF /code/apps/attic/db.json
           "topics": [
             "all"
           ],
-          "token": "f82559394470730bbbe04225ba10a2ad9d08bde3f08c315e3279b8d2ceda63ff",
+          "hash": "f82559394470730bbbe04225ba10a2ad9d08bde3f08c315e3279b8d2ceda63ff",
           "createdAt": 1684063071964
         }
       ],
