@@ -13,9 +13,9 @@ const handleGetAllPacket = async (packet, res) => {
     ? (await attic.get(ATTIC_KEY_USERS))
     : [];
 
-  // Respond without token (should be remembered by client)
+  // Respond without hash
   const response = list.map((p) => {
-    const { token, ...rest } = p;
+    const { hash, ...rest } = p;
     return rest;
   });
   conduit.respond(res, { status: 200, message: response });

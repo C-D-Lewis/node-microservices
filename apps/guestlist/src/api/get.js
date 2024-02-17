@@ -22,8 +22,8 @@ const handleGetPacket = async (packet, res) => {
     return;
   }
 
-  // Respond without token (should be remembered by client)
-  const { token, ...response } = user;
+  // Respond without hash (token should be remembered by client)
+  const { hash, ...response } = user;
   conduit.respond(res, { status: 200, message: response });
 };
 

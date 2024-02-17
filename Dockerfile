@@ -90,7 +90,7 @@ COPY <<EOF /code/apps/attic/db.json
           "devices": [
             "all"
           ],
-          "token": "32a77a47a43f67acd9b53f6b195842722bf3a2cb",
+          "hash": "800af9c9acb31ac36c561ed4e5a3da890398237de72dccb5e9419d63a384c2ee",
           "createdAt": 1684063071964
         },
         {
@@ -102,7 +102,7 @@ COPY <<EOF /code/apps/attic/db.json
           "topics": [
             "all"
           ],
-          "token": "32a77a47a43f67acd9b53f6b195842722bf3a299",
+          "token": "f82559394470730bbbe04225ba10a2ad9d08bde3f08c315e3279b8d2ceda63ff",
           "createdAt": 1684063071964
         }
       ],

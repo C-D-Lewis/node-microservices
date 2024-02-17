@@ -1,5 +1,6 @@
 const fs = require('fs');
 const config = require('./config');
+const log = require('./log');
 
 config.addPartialSchema({
   required: ['DB'],
@@ -38,7 +39,12 @@ const loadDbData = () => {
     saveDbData();
   }
 
-  dbData = require(DB_PATH);
+  // Verify valid JSON is in the file, else die
+  try {
+    dbData = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+  } catch (e) {
+    log.fatal('Failed to read valid JSON from db.json');
+  }
 };
 
 /**
@@ -85,11 +91,15 @@ const deleteAppData = (app) => {
   saveDbData();
 };
 
+/**
+ * Upon db storage start.
+ */
+const init = () => {
+  loadDbData();
+};
+
 module.exports = {
-  /**
-   * Stub for the interface
-   */
-  init: () => {},  // Allows simplification in Attic storage.js, but no other apps implement it
+  init,
   get,
   set,
   getTable,

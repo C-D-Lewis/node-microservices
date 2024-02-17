@@ -1,5 +1,6 @@
-const { conduit, attic } = require('../node-common')(['conduit', 'attic']);
+const { conduit, attic, log } = require('../node-common')(['conduit', 'attic', 'log']);
 const { ATTIC_KEY_USERS } = require('../constants');
+const { getTokenHash } = require('../modules/util');
 
 /**
  * Handle a 'authorize' topic packet.
@@ -18,8 +19,10 @@ const handleAuthorizePacket = async (packet, res) => {
     : [];
 
   // Check it exists
-  const user = list.find((p) => p.token === auth);
+  const inputHash = getTokenHash(auth);
+  const user = list.find((p) => p.hash === inputHash);
   if (!user) {
+    log.debug(`Hash not found: ${inputHash}`);
     conduit.respond(res, { status: 404, error: 'User does not exist' });
     return;
   }

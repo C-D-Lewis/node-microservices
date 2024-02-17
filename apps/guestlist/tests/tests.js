@@ -178,6 +178,7 @@ describe('API', () => {
           auth: noDevicesToken,
         },
       });
+      console.log(response)
 
       const { status, message } = response;
       expect(message.content).to.equal('OK');

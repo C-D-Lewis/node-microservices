@@ -1,14 +1,13 @@
-const Chance = require('chance');
+const crypto = require('crypto');
 const { conduit, attic } = require('../node-common')(['conduit', 'attic']);
 const { ATTIC_KEY_USERS } = require('../constants');
 const adminPassword = require('../modules/adminPassword');
+const { getTokenHash } = require('../modules/util');
 
 /** Reserved names for system roles */
 const RESERVED_NAMES = ['superadmin'];
 /** Length of IDs */
-const ID_LENGTH = 16;
-
-const chance = new Chance();
+const ID_KEY_LENGTH = 16;
 
 /**
  * Handle a 'create' topic packet.
@@ -53,21 +52,29 @@ const handleCreatePacket = async (packet, res) => {
     return;
   }
 
+  const token = crypto.randomBytes(ID_KEY_LENGTH).toString('hex');
+  const id = crypto.randomBytes(ID_KEY_LENGTH).toString('hex');
+  const hash = getTokenHash(token);
+
   // Save it
   const user = {
-    id: chance.hash({ length: ID_LENGTH }),
+    id,
     name,
     apps,
     topics,
     devices,
-    token: chance.hash(),
+    hash,
     createdAt: Date.now(),
   };
   list.push(user);
   await attic.set(ATTIC_KEY_USERS, list);
 
-  // Respond
-  conduit.respond(res, { status: 201, message: user });
+  // Respond with token just once
+  const response = {
+    ...user,
+    token,
+  };
+  conduit.respond(res, { status: 201, message: response });
 };
 
 module.exports = handleCreatePacket;
