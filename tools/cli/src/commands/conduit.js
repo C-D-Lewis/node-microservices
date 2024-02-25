@@ -19,6 +19,12 @@ const CONDUIT_PORT = 5959;
 const send = async ({ packet, host }) => {
   const finalHost = host || switches.HOST || 'localhost';
 
+  console.log({
+    finalHost,
+    CONDUIT_PORT,
+    packet,
+    host
+  })
   const res = await fetch(`http://${finalHost}:${CONDUIT_PORT}/conduit`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -27,6 +33,7 @@ const send = async ({ packet, host }) => {
       auth: packet.auth || switches.TOKEN || CONDUIT_TOKEN,
     }),
   });
+  console.log('end')
   const json = await res.json();
   return json;
 };

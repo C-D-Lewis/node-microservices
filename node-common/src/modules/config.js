@@ -8,9 +8,14 @@ require('colors');
 /**
  * Get app install path.
  *
- * @returns {string} The output from `pwd` in this process.
+ * @returns {string} The location of the launched app
  */
-const getInstallPath = () => execSync('pwd').toString().trim();
+const getInstallPath = () => {
+  // Assume installed at /home/?/code/...
+  const [, appPath] = process.argv;
+  const appName = appPath.split('/')[6];
+  return `${execSync('pwd').toString().trim()}/${appName}`;
+};
 
 /** Path of the example config */
 const DEFAULT_PATH = `${getInstallPath()}/config-default.json`;
