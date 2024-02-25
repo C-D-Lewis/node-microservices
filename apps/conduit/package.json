@@ -1,0 +1,22 @@
+{
+  "name": "conduit",
+  "version": "1.0.0",
+  "description": "Bus to allow easier inter-app communication",
+  "scripts": {
+    "start": "node src/main.js",
+    "kill": "sudo kill $(cat pid)",
+    "test": "mocha tests/tests.js"
+  },
+  "author": "Chris Lewis",
+  "dependencies": {
+    "body-parser": "^1.17.2"
+  },
+  "devDependencies": {
+    "@chris-lewis/eslint-config": "^1.0.3",
+    "chai": "^4.1.2",
+    "mocha": "^10.2.0"
+  },
+  "eslintConfig": {
+    "extends": "@chris-lewis/eslint-config"
+  }
+}

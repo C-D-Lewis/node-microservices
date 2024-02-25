@@ -39,7 +39,7 @@ const start = async (appName) => {
     shell: true,
     detatched: true,
   };
-  const child = spawn(`cd ${appDir}/.. && npm run start:${appName}`, options);
+  const child = spawn(`cd ${appDir} && npm start`, options);
 
   if (switches.VERBOSE) {
     child.stdout.on('data', (data) => {
@@ -58,7 +58,6 @@ const start = async (appName) => {
 
   // Check it worked
   console.log('Verifying launch...');
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     await wait(500);
 
@@ -109,7 +108,6 @@ const stopAll = async () => {
   // Stop all except conduit itself
   for (let i = 0; i < apps.length; i += 1) {
     const { app } = apps[i];
-    // eslint-disable-next-line no-continue
     if (app === 'conduit') continue;
 
     await stop(app);

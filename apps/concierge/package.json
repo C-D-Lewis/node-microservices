@@ -1,0 +1,19 @@
+{
+  "name": "concierge",
+  "version": "1.0.0",
+  "description": "Service to set up and receive webhooks",
+  "author": "Chris Lewis",
+  "scripts": {
+    "start": "node src/main.js",
+    "kill": "sudo kill $(cat pid)",
+    "test": "mocha tests/tests.js"
+  },
+  "devDependencies": {
+    "@chris-lewis/eslint-config": "^1.0.3",
+    "chai": "^4.1.2",
+    "mocha": "^10.2.0"
+  },
+  "eslintConfig": {
+    "extends": "@chris-lewis/eslint-config"
+  }
+}

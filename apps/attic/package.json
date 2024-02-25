@@ -1,0 +1,22 @@
+{
+  "name": "attic",
+  "version": "1.0.0",
+  "description": "Storage black box via an API",
+  "scripts": {
+    "start": "node src/main.js",
+    "kill": "sudo kill $(cat pid)",
+    "test": "mocha tests/tests.js"
+  },
+  "author": "Chris Lewis",
+  "dependencies": {
+    "mongodb": "^3.5.7"
+  },
+  "devDependencies": {
+    "@chris-lewis/eslint-config": "^1.0.3",
+    "chai": "^4.1.2",
+    "mocha": "^10.2.0"
+  },
+  "eslintConfig": {
+    "extends": "@chris-lewis/eslint-config"
+  }
+}

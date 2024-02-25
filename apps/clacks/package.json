@@ -1,0 +1,22 @@
+{
+  "name": "clacks",
+  "version": "1.0.0",
+  "description": "WebSockets server to enable clients to be reachable without knowing their IP.",
+  "scripts": {
+    "start": "node src/main.js",
+    "kill": "sudo kill $(cat pid)",
+    "test": "mocha tests/tests.js"
+  },
+  "author": "Chris Lewis",
+  "dependencies": {
+    "ws": "^8.2.3"
+  },
+  "devDependencies": {
+    "@chris-lewis/eslint-config": "^1.0.3",
+    "chai": "^4.1.2",
+    "mocha": "^10.2.0"
+  },
+  "eslintConfig": {
+    "extends": "@chris-lewis/eslint-config"
+  }
+}
