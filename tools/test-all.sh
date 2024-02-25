@@ -4,9 +4,9 @@ set -eu
 
 function run () {
   app=$1
-  cd apps/$app
+  cd apps
 
-  npm start &
+  npm run "start:$app" &
   sleep 3
 
   cd -
@@ -19,7 +19,7 @@ function test () {
   app=$1
   cd apps/$app
 
-  npm test
+  npm run "test:$app"
 
   cd -
 }

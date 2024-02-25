@@ -27,6 +27,7 @@ const send = async ({ packet, host }) => {
       auth: packet.auth || switches.TOKEN || CONDUIT_TOKEN,
     }),
   });
+  console.log('end')
   const json = await res.json();
   return json;
 };

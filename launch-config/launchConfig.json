@@ -44,7 +44,7 @@
       }
     ],
     "e-paper-home": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "location": "code/node-microservices/apps", "start": "npm run start:conduit &" },
       {
         "location": "code/e-paper-dashboard",
         "start": "pip3 install spotipy termcolor && python3 main.py >> /home/pi/e-paper-dashboard.log 2>&1 &"
@@ -72,8 +72,8 @@
       { "location": "code/node-microservices/apps/attic",   "start": "npm start &" }
     ],
     "Marvin": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" }
+      { "location": "code/node-microservices/apps", "start": "npm run start:conduit &" },
+      { "location": "code/node-microservices/apps", "start": "npm run start:attic &"   }
     ],
     "ad-blocker-home": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" }

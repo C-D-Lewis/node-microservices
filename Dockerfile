@@ -12,22 +12,8 @@ ENV DOCKER_TEST=1
 WORKDIR /code
 
 # Install app dependencies
-ADD apps/conduit/package* /code/apps/conduit/
-RUN cd /code/apps/conduit && npm ci
-ADD apps/attic/package* /code/apps/attic/
-RUN cd /code/apps/attic && npm ci
-ADD apps/clacks/package* /code/apps/clacks/
-RUN cd /code/apps/clacks && npm ci
-ADD apps/concierge/package* /code/apps/concierge/
-RUN cd /code/apps/concierge && npm ci
-ADD apps/guestlist/package* /code/apps/guestlist/
-RUN cd /code/apps/guestlist && npm ci
-ADD apps/polaris/package* /code/apps/polaris/
-RUN cd /code/apps/polaris && npm ci
-ADD apps/visuals/package* /code/apps/visuals/
-RUN cd /code/apps/visuals && npm ci
-ADD apps/monitor/package* /code/apps/monitor/
-RUN cd /code/apps/monitor && npm ci
+ADD apps/package* /code/apps/
+RUN cd /code/apps && npm ci
 
 # Install common dependencies (could change most often)
 ADD node-common/package* /code/node-common/
