@@ -104,6 +104,21 @@ COPY <<EOF /code/apps/attic/db.json
           ],
           "hash": "f82559394470730bbbe04225ba10a2ad9d08bde3f08c315e3279b8d2ceda63ff",
           "createdAt": 1684063071964
+        },
+        {
+          "id": "455be0dc3417413612a1f5b41f342f9f",
+          "name": "singleDevice",
+          "apps": [
+            "all"
+          ],
+          "topics": [
+            "all"
+          ],
+          "devices": [
+            "Marvin"
+          ],
+          "hash": "2fae139be5bc98d65d93ddcaa0f0abcb5b7b4a22be91e6e2dfbaedd6baa2481d",
+          "createdAt": 1709069485842
         }
       ],
       "timestamp": 1684063071967

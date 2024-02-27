@@ -86,7 +86,7 @@ describe('API', () => {
   });
 
   describe('Conduit topic: authorize', () => {
-    it('should return 200 / OK', async () => {
+    it('should return 200 / user record', async () => {
       const response = await testing.sendConduitPacket({
         to: 'guestlist',
         topic: 'authorize',
@@ -99,7 +99,8 @@ describe('API', () => {
       });
 
       const { status, message } = response;
-      expect(message.content).to.equal('OK');
+      expect(message.authorized).to.equal(true);
+      expect(message.userRecord).to.be.an('object');
       expect(status).to.equal(200);
     });
 
@@ -183,7 +184,7 @@ describe('API', () => {
       });
 
       const { status, message } = response;
-      expect(message.content).to.equal('OK');
+      expect(message.authorized).to.equal(true);
       expect(status).to.equal(200);
     });
   });
@@ -231,6 +232,11 @@ describe('utils', () => {
     const hash = 'f82559394470730bbbe04225ba10a2ad9d08bde3f08c315e3279b8d2ceda63ff';
     const found = list.find((p) => p.hash === hash);
 
+    // Cleanup
+    list = list.filter(p => p.name !== 'userwithtoken');
+    await attic.set(ATTIC_KEY_USERS, list);
+
     expect(found.hash).to.equal(hash);
+
   });
 });

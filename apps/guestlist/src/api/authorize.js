@@ -46,7 +46,17 @@ const handleAuthorizePacket = async (packet, res) => {
   }
 
   // Respond
-  conduit.respond(res, { status: 200, message: { content: 'OK' } });
+  const { hash, ...userRecord } = user;
+  conduit.respond(
+    res,
+    {
+      status: 200,
+      message: {
+        authorized: true,
+        userRecord,
+      },
+    },
+  );
 };
 
 module.exports = handleAuthorizePacket;
