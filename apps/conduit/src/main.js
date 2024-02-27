@@ -11,6 +11,7 @@ const FLEET_CHECKIN_DELAY_MS = 30000;
  */
 const main = async () => {
   log.begin({ appName: 'conduit' });
+  config.setup({ appPath: `${__dirname}/..` });
   attic.setAppName('conduit');
 
   await api.setup();

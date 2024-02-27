@@ -5,27 +5,34 @@ const fs = require('fs');
 const schema = require('./schema');
 require('colors');
 
-/**
- * Get app install path.
- *
- * @returns {string} The location of the launched app
- */
-const getInstallPath = () => {
-  // Assume installed at /home/?/code/...
-  const [, appPath] = process.argv;
-  const appName = appPath.split('/')[6];
-  const path =`${execSync('pwd').toString().trim()}/${appName}`;
-  console.log(appPath)
-  return path;
-};
-
-/** Path of the example config */
-const DEFAULT_PATH = `${getInstallPath()}/config-default.json`;
-/** Path of the actual config */
-const CONFIG_PATH = `${getInstallPath()}/config.json`;
-
 let config = {};
 const configSchema = { properties: {} };
+let appPath;
+let configPath;
+let defaultConfigPath;
+
+/**
+ * Set up app config.
+ *
+ * @param {object} opts - Function opts. 
+ * @param {string} opts.appPath - App path.
+ */
+const setup = ({ appPath: path }) => {
+  appPath = path;
+  configPath = `${appPath}/config.json`;
+  defaultConfigPath = `${appPath}/config-default.json`;
+};
+
+/**
+ * Get the app's path.
+ *
+ * @returns {string} App path.
+ */
+const getAppPath = () => {
+  if (!appPath) throw new Error('config.setup() was not called');
+
+  return appPath;
+};
 
 /**
  * Compare expected keys with those present.
@@ -42,7 +49,7 @@ const deepCompareKeys = (spec, data, parents = []) => {
   specKeys.forEach((s) => {
     const thisSpec = spec.properties[s];
 
-    // This spec has all required keys
+    // This spec has all required keys?
     if (!dataKeys.includes(s)) {
       console.log(`Missing config: ${parents.join(' > ')} > ${s}`.yellow);
     }
@@ -67,20 +74,20 @@ const deepCompareKeys = (spec, data, parents = []) => {
  * Ensure a config file exists.
  */
 const ensureConfigFile = () => {
-  if (fs.existsSync(CONFIG_PATH)) {
-    config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+  if (fs.existsSync(configPath)) {
+    config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     console.log('Loaded config.json');
     return;
   }
 
   // Create from default.
-  if (!fs.existsSync(DEFAULT_PATH)) {
+  if (!fs.existsSync(defaultConfigPath)) {
     console.log('No config-default.json available!');
     return;
   }
 
-  const defaultConfig = JSON.parse(fs.readFileSync(DEFAULT_PATH, 'utf8'));
-  fs.writeFileSync(CONFIG_PATH, JSON.stringify(defaultConfig, null, 2), 'utf8');
+  const defaultConfig = JSON.parse(fs.readFileSync(defaultConfigPath, 'utf8'));
+  fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2), 'utf8');
   console.log('Set up new config.json from config-default.json - may require additional configuration.');
   config = defaultConfig;
 };
@@ -139,6 +146,7 @@ const addPartialSchema = (partial) => addFragment(partial, configSchema);
  * @returns {object} Object of requested config.
  */
 const get = (names) => names.reduce((acc, name) => {
+  if (!appPath) throw new Error('config.setup() was not called');
   if (!config[name]) throw new Error(`Unknown config name: ${name}`);
 
   return { ...acc, [name]: config[name] };
@@ -153,7 +161,7 @@ const get = (names) => names.reduce((acc, name) => {
  * @throws {Error} if validation fails.
  */
 const validate = ({ verbose } = {}) => {
-  // Schema valid?
+  // Schema valid? May not throw while apps validate post launch (to collect partial schemas...)
   if (!schema(config, configSchema)) throw new Error('Schema failed validation.');
 
   // Redundant keys?
@@ -165,7 +173,8 @@ const validate = ({ verbose } = {}) => {
 ensureConfigFile();
 
 module.exports = {
-  getInstallPath,
+  setup,
+  getAppPath,
   addPartialSchema,
   get,
   validate,
