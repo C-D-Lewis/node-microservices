@@ -1,5 +1,6 @@
 const printTable = require('../functions/printTable');
 const { send } = require('./conduit');
+require('colors');
 
 /**
  * Get all users.
@@ -69,6 +70,28 @@ const deleteUser = async (name, adminPassword) => {
   console.log(`Delete user '${name}'`);
 };
 
+/**
+ * Authorize a token and set of constraints.
+ *
+ * @param {string} token - Token to check.
+ * @param {string} to - App packet is going to.
+ * @param {string} topic - Topic in the packet.
+ * @param {string} device - Optional device to check.
+ */
+const authorizeUser = async (token, to, topic, device) => {
+  const packet = {
+    to: 'guestlist',
+    topic: 'authorize',
+    message: {
+      auth: token, to, topic, device,
+    },
+  };
+  const res = await send({ packet });
+  if (res.status !== 200) throw new Error(JSON.stringify(res));
+
+  console.log(`Authorization: ${JSON.stringify(res.message, null, 2)}`.green);
+};
+
 module.exports = {
   firstArg: 'guestlist',
   description: 'Work with the guestlist app.',
@@ -107,6 +130,16 @@ module.exports = {
        */
       execute: async ([, name, adminPassword]) => deleteUser(name, adminPassword),
       pattern: 'delete $name $adminPassword',
+    },
+    authorize: {
+      /**
+       * Authorize a token.
+       *
+       * @param {Array<string>} args - Command args.
+       * @returns {Promise<void>}
+       */
+      execute: async ([, token, to, topic, device]) => authorizeUser(token, to, topic, device),
+      pattern: 'authorize $token $to $topic $device',
     },
   },
 };
