@@ -1,10 +1,11 @@
 {
   "PLUGINS": [
+    { "FILE_NAME": "system-metrics.js", "EVERY": 1 },
+    { "FILE_NAME": "email-report.js" },
     {
       "FILE_NAME": "services.js",
       "EVERY": 10,
       "ARGS": {
-        "LED": 0,
         "HOST": "localhost"
       }
     },

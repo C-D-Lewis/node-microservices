@@ -78,6 +78,4 @@ done
 
 printf "\n>>> Launch complete!\n"
 
-# Email report
-sleep 30
-$(which node) "$HOME/code/node-microservices/launch-config/email/index.js" >> "$HOME/launch-config-email.log" 2>&1
+# Email report with monitor plugin

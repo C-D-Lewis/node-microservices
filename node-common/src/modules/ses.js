@@ -45,11 +45,12 @@ const sesApi = new AWS.SES({ apiVersion: '2010-12-01' });
  * Send a notification email.
  *
  * @param {string} msg - Message content.
+ * @param {string} extaSubject - Extra subject line.
  */
-const notify = async (msg) => {
+const notify = async (msg, extaSubject) => {
   const finalMsg = `--------------------------------
 from: ${os.hostname()}
-
+--------------------------------
 ${msg}
 --------------------------------
 `;
@@ -66,7 +67,7 @@ ${msg}
       },
       Subject: {
         Charset: 'UTF-8',
-        Data: SUBJECT,
+        Data: `${SUBJECT} ${extaSubject ? `- ${extaSubject}` : ''}`,
       },
     },
   }).promise();

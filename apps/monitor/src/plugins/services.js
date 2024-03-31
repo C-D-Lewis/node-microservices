@@ -1,12 +1,6 @@
 const {
   log, ses, conduit,
 } = require('../node-common')(['log', 'ses', 'conduit']);
-const visuals = require('../modules/visuals');
-
-/** LED state for OK */
-const LED_STATE_OK = [0, 255, 0];
-/** LED state for DOWN */
-const LED_STATE_DOWN = [255, 0, 0];
 
 let lastState = true;
 
@@ -33,10 +27,6 @@ module.exports = async (args) => {
   const stateNow = downApps.length === 0;
   const serviceList = apps.map((p) => p.app).join(', ');
   log.info(`Services up: ${stateNow} (${serviceList})`);
-  visuals.setLed(
-    args.LED,
-    stateNow ? LED_STATE_OK : LED_STATE_DOWN,
-  );
 
   // Was OK, not anymore
   if (lastState && !stateNow) {

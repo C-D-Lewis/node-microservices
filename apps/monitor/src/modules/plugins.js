@@ -121,7 +121,9 @@ const loadAll = () => {
       return;
     }
 
-    log.error(`Unable to schedule plugin: ${JSON.stringify(plugin)}`);
+    // Run immediately
+    log.info(`Running plugin once: ${JSON.stringify(plugin)}`);
+    await pluginFunc(plugin.ARGS);
   });
 };
 
