@@ -20,7 +20,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "fabricate.js": "^3.1.1"
+    "fabricate.js": "^3.5.0"
   },
   "eslintConfig": {
     "extends": [

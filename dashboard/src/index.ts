@@ -1,7 +1,7 @@
 import { Fabricate } from 'fabricate.js';
 import { AppState } from './types';
 import Theme from './theme';
-import { CONDUIT_PORT, INITIAL_STATE } from './constants';
+import { CONDUIT_PORT, FLEET_HOST, INITIAL_STATE } from './constants';
 import SubNavBar from './components/SubNavBar';
 import FleetPage from './pages/FleetPage';
 import AppsPage from './pages/AppsPage';
@@ -14,11 +14,12 @@ declare const fabricate: Fabricate<AppState>;
  * @param {object} state - App state.
  */
 const fetchFleetList = async (state: AppState) => {
-  const { fleetHost, token } = state;
+  const { token } = state;
   fabricate.update({ fleet: [] });
 
   try {
-    const res = await fetch(`http://${fleetHost}:${CONDUIT_PORT}/conduit`, {
+    // Can't use sendConduitPacket, not a device by name
+    const res = await fetch(`http://${FLEET_HOST}:${CONDUIT_PORT}/conduit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -72,16 +73,16 @@ const App = () => fabricate('Column')
     fabricate.conditional(({ page }) => page === 'FleetPage', FleetPage),
     fabricate.conditional(({ page }) => page === 'AppsPage', AppsPage),
   ])
-  .onUpdate((el, state, keys) => {
-    if (keys.includes('fabricate:init')) {
+  .onUpdate(async (el, state, keys) => {
+    if (keys.includes(fabricate.StateKeys.Created)) {
       parseParams();
       return;
     }
 
     if (keys.includes('token')) {
-      fetchFleetList(state);
+      await fetchFleetList(state);
     }
-  }, ['fabricate:init', 'token']);
+  }, [fabricate.StateKeys.Created, 'token']);
 
 fabricate.app(
   App,

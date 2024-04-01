@@ -51,8 +51,8 @@ const IpText = ({
     });
 
   const textButton = fabricate('span')
-    .setStyles(({ palette, fonts }) => ({
-      color: palette.grey2,
+    .setStyles(({ fonts }) => ({
+      color: 'black',
       fontSize: '1rem',
       margin: '5px 0px',
       fontFamily: fonts.code,
@@ -64,7 +64,7 @@ const IpText = ({
       el.setStyles(({ palette }) => ({
         color: isReachable
           ? palette.text
-          : palette.grey2,
+          : 'black',
         cursor: 'default',
       }));
     }, [reachableKey]);

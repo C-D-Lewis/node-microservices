@@ -103,7 +103,7 @@ const FleetPage = () => {
     .onUpdate((el, state) => {
       const { fleet } = state;
       if (!fleet.length) return;
-    
+
       updateLayout(el, state);
       fetchApps(state);
     }, ['fleet']);

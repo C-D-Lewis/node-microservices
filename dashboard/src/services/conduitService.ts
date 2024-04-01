@@ -1,5 +1,5 @@
 import { Fabricate } from 'fabricate.js';
-import { CONDUIT_PORT } from '../constants';
+import { CONDUIT_PORT, FLEET_HOST } from '../constants';
 import { AppState, Packet } from '../types';
 import { appRequestStateKey, isReachableKey } from '../utils';
 
@@ -10,7 +10,7 @@ declare const fabricate: Fabricate<AppState>;
  *
  * @param {AppState} state - App state.
  * @param {Packet} packet - Packet to send.
- * @param {string} [deviceName] - Override device name.
+ * @param {string} deviceNameOverride - Override device name.
  * @param {string} [tokenOverride] - Override auth token sent.
  * @returns {Promise<object>} Response.
  * @throws {Error} Any error encountered.
@@ -22,14 +22,13 @@ export const sendConduitPacket = async (
   deviceNameOverride?: string,
   tokenOverride?: string,
 ) => {
-  const { token, selectedDevice, fleet, fleetHost } = state;
+  const { token, selectedDevice, fleet } = state;
   const reqStateKey = appRequestStateKey(packet.to);
   fabricate.update(reqStateKey, 'pending');
 
   try {
     // Begin with host unless some device is selected to drill down
-    let destination = fleetHost;
-    let forwardHost;
+    let destination = FLEET_HOST;
 
     const finalDevice = deviceNameOverride
       ? fleet.find(({ deviceName }) => deviceName === deviceNameOverride)!
@@ -41,7 +40,7 @@ export const sendConduitPacket = async (
 
     // Destination is local if reachable, else forward local via public
     destination = isLocalReachable ? localIp : publicIp;
-    forwardHost = destination === publicIp ? localIp : undefined;
+    const forwardHost = destination === publicIp ? localIp : undefined;
     console.log(`${finalDevice?.deviceName} >>> ${JSON.stringify(packet)}`);
 
     const res = await fetch(`http://${destination}:${CONDUIT_PORT}/conduit`, {

@@ -35,11 +35,11 @@ const ItemPill = ({
       .setStyles({
         width: '18px',
         height: '18px',
-        filter: `brightness(${disabled ? '0.4' : '1'})`
+        filter: `brightness(${disabled ? '0.4' : '1'})`,
       }),
     fabricate('Text')
       .setStyles(({ palette }) => ({
-        fontSize: '0.9rem',
+        fontSize: '0.8rem',
         fontFamily: 'monospace',
         color: disabled ? palette.grey5 : 'white',
       }))

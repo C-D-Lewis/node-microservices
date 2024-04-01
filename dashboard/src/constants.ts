@@ -1,7 +1,7 @@
 import { AppState } from './types';
 
 /** Fleet host URL */
-const FLEET_HOST = 'polaris.chrislewis.me.uk';
+export const FLEET_HOST = 'polaris.chrislewis.me.uk';
 
 /** Port to look for conduit apps */
 export const CONDUIT_PORT = 5959;
@@ -13,7 +13,6 @@ export const APP_CARD_WIDTH = 375;
 export const INITIAL_STATE: AppState = {
   // App data
   token: '',
-  fleetHost: FLEET_HOST,
   deviceApps: {},
   fleet: [],
   metricHistory: [],

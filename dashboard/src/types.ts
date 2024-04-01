@@ -55,7 +55,6 @@ export type AppState = {
 
   // App data
   token: string;
-  fleetHost: string;
   deviceApps: Record<string, DeviceApp[]>;
   fleet: Device[];
   metricHistory: MetricPoint[];

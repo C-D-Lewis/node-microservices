@@ -1,6 +1,6 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
 import { sendConduitPacket } from '../../services/conduitService';
-import { AppState, MetricPoint } from '../../types';
+import { AppState, MetricPoint, MonitorPlugin } from '../../types';
 import { shortDateTime } from '../../utils';
 import ItemPill from '../ItemPill';
 import MetricGraph from '../MetricGraph';
@@ -59,6 +59,20 @@ type PluginRowPropTypes = {
 };
 
 /**
+ * Get schedule string for plugin.
+ *
+ * @param {MonitorPlugin} plugin - Plugin.
+ * @returns {string} Schedule string.
+ */
+const getSchedule = (plugin: MonitorPlugin) => {
+  const { EVERY, AT } = plugin;
+
+  if (EVERY) return ` (~${EVERY})`;
+  if (AT) return ` (at ${AT})`;
+  return ' (1)';
+};
+
+/**
  * Plugin row component.
  *
  * @param {PluginRowPropTypes} props - Component props.
@@ -72,13 +86,12 @@ const PluginRow = ({ setProp }: PluginRowPropTypes) => fabricate('Row')
 
     // Show running plugins
     el.setChildren(plugins.map((plugin) => {
-      const {
-        FILE_NAME, EVERY, AT, ENABLED,
-      } = plugin;
+      const { FILE_NAME, ENABLED } = plugin;
       const disabled = ENABLED === false;
+
       return ItemPill({
         src: 'assets/plugin.png',
-        text: `${FILE_NAME.replace('.js', '')}${EVERY ? ` (~${EVERY})` : ` (at ${AT})`}`,
+        text: `${FILE_NAME.replace('.js', '')}${getSchedule(plugin)}`,
         disabled,
       });
     }));
