@@ -5,33 +5,118 @@ import {
 } from '../types';
 import { getTimeAgoStr, isReachableKey } from '../utils';
 import ItemPill from './ItemPill';
+import { sendConduitPacket } from '../services/conduitService';
+import IconButton from './IconButton';
 
 declare const fabricate: Fabricate<AppState>;
 
 /**
- * DeviceName component.
+ * Send a device command by URL.
  *
+ * @param {HTMLElement} el - This element.
+ * @param {object} state - Current state.
+ * @param {object} device - Device to command.
+ * @param {string} topic - Command topic, either 'reboot' or 'shutdown'.
+ */
+const commandDevice = async (
+  el: FabricateComponent<AppState>,
+  state: AppState,
+  device: Device,
+  topic: string,
+) => {
+  const { deviceName } = device;
+  const stateKey = fabricate.buildKey('command', topic);
+  const pressed = !!state[stateKey];
+
+  // Reset color regardless
+  setTimeout(() => {
+    el.setStyles(({ palette }) => ({ backgroundColor: palette.grey3 }));
+    fabricate.update(stateKey, false);
+  }, 2000);
+
+  el.setStyles({ backgroundColor: !pressed ? 'red' : '#0003' });
+  fabricate.update(stateKey, !pressed);
+  if (!pressed) return;
+
+  try {
+    const { error } = await sendConduitPacket(state, { to: 'conduit', topic }, deviceName);
+    if (error) throw new Error(error);
+
+    console.log(`Device ${deviceName} sent ${topic} command`);
+    el.setStyles(({ palette }) => ({ backgroundColor: palette.statusOk }));
+  } catch (e) {
+    alert(e);
+    console.log(e);
+  }
+};
+
+/**
+ * ToolbarButton component.
+ *
+ * @param {object} props - Component props.
+ * @param {string} props.src - Image src.
  * @returns {HTMLElement} Fabricate component.
  */
-const DeviceName = () => fabricate('span')
+const ToolbarButton = ({ src }: { src: string }) => IconButton({ src })
+  .setStyles({
+    width: '20px',
+    height: '20px',
+    marginRight: '10px',
+    transition: '0.5s',
+  });
+
+/**
+ * RebootButton component.
+ *
+ * @param {object} props - Component props.
+ * @param {object} props.device - Device.
+ * @returns {HTMLElement} Fabricate component.
+ */
+const RebootButton = ({ device }: { device: Device }) => ToolbarButton({ src: 'assets/restart.png' })
+  .onClick((el, state) => commandDevice(el, state, device, 'reboot'));
+
+/**
+ * ShutdownButton component.
+ *
+ * @param {object} props - Component props.
+ * @param {object} props.device - Device.
+ * @returns {HTMLElement} Fabricate component.
+ */
+const ShutdownButton = ({ device }: { device: Device }) => ToolbarButton({ src: 'assets/shutdown.png' })
+  .setStyles({ marginRight: '0px' })
+  .onClick((el, state) => commandDevice(el, state, device, 'shutdown'));
+
+/**
+ * DeviceName component.
+ *
+ * @param {object} props - Component props.
+ * @param {object} props.device - Device.
+ * @returns {HTMLElement} Fabricate component.
+ */
+const DeviceName = ({ device }: { device: Device }) => fabricate('span')
   .setStyles({
     color: 'white',
     fontWeight: 'bold',
     fontSize: '1.1rem',
     padding: '2px 2px 0px 2px',
     fontFamily: 'monospace',
-  });
+  })
+  .setText(device.deviceName)
+  .onClick(() => fabricate.update({
+    page: 'AppsPage',
+    selectedDevice: device,
+  }));
 
 /**
  * IpTextButton component.
  *
  * @param {object} props - Component props.
- * @param {object} props.device - Device name.
+ * @param {object} props.device - Device.
  * @param {string} props.deviceIp - Device IP.
  * @param {string} props.type - Device type, 'local' or 'public'.
  * @returns {HTMLElement} Fabricate component.
  */
-const IpText = ({
+const LocalIpView = ({
   device,
   deviceIp,
   type,
@@ -92,34 +177,13 @@ const DeviceIcon = ({ deviceType }: { deviceType: string }) => fabricate('Image'
   });
 
 /**
- * Last checkin label component.
- *
- * @param {object} props - Component props.
- * @param {number} props.lastCheckIn - Last seem minutes ago.
- * @returns {HTMLElement} Fabricate component.
- */
-const LastSeenLabel = ({ lastCheckIn }: { lastCheckIn: number }) => fabricate('Text')
-  .setStyles(({ palette }) => ({
-    color: palette.lightGrey,
-    fontStyle: 'italic',
-    fontSize: '0.9rem',
-    textAlign: 'end',
-    margin: '8px',
-    paddingTop: '10px',
-    marginTop: 'auto',
-    flex: '1',
-  }))
-  .setText(`${getTimeAgoStr(lastCheckIn)} ago`);
-
-/**
  * CardTitleRow component.
  *
  * @param {object} props - Component props.
- * @param {Device} props.device - Selected device.
  * @param {boolean} props.seenRecently - If the device is recently updated and presumed to be alive.
  * @returns {HTMLElement} Fabricate component.
  */
-const CardTitleRow = ({ device, seenRecently }: { device: Device, seenRecently: boolean }) => fabricate('Row')
+const CardTitleRow = ({ seenRecently }: { seenRecently: boolean }) => fabricate('Row')
   .setStyles(({ palette }) => ({
     backgroundColor: seenRecently ? palette.instanceHealthy : palette.grey5,
     alignItems: 'center',
@@ -127,10 +191,6 @@ const CardTitleRow = ({ device, seenRecently }: { device: Device, seenRecently: 
     padding: '3px 8px',
     boxShadow: '2px 2px 3px 1px #0006',
     cursor: 'pointer',
-  }))
-  .onClick(() => fabricate.update({
-    page: 'AppsPage',
-    selectedDevice: device,
   }));
 
 /**
@@ -181,6 +241,35 @@ const CommitView = ({ commit, commitDate }: { commit: string, commitDate: string
   ]);
 
 /**
+ * Last checkin label component.
+ *
+ * @param {object} props - Component props.
+ * @param {number} props.lastCheckIn - Last seem minutes ago.
+ * @returns {HTMLElement} Fabricate component.
+ */
+const LastSeenView = ({ lastCheckIn }: { lastCheckIn: number }) => fabricate('Row')
+  .setStyles(({ palette }) => ({
+    alignItems: 'center',
+    borderBottom: `solid 1px ${palette.grey2}`,
+  }))
+  .setChildren([
+    fabricate('Image', { src: 'assets/eye.png' })
+      .setStyles({
+        width: '18px',
+        height: '18px',
+        margin: '8px',
+      }),
+    fabricate('Text')
+      .setStyles({
+        color: 'white',
+        fontSize: '0.9rem',
+        margin: '5px 0px',
+        cursor: 'default',
+      })
+      .setText(`${getTimeAgoStr(lastCheckIn)} ago`),
+  ]);
+
+/**
  * DeviceDetailsColumn component.
  *
  * @param {object} props - Component props.
@@ -189,7 +278,7 @@ const CommitView = ({ commit, commitDate }: { commit: string, commitDate: string
  */
 const DeviceDetailsColumn = ({ device }: { device: Device }) => {
   const {
-    localIp, commit, commitDate,
+    localIp, commit, commitDate, lastCheckIn,
   } = device;
 
   return fabricate('Column')
@@ -198,12 +287,13 @@ const DeviceDetailsColumn = ({ device }: { device: Device }) => {
       borderRight: `solid 1px ${palette.grey3}`,
     }))
     .setChildren([
-      IpText({
+      LocalIpView({
         device,
         deviceIp: localIp,
         type: 'local',
       }),
       CommitView({ commit, commitDate }),
+      LastSeenView({ lastCheckIn }),
     ]);
 };
 
@@ -286,11 +376,16 @@ const DeviceCard = ({ device }: { device: Device }) => {
 
   return DeviceCardContainer()
     .setChildren([
-      CardTitleRow({ device, seenRecently })
+      CardTitleRow({ seenRecently })
         .setChildren([
           DeviceIcon({ deviceType }),
-          DeviceName().setText(deviceName),
-          LastSeenLabel({ lastCheckIn }),
+          DeviceName({ device }),
+          fabricate('Row')
+            .setStyles({ marginLeft: 'auto' })
+            .setChildren([
+              RebootButton({ device }),
+              ShutdownButton({ device }),
+            ]),
         ]),
       DeviceDetailsColumn({ device }),
       AppChipList({ device }),

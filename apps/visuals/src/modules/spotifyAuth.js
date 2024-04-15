@@ -97,7 +97,6 @@ const refreshCredentials = async (spotifyApi) => {
  */
 const updateRemoteAuthCode = async () => {
   // Fetch credentials - stored by conduit as conduit relay
-  // FIXME: Use attic module
   const res = await conduit.send({
     to: 'attic',
     topic: 'get',
