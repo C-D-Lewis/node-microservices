@@ -120,8 +120,8 @@ while True:
   if RUNNING_ON_PI:
     # Conserve OLED burn-in
     now = datetime.now()
-    # if now.second >= 0 and now.second < 10:
-    draw_display()
+    if now.second >= 0 and now.second < 10:
+      draw_display()
 
     disp.image(image)
     disp.show()
