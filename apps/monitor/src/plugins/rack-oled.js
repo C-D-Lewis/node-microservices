@@ -40,6 +40,6 @@ module.exports = async () => {
   await visuals.setText(lines);
 
   // Prevent oled burn-in
-  await wait(10000);
-  await visuals.setText([]);
+  // await wait(10000);
+  // await visuals.setText([]);
 };
