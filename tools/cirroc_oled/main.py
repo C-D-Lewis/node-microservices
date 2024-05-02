@@ -90,7 +90,7 @@ def draw_display():
     address = address.split('/')[0]
   octets = address.split('.')
 
-  image_draw.text((x, top),      f"{socket.gethostname()} (.{octets[2]}.{octets[3]})", font=font, fill=255)
+  image_draw.text((x, top), f"{socket.gethostname()} (.{octets[2]}.{octets[3]})", font=font, fill=255)
   image_draw.text((x, top + 8),  "CPU | " + cpuUsage, font=font, fill=255)
   image_draw.text((x, top + 16), "Disk| " + diskUsage, font=font, fill=255)
   image_draw.text((x, top + 25), "RAID| " + devices, font=font, fill=255)
