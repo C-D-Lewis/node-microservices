@@ -14,6 +14,10 @@ DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), '.')
 
 # If we're running on a Pi
 RUNNING_ON_PI = 'arm' in platform.machine() or 'aarch64' in platform.machine()
+# OLED display width
+WIDTH = 128
+# OLED display height
+HEIGHT = 32
 
 #
 # Get local IP address
@@ -29,34 +33,24 @@ def get_ip_address(ifname):
 def prepare_hardware():
   global disp
 
-  import busio
+  import board
   import adafruit_ssd1306
-  from board import SCL, SDA
 
-  # Create the I2C interface.
-  i2c = busio.I2C(SCL, SDA)
-
-  # Create the SSD1306 OLED class.
-  disp = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c)
+  disp = adafruit_ssd1306.SSD1306_I2C(WIDTH, HEIGHT, board.I2C(), addr=0x3C)
   disp.fill(0)
   disp.show()
 
 if RUNNING_ON_PI:
   prepare_hardware()
-  width = disp.width
-  height = disp.height
-else:
-  width = 128
-  height = 32
 
 # Create blank image for drawing with mode '1' for 1-bit color.
-image = Image.new("1", (width, height))
+image = Image.new("1", (WIDTH, HEIGHT))
 image_draw = ImageDraw.Draw(image)
 
 # First define some constants to allow easy resizing of shapes.
 padding = -2
 top = padding
-bottom = height - padding
+bottom = HEIGHT - padding
 x = 0
 
 # Resources
@@ -114,7 +108,7 @@ def draw_display():
 # Main loop
 while True:
   # Blank
-  image_draw.rectangle((0, 0, width, height), outline=0, fill=0)
+  image_draw.rectangle((0, 0, WIDTH, HEIGHT), outline=0, fill=0)
 
   # Display
   if RUNNING_ON_PI:

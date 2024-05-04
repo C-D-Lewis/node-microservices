@@ -1,14 +1,16 @@
 # python3 ssd1306.py "line 1" "line 2" "line 3" "line 4"
 
 import time
-import Adafruit_SSD1306
+import board
+import adafruit_ssd1306
 from PIL import Image, ImageDraw, ImageFont
 import sys
 
-# 128x32 display with hardware I2C:
-disp = Adafruit_SSD1306.SSD1306_128_32(rst=None)
+WIDTH = 128
+HEIGHT = 32
 
-disp.begin()
+i2c = board.I2C()  # uses board.SCL and board.SDA
+disp = adafruit_ssd1306.SSD1306_I2C(WIDTH, HEIGHT, i2c, addr=0x3C)
 
 # Make sure to create image with mode '1' for 1-bit color.
 lines = sys.argv[1:5]
@@ -29,5 +31,5 @@ draw.text((0, top + 16), lines[2], font=font, fill=255)
 draw.text((0, top + 25), lines[3], font=font, fill=255)
 
 disp.image(image)
-disp.display()
+disp.show()
 time.sleep(.1)
