@@ -32,6 +32,7 @@
     "mc-server-pi": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
       { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
+      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
     ],
     "bedroom-pi": [
