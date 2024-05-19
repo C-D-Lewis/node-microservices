@@ -121,5 +121,3 @@ ACTION=="add", KERNEL=="ttyACM0", MODE="0666"
 ACTION=="add", KERNEL=="ttyAMA0", MODE="0666"
 ACTION=="add", KERNEL=="gpio", MODE="0666"
 ```
-
-```
