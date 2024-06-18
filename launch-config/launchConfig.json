@@ -9,19 +9,19 @@
       { "location": "code/node-microservices/apps/visuals",   "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor",   "start": "npm start &" },
       { "location": "code/node-microservices/dashboard",      "start": "npm run build && http-server -p 54449 &" },
-      { "location": "code/microdiary",                        "start": "http-server -p 34279 &" }
+      { "location": "code/microdiary",                        "start": "http-server -p 34279 &" },
+      {
+        "location": "code/discord-bot-norren",
+        "start": "/home/pi/.nvm/versions/node/v16.20.0/bin/npm run build && /home/pi/.nvm/versions/node/v16.20.0/bin/node dist/src/index.js &",
+        "_note": "Must be node 16+"
+      }
     ],
     "stack-int": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
       { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
       { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/polaris", "start": "npm start &" },
-      {
-        "location": "code/discord-bot-norren",
-        "start": "/home/pi/.nvm/versions/node/v16.20.0/bin/npm run build && /home/pi/.nvm/versions/node/v16.20.0/bin/node dist/src/index.js &",
-        "_note": "Must be node 16+"
-      }
+      { "location": "code/node-microservices/apps/polaris", "start": "npm start &" }
     ],
     "cirroc": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
