@@ -5,16 +5,16 @@ import { shortDateTime } from '../utils';
 
 declare const fabricate: Fabricate<AppState>;
 
-/** Graph width */
-export const GRAPH_WIDTH = 2 * APP_CARD_WIDTH;
 /** Graph height */
 const GRAPH_HEIGHT = 180;
 /** Y axis marign */
 const Y_AXIS_MARGIN = 32;
 /** Point size */
-const POINT_SIZE = 3;
+const POINT_SIZE = 2;
 /** Number of points in a bucket */
 const BUCKET_SIZE = 5;
+/** Graph width */
+export const GRAPH_WIDTH = APP_CARD_WIDTH - Y_AXIS_MARGIN - 2;
 
 /**
  * DataPointLabel component.
@@ -77,9 +77,9 @@ const DataPoint = ({ point, minValue, maxValue }: DataPointPropTypes) => {
  */
 const GraphView = () => fabricate('Row')
   .setStyles(({ palette }) => ({
-    backgroundColor: palette.grey2,
-    borderBottom: `solid 2px ${palette.lightGrey}`,
-    borderLeft: `solid 2px ${palette.lightGrey}`,
+    backgroundColor: palette.grey1,
+    // borderBottom: `solid 2px ${palette.lightGrey}`,
+    // borderLeft: `solid 2px ${palette.lightGrey}`,
     alignItems: 'end',
     width: '100%',
     height: `${GRAPH_HEIGHT}px`,
@@ -113,7 +113,11 @@ const GraphView = () => fabricate('Row')
  * @returns {HTMLElement} Fabricate component.
  */
 const YAxisLabels = () => fabricate('Column')
-  .setStyles({ width: `${Y_AXIS_MARGIN}px` })
+  .setStyles({
+    width: `${Y_AXIS_MARGIN}px`,
+    position: 'absolute',
+    left: '5px',
+  })
   .setChildren([
     fabricate('Text')
       .setStyles({ fontSize: '0.9rem', color: 'white' })
@@ -156,11 +160,12 @@ const MetricGraph = () => fabricate('Column')
   .setStyles({ width: '100%' })
   .setChildren([
     fabricate('Row')
+      .setStyles({ position: 'relative' })
       .setChildren([
         YAxisLabels(),
         GraphView(),
       ]),
-    HAxisLabels(),
+    // HAxisLabels(),
   ]);
 
 export default MetricGraph;

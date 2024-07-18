@@ -100,6 +100,7 @@ const DeviceName = ({ device }: { device: Device }) => fabricate('span')
     fontSize: '1.1rem',
     padding: '2px 2px 0px 2px',
     fontFamily: 'monospace',
+    cursor: 'pointer',
   })
   .setText(device.deviceName)
   .onClick(() => fabricate.update({
@@ -190,7 +191,6 @@ const CardTitleRow = ({ seenRecently }: { seenRecently: boolean }) => fabricate(
     height: '35px',
     padding: '3px 8px',
     boxShadow: '2px 2px 3px 1px #0006',
-    cursor: 'pointer',
   }));
 
 /**
