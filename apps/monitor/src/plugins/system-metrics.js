@@ -1,6 +1,5 @@
 const { loadavg, freemem, totalmem } = require('os');
 const { execSync } = require('child_process');
-const { readFileSync, unlinkSync } = require('fs');
 const { log, temperature } = require('../node-common')(['log', 'temperature']);
 const { updateMetrics } = require('../modules/metrics');
 
@@ -10,10 +9,8 @@ const { updateMetrics } = require('../modules/metrics');
  * @returns {object} Disk usage stats { diskGb, diskPerc }
  */
 const getDiskUsage = () => {
-  execSync('df -h > df.txt');
-  const line = readFileSync('df.txt').toString().split('\n')[1];
+  const line = execSync('df -h').toString().split('\n')[1];
   const [, , diskGb, , diskPerc] = line.split(' ').filter((p) => p);
-  unlinkSync('df.txt');
 
   return {
     diskGb: parseFloat(diskGb.replace('G', '').replace('M', ''), 10),

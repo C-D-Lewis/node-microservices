@@ -1,6 +1,7 @@
 {
   "PLUGINS": [
     { "FILE_NAME": "system-metrics.js", "EVERY": 1 },
+    { "FILE_NAME": "disk-usage.js", "EVERY": 10 },
     { "FILE_NAME": "email-report.js" },
     {
       "FILE_NAME": "services.js",
