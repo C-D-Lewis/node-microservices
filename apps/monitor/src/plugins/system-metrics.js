@@ -6,22 +6,46 @@ const { updateMetrics } = require('../modules/metrics');
 /**
  * Get disk usage stats.
  *
+ * @param {string} mountPath - Mount path of drive to select.
  * @returns {object} Disk usage stats { diskGb, diskPerc }
  */
-const getDiskUsage = () => {
-  const line = execSync('df -h').toString().split('\n')[1];
-  const [, , diskGb, , diskPerc] = line.split(' ').filter((p) => p);
+const getDiskUsage = (mountPath) => {
+  const lines = execSync('df -h | grep "G "')
+    .toString()
+    .split('\n')
+    .slice(1)
+    .filter((p) => p.length > 0);
+  const disks = lines.map((line) => {
+    const [, size, used, , , path] = line
+      .split(' ')
+      .filter((p) => p.length);
+    return {
+      size,
+      used,
+      path,
+    };
+  });
+  const found = disks.find((p) => p.path === mountPath);
+  if (!found) throw new Error(`Failed to find disk with path ${mountPath}`);
+
+  const { used, size } = found;
+  const diskGb = parseFloat(used.replace('G', '').replace('M', ''), 10);
+  const sizeGb = parseFloat(size.replace('G', '').replace('M', ''), 10);
+  const diskPerc = Math.round((diskGb * 100) / sizeGb);
 
   return {
-    diskGb: parseFloat(diskGb.replace('G', '').replace('M', ''), 10),
-    diskPerc: parseInt(diskPerc.replace('%', ''), 10),
+    diskGb,
+    diskPerc,
   };
 };
 
 /**
  * Log metrics for system stats.
+ *
+ * @param {object} args - Plugin args.
  */
-module.exports = async () => {
+module.exports = async (args = {}) => {
+  const { DISK_MOUNT = '/' } = args;
   try {
     const [cpuMinute] = loadavg();
 
@@ -30,7 +54,7 @@ module.exports = async () => {
     const memoryPerc = 100 - (Math.round((freeMemory * 100) / totalMemory));
     const memoryMb = Math.round((totalMemory - freeMemory) / 1024 / 1024);
 
-    const { diskGb, diskPerc } = getDiskUsage();
+    const { diskGb, diskPerc } = getDiskUsage(DISK_MOUNT);
 
     const tempRaw = temperature.get();
 
