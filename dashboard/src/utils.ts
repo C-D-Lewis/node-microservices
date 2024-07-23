@@ -66,9 +66,9 @@ export const getTimeAgoStr = (time: number) => {
  * @returns {string} Short date time.
  */
 export const shortDateTime = (timestamp: string) => {
-  const [date, time] = new Date(timestamp).toISOString().split('T');
+  const [, time] = new Date(timestamp).toISOString().split('T');
   const shortTime = time.split(':').slice(0, 2).join(':');
-  return `${date} ${shortTime}`;
+  return `${shortTime}`;
 };
 
 /**
