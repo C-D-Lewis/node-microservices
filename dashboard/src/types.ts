@@ -26,6 +26,8 @@ export type Device = {
   commitDate: string;
   lastCheckIn: number;
   deviceType: 'other' | 'pc' | 'pi' | 'other';
+  diskSize: string;
+  diskUsage: number;
 };
 
 /** Graph data point. */

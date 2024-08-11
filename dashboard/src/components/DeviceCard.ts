@@ -270,6 +270,36 @@ const LastSeenView = ({ lastCheckIn }: { lastCheckIn: number }) => fabricate('Ro
   ]);
 
 /**
+ * Disk usage label component.
+ *
+ * @param {object} props - Component props.
+ * @param {string} props.diskSize - Disk size, such as '28G'.
+ * @param {number} props.diskUsage - Percentage disk used, such as 10.
+ * @returns {HTMLElement} Fabricate component.
+ */
+const DiskUsageView = ({ diskSize, diskUsage }: { diskSize: string, diskUsage: number }) => fabricate('Row')
+  .setStyles(({ palette }) => ({
+    alignItems: 'center',
+    borderBottom: `solid 1px ${palette.grey2}`,
+  }))
+  .setChildren([
+    fabricate('Image', { src: 'assets/disk.png' })
+      .setStyles({
+        width: '18px',
+        height: '18px',
+        margin: '8px',
+      }),
+    fabricate('Text')
+      .setStyles({
+        color: 'white',
+        fontSize: '0.9rem',
+        margin: '5px 0px',
+        cursor: 'default',
+      })
+      .setText(`${diskUsage}% of ${diskSize} used`),
+  ]);
+
+/**
  * DeviceDetailsColumn component.
  *
  * @param {object} props - Component props.
@@ -278,7 +308,7 @@ const LastSeenView = ({ lastCheckIn }: { lastCheckIn: number }) => fabricate('Ro
  */
 const DeviceDetailsColumn = ({ device }: { device: Device }) => {
   const {
-    localIp, commit, commitDate, lastCheckIn,
+    localIp, commit, commitDate, lastCheckIn, diskSize, diskUsage,
   } = device;
 
   return fabricate('Column')
@@ -294,6 +324,7 @@ const DeviceDetailsColumn = ({ device }: { device: Device }) => {
       }),
       CommitView({ commit, commitDate }),
       LastSeenView({ lastCheckIn }),
+      DiskUsageView({ diskSize, diskUsage }),
     ]);
 };
 
