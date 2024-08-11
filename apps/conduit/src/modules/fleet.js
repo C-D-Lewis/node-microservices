@@ -1,8 +1,8 @@
 const { execSync } = require('child_process');
 const { hostname } = require('os');
 const {
-  config, attic, ip, log,
-} = require('../node-common')(['config', 'attic', 'ip', 'log']);
+  config, attic, ip, log, os,
+} = require('../node-common')(['config', 'attic', 'ip', 'log', 'os']);
 
 config.addPartialSchema({
   required: ['OPTIONS'],
@@ -18,6 +18,7 @@ config.addPartialSchema({
               type: 'string',
               enum: ['pc', 'server', 'pi', 'other'],
             },
+            MAIN_DISK_MOUNT: { type: 'string' },
           },
         },
       },
@@ -57,6 +58,13 @@ const checkIn = async () => {
     const commitDateStr = execSync('git log -1 --format=%ct').toString().trim();
     const commitDate = new Date(parseInt(`${commitDateStr}000`, 10)).toISOString();
 
+    const disks = os.getDiskUsage();
+    const mountPath = OPTIONS.FLEET.MAIN_DISK_MOUNT || '/';
+    const mainDisk = disks.find((p) => p.path === mountPath);
+    if (!mainDisk) throw new Error('Main disk not found');
+
+    const { size: diskSize, usePerc: diskUsage } = mainDisk;
+
     const updatePayload = {
       deviceName: hostname(),
       lastCheckIn: now.getTime(),
@@ -66,6 +74,8 @@ const checkIn = async () => {
       deviceType: OPTIONS.FLEET.DEVICE_TYPE,
       commit,
       commitDate,
+      diskUsage,
+      diskSize,
     };
 
     const fleetList = await attic.get(FLEET_LIST_KEY);

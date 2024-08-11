@@ -1,5 +1,4 @@
-const { execSync } = require('child_process');
-const { log, ses } = require('../node-common')(['log', 'ses']);
+const { log, ses, os } = require('../node-common')(['log', 'ses', 'os']);
 
 /** Threshold to notify */
 const THRESHOLD = 90;
@@ -7,35 +6,15 @@ const THRESHOLD = 90;
 let notified = false;
 
 /**
- * Check disk state of RAID device (assume just 1)
+ * Check disk state of local disks in the GB range.
  */
 module.exports = async () => {
   try {
-    const lines = execSync('df -h | grep "G "')
-      .toString()
-      .split('\n')
-      .slice(1)
-      .filter((p) => p.length > 0);
-    const disks = lines.map((line) => {
-      const [label, size, used, available, usePerc, path] = line
-        .split(' ')
-        .filter((p) => p.length);
-      const usePercInt = parseInt(usePerc, 10);
-      const isOverThreshold = usePercInt > THRESHOLD;
-      log.debug(`${label} ${size} ${used} ${available} ${usePerc} ${path} ${isOverThreshold}`);
-      return {
-        label,
-        size,
-        used,
-        available,
-        usePerc: usePercInt,
-        path,
-        isOverThreshold,
-      };
-    });
+    const disks = os.getDiskUsage();
+
+    const lowDisk = disks.find((p) => p.usePerc > THRESHOLD);
 
     // Send notification once
-    const lowDisk = disks.find((p) => p.isOverThreshold);
     if (lowDisk && !notified) {
       const {
         label, path, usePerc, size,

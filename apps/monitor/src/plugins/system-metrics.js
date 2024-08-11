@@ -1,6 +1,5 @@
 const { loadavg, freemem, totalmem } = require('os');
-const { execSync } = require('child_process');
-const { log, temperature } = require('../node-common')(['log', 'temperature']);
+const { log, temperature, os } = require('../node-common')(['log', 'temperature', 'os']);
 const { updateMetrics } = require('../modules/metrics');
 
 /**
@@ -10,21 +9,7 @@ const { updateMetrics } = require('../modules/metrics');
  * @returns {object} Disk usage stats { diskGb, diskPerc }
  */
 const getDiskUsage = (mountPath) => {
-  const lines = execSync('df -h | grep "G "')
-    .toString()
-    .split('\n')
-    .slice(1)
-    .filter((p) => p.length > 0);
-  const disks = lines.map((line) => {
-    const [, size, used, , , path] = line
-      .split(' ')
-      .filter((p) => p.length);
-    return {
-      size,
-      used,
-      path,
-    };
-  });
+  const disks = os.getDiskUsage();
   const found = disks.find((p) => p.path === mountPath);
   if (!found) throw new Error(`Failed to find disk with path ${mountPath}`);
 
