@@ -10,7 +10,6 @@ const getDiskUsage = () => {
   const lines = execSync('df -h | grep "G "')
     .toString()
     .split('\n')
-    .slice(1)
     .filter((p) => p.length > 0);
 
   return lines.map((line) => {
