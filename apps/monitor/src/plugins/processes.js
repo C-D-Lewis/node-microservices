@@ -1,6 +1,10 @@
 const { execSync } = require('child_process');
 const { log, ses } = require('../node-common')(['log', 'ses']);
 
+/** Grace period before starting alerting */
+const GRACE_PERIOD_MS = 1000 * 60 * 5;
+
+const start = Date.now();
 let notified = false;
 
 /**
@@ -13,6 +17,12 @@ module.exports = async (args) => {
   if (!PROCESSES.length) throw new Error('No processes to monitor');
 
   const stoppedProcesses = [];
+  const now = Date.now();
+
+  if (now - start < GRACE_PERIOD_MS) {
+    log.debug('Within processes.js GRACE_PERIOD');
+    return;
+  }
 
   try {
     // Get processes
