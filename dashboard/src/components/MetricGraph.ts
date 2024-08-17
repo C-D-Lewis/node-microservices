@@ -84,8 +84,11 @@ const GraphView = () => fabricate('Row')
     width: '100%',
     height: `${GRAPH_HEIGHT}px`,
   }))
-  .onUpdate((el, { metricHistory, monitorData: { minValue, maxValue } }) => {
+  .onUpdate((el, { metricHistory, monitorData: { type, minValue, maxValue } }) => {
     if (!metricHistory.length) return;
+
+    // Show no point for non-number data
+    if (type !== 'number') return;
 
     // Average into buckets
     const copy = [...metricHistory];
@@ -94,6 +97,7 @@ const GraphView = () => fabricate('Row')
       const points = copy.splice(0, BUCKET_SIZE);
       const avgIndex = Math.floor(points.length / 2);
       buckets.push({
+        // @ts-expect-error handled with 'type'
         value: points.reduce((acc, [, value]) => acc + value, 0) / points.length,
         timestamp: points[avgIndex][0],
         dateTime: new Date(points[avgIndex][0]).toISOString(),

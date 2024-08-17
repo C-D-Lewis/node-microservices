@@ -29,19 +29,33 @@ const fetchMetric = async (state: AppState, metric: string, setProp: SetPropFunc
   );
   const { message: newHistory } = res;
 
-  // Aggregate values
-  const minValue = metric.includes('Perc')
-    ? 0
-    : newHistory.reduce(
-      (acc: number, [, value]: MetricPoint) => (value < acc ? value : acc),
-      9999999,
-    );
-  const maxValue = metric.includes('Perc')
-    ? 100
-    : newHistory.reduce(
-      (acc: number, [, value]: MetricPoint) => (value > acc ? value : acc),
-      0,
-    );
+  const type: AppState['monitorData']['type'] = Array.isArray(newHistory[0][1]) ? 'array' : 'number';
+  setProp('type', type);
+
+  let minValue;
+  let maxValue;
+
+  if (type === 'number') {
+    // Aggregate values
+    minValue = metric.includes('Perc')
+      ? 0
+      : newHistory.reduce(
+        // @ts-expect-error handled with 'type'
+        (acc: number, [, value]: MetricPoint) => (value < acc ? value : acc),
+        9999999,
+      );
+    maxValue = metric.includes('Perc')
+      ? 100
+      : newHistory.reduce(
+        // @ts-expect-error handled with 'type'
+        (acc: number, [, value]: MetricPoint) => (value > acc ? value : acc),
+        0,
+      );
+  } else if (type === 'array') {
+    // Just show the data in the maxValue label
+    [, maxValue] = newHistory.slice(-1);
+  }
+
   const minTime = shortDateTime(newHistory[0][0]);
   const maxTime = shortDateTime(newHistory[newHistory.length - 1][0]);
 

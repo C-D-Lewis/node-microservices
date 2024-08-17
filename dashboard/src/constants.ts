@@ -58,6 +58,7 @@ export const INITIAL_STATE: AppState = {
     maxValue: 99999,
     minTime: 0,
     maxTime: 99999,
+    type: 'number',
   },
 };
 

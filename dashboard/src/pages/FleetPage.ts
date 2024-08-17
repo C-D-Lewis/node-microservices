@@ -105,6 +105,8 @@ const FleetPage = () => {
       if (!fleet.length) return;
 
       updateLayout(el, state);
+
+      // FIXME: Each DeviceCard should load its own apps after IP tests are done
       fetchApps(state);
     }, ['fleet']);
 };

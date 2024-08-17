@@ -37,7 +37,7 @@ export type DataPoint = {
 };
 
 /** Raw metric point */
-export type MetricPoint = [number, number];
+export type MetricPoint = [number, number | string[]];
 
 /** monitor plugin configuration */
 export type MonitorPlugin = {
@@ -102,6 +102,7 @@ export type AppState = {
     maxValue: number;
     minTime: number;
     maxTime: number;
+    type: 'array' | 'number';
   };
 };
 
