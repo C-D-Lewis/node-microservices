@@ -27,12 +27,12 @@ const fetchMetric = async (state: AppState, metric: string, setProp: SetPropFunc
       message: { name: metric },
     },
   );
-  const { message: newHistory } = res;
+  let { message: newHistory } = res;
 
   const type: AppState['monitorData']['type'] = Array.isArray(newHistory[0][1]) ? 'array' : 'number';
   setProp('type', type);
 
-  let minValue = '';
+  let minValue = '-';
   let maxValue;
 
   if (type === 'number') {
@@ -53,7 +53,11 @@ const fetchMetric = async (state: AppState, metric: string, setProp: SetPropFunc
       );
   } else if (type === 'array') {
     // Just show the data in the maxValue label
-    maxValue = newHistory.slice(-1)[1].join(', ');
+    const lastArrValue = newHistory.slice(-1)[0][1];
+    maxValue = lastArrValue.length ? lastArrValue.join(', ') : '-';
+
+    // No points needed
+    newHistory = [];
   }
 
   const minTime = shortDateTime(newHistory[0][0]);
