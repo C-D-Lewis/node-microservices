@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 const { existsSync } = require('fs');
 const { spawn } = require('child_process');
 const fetch = require('node-fetch').default;
@@ -58,6 +59,7 @@ const start = async (appName) => {
 
   // Check it worked
   console.log('Verifying launch...');
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     await wait(500);
 
@@ -65,7 +67,7 @@ const start = async (appName) => {
       const apps = await fetchRunningApps();
       const found = apps.find((p) => p.app === appName);
       if (found && found.status === 'OK') {
-        console.log(`App ${appName} is running`);
+        console.log(`App ${appName} is running`.green);
         clearTimeout(handle);
         return;
       }
@@ -85,6 +87,12 @@ const stop = async (appName) => {
   const apps = await fetchRunningApps();
   const found = apps.find((p) => p.app === appName);
   if (!found) throw new Error(`App ${appName} is not running`);
+
+  const othersRunning = apps.filter((p) => p.app !== 'conduit' && p.status === 'OK');
+  if (appName === 'conduit' && othersRunning) {
+    console.log('Other apps are running - stop them first'.yellow);
+    return;
+  }
 
   const finalHost = switches.HOST || 'localhost';
   const { port } = found;
