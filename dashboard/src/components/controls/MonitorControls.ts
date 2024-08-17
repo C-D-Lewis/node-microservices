@@ -55,9 +55,6 @@ const fetchMetric = async (state: AppState, metric: string, setProp: SetPropFunc
     // Just show the data in the maxValue label
     const lastArrValue = newHistory.slice(-1)[0][1];
     maxValue = lastArrValue.length ? lastArrValue.join(', ') : '-';
-
-    // No points needed
-    newHistory = [];
   }
 
   const minTime = shortDateTime(newHistory[0][0]);
