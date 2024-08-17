@@ -85,10 +85,10 @@ const GraphView = () => fabricate('Row')
     height: `${GRAPH_HEIGHT}px`,
   }))
   .onUpdate((el, { metricHistory, monitorData: { type, minValue, maxValue } }) => {
-    if (!metricHistory.length) return;
-
-    // Show no point for non-number data
-    if (type !== 'number') return;
+    if (!metricHistory.length || type !== 'number') {
+      el.empty();
+      return;
+    }
 
     // Average into buckets
     const copy = [...metricHistory];
