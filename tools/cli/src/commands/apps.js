@@ -89,7 +89,7 @@ const stop = async (appName) => {
   if (!found) throw new Error(`App ${appName} is not running`);
 
   const othersRunning = apps.filter((p) => p.app !== 'conduit' && p.status === 'OK');
-  if (appName === 'conduit' && othersRunning) {
+  if (appName === 'conduit' && othersRunning.length) {
     console.log('Other apps are running - stop them first'.yellow);
     return;
   }

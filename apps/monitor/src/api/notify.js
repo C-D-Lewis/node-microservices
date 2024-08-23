@@ -10,11 +10,11 @@ const handleNotifyPacket = async (packet, res) => {
   const { content } = packet.message;
 
   try {
-    ses.notify(content);
-    conduit.respond(res, { status: 200, message: { content: 'success' } });
+    await ses.notify(content);
+    return conduit.respond(res, { status: 200, message: { content: 'success' } });
   } catch (e) {
     log.error(e);
-    conduit.respond(res, { status: 500, error: e.message });
+    return conduit.respond(res, { status: 500, error: e.message });
   }
 };
 
