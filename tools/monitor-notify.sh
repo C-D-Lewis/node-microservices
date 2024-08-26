@@ -4,7 +4,7 @@ set -eu
 
 MESSAGE=$1
 
-RES=$(curl -X POST "http://localhost:5959/conduit" \
+RES=$(curl -s -X POST "http://localhost:5959/conduit" \
   -H "Content-Type:application/json" \
   -d "{
     \"to\": \"monitor\",
