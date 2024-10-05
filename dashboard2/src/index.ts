@@ -4,6 +4,7 @@ import Theme from './theme';
 import { INITIAL_STATE } from './constants';
 import { parseParams, fetchFleetList } from './util';
 import SideBar from './components/SideBar';
+import AppArea from './components/AppArea';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -25,7 +26,11 @@ const AppNavBar = () => fabricate('NavBar', {
 const App = () => fabricate('Column')
   .setChildren([
     AppNavBar(),
-    SideBar(),
+    fabricate('Row')
+      .setChildren([
+        SideBar(),
+        AppArea(),
+      ]),
   ])
   .onUpdate(async (el, state, keys) => {
     if (keys.includes(fabricate.StateKeys.Created)) {

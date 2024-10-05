@@ -6,13 +6,6 @@ import { sortDeviceByName } from '../util';
 declare const fabricate: Fabricate<AppState>;
 
 /**
- * GroupContainer component.
- *
- * @returns {HTMLElement} Fabricate component.
- */
-const GroupContainer = () => fabricate('div');
-
-/**
  * GroupLabel component.
  *
  * @param {object} props - Component props.
@@ -20,11 +13,13 @@ const GroupContainer = () => fabricate('div');
  * @returns {HTMLElement} Fabricate component.
  */
 const GroupLabel = ({ publicIp }: { publicIp: string }) => fabricate('Text')
-  .setStyles({
-    color: 'white',
-    fontSize: '1.2rem',
+  .setStyles(({ palette, fonts }) => ({
+    color: palette.greyC,
+    fontSize: '1rem',
+    fontFamily: fonts.code,
     fontWeight: 'bold',
-  })
+    margin: '15px auto 8px auto',
+  }))
   .setText(publicIp);
 
 /**
@@ -35,7 +30,7 @@ const GroupLabel = ({ publicIp }: { publicIp: string }) => fabricate('Text')
 const SideBar = () => fabricate('Column')
   .setStyles(({ palette }) => ({
     backgroundColor: palette.grey2,
-    width: '250px',
+    height: '95vh',
   }))
   .onUpdate(async (el, state) => {
     const { fleet } = state;
@@ -52,17 +47,16 @@ const SideBar = () => fabricate('Column')
     });
 
     // Group area for each bucket
-    el.setChildren(
-      Object
-        .entries(buckets)
-        .map(([publicIp, devices]) => GroupContainer()
-          .setChildren([
-            GroupLabel({ publicIp }),
-            ...devices
-              .sort(sortDeviceByName)
-              .map((device) => DeviceRow({ device })),
-          ])),
-    );
+    Object
+      .entries(buckets)
+      .forEach(([publicIp, devices]) => {
+        el.addChildren([
+          GroupLabel({ publicIp }),
+          ...devices
+            .sort(sortDeviceByName)
+            .map((device) => DeviceRow({ device })),
+        ]);
+      });
   }, ['fleet']);
 
 export default SideBar;

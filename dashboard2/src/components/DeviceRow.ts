@@ -14,29 +14,38 @@ declare const fabricate: Fabricate<AppState>;
 const DeviceRow = ({ device }: { device: Device }) => {
   const { deviceType, deviceName } = device;
 
+  const nameView = fabricate('Text')
+    .setStyles(({ fonts }) => ({
+      color: 'white',
+      fontSize: '1.2rem',
+      fontFamily: fonts.code,
+      fontWeight: 'bold',
+    }))
+    .setText(deviceName);
+
   return fabricate('Row')
     .setStyles(({ palette }) => ({
-      backgroundColor: palette.grey3,
-      width: '100%',
-      margin: '8px',
+      backgroundColor: palette.grey2,
+      padding: '8px 0px 8px 5px',
+      cursor: 'pointer',
+      minWidth: '240px',
     }))
     .setChildren([
       fabricate('Image', { src: `assets/images/${ICON_NAMES[deviceType]}.png` })
-        .setStyles({
-          width: '32px',
-          height: '32px',
-        }),
+        .setStyles({ width: '32px', height: '32px' }),
       fabricate('Column')
         .setChildren([
-          fabricate('Text')
-            .setStyles({
-              color: 'white',
-              fontSize: '1.2rem',
-              fontWeight: 'bold',
-            })
-            .setText(deviceName),
+          nameView,
         ]),
-    ]);
+    ])
+    .onHover((el, state, isHovered) => {
+      el.setStyles(({ palette }) => ({
+        backgroundColor: isHovered ? palette.grey3 : palette.grey2,
+      }));
+    })
+    .onClick((el, state) => {
+      // Show apps for device
+    });
 };
 
 export default DeviceRow;
