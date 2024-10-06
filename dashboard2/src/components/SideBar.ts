@@ -18,7 +18,10 @@ const GroupLabel = ({ publicIp }: { publicIp: string }) => fabricate('Text')
     fontSize: '1rem',
     fontFamily: fonts.code,
     fontWeight: 'bold',
-    margin: '15px auto 8px auto',
+    padding: '15px 0px 8px 5px',
+    textAlign: 'center',
+    backgroundColor: palette.grey2,
+    margin: '0px',
   }))
   .setText(publicIp);
 
@@ -29,11 +32,24 @@ const GroupLabel = ({ publicIp }: { publicIp: string }) => fabricate('Text')
  */
 const SideBar = () => fabricate('Column')
   .setStyles(({ palette }) => ({
-    backgroundColor: palette.grey2,
-    height: '95vh',
+    backgroundColor: palette.grey3,
+    minWidth: '240px',
   }))
+  .setNarrowStyles({ width: '100vw' })
   .onUpdate(async (el, state) => {
     const { fleet } = state;
+
+    if (!fleet.length) {
+      el.setChildren([
+        fabricate('Loader', {
+          size: 48,
+          color: 'white',
+          backgroundColor: '#0000',
+        })
+          .setStyles({ margin: '10px auto' }),
+      ]);
+      return;
+    }
 
     // Sort fleet into publicIp buckets
     const buckets: Record<string, Device[]> = {};
@@ -47,6 +63,7 @@ const SideBar = () => fabricate('Column')
     });
 
     // Group area for each bucket
+    el.empty();
     Object
       .entries(buckets)
       .forEach(([publicIp, devices]) => {

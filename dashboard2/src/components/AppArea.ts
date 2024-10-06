@@ -22,14 +22,15 @@ const NoDeviceLabel = () => fabricate('Text')
  * @returns {HTMLElement} Fabricate component.
  */
 const AppArea = () => fabricate('Row')
-  .setStyles({
-    width: '100%',
-  })
+  .setStyles({ width: '100%' })
   .onUpdate(async (el, state) => {
     const { selectedDevice } = state;
 
     if (!selectedDevice) {
       el.setChildren([NoDeviceLabel()]);
+    } else {
+      setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 200);
+      el.setChildren([fabricate('Text').setText(JSON.stringify(selectedDevice))])
     }
   }, [fabricate.StateKeys.Created, 'selectedDevice']);
 

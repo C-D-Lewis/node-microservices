@@ -12,39 +12,42 @@ declare const fabricate: Fabricate<AppState>;
  * @returns {HTMLElement} Fabricate component.
  */
 const DeviceRow = ({ device }: { device: Device }) => {
-  const { deviceType, deviceName } = device;
+  const { deviceType, deviceName, localIp } = device;
 
   const nameView = fabricate('Text')
-    .setStyles(({ fonts }) => ({
+    .setStyles({
       color: 'white',
-      fontSize: '1.2rem',
-      fontFamily: fonts.code,
+      fontSize: '1.1rem',
       fontWeight: 'bold',
-    }))
+    })
     .setText(deviceName);
+  const localIpView = fabricate('Text')
+    .setStyles(({ fonts, palette }) => ({
+      color: palette.greyC,
+      fontSize: '1rem',
+      fontFamily: fonts.code,
+    }))
+    .setText(localIp);
 
   return fabricate('Row')
     .setStyles(({ palette }) => ({
-      backgroundColor: palette.grey2,
-      padding: '8px 0px 8px 5px',
+      backgroundColor: palette.grey3,
+      padding: '4px 0px 4px 5px',
       cursor: 'pointer',
-      minWidth: '240px',
     }))
     .setChildren([
       fabricate('Image', { src: `assets/images/${ICON_NAMES[deviceType]}.png` })
         .setStyles({ width: '32px', height: '32px' }),
       fabricate('Column')
-        .setChildren([
-          nameView,
-        ]),
+        .setChildren([nameView, localIpView]),
     ])
     .onHover((el, state, isHovered) => {
       el.setStyles(({ palette }) => ({
-        backgroundColor: isHovered ? palette.grey3 : palette.grey2,
+        backgroundColor: isHovered ? palette.grey4 : palette.grey3,
       }));
     })
-    .onClick((el, state) => {
-      // Show apps for device
+    .onClick(() => {
+      fabricate.update({ selectedDevice: device });
     });
 };
 

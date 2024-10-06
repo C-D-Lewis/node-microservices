@@ -24,9 +24,12 @@ const AppNavBar = () => fabricate('NavBar', {
  * @returns {HTMLElement} Fabricate component.
  */
 const App = () => fabricate('Column')
+  .setStyles({ height: '100vh' })
   .setChildren([
     AppNavBar(),
     fabricate('Row')
+      .setStyles({ height: '100vh' })
+      .setNarrowStyles({ flexWrap: 'wrap' })
       .setChildren([
         SideBar(),
         AppArea(),
