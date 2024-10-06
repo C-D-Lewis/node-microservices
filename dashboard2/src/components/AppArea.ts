@@ -1,5 +1,6 @@
 import { Fabricate } from 'fabricate.js';
 import { AppState } from '../types';
+import InfoRow from './InfoRow';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -21,7 +22,7 @@ const NoDeviceLabel = () => fabricate('Text')
  *
  * @returns {HTMLElement} Fabricate component.
  */
-const AppArea = () => fabricate('Row')
+const AppArea = () => fabricate('Column')
   .setStyles({ width: '100%' })
   .onUpdate(async (el, state) => {
     const { selectedDevice } = state;
@@ -30,7 +31,10 @@ const AppArea = () => fabricate('Row')
       el.setChildren([NoDeviceLabel()]);
     } else {
       setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 200);
-      el.setChildren([fabricate('Text').setText(JSON.stringify(selectedDevice))])
+      el.setChildren([
+        InfoRow({ device: selectedDevice }),
+        // AppCards
+      ]);
     }
   }, [fabricate.StateKeys.Created, 'selectedDevice']);
 

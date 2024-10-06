@@ -8,6 +8,7 @@ const Theme = {
     grey3: '#333',
     grey4: '#444',
     grey5: '#555',
+    greyA: '#aaa',
     greyC: '#ccc',
     greyE: '#eee',
     statusOk: '#43D047',
