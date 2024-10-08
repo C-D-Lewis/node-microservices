@@ -85,9 +85,9 @@ const StatView = ({
 }) => fabricate('Row')
   .setStyles(({ palette }) => ({
     alignItems: 'center',
-    borderRight: `solid 2px ${palette.greyA}`,
-    padding: '0px 28px 0px 10px',
-    minWidth: '210px',
+    borderRight: `solid 2px ${palette.grey6}`,
+    padding: '0px 20px 0px 8px',
+    minWidth: '190px',
   }))
   .setNarrowStyles({
     borderRight: 'none',
