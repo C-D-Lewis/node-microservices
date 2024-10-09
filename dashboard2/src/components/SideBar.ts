@@ -1,7 +1,8 @@
 import { Fabricate } from 'fabricate.js';
 import { AppState, Device } from '../types';
-import { sortDeviceByName } from '../util';
+import { fetchDeviceApps, sortDeviceByName } from '../util';
 import { ICON_NAMES } from '../constants';
+import AppLoader from './AppLoader';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -22,6 +23,7 @@ const GroupLabel = ({ publicIp }: { publicIp: string }) => fabricate('Text')
     textAlign: 'center',
     backgroundColor: palette.grey2,
     margin: '0px',
+    cursor: 'default',
   }))
   .setText(publicIp);
 
@@ -50,6 +52,14 @@ const DeviceRow = ({ device }: { device: Device }) => {
     }))
     .setText(localIp);
 
+  /**
+   * Determine if this is the selected device.
+   *
+   * @param {AppState} s Current state.
+   * @returns {boolean} true if this is the selected device.
+   */
+  const isSelected = (s: AppState) => s.selectedDevice?.deviceName === deviceName;
+
   return fabricate('Row')
     .setStyles(({ palette }) => ({
       backgroundColor: palette.grey3,
@@ -64,13 +74,27 @@ const DeviceRow = ({ device }: { device: Device }) => {
         .setChildren([nameView, localIpView]),
     ])
     .onHover((el, state, isHovered) => {
+      if (isSelected(state)) return;
+
       el.setStyles(({ palette }) => ({
         backgroundColor: isHovered ? palette.grey4 : palette.grey3,
       }));
     })
-    .onClick(() => {
+    .onClick((el, state) => {
+      const { selectedDevice } = state;
+      if (selectedDevice?.deviceName === deviceName) return;
+
+      // Select this device
       fabricate.update({ selectedDevice: device });
-    });
+
+      // Load the app details
+      fetchDeviceApps(state, device);
+    })
+    .onUpdate((el, state) => {
+      el.setStyles(({ palette }) => ({
+        backgroundColor: isSelected(state) ? palette.grey4 : palette.grey3,
+      }));
+    }, ['selectedDevice']);
 };
 
 /**
@@ -82,26 +106,20 @@ const SideBar = () => fabricate('Column')
   .setStyles(({ palette }) => ({
     backgroundColor: palette.grey3,
     minWidth: '240px',
+    borderRight: `solid 2px ${palette.grey6}`,
   }))
   .setNarrowStyles({ width: '100vw' })
   .onUpdate(async (el, state) => {
-    const { fleet } = state;
+    const { devices } = state;
 
-    if (!fleet.length) {
-      el.setChildren([
-        fabricate('Loader', {
-          size: 48,
-          color: 'white',
-          backgroundColor: '#0000',
-        })
-          .setStyles({ margin: '10px auto' }),
-      ]);
+    if (!devices.length) {
+      el.setChildren([AppLoader()]);
       return;
     }
 
-    // Sort fleet into publicIp buckets
+    // Sort devices into publicIp buckets
     const buckets: Record<string, Device[]> = {};
-    fleet.forEach((device) => {
+    devices.forEach((device) => {
       const { publicIp } = device;
       if (!buckets[publicIp]) {
         buckets[publicIp] = [];
@@ -114,14 +132,14 @@ const SideBar = () => fabricate('Column')
     el.empty();
     Object
       .entries(buckets)
-      .forEach(([publicIp, devices]) => {
+      .forEach(([publicIp, groupDevices]) => {
         el.addChildren([
           GroupLabel({ publicIp }),
-          ...devices
+          ...groupDevices
             .sort(sortDeviceByName)
             .map((device) => DeviceRow({ device })),
         ]);
       });
-  }, ['fleet']);
+  }, ['devices']);
 
 export default SideBar;

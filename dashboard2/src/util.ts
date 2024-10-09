@@ -1,18 +1,18 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
-import { AppState, Device } from './types';
+import { AppState, Device, DeviceApp } from './types';
 import { CONDUIT_PORT, FLEET_HOST } from './constants';
 import { sendConduitPacket } from './services/conduitService';
 
 declare const fabricate: Fabricate<AppState>;
 
 /**
- * Re-load the fleet list data.
+ * Re-load the devices list data.
  *
  * @param {object} state - App state.
  */
 export const fetchFleetList = async (state: AppState) => {
   const { token } = state;
-  fabricate.update({ fleet: [] });
+  fabricate.update({ devices: [] });
 
   try {
     // Can't use sendConduitPacket, not a device by name
@@ -27,7 +27,7 @@ export const fetchFleetList = async (state: AppState) => {
       }),
     });
     const { message } = await res.json();
-    fabricate.update({ fleet: message.value });
+    fabricate.update({ devices: message.value });
   } catch (err) {
     console.error(err);
     alert(err);
@@ -113,5 +113,50 @@ export const commandDevice = async (
   } catch (e) {
     alert(e);
     console.log(e);
+  }
+};
+
+/**
+ * Sort apps by name.
+ *
+ * @param {Device} a - Device to compare.
+ * @param {Device} b - Device to compare.
+ * @returns {number} Sort ordering.
+ */
+const sortAppByName = (a: DeviceApp, b: DeviceApp) => (a.app! > b.app! ? 1 : -1);
+
+/**
+ * Load apps for all fleet devices.
+ *
+ * @param {AppState} state - App state.
+ * @param {Device} device - Device to use.
+ */
+export const fetchDeviceApps = async (state: AppState, device: Device) => {
+  const { deviceName } = device!;
+
+  fabricate.update({ selectedDeviceApps: [] });
+
+  try {
+    const { message } = await sendConduitPacket(
+      state,
+      { to: 'conduit', topic: 'getApps' },
+      deviceName,
+    );
+
+    let selectedDeviceApps: DeviceApp[] = [];
+    if (message && message.error) {
+      console.error(message.error);
+      selectedDeviceApps = [];
+    } else if (!message) {
+      console.error('No response in fetchApps');
+      selectedDeviceApps = [];
+    } else {
+      selectedDeviceApps = (message as DeviceApp[]).sort(sortAppByName);
+    }
+
+    fabricate.update({ selectedDeviceApps });
+  } catch (err: unknown) {
+    console.error(err);
+    fabricate.update({ selectedDeviceApps: [] });
   }
 };

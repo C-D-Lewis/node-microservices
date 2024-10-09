@@ -37,8 +37,8 @@ export type AppState = {
 
   // App data
   token: string;
-  deviceApps: Record<string, DeviceApp[]>;
-  fleet: Device[];
+  selectedDeviceApps: DeviceApp[];
+  devices: Device[];
 
   // Selections
   selectedDevice: Device | null,

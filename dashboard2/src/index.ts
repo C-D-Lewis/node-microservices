@@ -14,7 +14,7 @@ declare const fabricate: Fabricate<AppState>;
  * @returns {HTMLElement} Fabricate component.
  */
 const AppNavBar = () => fabricate('NavBar', {
-  title: 'Fleet Dashboard',
+  title: 'Node Microservices Dashboard',
   backgroundColor: Theme.palette.primary,
 });
 

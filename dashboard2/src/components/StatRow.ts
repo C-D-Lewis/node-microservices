@@ -58,7 +58,7 @@ const Toolbar = ({ device }: { device: Device }) => fabricate('Row')
     alignItems: 'center',
     justifyContent: 'flex-end',
     width: '100%',
-    paddingRight: '8px',
+    padding: '8px',
   })
   .setChildren([
     RebootButton({ device }),
@@ -87,7 +87,8 @@ const StatView = ({
     alignItems: 'center',
     borderRight: `solid 2px ${palette.grey6}`,
     padding: '0px 20px 0px 8px',
-    minWidth: '190px',
+    minWidth: '200px',
+    minHeight: '40px',
   }))
   .setNarrowStyles({
     borderRight: 'none',
@@ -98,7 +99,7 @@ const StatView = ({
       .setStyles({
         width: '24px',
         height: '24px',
-        margin: '8px',
+        margin: '4px',
       }),
     fabricate('Text')
       .setStyles({
@@ -112,25 +113,23 @@ const StatView = ({
   ]);
 
 /**
- * InfoRow component.
+ * StatRow component.
  *
  * @param {object} props - Component props.
  * @param {Device} props.device - Current device.
  * @returns {HTMLElement} Fabricate component.
  */
-const InfoRow = ({ device }: { device: Device }) => {
+const StatRow = ({ device }: { device: Device }) => {
   const {
     commit, commitDate, lastCheckIn, diskSize, diskUsage,
   } = device;
 
   return fabricate('Row')
     .setStyles(({ palette }) => ({
-      backgroundColor: palette.grey2,
+      backgroundColor: palette.grey4,
       minHeight: '50px',
     }))
-    .setNarrowStyles({
-      flexWrap: 'wrap',
-    })
+    .setNarrowStyles({ flexWrap: 'wrap' })
     .setChildren([
       StatView({
         iconSrc: 'assets/images/commit.png',
@@ -151,4 +150,4 @@ const InfoRow = ({ device }: { device: Device }) => {
     ]);
 };
 
-export default InfoRow;
+export default StatRow;

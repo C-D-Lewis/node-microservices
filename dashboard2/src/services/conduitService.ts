@@ -18,13 +18,13 @@ export const sendConduitPacket = async (
   deviceNameOverride?: string,
   tokenOverride?: string,
 ) => {
-  const { token, selectedDevice, fleet } = state;
+  const { token, selectedDevice, devices } = state;
   // const reqStateKey = appRequestStateKey(packet.to);
   // fabricate.update(reqStateKey, 'pending');
 
   try {
     const finalDevice = deviceNameOverride
-      ? fleet.find(({ deviceName }) => deviceName === deviceNameOverride)!
+      ? devices.find(({ deviceName }) => deviceName === deviceNameOverride)!
       : selectedDevice;
     if (!finalDevice) throw new Error('Unable to identify device to send message to.');
 
