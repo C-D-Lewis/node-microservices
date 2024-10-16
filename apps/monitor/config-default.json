@@ -11,6 +11,7 @@
       }
     },
     {
+      "ENABLED": false,
       "FILE_NAME": "visuals-scheduler.js",
       "EVERY": 1,
       "ARGS": {

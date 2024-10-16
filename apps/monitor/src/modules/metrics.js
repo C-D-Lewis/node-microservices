@@ -23,7 +23,7 @@ const METRICS_DIR = `${__dirname}/../../metrics`;
  */
 const getFilePath = () => {
   const now = new Date();
-  return `${METRICS_DIR}/metrics-${now.getMonth()}-${now.getFullYear()}.json`;
+  return `${METRICS_DIR}/metrics-${now.getMonth() + 1}-${now.getFullYear()}.json`;
 };
 
 /**
