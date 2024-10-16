@@ -35,7 +35,9 @@ const GroupLabel = ({ publicIp }: { publicIp: string }) => fabricate('Text')
  * @returns {HTMLElement} Fabricate component.
  */
 const DeviceRow = ({ device }: { device: Device }) => {
-  const { deviceType, deviceName, localIp } = device;
+  const {
+    deviceType, deviceName, localIp, lastCheckIn,
+  } = device;
 
   const nameView = fabricate('Text')
     .setStyles({
@@ -60,12 +62,16 @@ const DeviceRow = ({ device }: { device: Device }) => {
    */
   const isSelected = (s: AppState) => s.selectedDevice?.deviceName === deviceName;
 
+  const minsAgo = Math.round((Date.now() - lastCheckIn) / (1000 * 60));
+  const seenRecently = minsAgo < 12;  // Based on default checkin interval of 10m
+
   return fabricate('Row')
     .setStyles(({ palette }) => ({
       backgroundColor: palette.grey3,
       padding: '4px 0px 4px 8px',
       cursor: 'pointer',
       borderBottom: `solid 2px ${palette.grey6}`,
+      borderLeft: `solid 5px ${seenRecently ? palette.statusOk : palette.grey6}`,
     }))
     .setChildren([
       fabricate('Image', { src: `assets/images/${ICON_NAMES[deviceType]}.png` })
@@ -105,8 +111,7 @@ const DeviceRow = ({ device }: { device: Device }) => {
 const SideBar = () => fabricate('Column')
   .setStyles(({ palette }) => ({
     backgroundColor: palette.grey3,
-    minWidth: '240px',
-    borderRight: `solid 2px ${palette.grey6}`,
+    minWidth: '250px',
   }))
   .setNarrowStyles({ width: '100vw' })
   .onUpdate(async (el, state) => {

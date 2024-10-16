@@ -30,6 +30,28 @@ export type Device = {
   diskUsage: number;
 };
 
+/** Graph data point. */
+export type DataPoint = {
+  value: number;
+  timestamp: number;
+  dateTime: string;
+};
+
+/** Available graphed metrics */
+export type MetricName = 'cpu' | 'memoryPerc' | 'tempRaw';
+
+/** Raw metric point */
+export type MetricPoint = [number, number];
+
+/** Metric data */
+export type MetricData = {
+  buckets: DataPoint[];
+  minTime: string;
+  maxTime: string;
+  minValue: number;
+  maxValue: number;
+};
+
 /** App state type */
 export type AppState = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,6 +59,8 @@ export type AppState = {
 
   // App data
   token: string;
+
+  // Loaded data
   selectedDeviceApps: DeviceApp[];
   devices: Device[];
 

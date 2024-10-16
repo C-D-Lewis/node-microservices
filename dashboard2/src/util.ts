@@ -1,5 +1,7 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
-import { AppState, Device, DeviceApp } from './types';
+import {
+  AppState, DataPoint, Device, DeviceApp, MetricName,
+} from './types';
 import { CONDUIT_PORT, FLEET_HOST } from './constants';
 import { sendConduitPacket } from './services/conduitService';
 
@@ -159,4 +161,99 @@ export const fetchDeviceApps = async (state: AppState, device: Device) => {
     console.error(err);
     fabricate.update({ selectedDeviceApps: [] });
   }
+};
+
+/**
+ * Shorter representation of a date time.
+ *
+ * @param {number} timestamp - Input time.
+ * @returns {string} Short date time.
+ */
+export const shortDateTime = (timestamp: string) => {
+  const [, time] = new Date(timestamp).toISOString().split('T');
+  const shortTime = time.split(':').slice(0, 2).join(':');
+  return `${shortTime}`;
+};
+
+/**
+ * Fetch data for a metric.
+ *
+ * @param {AppState} state - App state.
+ * @param {MetricName} name - Metric name.
+ */
+export const fetchMetric = async (state: AppState, name: MetricName) => {
+  const dataKey = fabricate.buildKey('metricData', name);
+  fabricate.update(
+    dataKey,
+    {
+      buckets: [],
+      minTime: 0,
+      maxTime: 0,
+      minValue: 0,
+      maxValue: 0,
+    },
+  );
+
+  const res = await sendConduitPacket(
+    state,
+    {
+      to: 'monitor',
+      topic: 'getMetricToday',
+      message: { name },
+    },
+  );
+  const { message: newHistory } = res;
+  if (res.error) console.log(res);
+  if (!newHistory) return;
+
+  const type = Array.isArray(newHistory[0][1]) ? 'array' : 'number';
+
+  const minTime = shortDateTime(newHistory[0][0]);
+  const maxTime = shortDateTime(newHistory[newHistory.length - 1][0]);
+  let minValue = 0;
+  let maxValue = 0;
+
+  if (type === 'number') {
+    // Aggregate values
+    minValue = name.includes('Perc')
+      ? 0
+      : newHistory.reduce(
+        // @ts-expect-error handled with 'type'
+        (acc: number, [, value]: MetricPoint) => (value < acc ? value : acc),
+        9999999,
+      );
+    maxValue = name.includes('Perc')
+      ? 100
+      : newHistory.reduce(
+        // @ts-expect-error handled with 'type'
+        (acc: number, [, value]: MetricPoint) => (value > acc ? value : acc),
+        0,
+      );
+  } else {
+    throw new Error('Unexpected metric data type');
+  }
+
+  // Average into buckets
+  const copy = [...newHistory];
+  const buckets: DataPoint[] = [];
+  while (copy.length) {
+    const points = copy.splice(0, 5);
+    const avgIndex = Math.floor(points.length / 2);
+    buckets.push({
+      value: points.reduce((acc, [, value]) => acc + value, 0) / points.length,
+      timestamp: points[avgIndex][0],
+      dateTime: new Date(points[avgIndex][0]).toISOString(),
+    });
+  }
+
+  fabricate.update(
+    dataKey,
+    {
+      buckets,
+      minTime,
+      maxTime,
+      minValue,
+      maxValue,
+    },
+  );
 };
