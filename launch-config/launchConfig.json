@@ -8,7 +8,7 @@
       { "location": "code/node-microservices/apps/concierge", "start": "npm start &" },
       { "location": "code/node-microservices/apps/visuals",   "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor",   "start": "npm start &" },
-      { "location": "code/node-microservices/dashboard",      "start": "npm run build && http-server -p 54449 &" },
+      { "location": "code/node-microservices/dashboard2",      "start": "npm run build && http-server -p 54449 &" },
       { "location": "code/microdiary",                        "start": "http-server -p 34279 &" },
       {
         "location": "code/discord-bot-norren",
