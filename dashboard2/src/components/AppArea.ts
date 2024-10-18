@@ -28,8 +28,9 @@ const NoDeviceLabel = () => fabricate('Text')
 const AppCardList = () => fabricate('Row')
   .setStyles({
     flexWrap: 'wrap',
-    padding: '15px',
+    padding: '0px 15px',
   })
+  .setNarrowStyles({ padding: '0px' })
   .onUpdate((el, state) => {
     el.setChildren(state.selectedDeviceApps.map((p) => AppCard({ app: p })));
   }, [fabricate.StateKeys.Created, 'selectedDeviceApps']);

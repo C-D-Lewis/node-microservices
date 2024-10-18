@@ -148,7 +148,7 @@ const StatRow = ({ device }: { device: Device }) => {
       }),
       StatView({
         iconSrc: 'assets/images/uptime.png',
-        text: `${uptimeDays || '-'} days`,
+        text: `${typeof uptimeDays === 'undefined' ? '-' : uptimeDays} days`,
         fontFamily: Theme.fonts.body,
       }),
       Toolbar({ device }),

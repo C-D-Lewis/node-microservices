@@ -10,9 +10,15 @@ declare const fabricate: Fabricate<AppState>;
 
 /** Plot point label offset */
 const LABEL_OFFSET = 3;
-
 /** Graph width based on length of a day */
 const GRAPH_WIDTH = Math.round(1440 / BUCKET_SIZE);
+/** Map of friendly metric names */
+const METRIC_NAME_MAP = {
+  cpu: 'CPU',
+  memoryPerc: 'Memory (%)',
+  tempRaw: 'Temperature',
+  freqPerc: 'CPU Frequency (%)',
+};
 
 /**
  * NoDeviceLabel component.
@@ -72,9 +78,9 @@ const MetricGraph = ({ name } : { name: MetricName }) => {
     ctx.fillRect(0, 0, width, height);
 
     if (!buckets.length) {
-      ctx.font = '18px Arial';
+      ctx.font = '12px Arial';
       ctx.fillStyle = 'white';
-      ctx.fillText('No data', 15, 15);
+      ctx.fillText('No data', 25, 25);
       return;
     }
 
@@ -111,18 +117,22 @@ const MetricGraph = ({ name } : { name: MetricName }) => {
   };
 
   return fabricate('div')
-    .setStyles(() => ({ width: '100%', height: '100%' }))
+    .setStyles(() => ({
+      width: '100%',
+      height: '100%',
+      overflow: 'hidden',
+    }))
     .setChildren([canvas as unknown as FabricateComponent<AppState>])
     .onUpdate(async (el, state, keys) => {
+      canvas.width = el.offsetWidth - 1;
+      canvas.height = el.offsetHeight - 1;
+
       if (keys.includes(fabricate.StateKeys.Created)) {
         fetchMetric(state, name);
         return;
       }
 
       if (keys.includes(dataKey)) {
-        canvas.width = el.offsetWidth - 1;
-        canvas.height = el.offsetHeight;
-
         draw(state);
       }
     }, [fabricate.StateKeys.Created, dataKey]);
@@ -151,12 +161,12 @@ const MetricContainer = ({ name } : { name: MetricName }) => fabricate('Column')
       .setStyles(({ fonts, palette }) => ({
         color: 'white',
         fontSize: '0.9rem',
-        fontFamily: fonts.code,
-        margin: '5px 0px 0px 0px',
-        padding: '0px 5px',
+        fontFamily: fonts.body,
+        margin: '0px',
+        padding: '5px',
         borderBottom: `solid 2px ${palette.grey6}`,
       }))
-      .setText(name),
+      .setText(METRIC_NAME_MAP[name]),
     MetricGraph({ name }),
   ]);
 

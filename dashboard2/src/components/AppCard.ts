@@ -22,7 +22,7 @@ const AppControls = ({ app }: { app: DeviceApp }) => fabricate('Column')
 
   })
   .setChildren([
-    fabricate('Text').setText('Controls here'),
+    // fabricate('Text').setText('Controls here'),
   ]);
 
 /**
