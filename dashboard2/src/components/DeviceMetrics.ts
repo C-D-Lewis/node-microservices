@@ -88,11 +88,12 @@ const MetricGraph = ({ name } : { name: MetricName }) => {
     const points = buckets.length > width ? buckets.slice(buckets.length - width) : buckets;
     let minPoint: PlotPoint = { x: 0, y: 0, value: 0 };
     let maxPoint: PlotPoint = { x: 0, y: 99999999, value: 0 };
+    let lastPoint: PlotPoint = { x: 0, y: 0, value: 0 };
 
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = Theme.palette.secondary;
     ctx.beginPath();
-    points.forEach((p: DataPoint, i: number) => {
+    points.forEach((p: DataPoint, i: number, arr) => {
       const { value } = p;
       const pHeight = ((value - minValue) * height) / range;
       const x = i;
@@ -106,6 +107,11 @@ const MetricGraph = ({ name } : { name: MetricName }) => {
       }
 
       ctx.lineTo(x, y);
+
+      // Record last value
+      if (i === arr.length - 1) {
+        lastPoint = { x, y, value };
+      }
     });
     ctx.stroke();
 
@@ -114,6 +120,13 @@ const MetricGraph = ({ name } : { name: MetricName }) => {
     ctx.fillStyle = 'white';
     ctx.fillText(minPoint.value.toFixed(1), minPoint.x + LABEL_OFFSET, minPoint.y - LABEL_OFFSET);
     ctx.fillText(maxPoint.value.toFixed(1), maxPoint.x + LABEL_OFFSET, maxPoint.y - LABEL_OFFSET);
+
+    // Most recent value
+    ctx.fillText(
+      lastPoint.value.toFixed(1),
+      lastPoint.x + LABEL_OFFSET,
+      lastPoint.y - LABEL_OFFSET,
+    );
   };
 
   return fabricate('div')

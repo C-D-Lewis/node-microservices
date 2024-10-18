@@ -7,6 +7,9 @@ import { sendConduitPacket } from './services/conduitService';
 
 declare const fabricate: Fabricate<AppState>;
 
+/** Extra Y for visibility */
+const Y_EXTRA = 1.1;
+
 /**
  * Re-load the devices list data.
  *
@@ -223,11 +226,13 @@ export const fetchMetric = async (state: AppState, name: MetricName) => {
         9999999,
       );
     maxValue = name.includes('Perc')
-      ? 110
-      : newHistory.reduce(
-        // @ts-expect-error handled with 'type'
-        (acc: number, [, value]: MetricPoint) => (value > acc ? value : acc),
-        0,
+      ? Math.round(100 * Y_EXTRA)
+      : Math.round(
+        newHistory.reduce(
+          // @ts-expect-error handled with 'type'
+          (acc: number, [, value]: MetricPoint) => (value > acc ? value : acc),
+          0,
+        ) * Y_EXTRA,
       );
   } else {
     throw new Error('Unexpected metric data type');
