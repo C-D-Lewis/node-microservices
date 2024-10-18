@@ -4,8 +4,15 @@ import {
 } from '../types';
 import { fetchMetric } from '../util';
 import Theme from '../theme';
+import { BUCKET_SIZE } from '../constants';
 
 declare const fabricate: Fabricate<AppState>;
+
+/** Plot point label offset */
+const LABEL_OFFSET = 3;
+
+/** Graph width based on length of a day */
+const GRAPH_WIDTH = Math.round(1440 / BUCKET_SIZE);
 
 /**
  * NoDeviceLabel component.
@@ -26,6 +33,13 @@ const NoMetricsLabel = () => fabricate('Text')
     margin: '0px',
   })
   .setText('No metrics to show');
+
+/** Chart plot point */
+type PlotPoint = {
+  x: number;
+  y: number;
+  value: number;
+};
 
 /**
  * MetricGraph component.
@@ -50,35 +64,54 @@ const MetricGraph = ({ name } : { name: MetricName }) => {
     const range = maxValue - minValue;
 
     const ctx = canvas.getContext('2d')!;
+    ctx.imageSmoothingEnabled = false;
+    ctx.translate(0.5, 0.5);
 
     // Background
-    ctx.fillStyle = Theme.palette.grey2;
+    ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, width, height);
 
     if (!buckets.length) {
-      // ctx.font = '24px Arial';
-      // ctx.fillStyle = 'white';
-      // ctx.fillText('No data', width / 2, height / 2);
+      ctx.font = '18px Arial';
+      ctx.fillStyle = 'white';
+      ctx.fillText('No data', 15, 15);
       return;
     }
 
     // Latest data
-    ctx.fillStyle = Theme.palette.secondary;
     const points = buckets.length > width ? buckets.slice(buckets.length - width) : buckets;
+    let minPoint: PlotPoint = { x: 0, y: 0, value: 0 };
+    let maxPoint: PlotPoint = { x: 0, y: 99999999, value: 0 };
+
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = Theme.palette.secondary;
+    ctx.beginPath();
     points.forEach((p: DataPoint, i: number) => {
-      const pHeight = ((p.value - minValue) * height) / range;
+      const { value } = p;
+      const pHeight = ((value - minValue) * height) / range;
       const x = i;
       const y = height - pHeight;
 
-      ctx.fillRect(x, y, 2, 2);
+      if (y > minPoint.y) {
+        minPoint = { x, y, value };
+      }
+      if (y < maxPoint.y) {
+        maxPoint = { x, y, value };
+      }
+
+      ctx.lineTo(x, y);
     });
+    ctx.stroke();
+
+    // Label min/max
+    ctx.font = '14px Arial';
+    ctx.fillStyle = 'white';
+    ctx.fillText(minPoint.value.toFixed(1), minPoint.x + LABEL_OFFSET, minPoint.y - LABEL_OFFSET);
+    ctx.fillText(maxPoint.value.toFixed(1), maxPoint.x + LABEL_OFFSET, maxPoint.y - LABEL_OFFSET);
   };
 
   return fabricate('div')
-    .setStyles(({ palette }) => ({
-      width: '100%',
-      height: '100%',
-    }))
+    .setStyles(() => ({ width: '100%', height: '100%' }))
     .setChildren([canvas as unknown as FabricateComponent<AppState>])
     .onUpdate(async (el, state, keys) => {
       if (keys.includes(fabricate.StateKeys.Created)) {
@@ -105,12 +138,13 @@ const MetricGraph = ({ name } : { name: MetricName }) => {
 const MetricContainer = ({ name } : { name: MetricName }) => fabricate('Column')
   .setStyles(({ palette }) => ({
     margin: '15px',
-    width: '30%',
+    width: `${GRAPH_WIDTH}px`,
     height: '180px',
     border: `solid 2px ${palette.grey6}`,
   }))
   .setNarrowStyles({
     width: '100%',
+    margin: '10px 0px',
   })
   .setChildren([
     fabricate('Text')
@@ -148,6 +182,7 @@ const DeviceMetrics = () => fabricate('Row')
       MetricContainer({ name: 'cpu' }),
       MetricContainer({ name: 'memoryPerc' }),
       MetricContainer({ name: 'tempRaw' }),
+      MetricContainer({ name: 'freqPerc' }),
     ]);
   }, [fabricate.StateKeys.Created, 'selectedDevice']);
 

@@ -28,6 +28,7 @@ export type Device = {
   deviceType: 'other' | 'pc' | 'pi' | 'other';
   diskSize: string;
   diskUsage: number;
+  uptimeDays?: number;
 };
 
 /** Graph data point. */
@@ -38,7 +39,7 @@ export type DataPoint = {
 };
 
 /** Available graphed metrics */
-export type MetricName = 'cpu' | 'memoryPerc' | 'tempRaw';
+export type MetricName = 'cpu' | 'memoryPerc' | 'tempRaw' | 'freqPerc';
 
 /** Raw metric point */
 export type MetricPoint = [number, number];

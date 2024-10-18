@@ -29,3 +29,6 @@ export const ICON_NAMES: Record<string, string> = {
 
 /** Navbar height from fabricate.js */
 export const NAVBAR_HEIGHT = 40;
+
+/** Metric bucket size */
+export const BUCKET_SIZE = 5;

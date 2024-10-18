@@ -46,6 +46,23 @@ attic.setHost(OPTIONS.FLEET.HOST);
 const sortByLastCheckIn = (a, b) => (a.lastCheckIn > b.lastCheckIn ? -1 : 1);
 
 /**
+ * Get uptime in days.
+ *
+ * @returns {number} Number of days of uptime.
+ */
+const getUptimeDays = () => {
+  const start = new Date(execSync('uptime -s').toString()).getTime();
+  const now = new Date().getTime();
+
+  const diff = now - start;
+  const s = Math.round(diff / 1000);
+  const h = Math.round(s / (60 * 60));
+  const d = Math.round(h / 24);
+
+  return d;
+};
+
+/**
  * Send the data to remote Attic to perform the checkin.
  */
 const checkIn = async () => {
@@ -65,6 +82,8 @@ const checkIn = async () => {
 
     const { size: diskSize, usePerc: diskUsage } = mainDisk;
 
+    const uptimeDays = getUptimeDays();
+
     const updatePayload = {
       deviceName: hostname(),
       lastCheckIn: now.getTime(),
@@ -76,6 +95,7 @@ const checkIn = async () => {
       commitDate,
       diskUsage,
       diskSize,
+      uptimeDays,
     };
 
     const fleetList = await attic.get(FLEET_LIST_KEY);

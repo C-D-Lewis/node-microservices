@@ -26,23 +26,6 @@ const getDiskUsage = (mountPath) => {
 };
 
 /**
- * Get uptime in days.
- *
- * @returns {number} Number of days of uptime.
- */
-const getUptimeDays = () => {
-  const start = new Date(execSync('uptime -s').toString()).getTime();
-  const now = new Date().getTime();
-
-  const diff = now - start;
-  const s = Math.round(diff / 1000);
-  const h = Math.round(s / (60 * 60));
-  const d = Math.round(h / 24);
-
-  return d;
-};
-
-/**
  * Get current frequency as a percentage of reported maximum.
  *
  * @returns {number} Percentage of max frequency.
@@ -84,8 +67,6 @@ module.exports = async (args = {}) => {
 
     const tempRaw = temperature.get();
 
-    const uptimeDays = getUptimeDays();
-
     const freqPerc = getFrequencyPerc();
 
     // Metrics with 'Perc' in the name are treated as a 0-100% range in the dashboard
@@ -96,7 +77,6 @@ module.exports = async (args = {}) => {
       diskGb,
       diskPerc,
       tempRaw,
-      uptimeDays,
       freqPerc,
     });
   } catch (e) {

@@ -121,7 +121,7 @@ const StatView = ({
  */
 const StatRow = ({ device }: { device: Device }) => {
   const {
-    commit, commitDate, lastCheckIn, diskSize, diskUsage,
+    commit, commitDate, lastCheckIn, diskSize, diskUsage, uptimeDays,
   } = device;
 
   return fabricate('Row')
@@ -144,6 +144,11 @@ const StatRow = ({ device }: { device: Device }) => {
       StatView({
         iconSrc: 'assets/images/disk.png',
         text: `${diskUsage}% of ${diskSize} used`,
+        fontFamily: Theme.fonts.body,
+      }),
+      StatView({
+        iconSrc: 'assets/images/uptime.png',
+        text: `${uptimeDays || '-'} days`,
         fontFamily: Theme.fonts.body,
       }),
       Toolbar({ device }),

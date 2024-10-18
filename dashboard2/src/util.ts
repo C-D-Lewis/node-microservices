@@ -2,7 +2,7 @@ import { Fabricate, FabricateComponent } from 'fabricate.js';
 import {
   AppState, DataPoint, Device, DeviceApp, MetricName,
 } from './types';
-import { CONDUIT_PORT, FLEET_HOST } from './constants';
+import { BUCKET_SIZE, CONDUIT_PORT, FLEET_HOST } from './constants';
 import { sendConduitPacket } from './services/conduitService';
 
 declare const fabricate: Fabricate<AppState>;
@@ -204,7 +204,7 @@ export const fetchMetric = async (state: AppState, name: MetricName) => {
   );
   const { message: newHistory } = res;
   if (res.error) console.log(res);
-  if (!newHistory) return;
+  if (!newHistory.length) return;
 
   const type = Array.isArray(newHistory[0][1]) ? 'array' : 'number';
 
@@ -223,7 +223,7 @@ export const fetchMetric = async (state: AppState, name: MetricName) => {
         9999999,
       );
     maxValue = name.includes('Perc')
-      ? 100
+      ? 110
       : newHistory.reduce(
         // @ts-expect-error handled with 'type'
         (acc: number, [, value]: MetricPoint) => (value > acc ? value : acc),
@@ -237,7 +237,7 @@ export const fetchMetric = async (state: AppState, name: MetricName) => {
   const copy = [...newHistory];
   const buckets: DataPoint[] = [];
   while (copy.length) {
-    const points = copy.splice(0, 5);
+    const points = copy.splice(0, BUCKET_SIZE);
     const avgIndex = Math.floor(points.length / 2);
     buckets.push({
       value: points.reduce((acc, [, value]) => acc + value, 0) / points.length,
