@@ -14,6 +14,7 @@ export const INITIAL_STATE: AppState = {
   // Loaded data
   selectedDeviceApps: [],
   devices: [],
+  metricNames: [],
 
   // Selections
   selectedDevice: null,

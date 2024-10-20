@@ -169,7 +169,6 @@ const getLogfileSizeMb = () => {
     const { size } = fs.statSync(getFilePath());
     return Math.round(size / (1024 * 1024));
   } catch (e) {
-    // OK, not there yet
     return undefined;
   }
 };
@@ -178,6 +177,9 @@ const getLogfileSizeMb = () => {
  * Monitor the log size, and erase if it gets too big.
  */
 const monitorLogSize = () => {
+  // Initally clear
+  fs.unlinkSync(getFilePath());
+
   setInterval(() => {
     const sizeMb = getLogfileSizeMb();
     info(`Logfile size: ${sizeMb} MB`);

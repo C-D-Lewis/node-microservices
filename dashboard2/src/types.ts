@@ -38,9 +38,6 @@ export type DataPoint = {
   dateTime: string;
 };
 
-/** Available graphed metrics */
-export type MetricName = 'cpu' | 'memoryPerc' | 'tempRaw' | 'freqPerc';
-
 /** Raw metric point */
 export type MetricPoint = [number, number];
 
@@ -64,6 +61,7 @@ export type AppState = {
   // Loaded data
   selectedDeviceApps: DeviceApp[];
   devices: Device[];
+  metricNames: string[];
 
   // Selections
   selectedDevice: Device | null,

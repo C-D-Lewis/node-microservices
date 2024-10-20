@@ -2,9 +2,10 @@ import { Fabricate } from 'fabricate.js';
 import { AppState } from './types';
 import Theme from './theme';
 import { INITIAL_STATE } from './constants';
-import { parseParams, fetchFleetList } from './util';
+import { parseParams } from './util';
 import SideBar from './components/SideBar';
 import AppArea from './components/AppArea';
+import { fetchFleetList } from './services/conduitService';
 
 declare const fabricate: Fabricate<AppState>;
 

@@ -1,8 +1,9 @@
 import { Fabricate } from 'fabricate.js';
 import { AppState, Device } from '../types';
-import { fetchDeviceApps, sortDeviceByName } from '../util';
+import { sortDeviceByName } from '../util';
 import { ICON_NAMES } from '../constants';
 import AppLoader from './AppLoader';
+import { fetchDeviceApps } from '../services/conduitService';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -87,9 +88,6 @@ const DeviceRow = ({ device }: { device: Device }) => {
       }));
     })
     .onClick((el, state) => {
-      const { selectedDevice } = state;
-      if (selectedDevice?.deviceName === deviceName) return;
-
       // Select this device
       fabricate.update({ selectedDevice: device });
 

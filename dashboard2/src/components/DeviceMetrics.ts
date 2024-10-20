@@ -1,10 +1,10 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
 import {
-  AppState, DataPoint, MetricData, MetricName,
+  AppState, DataPoint, MetricData,
 } from '../types';
-import { fetchMetric } from '../util';
 import Theme from '../theme';
 import { BUCKET_SIZE } from '../constants';
+import { fetchMetric, sendConduitPacket } from '../services/conduitService';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -13,9 +13,12 @@ const LABEL_OFFSET = 3;
 /** Graph width based on length of a day */
 const GRAPH_WIDTH = Math.round(1440 / BUCKET_SIZE);
 /** Map of friendly metric names */
-const METRIC_NAME_MAP = {
+const METRIC_NAME_MAP: Record<string, string> = {
   cpu: 'CPU',
   memoryPerc: 'Memory (%)',
+  memoryMb: 'Memory (MB)',
+  diskGb: 'Disk (GB)',
+  discPerc: 'Disk (%)',
   tempRaw: 'Temperature',
   freqPerc: 'CPU Frequency (%)',
 };
@@ -51,10 +54,10 @@ type PlotPoint = {
  * MetricGraph component.
  *
  * @param {object} props - Component props.
- * @param {MetricName} props.name - Metric name to fetch and graph.
+ * @param {string} props.name - Metric name to fetch and graph.
  * @returns {FabricateComponent} MetricGraph component.
  */
-const MetricGraph = ({ name } : { name: MetricName }) => {
+const MetricGraph = ({ name } : { name: string }) => {
   const dataKey = fabricate.buildKey('metricData', name);
   const canvas = fabricate('canvas') as unknown as HTMLCanvasElement;
 
@@ -155,10 +158,10 @@ const MetricGraph = ({ name } : { name: MetricName }) => {
  * MetricContainer component.
  *
  * @param {object} props - Component props.
- * @param {MetricName} props.name - Metric name to fetch and graph.
+ * @param {string} props.name - Metric name to fetch and graph.
  * @returns {FabricateComponent} MetricContainer component.
  */
-const MetricContainer = ({ name } : { name: MetricName }) => fabricate('Column')
+const MetricContainer = ({ name } : { name: string }) => fabricate('Column')
   .setStyles(({ palette }) => ({
     margin: '15px',
     width: `${GRAPH_WIDTH}px`,
@@ -179,7 +182,7 @@ const MetricContainer = ({ name } : { name: MetricName }) => fabricate('Column')
         padding: '5px',
         borderBottom: `solid 2px ${palette.grey6}`,
       }))
-      .setText(METRIC_NAME_MAP[name]),
+      .setText(METRIC_NAME_MAP[name] || name),
     MetricGraph({ name }),
   ]);
 
@@ -193,20 +196,29 @@ const DeviceMetrics = () => fabricate('Row')
     margin: '15px',
     flexWrap: 'wrap',
   })
-  .onUpdate(async (el, state) => {
-    const { selectedDevice } = state;
+  .onCreate(async (el, state) => {
+    // Get the metrics available, each graph loads its own
+    fabricate.update({ metricNames: [] });
+    const {
+      message: metricNames,
+    } = await sendConduitPacket(state, { to: 'monitor', topic: 'getMetricNames' });
+    fabricate.update({ metricNames });
+  })
+  .onUpdate(async (el, state, keys) => {
+    const { selectedDevice, metricNames } = state;
 
     if (!selectedDevice) {
       el.setChildren([NoMetricsLabel()]);
       return;
     }
 
-    el.setChildren([
-      MetricContainer({ name: 'cpu' }),
-      MetricContainer({ name: 'memoryPerc' }),
-      MetricContainer({ name: 'tempRaw' }),
-      MetricContainer({ name: 'freqPerc' }),
-    ]);
-  }, [fabricate.StateKeys.Created, 'selectedDevice']);
+    if (keys.includes('metricNames')) {
+      el.setChildren(
+        metricNames
+          .filter((name) => !!METRIC_NAME_MAP[name])
+          .map((name) => MetricContainer({ name })),
+      );
+    }
+  }, [fabricate.StateKeys.Created, 'selectedDevice', 'metricNames']);
 
 export default DeviceMetrics;
