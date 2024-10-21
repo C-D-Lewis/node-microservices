@@ -69,7 +69,6 @@ const MetricGraph = ({ name } : { name: string }) => {
   const draw = (state: AppState) => {
     const { width, height } = canvas;
     const { buckets, minValue, maxValue } = state[dataKey] as MetricData;
-
     const range = maxValue - minValue;
 
     const ctx = canvas.getContext('2d')!;
@@ -85,6 +84,13 @@ const MetricGraph = ({ name } : { name: string }) => {
       ctx.fillStyle = 'white';
       ctx.fillText('No data', 25, 25);
       return;
+    }
+
+    // Hour lines
+    const hourInterval = Math.round(width / 24);
+    for (let x = 0; x < 24; x += 3) {
+      ctx.fillStyle = (x % 6 === 0) ? Theme.palette.grey5 : Theme.palette.grey2;
+      ctx.fillRect(x * hourInterval, 0, 1, height);
     }
 
     // Latest data
