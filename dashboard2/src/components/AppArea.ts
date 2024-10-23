@@ -1,9 +1,10 @@
-import { Fabricate } from 'fabricate.js';
+import { Fabricate, FabricateComponent } from 'fabricate.js';
 import { AppState } from '../types';
 import StatRow from './StatRow';
 import AppLoader from './AppLoader';
 import AppCard from './AppCard';
 import DeviceMetrics from './DeviceMetrics';
+import { fetchMetricNames } from '../services/conduitService';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -19,6 +20,38 @@ const NoDeviceLabel = () => fabricate('Text')
     cursor: 'default',
   }))
   .setText('No device selected');
+
+/**
+ * RefreshProgressBar component.
+ *
+ * @returns {FabricateComponent} RefreshProgressBar component.
+ */
+const RefreshProgressBar = () => {
+  let handle: NodeJS.Timer;
+  let progress = 100;
+
+  return fabricate('div')
+    .setStyles(({ palette }) => ({
+      width: '100%',
+      height: '5px',
+      backgroundColor: palette.secondary,
+      transition: '0.5s',
+    }))
+    .onCreate((el, state) => {
+      handle = setInterval(() => {
+        el.setStyles({ width: `${progress}%` });
+
+        // 30s
+        progress = Math.max(0, progress - 1.67);
+        if (progress === 0) {
+          progress = 100;
+
+          fetchMetricNames(state);
+        }
+      }, 1000);
+    })
+    .onDestroy(() => clearInterval(handle));
+};
 
 /**
  * AppArea component.
@@ -63,6 +96,7 @@ const AppArea = () => {
       el.setChildren([
         StatRow({ device: selectedDevice }),
         fabricate.conditional((s) => !areAppsLoaded(s), AppLoader),
+        fabricate.conditional(areAppsLoaded, RefreshProgressBar),
         fabricate.conditional(areAppsLoaded, DeviceMetrics),
         fabricate.conditional(areAppsLoaded, AppCardList),
       ]);

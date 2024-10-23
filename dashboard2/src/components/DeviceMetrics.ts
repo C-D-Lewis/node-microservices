@@ -4,7 +4,7 @@ import {
 } from '../types';
 import Theme from '../theme';
 import { BUCKET_SIZE } from '../constants';
-import { fetchMetric, sendConduitPacket } from '../services/conduitService';
+import { fetchMetric, fetchMetricNames } from '../services/conduitService';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -21,6 +21,7 @@ const METRIC_NAME_MAP: Record<string, string> = {
   discPerc: 'Disk (%)',
   tempRaw: 'Temperature',
   freqPerc: 'CPU Frequency (%)',
+  fanSpeed: 'Fan Speed (RPM)',
 };
 
 /**
@@ -175,7 +176,6 @@ const MetricContainer = ({ name } : { name: string }) => fabricate('Column')
     border: `solid 2px ${palette.grey6}`,
   }))
   .setNarrowStyles({
-    width: '100%',
     margin: '10px 0px',
   })
   .setChildren([
@@ -204,11 +204,7 @@ const DeviceMetrics = () => fabricate('Row')
   })
   .onCreate(async (el, state) => {
     // Get the metrics available, each graph loads its own
-    fabricate.update({ metricNames: [] });
-    const {
-      message: metricNames,
-    } = await sendConduitPacket(state, { to: 'monitor', topic: 'getMetricNames' });
-    fabricate.update({ metricNames });
+    fetchMetricNames(state);
   })
   .onUpdate(async (el, state, keys) => {
     const { selectedDevice, metricNames } = state;

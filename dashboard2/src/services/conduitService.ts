@@ -138,16 +138,16 @@ export const fetchDeviceApps = async (state: AppState, device: Device) => {
  */
 export const fetchMetric = async (state: AppState, name: string) => {
   const dataKey = fabricate.buildKey('metricData', name);
-  fabricate.update(
-    dataKey,
-    {
-      buckets: [],
-      minTime: 0,
-      maxTime: 0,
-      minValue: 0,
-      maxValue: 0,
-    },
-  );
+  // fabricate.update(
+  //   dataKey,
+  //   {
+  //     buckets: [],
+  //     minTime: 0,
+  //     maxTime: 0,
+  //     minValue: 0,
+  //     maxValue: 0,
+  //   },
+  // );
 
   const res = await sendConduitPacket(
     state,
@@ -213,4 +213,16 @@ export const fetchMetric = async (state: AppState, name: string) => {
       maxValue,
     },
   );
+};
+
+/**
+ * Fetch metric names, triggering update of graphs if they are shown.
+ *
+ * @param {AppState} state - App state.
+ */
+export const fetchMetricNames = async (state: AppState) => {
+  const {
+    message: metricNames,
+  } = await sendConduitPacket(state, { to: 'monitor', topic: 'getMetricNames' });
+  fabricate.update({ metricNames });
 };
