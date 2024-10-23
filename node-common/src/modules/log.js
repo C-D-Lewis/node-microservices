@@ -177,8 +177,12 @@ const getLogfileSizeMb = () => {
  * Monitor the log size, and erase if it gets too big.
  */
 const monitorLogSize = () => {
-  // Initally clear
-  fs.unlinkSync(getFilePath());
+  const filePath = getFilePath();
+
+  if (fs.existsSync(filePath)) {
+    // Initally clear
+    fs.unlinkSync(getFilePath());
+  }
 
   setInterval(() => {
     const sizeMb = getLogfileSizeMb();
@@ -187,7 +191,7 @@ const monitorLogSize = () => {
     if (sizeMb < MAX_SIZE_MB) return;
 
     // Erase the file and start again
-    fs.unlinkSync(getFilePath());
+    fs.unlinkSync(filePath);
     info('Log file exceeded max size and was restarted');
   }, MONITOR_INTERVAL_MS);
   info(`Monitoring logfile size (currently ${getLogfileSizeMb()} MB)`);
