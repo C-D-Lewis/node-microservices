@@ -28,7 +28,7 @@ export const sendConduitPacket = async (
   deviceNameOverride?: string,
   tokenOverride?: string,
 ) => {
-  const { token, selectedDevice, devices } = state;
+  const { token, selectedDevice, devices, publicIp: currentPublicIp } = state;
   // const reqStateKey = appRequestStateKey(packet.to);
   // fabricate.update(reqStateKey, 'pending');
 
@@ -38,18 +38,22 @@ export const sendConduitPacket = async (
       : selectedDevice;
     if (!finalDevice) throw new Error('Unable to identify device to send message to.');
 
+    // If we're on the same local detwork, use local IP, else try conduit forwarding
     const { localIp, publicIp } = finalDevice;
+    const isLocalDevice = publicIp === currentPublicIp;
+    const finalIp = isLocalDevice ? localIp : publicIp;
+    const finalHost = isLocalDevice ? undefined : localIp;
 
     // Destination is local if reachable, else forward local via public
     console.log(`${finalDevice?.deviceName} >>> ${JSON.stringify(packet)}`);
 
-    const res = await fetch(`http://${publicIp}:${CONDUIT_PORT}/conduit`, {
+    const res = await fetch(`http://${finalIp}:${CONDUIT_PORT}/conduit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         ...packet,
         auth: tokenOverride || token || '',
-        host: localIp,
+        host: finalHost,
         device: finalDevice && finalDevice.deviceName,
       }),
     });
@@ -74,6 +78,10 @@ export const fetchFleetList = async (state: AppState) => {
   const { token } = state;
   fabricate.update({ devices: [] });
 
+  // First get this machine's public IP to know if we can use local IPs
+  const { ip: publicIp } = await fetch('https://api.ipify.org?format=json')
+    .then((r) => r.json());
+
   try {
     // Can't use sendConduitPacket, not a device by name
     const res = await fetch(`http://${FLEET_HOST}:${CONDUIT_PORT}/conduit`, {
@@ -87,7 +95,7 @@ export const fetchFleetList = async (state: AppState) => {
       }),
     });
     const { message } = await res.json();
-    fabricate.update({ devices: message.value });
+    fabricate.update({ devices: message.value, publicIp });
   } catch (err) {
     console.error(err);
     alert(err);
@@ -222,7 +230,7 @@ export const fetchMetric = async (state: AppState, name: string) => {
  */
 export const fetchMetricNames = async (state: AppState) => {
   const {
-    message: metricNames,
+    message: metricNames = [],
   } = await sendConduitPacket(state, { to: 'monitor', topic: 'getMetricNames' });
   fabricate.update({ metricNames });
 };

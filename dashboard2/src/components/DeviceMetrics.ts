@@ -214,7 +214,7 @@ const DeviceMetrics = () => fabricate('Row')
       return;
     }
 
-    if (keys.includes('metricNames')) {
+    if (keys.includes('metricNames') && metricNames.length) {
       el.setChildren(
         metricNames
           .filter((name) => !!METRIC_NAME_MAP[name])

@@ -10,6 +10,7 @@ export const CONDUIT_PORT = 5959;
 export const INITIAL_STATE: AppState = {
   // App data
   token: '',
+  publicIp: '',
 
   // Loaded data
   selectedDeviceApps: [],
