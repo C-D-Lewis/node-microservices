@@ -28,27 +28,27 @@ export type Device = {
   deviceType: 'other' | 'pc' | 'pi' | 'other';
   diskSize: string;
   diskUsage: number;
+  uptimeDays?: number;
 };
 
 /** Graph data point. */
 export type DataPoint = {
   value: number;
+  timestamp: number;
   dateTime: string;
 };
 
 /** Raw metric point */
-export type MetricPoint = [number, number | string[]];
+export type MetricPoint = [number, number];
 
-/** monitor plugin configuration */
-export type MonitorPlugin = {
-  FILE_NAME: string;
-  EVERY?: number;
-  AT?: string;
-  ENABLED?: boolean;
+/** Metric data */
+export type MetricData = {
+  buckets: DataPoint[];
+  minTime: string;
+  maxTime: string;
+  minValue: number;
+  maxValue: number;
 };
-
-/** App pages */
-type Pages = 'FleetPage' | 'AppsPage';
 
 /** App state type */
 export type AppState = {
@@ -57,60 +57,15 @@ export type AppState = {
 
   // App data
   token: string;
-  deviceApps: Record<string, DeviceApp[]>;
-  fleet: Device[];
-  metricHistory: MetricPoint[];
+  publicIp: string;
+
+  // Loaded data
+  selectedDeviceApps: DeviceApp[];
+  devices: Device[];
+  metricNames: string[];
 
   // Selections
-  page: Pages,
   selectedDevice: Device | null,
-
-  // App data
-  atticData: {
-    app: string;
-    key: string;
-    value: string;
-  };
-  conduitData: {
-    app: string;
-    topic: string;
-    message: string;
-  };
-  visualsData: {
-    index: number;
-    red: number;
-    green: number;
-    blue: number;
-    text: string;
-  };
-  guestlistData: {
-    adminPassword: string;
-    name: string;
-    apps: string;
-    topics: string;
-  };
-  clacksData: {
-    topic: string;
-    message: string;
-    connected: boolean;
-  };
-  monitorData: {
-    metricNames: string[];
-    metric: string;
-    plugins: MonitorPlugin[];
-    minValue: number;
-    maxValue: number;
-    minTime: number;
-    maxTime: number;
-    type: 'array' | 'number';
-  };
-};
-
-/** Fake type for WebSocket message event */
-export type WSMessageEvent = {
-  data: {
-    text: () => Promise<string>,
-  },
 };
 
 /** Request states */

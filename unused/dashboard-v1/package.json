@@ -1,7 +1,7 @@
 {
   "name": "service-dashboard",
   "version": "1.0.0",
-  "description": "Webapp to monitor device fleet and issue commands.",
+  "description": "Web application providing specialised interaction UI for the APIs presented by the node-microservices apps",
   "scripts": {
     "clean": "rm -rf ./dist",
     "build:dev": "npm run clean && webpack --mode development",

@@ -1,12 +1,12 @@
 {
-  "name": "service-dashboard",
-  "version": "1.0.0",
-  "description": "Web application providing specialised interaction UI for the APIs presented by the node-microservices apps",
+  "name": "node-microservices-dashboard",
+  "version": "2.0.0",
+  "description": "Webapp to monitor device fleet and issue commands.",
   "scripts": {
     "clean": "rm -rf ./dist",
-    "build:dev": "npm run clean && webpack --mode development",
-    "build": "npm run clean && webpack --mode production",
-    "start": "npm run build:dev && http-server"
+    "build:dev": "npm run clean && vite",
+    "build": "npm run clean && vite build",
+    "start": "vite --port 54449"
   },
   "devDependencies": {
     "@chris-lewis/eslint-config": "^1.0.3",
@@ -16,8 +16,7 @@
     "http-server": "^14.1.1",
     "ts-loader": "^9.4.4",
     "typescript": "^5.1.6",
-    "webpack": "^5.88.1",
-    "webpack-cli": "^5.1.4"
+    "vite": "^5.4.10"
   },
   "dependencies": {
     "fabricate.js": "^3.5.0"

@@ -6,60 +6,19 @@ export const FLEET_HOST = 'polaris.chrislewis.me.uk';
 /** Port to look for conduit apps */
 export const CONDUIT_PORT = 5959;
 
-/** App card width */
-export const APP_CARD_WIDTH = 375;
-
 /** Initial total app state */
 export const INITIAL_STATE: AppState = {
   // App data
   token: '',
-  deviceApps: {},
-  fleet: [],
-  metricHistory: [],
+  publicIp: '',
+
+  // Loaded data
+  selectedDeviceApps: [],
+  devices: [],
+  metricNames: [],
 
   // Selections
-  page: 'FleetPage',
   selectedDevice: null,
-
-  // App data
-  atticData: {
-    app: '',
-    key: '',
-    value: '',
-  },
-  conduitData: {
-    app: '',
-    topic: 'status',
-    message: '{}',
-  },
-  visualsData: {
-    index: 0,
-    red: 128,
-    green: 128,
-    blue: 128,
-    text: '',
-  },
-  guestlistData: {
-    adminPassword: '',
-    name: '',
-    apps: '',
-    topics: '',
-  },
-  clacksData: {
-    topic: '',
-    message: '{}',
-    connected: false,
-  },
-  monitorData: {
-    metricNames: [],
-    metric: '',
-    plugins: [],
-    minValue: 0,
-    maxValue: 99999,
-    minTime: 0,
-    maxTime: 99999,
-    type: 'number',
-  },
 };
 
 /** Icon type names */
@@ -69,3 +28,9 @@ export const ICON_NAMES: Record<string, string> = {
   pi: 'raspberrypi',
   server: 'server-white',
 };
+
+/** Navbar height from fabricate.js */
+export const NAVBAR_HEIGHT = 40;
+
+/** Metric bucket size */
+export const BUCKET_SIZE = 5;
