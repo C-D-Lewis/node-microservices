@@ -19,6 +19,7 @@ config.addPartialSchema({
               enum: ['pc', 'server', 'pi', 'other'],
             },
             MAIN_DISK_MOUNT: { type: 'string' },
+            CASE_COLOR: { type: 'string' },
           },
         },
       },
@@ -96,6 +97,7 @@ const checkIn = async () => {
       diskUsage,
       diskSize,
       uptimeDays,
+      caseColor: OPTIONS.FLEET.CASE_COLOR || '#0000',
     };
 
     const fleetList = await attic.get(FLEET_LIST_KEY);

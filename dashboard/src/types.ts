@@ -29,6 +29,7 @@ export type Device = {
   diskSize: string;
   diskUsage: number;
   uptimeDays?: number;
+  caseColor?: string;
 };
 
 /** Graph data point. */
