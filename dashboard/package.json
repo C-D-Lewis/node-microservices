@@ -7,7 +7,7 @@
     "clean": "rm -rf ./dist",
     "build:dev": "npm run clean && vite",
     "build": "npm run clean && vite build",
-    "start": "vite --port 54449 --host"
+    "start": "npm run build:dev"
   },
   "devDependencies": {
     "@chris-lewis/eslint-config": "^1.0.3",
