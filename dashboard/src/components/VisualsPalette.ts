@@ -65,7 +65,7 @@ const VisualsPalette = () => fabricate('Row')
   .onCreate(async (el, state) => {
     const { message } = await sendConduitPacket(state, { to: 'visuals', topic: 'hasLights' });
 
-    if (message.hasLights) {
+    if (message && message.hasLights) {
       el.setChildren(DEMO_COLORS.map((color) => SwatchButton({ color })));
     } else {
       el.setChildren([
