@@ -103,6 +103,17 @@ describe('API', () => {
     });
   });
 
+  describe('Conduit topic: hasLights', () => {
+    it('should return 200 / OK', async () => {
+      const response = await testing.sendConduitPacket({
+        to: 'visuals', topic: 'hasLights',
+      });
+
+      expect(response.status).to.equal(200);
+      expect(response.message.hasLights).to.not.equal(undefined);
+    });
+  });
+
   if (!process.env.DOCKER_TEST) {
     // Requires pre-authorization with remote concierge, and something playing
     describe('Conduit topic: spotify', () => {

@@ -54,6 +54,7 @@ const setup = async () => {
   conduit.on('off', require('../api/off'), EMPTY_PACKET_SCHEMA);
   conduit.on('demo', require('../api/demo'), EMPTY_PACKET_SCHEMA);
   conduit.on('spotify', require('../api/spotify'), EMPTY_PACKET_SCHEMA);
+  conduit.on('hasLights', require('../api/hasLights'), EMPTY_PACKET_SCHEMA);
 };
 
 module.exports = {
