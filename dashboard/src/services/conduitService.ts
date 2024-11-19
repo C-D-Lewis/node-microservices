@@ -2,9 +2,9 @@ import { Fabricate } from 'fabricate.js';
 import {
   AppState, DataPoint, Device, DeviceApp,
   Packet,
-} from '../types';
-import { BUCKET_SIZE, CONDUIT_PORT, FLEET_HOST } from '../constants';
-import { shortDateTime, sortAppByName } from '../util';
+} from '../types.ts';
+import { BUCKET_SIZE, CONDUIT_PORT, FLEET_HOST } from '../constants.ts';
+import { shortDateTime, sortAppByName } from '../util.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -28,7 +28,9 @@ export const sendConduitPacket = async (
   deviceNameOverride?: string,
   tokenOverride?: string,
 ) => {
-  const { token, selectedDevice, devices, publicIp: currentPublicIp } = state;
+  const {
+    token, selectedDevice, devices, publicIp: currentPublicIp,
+  } = state;
   // const reqStateKey = appRequestStateKey(packet.to);
   // fabricate.update(reqStateKey, 'pending');
 

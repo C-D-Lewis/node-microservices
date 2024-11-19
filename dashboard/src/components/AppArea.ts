@@ -1,10 +1,11 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
-import { AppState } from '../types';
-import StatRow from './StatRow';
-import AppLoader from './AppLoader';
-import AppCard from './AppCard';
-import DeviceMetrics from './DeviceMetrics';
-import { fetchMetricNames } from '../services/conduitService';
+import { AppState } from '../types.ts';
+import StatRow from './StatRow.ts';
+import AppLoader from './AppLoader.ts';
+import AppCard from './AppCard.ts';
+import DeviceMetrics from './DeviceMetrics.ts';
+import { fetchMetricNames } from '../services/conduitService.ts';
+import VisualsPalette from './VisualsPalette.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -98,6 +99,7 @@ const AppArea = () => {
         fabricate.conditional((s) => !areAppsLoaded(s), AppLoader),
         fabricate.conditional(areAppsLoaded, RefreshProgressBar),
         fabricate.conditional(areAppsLoaded, DeviceMetrics),
+        fabricate.conditional(areAppsLoaded, VisualsPalette),
         fabricate.conditional(areAppsLoaded, AppCardList),
       ]);
     }, [fabricate.StateKeys.Created, 'selectedDevice']);

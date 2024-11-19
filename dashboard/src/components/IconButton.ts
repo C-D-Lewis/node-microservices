@@ -1,5 +1,5 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
-import { AppState } from '../types';
+import { AppState } from '../types.ts';
 
 declare const fabricate: Fabricate<AppState>;
 

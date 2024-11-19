@@ -1,8 +1,8 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
 import {
   AppState, Device, DeviceApp,
-} from './types';
-import { sendConduitPacket } from './services/conduitService';
+} from './types.ts';
+import { sendConduitPacket } from './services/conduitService.ts';
 
 declare const fabricate: Fabricate<AppState>;
 

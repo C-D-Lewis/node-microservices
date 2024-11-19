@@ -1,8 +1,8 @@
 import { Fabricate } from 'fabricate.js';
-import { AppState, Device } from '../types';
-import { commandDevice, getTimeAgoStr } from '../util';
-import Theme from '../theme';
-import IconButton from './IconButton';
+import { AppState, Device } from '../types.ts';
+import { commandDevice, getTimeAgoStr } from '../util.ts';
+import Theme from '../theme.ts';
+import IconButton from './IconButton.ts';
 
 declare const fabricate: Fabricate<AppState>;
 

@@ -1,11 +1,11 @@
 import { Fabricate } from 'fabricate.js';
-import { AppState } from './types';
-import Theme from './theme';
-import { INITIAL_STATE } from './constants';
-import { parseParams } from './util';
-import SideBar from './components/SideBar';
-import AppArea from './components/AppArea';
-import { fetchFleetList } from './services/conduitService';
+import { AppState } from './types.ts';
+import Theme from './theme.ts';
+import { INITIAL_STATE } from './constants.ts';
+import { parseParams } from './util.ts';
+import SideBar from './components/SideBar.ts';
+import AppArea from './components/AppArea.ts';
+import { fetchFleetList } from './services/conduitService.ts';
 
 declare const fabricate: Fabricate<AppState>;
 

@@ -11,4 +11,7 @@ export default {
       ],
     }),
   ],
+  server: {
+    port: 54449,
+  },
 };

@@ -1,4 +1,4 @@
-import { AppState } from './types';
+import { AppState } from './types.ts';
 
 /** Fleet host URL */
 export const FLEET_HOST = 'polaris.chrislewis.me.uk';

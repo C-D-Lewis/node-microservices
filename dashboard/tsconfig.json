@@ -2,7 +2,7 @@
   "include": ["src/**/*"],
   "exclude": ["src/types.ts"],
   "compilerOptions": {
-    "target": "ES2016",
+    "target": "ESNext",
     "module": "NodeNext",
     "outDir": "./dist",
     "esModuleInterop": true,

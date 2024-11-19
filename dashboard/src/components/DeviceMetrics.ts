@@ -1,10 +1,10 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
 import {
   AppState, DataPoint, MetricData,
-} from '../types';
-import Theme from '../theme';
-import { BUCKET_SIZE } from '../constants';
-import { fetchMetric, fetchMetricNames } from '../services/conduitService';
+} from '../types.ts';
+import Theme from '../theme.ts';
+import { BUCKET_SIZE } from '../constants.ts';
+import { fetchMetric, fetchMetricNames } from '../services/conduitService.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
