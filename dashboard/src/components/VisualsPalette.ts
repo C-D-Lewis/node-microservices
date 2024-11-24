@@ -1,6 +1,7 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
 import { AppState } from '../types.ts';
 import { sendConduitPacket } from '../services/conduitService.ts';
+import { AppAreaContainer, AppAreaContainerTitle } from './AppAreaContainer.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -50,16 +51,15 @@ const SwatchButton = ({ color }: { color: number[] }) => {
 };
 
 /**
- * VisualsPalette component.
+ * Color palette component.
  *
- * @returns {FabricateComponent} VisualsPalette.
+ * @returns {FabricateComponent} ColorPalette component.
  */
-const VisualsPalette = () => fabricate('Row')
+const ColorPalette = () => fabricate('Row')
   .setStyles(({ palette }) => ({
     flexWrap: 'wrap',
     width: 'fit-content',
-    border: `solid 2px ${palette.grey6}`,
-    margin: '0px 0px 10px 30px',
+    border: `solid 1px ${palette.grey6}`,
   }))
   .setNarrowStyles({ width: '100%' })
   .onCreate(async (el, state) => {
@@ -79,5 +79,17 @@ const VisualsPalette = () => fabricate('Row')
       ]);
     }
   });
+
+/**
+ * VisualsPalette component.
+ *
+ * @returns {FabricateComponent} VisualsPalette.
+ */
+const VisualsPalette = () => AppAreaContainer()
+  .setChildren([
+    AppAreaContainerTitle()
+      .setText('Lighting Palette'),
+    ColorPalette(),
+  ]);
 
 export default VisualsPalette;

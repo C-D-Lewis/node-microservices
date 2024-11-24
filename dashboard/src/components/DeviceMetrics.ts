@@ -5,6 +5,7 @@ import {
 import Theme from '../theme.ts';
 import { BUCKET_SIZE } from '../constants.ts';
 import { fetchMetric, fetchMetricNames } from '../services/conduitService.ts';
+import { AppAreaContainer, AppAreaContainerTitle } from './AppAreaContainer.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -39,9 +40,7 @@ const NoMetricsLabel = () => fabricate('Text')
     textAlign: 'center',
     alignContent: 'center',
   }))
-  .setNarrowStyles({
-    margin: '0px',
-  })
+  .setNarrowStyles({ margin: '0px' })
   .setText('No metrics to show');
 
 /** Chart plot point */
@@ -89,7 +88,7 @@ const MetricGraph = ({ name } : { name: string }) => {
 
     // Hour lines
     const hourInterval = Math.round(width / 24);
-    for (let x = 0; x < 24; x += 3) {
+    for (let x = 3; x < 24; x += 3) {
       ctx.fillStyle = (x % 6 === 0) ? Theme.palette.grey5 : Theme.palette.grey2;
       ctx.fillRect(x * hourInterval, 0, 1, height);
     }
@@ -170,42 +169,34 @@ const MetricGraph = ({ name } : { name: string }) => {
  */
 const MetricContainer = ({ name } : { name: string }) => fabricate('Column')
   .setStyles(({ palette }) => ({
-    margin: '15px',
-    width: `${GRAPH_WIDTH}px`,
+    width: `${GRAPH_WIDTH - 1}px`,
     height: '180px',
-    border: `solid 2px ${palette.grey6}`,
+    backgroundColor: 'black',
+    border: `solid 1px ${palette.grey6}`,
   }))
-  .setNarrowStyles({
-    margin: '10px 0px',
-  })
   .setChildren([
     fabricate('Text')
       .setStyles(({ fonts, palette }) => ({
         color: 'white',
         fontSize: '0.9rem',
         fontFamily: fonts.body,
+        fontWeight: 'bold',
         margin: '0px',
         padding: '5px',
-        borderBottom: `solid 2px ${palette.grey6}`,
+        borderBottom: `solid 1px ${palette.grey6}`,
       }))
       .setText(METRIC_NAME_MAP[name] || name),
     MetricGraph({ name }),
   ]);
 
 /**
- * DeviceMetrics component.
+ * Group of graphs.
  *
- * @returns {HTMLElement} Fabricate component.
+ * @returns {FabricateComponent} GraphGroup component.
  */
-const DeviceMetrics = () => fabricate('Row')
-  .setStyles({
-    margin: '15px',
-    flexWrap: 'wrap',
-  })
-  .onCreate(async (el, state) => {
-    // Get the metrics available, each graph loads its own
-    fetchMetricNames(state);
-  })
+const GraphGroup = () => fabricate('Row')
+  .setStyles({ flexWrap: 'wrap' })
+  .onCreate(async (el, state) => fetchMetricNames(state))
   .onUpdate(async (el, state, keys) => {
     const { selectedDevice, metricNames } = state;
 
@@ -222,5 +213,17 @@ const DeviceMetrics = () => fabricate('Row')
       );
     }
   }, [fabricate.StateKeys.Created, 'selectedDevice', 'metricNames']);
+
+/**
+ * DeviceMetrics component.
+ *
+ * @returns {HTMLElement} Fabricate component.
+ */
+const DeviceMetrics = () => AppAreaContainer()
+  .setChildren([
+    AppAreaContainerTitle()
+      .setText('Device Metrics'),
+    GraphGroup(),
+  ]);
 
 export default DeviceMetrics;

@@ -2,10 +2,10 @@ import { Fabricate, FabricateComponent } from 'fabricate.js';
 import { AppState } from '../types.ts';
 import StatRow from './StatRow.ts';
 import AppLoader from './AppLoader.ts';
-import AppCard from './AppCard.ts';
 import DeviceMetrics from './DeviceMetrics.ts';
 import { fetchMetricNames } from '../services/conduitService.ts';
 import VisualsPalette from './VisualsPalette.ts';
+import AppCardList from './AppCardList.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -53,21 +53,6 @@ const RefreshProgressBar = () => {
     })
     .onDestroy(() => clearInterval(handle));
 };
-
-/**
- * AppArea component.
- *
- * @returns {HTMLElement} Fabricate component.
- */
-const AppCardList = () => fabricate('Row')
-  .setStyles({
-    flexWrap: 'wrap',
-    padding: '0px 15px',
-  })
-  .setNarrowStyles({ padding: '0px' })
-  .onUpdate((el, state) => {
-    el.setChildren(state.selectedDeviceApps.map((p) => AppCard({ app: p })));
-  }, [fabricate.StateKeys.Created, 'selectedDeviceApps']);
 
 /**
  * AppArea component.

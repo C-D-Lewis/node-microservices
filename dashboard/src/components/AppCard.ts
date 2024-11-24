@@ -91,7 +91,7 @@ const AppCard = ({ app }: { app: DeviceApp }) => {
 
   return fabricate('Column')
     .setStyles(({ palette }) => ({
-      margin: '15px',
+      margin: '5px',
       backgroundColor: palette.grey3,
       width: '300px',
       border: `solid 2px ${palette.grey6}`,
