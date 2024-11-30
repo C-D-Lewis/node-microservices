@@ -1,4 +1,7 @@
 {
+  "notes": [
+    "Do not forget to put & after a 'start' or it'll run forever"
+  ],
   "hosts": {
     "stack-ext": [
       { "location": "code/node-microservices/apps/clacks",    "start": "npm start &" },
@@ -8,7 +11,7 @@
       { "location": "code/node-microservices/apps/concierge", "start": "npm start &" },
       { "location": "code/node-microservices/apps/visuals",   "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor",   "start": "npm start &" },
-      { "location": "code/node-microservices/dashboard",      "start": "npm run build && cd dist && http-server -p 54449" },
+      { "location": "code/node-microservices/dashboard",      "start": "npm run build && cd dist && http-server -p 54449 &" },
       { "location": "code/microdiary",                        "start": "http-server -p 34279 &" },
       {
         "location": "code/discord-bot-norren",
