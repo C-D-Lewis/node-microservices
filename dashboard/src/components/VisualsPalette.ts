@@ -56,11 +56,7 @@ const SwatchButton = ({ color }: { color: number[] }) => {
  * @returns {FabricateComponent} ColorPalette component.
  */
 const ColorPalette = () => fabricate('Row')
-  .setStyles(({ palette }) => ({
-    flexWrap: 'wrap',
-    width: 'fit-content',
-    border: `solid 1px ${palette.grey6}`,
-  }))
+  .setStyles({ flexWrap: 'wrap' })
   .setNarrowStyles({ width: '100%' })
   .onCreate(async (el, state) => {
     const { message } = await sendConduitPacket(state, { to: 'visuals', topic: 'hasLights' });
@@ -70,10 +66,11 @@ const ColorPalette = () => fabricate('Row')
     } else {
       el.setChildren([
         fabricate('Text')
-          .setStyles(({ fonts }) => ({
-            color: 'white',
-            fontSize: '0.9rem',
+          .setStyles(({ fonts, palette }) => ({
             fontFamily: fonts.body,
+            color: palette.grey5,
+            margin: '10px auto',
+            cursor: 'default',
           }))
           .setText('No lights available'),
       ]);

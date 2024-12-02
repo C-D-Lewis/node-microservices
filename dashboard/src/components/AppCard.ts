@@ -1,14 +1,8 @@
 import { Fabricate } from 'fabricate.js';
 import { AppState, DeviceApp } from '../types.ts';
+import MonitorControls from './controls/MonitorControls.ts';
 
 declare const fabricate: Fabricate<AppState>;
-
-const dummy = fabricate('div');
-
-const controlsMap: Record<string, HTMLElement> = {
-  monitor: dummy,
-  visuals: dummy,
-};
 
 /**
  * AppControls component.
@@ -18,11 +12,8 @@ const controlsMap: Record<string, HTMLElement> = {
  * @returns {HTMLElement} Fabricate component.
  */
 const AppControls = ({ app }: { app: DeviceApp }) => fabricate('Column')
-  .setStyles({
-
-  })
   .setChildren([
-    // fabricate('Text').setText('Controls here'),
+    fabricate.conditional(() => app.app === 'monitor', MonitorControls),
   ]);
 
 /**
@@ -87,7 +78,7 @@ const AppStatusRow = ({ app }: { app: DeviceApp }) => fabricate('Row')
  * @returns {HTMLElement} Fabricate component.
  */
 const AppCard = ({ app }: { app: DeviceApp }) => {
-  const hasControls = !!controlsMap[app.app!];
+  const hasControls = ['monitor'].includes(app.app!);
 
   return fabricate('Column')
     .setStyles(({ palette }) => ({
@@ -100,6 +91,8 @@ const AppCard = ({ app }: { app: DeviceApp }) => {
     .setNarrowStyles({ width: '100%' })
     .setChildren([
       AppStatusRow({ app }),
+
+      // TODO More elegant way of doing this
       fabricate.conditional(() => hasControls, () => AppControls({ app })),
     ]);
 };

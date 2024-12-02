@@ -12,7 +12,10 @@ export const AppAreaContainer = () => fabricate('Column')
   .setStyles(({ palette }) => ({
     backgroundColor: palette.grey2,
     border: `solid 2px ${palette.grey6}`,
-    margin: '30px',
+    margin: '30px 30px 0px 30px',
+    width: 'fit-content',
+    minWidth: '250px',
+    minHeight: '64px',
   }))
   .setNarrowStyles({ margin: '15px' });
 

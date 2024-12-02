@@ -16,6 +16,7 @@ export const INITIAL_STATE: AppState = {
   selectedDeviceApps: [],
   devices: [],
   metricNames: [],
+  monitorPlugins: [],
 
   // Selections
   selectedDevice: null,

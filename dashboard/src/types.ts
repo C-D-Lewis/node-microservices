@@ -51,6 +51,14 @@ export type MetricData = {
   maxValue: number;
 };
 
+/** monitor plugin configuration */
+export type MonitorPlugin = {
+  FILE_NAME: string;
+  EVERY?: number;
+  AT?: string;
+  ENABLED?: boolean;
+};
+
 /** App state type */
 export type AppState = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,6 +72,7 @@ export type AppState = {
   selectedDeviceApps: DeviceApp[];
   devices: Device[];
   metricNames: string[];
+  monitorPlugins: MonitorPlugin[];
 
   // Selections
   selectedDevice: Device | null,
