@@ -39,7 +39,7 @@ const PluginView = ({ plugin }: { plugin: MonitorPlugin }) => {
       height: 'fit-content',
     }))
     .setChildren([
-      fabricate('Image', { src: 'assets/plugin.png' })
+      fabricate('Image', { src: 'assets/images/plugin.png' })
         .setStyles({
           width: '24px',
           height: '24px',
