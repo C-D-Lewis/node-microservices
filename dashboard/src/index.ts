@@ -6,6 +6,7 @@ import { parseParams } from './util.ts';
 import SideBar from './components/SideBar.ts';
 import AppArea from './components/AppArea.ts';
 import { fetchFleetList } from './services/conduitService.ts';
+import ConsoleView from './components/ConsolePane.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -17,7 +18,31 @@ declare const fabricate: Fabricate<AppState>;
 const AppNavBar = () => fabricate('NavBar', {
   title: 'Node Microservices Dashboard',
   backgroundColor: Theme.palette.primary,
-});
+})
+  .addChildren([
+    fabricate('Image', { src: 'assets/images/console.png' })
+      .setStyles({
+        marginLeft: 'auto',
+        width: '28px',
+        height: '28px',
+        cursor: 'pointer',
+      })
+      .onClick((el, { consoleOpen }) => {
+        fabricate.update({ consoleOpen: !consoleOpen });
+      }),
+  ])
+
+// Get logs as they occur.
+const originalConsoleLog = console.log;
+/**
+ * Override console.log to update the console logs in the state.
+ *
+ * @param args - Arguments to log.
+ */
+window.console.log = (msg) => {
+  originalConsoleLog(msg);
+  fabricate.update('consoleLogs', (state: AppState) => [...state.consoleLogs, msg]);
+};
 
 /**
  * App component.
@@ -34,6 +59,7 @@ const App = () => fabricate('Column')
       .setChildren([
         SideBar(),
         AppArea(),
+        ConsoleView(),
       ]),
   ])
   .onUpdate(async (el, state, keys) => {

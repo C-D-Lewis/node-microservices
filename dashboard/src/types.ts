@@ -74,8 +74,10 @@ export type AppState = {
   metricNames: string[];
   monitorPlugins: MonitorPlugin[];
 
-  // Selections
+  // State
   selectedDevice: Device | null,
+  consoleOpen: boolean;
+  consoleLogs: string[];
 };
 
 /** Request states */

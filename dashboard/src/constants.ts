@@ -18,8 +18,10 @@ export const INITIAL_STATE: AppState = {
   metricNames: [],
   monitorPlugins: [],
 
-  // Selections
+  // State
   selectedDevice: null,
+  consoleOpen: false,
+  consoleLogs: [],
 };
 
 /** Icon type names */
