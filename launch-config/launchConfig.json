@@ -1,6 +1,7 @@
 {
   "notes": [
-    "Do not forget to put & after a 'start' or it'll run forever"
+    "Do not forget to put & after a 'start' or it'll block forever",
+    "visuals used for OLED displays, not just LED lights"
   ],
   "hosts": {
     "stack-ext": [
@@ -20,16 +21,17 @@
       }
     ],
     "stack-int": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
-      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/polaris", "start": "npm start &" }
+      { "location": "code/node-microservices/apps/conduit",             "start": "npm start &" },
+      { "location": "code/node-microservices/apps/attic",               "start": "npm start &" },
+      { "location": "code/node-microservices/apps/visuals",             "start": "npm start &" },
+      { "location": "code/node-microservices/apps/monitor",             "start": "npm start &" },
+      { "location": "code/node-microservices/apps/polaris",             "start": "npm start &" },
+      { "location": "code/pebble-dev/watchapps/news-headlines/backend", "start": "npm start &" }
     ],
     "cirroc": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
-      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" },
+      { "location": "code/node-microservices/apps/conduit",      "start": "npm start &" },
+      { "location": "code/node-microservices/apps/attic",        "start": "npm start &" },
+      { "location": "code/node-microservices/apps/monitor",      "start": "npm start &" },
       { "location": "code/node-microservices/tools/cirroc_oled", "start": "python3 main.py &"}
     ],
     "mc-server-pi": [
@@ -78,15 +80,6 @@
     "Marvin": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
       { "location": "code/node-microservices/apps/attic",   "start": "npm start &" }
-    ],
-    "ad-blocker-home": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" }
-    ],
-    "enviro-pi": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
-      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
     ]
   }
 }
