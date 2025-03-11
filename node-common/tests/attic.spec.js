@@ -22,7 +22,7 @@ describe('attic.js', () => {
     expect(res).to.equal(true);
   });
 
-  it('should fail to find a non-existant value', async () => {
+  it('should fail to find a non-existent value', async () => {
     const res = await attic.exists('lego');
 
     expect(res).to.equal(false);

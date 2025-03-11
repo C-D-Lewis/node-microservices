@@ -56,8 +56,6 @@ node runner.js conduit attic visuals monitor
 * [`conduit`](apps/conduit) - API service that allows all the other apps to
   communicate, as well as providing a single entry-point for the outside world
   to communicate with any single app, using a standard message format.
-* [`guestlist`](apps/guestlist) - API service that grants and checks user access
-  tokens. Master access is granted via a local file for the admin.
 * [`monitor`](apps/monitor) - The oldest service, runs plugins and scripts on a
   timed basis to perform generic tasks, including checking weather, train
   delays, uptime status of other services, and updating LED lights on schedule.
@@ -214,25 +212,15 @@ curl -X POST http://48.192.67.201:5959/conduit \
 ## Authentication
 
 For all requests that do not originate from `localhost`, each packet received
-by `conduit` must include the `auth` field with a token that can is then
-verified by `guestlist`, though this can be disabled. Where applicable
+by `conduit` must include the `auth` field with a token. Where applicable
 additional checks are done on the `apps` and `topics` permissions assigned to
 that user.
 
-For example, creating a user as the sysadmin with the master password (see
-[`guestlist`](apps/guestlist) for details):
+The `create-user.sh` tools script is used to add new users. For example,
+creating a user that can use some topics from the `visuals` app:
 
-```json
-{
-  "to": "guestlist",
-  "topic": "create",
-  "auth": "MyAdminPassword",
-  "message": {
-    "name": "BacklightUser",
-    "apps": ["visuals"],
-    "topics": ["set", "fadeAll", "off"]
-  }
-}
+```
+./tools/create-user.sh VisualsUser visuals set,off all
 ```
 
 The response will contain a one-time view of the token that may be given to the

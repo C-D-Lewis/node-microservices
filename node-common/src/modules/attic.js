@@ -109,6 +109,8 @@ const exists = async (key) => {
     await get(key);
     return true;
   } catch (e) {
+    console.log(`Error checking key ${key} exists in app ${appName}`);
+    console.log(e);
     return false;
   }
 };

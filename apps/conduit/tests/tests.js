@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { expect } = require('chai');
 const { config, fetch } = require('../src/node-common')(['config', 'fetch']);
 
@@ -80,7 +81,7 @@ describe('API', () => {
       expect(res.data.error).to.equal('Bad Request');
     });
 
-    it('should use guestlist to check tokens', async () => {
+    it('should check auth tokens', async () => {
       // Set up in Dockerfile
       const token = '32a77a47a43f67acd9b53f6b195842722bf3a2cb';
 
@@ -100,7 +101,7 @@ describe('API', () => {
       expect(res.data.status).to.equal(200);
     });
 
-    it('should use guestlist to refuse tokens', async () => {
+    it('should refuse auth tokens', async () => {
       const res = await fetch({
         url: `http://localhost:${SERVER.PORT}/conduit`,
         method: 'POST',
@@ -118,7 +119,7 @@ describe('API', () => {
       expect(res.data.error).to.equal('Not Authorized: Authorization check failed: User does not exist');
     });
 
-    it('should use guestlist to require tokens', async () => {
+    it('should require auth tokens', async () => {
       const res = await fetch({
         url: `http://localhost:${SERVER.PORT}/conduit`,
         method: 'POST',

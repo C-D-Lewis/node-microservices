@@ -20,18 +20,19 @@ function test () {
 
 run conduit
 run attic
-run guestlist
-run concierge
-run clacks
-run visuals
-run monitor
-
 test conduit
 test attic
-test guestlist
+
+run concierge
 test concierge
+
+run clacks
 test clacks
+
+run visuals
 test visuals
+
+run monitor
 test monitor
 
 # TODO: needs mocking of AWS SDK

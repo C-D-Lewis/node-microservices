@@ -4,9 +4,10 @@ const {
 } = require('../node-common')(['config', 'log', 'fetch', 'schema']);
 const { findByApp } = require('../modules/allocator');
 const {
-  sendBadRequest, sendNotFound, sendPacket, sendNotAuthorized,
+  sendBadRequest, sendNotFound, sendNotAuthorized,
 } = require('../modules/util');
 const respondWithApps = require('../modules/apps');
+const { checkAuth } = require('../modules/auth');
 
 config.addPartialSchema({
   required: ['SERVER'],
@@ -19,7 +20,7 @@ config.addPartialSchema({
     },
     OPTIONS: {
       properties: {
-        AUTH_GUESTLIST: { type: 'string' },
+        AUTH_ENABLED: { type: 'boolean' },
       },
     },
   },
@@ -115,31 +116,19 @@ const handlePacketRequest = async (req, res) => {
 
   if (!hostname) log.error('Hostname unknown');
 
-  // Enforce only localhost need not supply a guestlist token (or during test)
-  const shouldCheckAuth = (OPTIONS.AUTH_GUESTLIST && (hostname && hostname !== 'localhost')) || forceAuthCheck;
-  // Do not check the actual authorization request packet
-  const isAuthCheckPacket = to === 'guestlist' && topic === 'authorize';
-  if (shouldCheckAuth && !isAuthCheckPacket) {
-    log.debug(`Origin: ${hostname} requires guestlist check`);
+  // Enforce only localhost need not supply an auth token (or during test)
+  const shouldCheckAuth = (OPTIONS.AUTH_ENABLED && (hostname && hostname !== 'localhost')) || forceAuthCheck;
+  if (shouldCheckAuth) {
+    log.debug(`Origin: ${hostname} requires auth check`);
 
     if (!auth) {
       sendNotAuthorized(res, 'Authorization not provided');
       return;
     }
 
-    const authCheckRes = await sendPacket({
-      to: 'guestlist',
-      topic: 'authorize',
-      auth,
-      message: {
-        to,
-        topic,
-        auth,
-        device,
-      },
-    }, OPTIONS.AUTH_GUESTLIST);
-    if (authCheckRes.error) {
-      sendNotAuthorized(res, `Authorization check failed: ${authCheckRes.error}`);
+    const authRes = await checkAuth(auth, to, topic, device);
+    if (authRes.error) {
+      sendNotAuthorized(res, `Authorization check failed: ${authRes.error}`);
       return;
     }
   }

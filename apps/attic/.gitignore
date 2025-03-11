@@ -5,3 +5,4 @@ pid
 gist
 *.log
 db.json
+*.tmp

@@ -20,8 +20,6 @@ ADD apps/clacks/package* /code/apps/clacks/
 RUN cd /code/apps/clacks && npm ci
 ADD apps/concierge/package* /code/apps/concierge/
 RUN cd /code/apps/concierge && npm ci
-ADD apps/guestlist/package* /code/apps/guestlist/
-RUN cd /code/apps/guestlist && npm ci
 ADD apps/polaris/package* /code/apps/polaris/
 RUN cd /code/apps/polaris && npm ci
 ADD apps/visuals/package* /code/apps/visuals/
@@ -38,7 +36,6 @@ ADD apps/conduit/ /code/apps/conduit/
 ADD apps/attic/ /code/apps/attic/
 ADD apps/clacks/ /code/apps/clacks/
 ADD apps/concierge/ /code/apps/concierge/
-ADD apps/guestlist/ /code/apps/guestlist/
 ADD apps/polaris/ /code/apps/polaris/
 ADD apps/visuals/ /code/apps/visuals/
 ADD apps/monitor/ /code/apps/monitor/
@@ -51,15 +48,14 @@ RUN git config --global user.email "test@example.com" \
   && git config --global user.name "Test Name"
 
 # Set test data
-RUN echo "testPassword" >> /code/apps/guestlist/password
 COPY <<EOF /code/apps/conduit/config.json
 {
   "OPTIONS": {
     "FLEET": {
-      "HOST": "",
+      "HOST": "localhost",
       "DEVICE_TYPE": ""
     },
-    "AUTH_GUESTLIST": "localhost"
+    "AUTH_ENABLED": true
   },
   "CONDUIT": {
     "TOKEN": ""
@@ -75,45 +71,31 @@ EOF
 
 COPY <<EOF /code/apps/attic/db.json
 {
-  "guestlist": {
+  "conduit": {
     "users": {
       "value": [
         {
           "id": "6f482b3ba6a6d41a",
           "name": "testUser",
-          "apps": [
-            "all"
-          ],
-          "topics": [
-            "all"
-          ],
-          "devices": [
-            "all"
-          ],
+          "apps": "all",
+          "topics": "all",
+          "devices": "all",
           "hash": "800af9c9acb31ac36c561ed4e5a3da890398237de72dccb5e9419d63a384c2ee",
           "createdAt": 1684063071964
         },
         {
           "id": "6f482b3ba6a6d41a",
           "name": "legacyNoDevices",
-          "apps": [
-            "all"
-          ],
-          "topics": [
-            "all"
-          ],
+          "apps": "all",
+          "topics": "all",
           "hash": "f82559394470730bbbe04225ba10a2ad9d08bde3f08c315e3279b8d2ceda63ff",
           "createdAt": 1684063071964
         },
         {
           "id": "455be0dc3417413612a1f5b41f342f9f",
           "name": "singleDevice",
-          "apps": [
-            "all"
-          ],
-          "topics": [
-            "all"
-          ],
+          "apps": "all",
+          "topics": "all",
           "devices": [
             "Marvin"
           ],
