@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 
-FROM 'node:16-slim' AS base
+FROM 'node:20-slim' AS base
 
 # Install OS dependencies
 RUN apt-get update && apt-get install -y git python3

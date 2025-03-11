@@ -1,7 +1,7 @@
 {
   "name": "conduit",
   "version": "1.0.0",
-  "description": "Bus to allow easier inter-app communication",
+  "description": "Service to allow easier inter-app communication",
   "scripts": {
     "start": "node src/main.js",
     "kill": "sudo kill $(cat pid)",
