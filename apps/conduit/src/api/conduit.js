@@ -118,7 +118,8 @@ const handlePacketRequest = async (req, res) => {
 
   // Enforce only localhost need not supply an auth token (or during test)
   const shouldCheckAuth = (OPTIONS.AUTH_ENABLED && (hostname && hostname !== 'localhost')) || forceAuthCheck;
-  if (shouldCheckAuth) {
+  const isAuthCheck = to === 'attic' && topic === 'get' && message && message.key === 'users';
+  if (shouldCheckAuth && !isAuthCheck) {
     log.debug(`Origin: ${hostname} requires auth check`);
 
     if (!auth) {

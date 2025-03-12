@@ -81,6 +81,23 @@ describe('API', () => {
       expect(res.data.error).to.equal('Bad Request');
     });
 
+    it('should require auth tokens', async () => {
+      const res = await fetch({
+        url: `http://localhost:${SERVER.PORT}/conduit`,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: 'attic',
+          device: 'test',
+          topic: 'status',
+          forceAuthCheck: true,
+        }),
+      });
+
+      expect(res.data.status).to.equal(401);
+      expect(res.data.error).to.equal('Not Authorized: Authorization not provided');
+    });
+
     it('should check auth tokens', async () => {
       // Set up in Dockerfile
       const token = '32a77a47a43f67acd9b53f6b195842722bf3a2cb';
@@ -101,7 +118,7 @@ describe('API', () => {
       expect(res.data.status).to.equal(200);
     });
 
-    it('should refuse auth tokens', async () => {
+    it('should refuse invalid auth tokens', async () => {
       const res = await fetch({
         url: `http://localhost:${SERVER.PORT}/conduit`,
         method: 'POST',
@@ -117,23 +134,6 @@ describe('API', () => {
 
       expect(res.data.status).to.equal(401);
       expect(res.data.error).to.equal('Not Authorized: Authorization check failed: User does not exist');
-    });
-
-    it('should require auth tokens', async () => {
-      const res = await fetch({
-        url: `http://localhost:${SERVER.PORT}/conduit`,
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: 'attic',
-          device: 'test',
-          topic: 'status',
-          forceAuthCheck: true,
-        }),
-      });
-
-      expect(res.data.status).to.equal(401);
-      expect(res.data.error).to.equal('Not Authorized: Authorization not provided');
     });
   });
 });
