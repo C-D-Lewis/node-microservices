@@ -127,6 +127,7 @@ const handlePacketRequest = async (req, res) => {
     }
 
     const authRes = await checkAuth(auth, to, topic, device);
+    log.debug(`Auth check result: ${JSON.stringify(authRes)}`);
     if (authRes.error) {
       sendNotAuthorized(res, `Authorization check failed: ${authRes.error}`);
       return;
