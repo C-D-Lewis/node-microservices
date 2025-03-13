@@ -1,6 +1,4 @@
 const { execSync } = require('child_process');
-const { hash } = require('crypto');
-/* eslint-disable no-param-reassign */
 const { attic, log } = require('../node-common')(['attic', 'log']);
 
 /** Key for list of users */
