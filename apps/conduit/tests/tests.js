@@ -98,7 +98,7 @@ describe('API', () => {
       expect(res.data.error).to.equal('Not Authorized: Authorization not provided');
     });
 
-    it('should check auth tokens', async () => {
+    it('should validate auth tokens', async () => {
       // Set up in Dockerfile
       const token = '32a77a47a43f67acd9b53f6b195842722bf3a2cb';
 

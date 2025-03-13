@@ -1,9 +1,12 @@
 const { execSync } = require('child_process');
+const { hash } = require('crypto');
 /* eslint-disable no-param-reassign */
 const { attic, log } = require('../node-common')(['attic', 'log']);
 
 /** Key for list of users */
 const ATTIC_KEY_USERS = 'users';
+
+const cache = {};
 
 /**
  * Get hash of the token. Uses same method as create-user.sh
@@ -32,8 +35,12 @@ const checkAuth = async (auth, to, topic, device) => {
     ? (await attic.get(ATTIC_KEY_USERS))
     : [];
 
+  if (!cache[auth]) {
+    cache[auth] = getTokenHash(auth);
+  }
+  const inputHash = cache[auth];
+
   // Check it exists
-  const inputHash = getTokenHash(auth);
   const user = list.find((p) => p.hash === inputHash);
   if (!user) {
     log.debug(`Hash not found: ${inputHash}`);
