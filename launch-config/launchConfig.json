@@ -24,7 +24,6 @@
       { "location": "code/node-microservices/apps/attic",               "start": "npm start &" },
       { "location": "code/node-microservices/apps/visuals",             "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor",             "start": "npm start &" },
-      { "location": "code/node-microservices/apps/polaris",             "start": "npm start &" },
       { "location": "code/pebble-dev/watchapps/news-headlines/backend", "start": "npm start &" }
     ],
     "cirroc": [

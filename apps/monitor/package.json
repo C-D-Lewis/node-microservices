@@ -16,6 +16,7 @@
     "extends": "@chris-lewis/eslint-config"
   },
   "dependencies": {
+    "aws-sdk": "^2.1692.0",
     "jsonpath": "^1.1.1",
     "node-fetch": "^2.7.0"
   }
