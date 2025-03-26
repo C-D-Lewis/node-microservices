@@ -66,9 +66,6 @@ node runner.js conduit attic visuals monitor
   Spotify album art color integration.
 * [`clacks`](apps/clacks) - Simple WebSocket server to allow persistent
   connections from apps, dashboards, webapps etc over WS protocol.
-* [`polaris`](apps/polaris) - Service that monitors the local network's public
-  IP address and keeps an AWS Route53 record in sync, removing the need for a
-  permanent IP to be assigned from the ISP.
 
 
 ## Dashboard List

@@ -35,10 +35,6 @@ test visuals
 run monitor
 test monitor
 
-# TODO: needs mocking of AWS SDK
-# run polaris
-# test polaris
-
 # Test node-common
 cd node-common
 npm test

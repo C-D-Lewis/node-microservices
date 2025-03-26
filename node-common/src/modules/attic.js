@@ -109,7 +109,7 @@ const exists = async (key) => {
     await get(key);
     return true;
   } catch (e) {
-    if (e.message.contains('not found')) return false;
+    if (e.message && e.message.includes('not found')) return false;
 
     console.log(`Unexpected error checking key ${key} exists in app ${appName}`);
     console.log(e);

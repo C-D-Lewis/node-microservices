@@ -20,8 +20,6 @@ ADD apps/clacks/package* /code/apps/clacks/
 RUN cd /code/apps/clacks && npm ci
 ADD apps/concierge/package* /code/apps/concierge/
 RUN cd /code/apps/concierge && npm ci
-ADD apps/polaris/package* /code/apps/polaris/
-RUN cd /code/apps/polaris && npm ci
 ADD apps/visuals/package* /code/apps/visuals/
 RUN cd /code/apps/visuals && npm ci
 ADD apps/monitor/package* /code/apps/monitor/
@@ -36,7 +34,6 @@ ADD apps/conduit/ /code/apps/conduit/
 ADD apps/attic/ /code/apps/attic/
 ADD apps/clacks/ /code/apps/clacks/
 ADD apps/concierge/ /code/apps/concierge/
-ADD apps/polaris/ /code/apps/polaris/
 ADD apps/visuals/ /code/apps/visuals/
 ADD apps/monitor/ /code/apps/monitor/
 ADD node-common/ /code/node-common/

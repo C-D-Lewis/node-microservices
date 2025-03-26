@@ -32,7 +32,7 @@ const BackBreadcrumb = () => {
     })
     .setText('All Devices')
     .onClick(async () => {
-      // TODO: Why await needed here?
+      // Why await needed here?
       await fabricate.update({ page: 'FleetPage' });
     });
 
