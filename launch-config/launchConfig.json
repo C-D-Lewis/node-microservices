@@ -38,7 +38,10 @@
       { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
       { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor", "start": "npm start &" },
-      { "location": "cd /mnt/nvme2/forge-create_manual && ./run.sh >> /home/pi/forge-create_manual.log 2>&1 &"}
+      {
+        "location": "/mnt/nvme2/forge-create_manual",
+        "start": "./run.sh >> /home/pi/forge-create_manual.log 2>&1 &"
+      }
     ],
     "bedroom-pi": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
