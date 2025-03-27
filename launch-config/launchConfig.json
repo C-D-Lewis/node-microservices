@@ -1,10 +1,11 @@
 {
   "notes": [
     "Do not forget to put & after a 'start' or it'll block forever",
-    "visuals used for OLED displays, not just LED lights"
+    "visuals used for OLED displays, not just LED lights",
+    "crontab may also be running other things"
   ],
   "hosts": {
-    "stack-ext": [
+    "rack-gateway": [
       { "location": "code/node-microservices/apps/clacks",    "start": "npm start &" },
       { "location": "code/node-microservices/apps/conduit",   "start": "npm start &" },
       { "location": "code/node-microservices/apps/attic",     "start": "npm start &" },
@@ -19,20 +20,20 @@
         "_note": "Must be node 16+"
       }
     ],
-    "stack-int": [
+    "rack-internal": [
       { "location": "code/node-microservices/apps/conduit",             "start": "npm start &" },
       { "location": "code/node-microservices/apps/attic",               "start": "npm start &" },
       { "location": "code/node-microservices/apps/visuals",             "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor",             "start": "npm start &" },
       { "location": "code/pebble-dev/watchapps/news-headlines/backend", "start": "npm start &" }
     ],
-    "cirroc": [
+    "rack-nas": [
       { "location": "code/node-microservices/apps/conduit",      "start": "npm start &" },
       { "location": "code/node-microservices/apps/attic",        "start": "npm start &" },
       { "location": "code/node-microservices/apps/monitor",      "start": "npm start &" },
       { "location": "code/node-microservices/tools/cirroc_oled", "start": "python3 main.py &"}
     ],
-    "mc-server-pi": [
+    "rack-minecraft": [
       { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
       { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
       { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
