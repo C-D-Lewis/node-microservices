@@ -208,7 +208,7 @@ const GraphGroup = () => fabricate('Row')
     if (keys.includes('metricNames') && metricNames.length) {
       el.setChildren(
         metricNames
-          .filter((name) => !!METRIC_NAME_MAP[name])
+          // .filter((name) => !!METRIC_NAME_MAP[name])
           .map((name) => MetricContainer({ name })),
       );
     }
