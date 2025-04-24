@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const { updateMetrics } = require('../modules/metrics');
-const { log } = require('../node-common')(['log']);
+const { log, ses } = require('../node-common')(['log', 'ses']);
 
 /** Available hotel codes */
 const HOTEL_CODES = {
@@ -12,6 +12,11 @@ const HOTEL_CODES = {
   Trafalgar: 105012,
   Victoria: 105013,
 };
+
+/** Price threshold for alerting */
+const PRICE_THRESHOLD = 90;
+
+let notified = false;
 
 /**
  * Get data for this hotel's rooms.
@@ -97,6 +102,28 @@ module.exports = async () => {
     const hotels = await Promise.all(
       Object.entries(HOTEL_CODES).map(([k, v]) => getHotelRooms(k, v)),
     );
+    log.debug(JSON.stringify(hotels, null, 2));
+
+    // Reset after midnight
+    const hours = new Date().getHours();
+    if (hours < 1 && notified) {
+      notified = false;
+    }
+
+    // Notify if rooms available at acceptable price
+    if (!notified && hours >= 18) {
+      const candidates = hotels.filter(
+        (h) => h.rooms.some((r) => parseFloat(r.price) < PRICE_THRESHOLD),
+      );
+      if (candidates.length > 0) {
+        const hotelNames = candidates.map((p) => p.name).join(', ');
+        const msg = `Rooms available at: ${hotelNames}`;
+        log.info(msg);
+
+        await ses.notify(msg);
+        notified = true;
+      }
+    }
 
     const lowestPrice = hotels.reduce(
       (acc, hotel) => {
