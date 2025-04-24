@@ -136,9 +136,7 @@ module.exports = async () => {
       Infinity,
     );
 
-    updateMetrics({
-      lowestPrice,
-    });
+    updateMetrics({ lowestPrice });
 
     log.info(`Lowest price: £${lowestPrice}`);
   } catch (e) {
