@@ -3,15 +3,23 @@ const os = require('os');
 const config = require('./config');
 
 config.addPartialSchema({
-  required: ['SES'],
+  required: ['AWS', 'SES'],
   properties: {
+    AWS: {
+      required: [
+        'ACCESS_KEY_ID',
+        'SECRET_ACCESS_KEY',
+      ],
+      properties: {
+        ACCESS_KEY_ID: { type: 'string' },
+        SECRET_ACCESS_KEY: { type: 'string' },
+      },
+    },
     SES: {
-      required: ['TO_ADDRESS', 'SENDER_ADDRESS', 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY'],
+      required: ['TO_ADDRESS', 'SENDER_ADDRESS'],
       properties: {
         TO_ADDRESS: { type: 'string' },
         SENDER_ADDRESS: { type: 'string' },
-        AWS_ACCESS_KEY_ID: { type: 'string' },
-        AWS_SECRET_ACCESS_KEY: { type: 'string' },
       },
     },
   },
@@ -21,14 +29,16 @@ const {
   SES: {
     TO_ADDRESS,
     SENDER_ADDRESS,
-    AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY,
   },
-} = config.get(['SES']);
+  AWS: {
+    ACCESS_KEY_ID,
+    SECRET_ACCESS_KEY,
+  },
+} = config.get(['SES', 'AWS']);
 
 const credentials = new AWS.Credentials({
-  accessKeyId: AWS_ACCESS_KEY_ID,
-  secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  accessKeyId: ACCESS_KEY_ID,
+  secretAccessKey: SECRET_ACCESS_KEY,
 });
 
 AWS.config.update({
@@ -52,6 +62,8 @@ const notify = async (msg, extaSubject) => {
 from: ${os.hostname()}
 --------------------------------
 ${msg}
+--------------------------------
+${new Date().toISOString()}
 --------------------------------
 `;
 

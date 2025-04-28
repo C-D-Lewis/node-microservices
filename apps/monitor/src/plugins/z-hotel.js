@@ -14,9 +14,9 @@ const HOTEL_CODES = {
 };
 
 /** Price threshold for alerting */
-const PRICE_THRESHOLD = 90;
+const PRICE_THRESHOLD = 190;
 /** Hour to start notifying from */
-const START_H = 18;
+const START_H = 8;
 
 let notified = false;
 
