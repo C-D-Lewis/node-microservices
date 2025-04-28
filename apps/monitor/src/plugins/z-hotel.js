@@ -15,6 +15,8 @@ const HOTEL_CODES = {
 
 /** Price threshold for alerting */
 const PRICE_THRESHOLD = 90;
+/** Hour to start notifying from */
+const START_H = 18;
 
 let notified = false;
 
@@ -111,15 +113,21 @@ module.exports = async () => {
     }
 
     // Notify if rooms available at acceptable price
-    if (!notified && hours >= 18) {
+    if (!notified && hours >= START_H) {
+      let msg = `Rooms available at less than £${PRICE_THRESHOLD}:`;
       const candidates = hotels.filter(
         (h) => h.rooms.some((r) => parseFloat(r.price) < PRICE_THRESHOLD),
       );
       if (candidates.length > 0) {
-        const hotelNames = candidates.map((p) => p.name).join(', ');
-        const msg = `Rooms available at: ${hotelNames}`;
-        log.info(msg);
+        candidates.forEach((h) => {
+          msg += `\n\n${h.name}:`;
+          const rooms = h.rooms.filter((r) => parseFloat(r.price) < PRICE_THRESHOLD);
+          rooms.forEach((room) => {
+            msg += `\n    ${room.name} - £${room.price} (${room.remaining} left)`;
+          });
+        });
 
+        log.info(msg);
         await ses.notify(msg);
         notified = true;
       }
