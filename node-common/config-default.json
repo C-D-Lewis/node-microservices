@@ -28,8 +28,10 @@
   },
   "SES": {
     "TO_ADDRESS": "",
-    "SENDER_ADDRESS": "",
-    "AWS_ACCESS_KEY_ID": "",
-    "AWS_SECRET_ACCESS_KEY": ""
+    "SENDER_ADDRESS": ""
+  },
+  "AWS": {
+    "ACCESS_KEY_ID": "",
+    "SECRET_ACCESS_KEY": ""
   }
 }
