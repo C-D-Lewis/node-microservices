@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const { updateMetrics } = require('../modules/metrics');
-const { log, ses } = require('../node-common')(['log', 'ses']);
+const { log, ses, s3 } = require('../node-common')(['log', 'ses', 's3']);
 
 /** Available hotel codes */
 const HOTEL_CODES = {
@@ -145,6 +145,11 @@ module.exports = async () => {
     );
 
     updateMetrics({ lowestPrice });
+
+    // TEST
+    if (await s3.doesBucketExist('public-files.chrislewis.me.uk')) {
+      await s3.putObject('public-files.chrislewis.me.uk', 'data/z-hotel.json', JSON.stringify(hotels, null, 2));
+    }
 
     log.info(`Lowest price: £${lowestPrice}`);
   } catch (e) {
