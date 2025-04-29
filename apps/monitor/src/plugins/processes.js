@@ -3,7 +3,7 @@ const { log, ses } = require('../node-common')(['log', 'ses']);
 const { updateMetrics } = require('../modules/metrics');
 
 /** Grace period before starting alerting */
-const GRACE_PERIOD_MS = 0;
+const GRACE_PERIOD_MS = 1000 * 60 * 5;
 
 const start = Date.now();
 let notified = false;
