@@ -1,8 +1,9 @@
 const { execSync } = require('child_process');
 const { log, ses } = require('../node-common')(['log', 'ses']);
+const { updateMetrics } = require('../modules/metrics');
 
 /** Grace period before starting alerting */
-const GRACE_PERIOD_MS = 1000 * 60 * 5;
+const GRACE_PERIOD_MS = 0;
 
 const start = Date.now();
 let notified = false;
@@ -13,40 +14,40 @@ let notified = false;
  * @param {object} args - Plugin args.
  */
 module.exports = async (args) => {
-  const { PROCESSES = [] } = args;
-  if (!PROCESSES.length) throw new Error('No processes to monitor');
+  const { FILTER = '', EXPECTED = 0 } = args;
+  if (!FILTER.length) throw new Error('No processes filter to monitor');
+  if (EXPECTED <= 0) throw new Error('Expected processes must be > 0');
 
-  const stoppedProcesses = [];
   const now = Date.now();
 
   if (now - start < GRACE_PERIOD_MS) {
-    log.debug('Within processes.js GRACE_PERIOD');
+    log.debug('Within processes.js GRACE_PERIOD_MS');
     return;
   }
 
+  let processCount = 0;
   try {
-    // Get processes
-    PROCESSES.forEach((p) => {
-      let running = false;
-      try {
-        running = execSync(`ps -e | grep ${p}`).toString().split('\n').length > 0;
-      } catch (e) {
-        /* Failed code */
-      }
+    // Get processes that meet this filter and count them
+    try {
+      processCount = execSync(`ps -e | grep ${FILTER}`).toString().split('\n').filter((p) => p.length).length;
+    } catch (e) {
+      /* Failed exit code */
+    }
 
-      log.debug(`Process ${p} running: ${running}`);
-
-      if (!running) stoppedProcesses.push(p);
-    });
+    const msg = `Processes matching ${FILTER} running: ${processCount} / ${EXPECTED}`;
+    log.debug(msg);
+    updateMetrics({ processCount });
 
     // Send notification once
-    if (stoppedProcesses.length && !notified) {
-      await ses.notify(`Processes stopped: ${stoppedProcesses.join(', ')}`);
+    const shouldNotify = processCount < EXPECTED;
+    if (shouldNotify && !notified) {
+      await ses.notify(msg);
       notified = true;
     }
 
     // Reset if recovers
-    if (!stoppedProcesses.length && notified) {
+    if (!shouldNotify && notified) {
+      log.debug('Processes recovered');
       notified = false;
     }
   } catch (e) {

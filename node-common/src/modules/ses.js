@@ -59,11 +59,9 @@ const sesApi = new AWS.SES({ apiVersion: '2010-12-01' });
  */
 const notify = async (msg, extaSubject) => {
   const finalMsg = `--------------------------------
-from: ${os.hostname()}
+from ${os.hostname()} at ${new Date().toISOString()}
 --------------------------------
 ${msg}
---------------------------------
-${new Date().toISOString()}
 --------------------------------
 `;
 
