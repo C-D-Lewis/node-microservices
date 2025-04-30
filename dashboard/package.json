@@ -21,7 +21,7 @@
     "vite-plugin-static-copy": "^2.1.0"
   },
   "dependencies": {
-    "fabricate.js": "^3.5.0"
+    "fabricate.js": "^3.5.1"
   },
   "eslintConfig": {
     "extends": [

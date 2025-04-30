@@ -94,33 +94,44 @@ const MetricGraph = ({ name } : { name: string }) => {
     }
 
     // Latest data
-    const points = buckets.length > width ? buckets.slice(buckets.length - width) : buckets;
+    const overflows = buckets.length > width;
+    const points = overflows ? buckets.slice(buckets.length - width) : buckets;
+    if (overflows) console.log(`Truncated ${buckets.length} points to ${points.length}`);
     let minPoint: PlotPoint = { x: 0, y: 0, value: 0 };
     let maxPoint: PlotPoint = { x: 0, y: 99999999, value: 0 };
     let lastPoint: PlotPoint = { x: 0, y: 0, value: 0 };
 
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = Theme.palette.secondary;
+
+    const xInterval = Math.round(width / points.length);
     ctx.beginPath();
     points.forEach((p: DataPoint, i: number, arr) => {
       const { value } = p;
-      const pHeight = ((value - minValue) * height) / range;
-      const x = i;
-      const y = height - pHeight;
+      const pHeight = ((value - minValue) * height) / (!range ? 1 : range);
+      const x = i * xInterval;
 
-      if (y > minPoint.y) {
+      // Allow small padding when max or min value is at the edge
+      const edgeMargin = 5;
+      let y = height - pHeight;
+      if (y === height) {
+        y -= edgeMargin;
+      } else if (y === 0) {
+        y += edgeMargin;
+      }
+
+      // Record significant points
+      if (y >= minPoint.y) {
         minPoint = { x, y, value };
       }
-      if (y < maxPoint.y) {
+      if (y <= maxPoint.y) {
         maxPoint = { x, y, value };
       }
-
-      ctx.lineTo(x, y);
-
-      // Record last value
       if (i === arr.length - 1) {
         lastPoint = { x, y, value };
       }
+
+      ctx.lineTo(x, y);
     });
     ctx.stroke();
 

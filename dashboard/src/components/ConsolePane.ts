@@ -47,6 +47,7 @@ const ConsoleView = () => fabricate('Column')
     if (keys.includes('consoleLogs')) {
       el.setChildren(
         consoleLogs.map((log) => ConsoleLine().setText(log)),
+        'ConsolePane',
       );
     }
   }, ['consoleOpen', 'consoleLogs']);
