@@ -9,8 +9,6 @@ import { AppAreaContainer, AppAreaContainerTitle } from './AppAreaContainer.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
-/** Plot point label offset */
-const LABEL_OFFSET = 3;
 /** Graph width based on length of a day */
 const GRAPH_WIDTH = Math.round(1440 / BUCKET_SIZE);
 /** Map of friendly metric names */
@@ -19,7 +17,7 @@ const METRIC_NAME_MAP: Record<string, string> = {
   memoryPerc: 'Memory (%)',
   memoryMb: 'Memory (MB)',
   diskGb: 'Disk (GB)',
-  discPerc: 'Disk (%)',
+  diskPerc: 'Disk (%)',
   tempRaw: 'Temperature',
   freqPerc: 'CPU Frequency (%)',
   fanSpeed: 'Fan Speed (RPM)',
@@ -135,18 +133,11 @@ const MetricGraph = ({ name } : { name: string }) => {
     });
     ctx.stroke();
 
-    // Label min/max
+    // Label min/max/recent
     ctx.font = '14px Arial';
-    ctx.fillStyle = 'white';
-    ctx.fillText(minPoint.value.toFixed(1), minPoint.x + LABEL_OFFSET, minPoint.y - LABEL_OFFSET);
-    ctx.fillText(maxPoint.value.toFixed(1), maxPoint.x + LABEL_OFFSET, maxPoint.y - LABEL_OFFSET);
-
-    // Most recent value
-    ctx.fillText(
-      lastPoint.value.toFixed(1),
-      lastPoint.x + LABEL_OFFSET,
-      lastPoint.y - LABEL_OFFSET,
-    );
+    ctx.fillStyle = '#ddd';
+    const label = `${minPoint.value.toFixed(1)} | ${maxPoint.value.toFixed(1)} | ${lastPoint.value.toFixed(1)}`;
+    ctx.fillText(label, 5, 15);
   };
 
   return fabricate('div')
