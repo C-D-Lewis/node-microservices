@@ -14,9 +14,11 @@ const HOTEL_CODES = {
 };
 
 /** Price threshold for alerting */
-const PRICE_THRESHOLD = 90;
+const PRICE_THRESHOLD = 100;
 /** Hour to start notifying from */
 const START_H = 18;
+/** Days of the week to notify */
+const DAYS = [3, 4];
 
 let notified = false;
 
@@ -113,7 +115,7 @@ module.exports = async () => {
     }
 
     // Notify if rooms available at acceptable price
-    if (!notified && hours >= START_H) {
+    if (!notified && hours >= START_H && DAYS.includes(new Date().getDay())) {
       let msg = `Rooms available at less than £${PRICE_THRESHOLD}:`;
       const candidates = hotels.filter(
         (h) => h.rooms.some((r) => parseFloat(r.price) < PRICE_THRESHOLD),
@@ -146,7 +148,7 @@ module.exports = async () => {
 
     updateMetrics({ lowestPrice });
 
-    // TEST
+    // Upload data for website
     if (await s3.doesBucketExist('public-files.chrislewis.me.uk')) {
       await s3.putObject('public-files.chrislewis.me.uk', 'data/z-hotel.json', JSON.stringify(hotels, null, 2));
     }
