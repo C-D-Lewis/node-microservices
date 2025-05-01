@@ -12,12 +12,13 @@ declare const fabricate: Fabricate<AppState>;
 export const parseParams = () => {
   const params = new URLSearchParams(window.location.search);
   const token = params.get('token');
+  const console = params.get('console') === 'true';
   if (!token) {
     alert('Please provide token param');
     return;
   }
 
-  fabricate.update({ token });
+  fabricate.update({ token, console });
 };
 
 /**

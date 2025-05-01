@@ -11,6 +11,7 @@ export const INITIAL_STATE: AppState = {
   // App data
   token: '',
   publicIp: '',
+  console: false,
 
   // Loaded data
   selectedDeviceApps: [],

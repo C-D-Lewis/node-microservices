@@ -32,16 +32,22 @@ const AppNavBar = () => fabricate('NavBar', {
       }),
   ])
 
-// Get logs as they occur.
-const originalConsoleLog = console.log;
 /**
- * Override console.log to update the console logs in the state.
- *
- * @param args - Arguments to log.
+ * Patch console.log to update the console logs in the state for the console view.
  */
-window.console.log = (msg) => {
-  originalConsoleLog(msg);
-  fabricate.update('consoleLogs', (state: AppState) => [...state.consoleLogs, msg]);
+const patchConsoleLog = () => {
+  // Get logs as they occur.
+  const originalConsoleLog = console.log;
+  /**
+   * Override console.log to update the console logs in the state.
+   *
+   * @param args - Arguments to log.
+   */
+  window.console.log = (msg) => {
+    originalConsoleLog(msg);
+    
+    fabricate.update('consoleLogs', (state: AppState) => [...state.consoleLogs, msg]);
+  };
 };
 
 /**
@@ -71,7 +77,11 @@ const App = () => fabricate('Column')
     if (keys.includes('token')) {
       await fetchFleetList(state);
     }
-  }, [fabricate.StateKeys.Created, 'token']);
+
+    if (keys.includes('console') && state.console) {
+      patchConsoleLog();
+    }
+  }, [fabricate.StateKeys.Created, 'token', 'console']);
 
 fabricate.app(
   App,

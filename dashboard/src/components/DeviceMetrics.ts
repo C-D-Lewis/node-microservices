@@ -84,12 +84,12 @@ const MetricGraph = ({ name } : { name: string }) => {
       return;
     }
 
-    // Hour lines
-    const hourInterval = Math.round(width / 24);
-    for (let x = 3; x < 24; x += 3) {
-      ctx.fillStyle = (x % 6 === 0) ? Theme.palette.grey5 : Theme.palette.grey2;
-      ctx.fillRect(x * hourInterval, 0, 1, height);
-    }
+    // Hour lines - disabled while points fill horizontal space
+    // const hourInterval = Math.round(width / 24);
+    // for (let x = 3; x < 24; x += 3) {
+    //   ctx.fillStyle = (x % 6 === 0) ? Theme.palette.grey5 : Theme.palette.grey2;
+    //   ctx.fillRect(x * hourInterval, 0, 1, height);
+    // }
 
     // Latest data
     const overflows = buckets.length > width;
@@ -108,6 +108,13 @@ const MetricGraph = ({ name } : { name: string }) => {
       const { value } = p;
       const pHeight = ((value - minValue) * height) / (!range ? 1 : range);
       const x = i * xInterval;
+
+      // Interval lines (every 12 x 5m buckets roughly one hour scale)
+      const date = new Date(p.timestamp);
+      if (i % 12 === 0) {
+        ctx.fillStyle = (date.getHours() % 6 === 0) ? Theme.palette.grey5 : Theme.palette.grey2;
+        ctx.fillRect(x, 0, 1, height);
+      }
 
       // Allow small padding when max or min value is at the edge
       const edgeMargin = 5;
@@ -136,7 +143,7 @@ const MetricGraph = ({ name } : { name: string }) => {
     // Label min/max/recent
     ctx.font = '14px Arial';
     ctx.fillStyle = '#ddd';
-    const label = `${minPoint.value.toFixed(1)} | ${maxPoint.value.toFixed(1)} | ${lastPoint.value.toFixed(1)}`;
+    const label = `${minPoint.value.toFixed(1)} / ${maxPoint.value.toFixed(1)} / ${lastPoint.value.toFixed(1)}`;
     ctx.fillText(label, 5, 15);
   };
 

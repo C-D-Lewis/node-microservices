@@ -67,6 +67,7 @@ export type AppState = {
   // App data
   token: string;
   publicIp: string;
+  console: boolean;
 
   // Loaded data
   selectedDeviceApps: DeviceApp[];
