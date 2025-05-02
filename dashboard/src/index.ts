@@ -10,6 +10,17 @@ import ConsoleView from './components/ConsolePane.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
+const ConsoleButton = () => fabricate('Image', { src: 'assets/images/console.png' })
+  .setStyles({
+    marginLeft: 'auto',
+    width: '28px',
+    height: '28px',
+    cursor: 'pointer',
+  })
+  .onClick((el, { consoleOpen }) => {
+    fabricate.update({ consoleOpen: !consoleOpen });
+  });
+
 /**
  * AppNavBar component.
  *
@@ -19,18 +30,11 @@ const AppNavBar = () => fabricate('NavBar', {
   title: 'Node Microservices Dashboard',
   backgroundColor: Theme.palette.primary,
 })
-  .addChildren([
-    fabricate('Image', { src: 'assets/images/console.png' })
-      .setStyles({
-        marginLeft: 'auto',
-        width: '28px',
-        height: '28px',
-        cursor: 'pointer',
-      })
-      .onClick((el, { consoleOpen }) => {
-        fabricate.update({ consoleOpen: !consoleOpen });
-      }),
-  ])
+.onUpdate((el, { consoleEnabled }) => {
+  if (!consoleEnabled) return;
+
+  el.addChildren([ConsoleButton()]);
+}, ['consoleEnabled']);
 
 /**
  * Patch console.log to update the console logs in the state for the console view.
@@ -78,10 +82,10 @@ const App = () => fabricate('Column')
       await fetchFleetList(state);
     }
 
-    if (keys.includes('console') && state.console) {
+    if (keys.includes('consoleEnabled') && state.consoleEnabled) {
       patchConsoleLog();
     }
-  }, [fabricate.StateKeys.Created, 'token', 'console']);
+  }, [fabricate.StateKeys.Created, 'token', 'consoleEnabled']);
 
 fabricate.app(
   App,

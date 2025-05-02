@@ -84,13 +84,6 @@ const MetricGraph = ({ name } : { name: string }) => {
       return;
     }
 
-    // Hour lines - disabled while points fill horizontal space
-    // const hourInterval = Math.round(width / 24);
-    // for (let x = 3; x < 24; x += 3) {
-    //   ctx.fillStyle = (x % 6 === 0) ? Theme.palette.grey5 : Theme.palette.grey2;
-    //   ctx.fillRect(x * hourInterval, 0, 1, height);
-    // }
-
     // Latest data
     const overflows = buckets.length > width;
     const points = overflows ? buckets.slice(buckets.length - width) : buckets;
@@ -102,7 +95,10 @@ const MetricGraph = ({ name } : { name: string }) => {
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = Theme.palette.secondary;
 
-    const xInterval = Math.round(width / points.length);
+    const xInterval = Math.max(
+      Math.floor(width / points.length),
+      1,
+    );
     ctx.beginPath();
     points.forEach((p: DataPoint, i: number, arr) => {
       const { value } = p;
