@@ -7,6 +7,6 @@ needing a permanently assigned IP from the ISP.
 
 ## Setup
 
-1. `npm ci && npm start` to create `config.json`.
-2. Update `config.json` with AWS IAM user credentials with access to Route53.
+1. `npm ci && npm start` to create `config.yml`.
+2. Update `config.yml` with AWS IAM user credentials with access to Route53.
 3. Run with `npm start`.

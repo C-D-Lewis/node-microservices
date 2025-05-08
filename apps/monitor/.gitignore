@@ -1,5 +1,6 @@
 *.DS_Store
 config.json
+config.yml
 node_modules
 *.log
 pid

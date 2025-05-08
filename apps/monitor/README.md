@@ -13,17 +13,19 @@ controlling other applications through requests.
 
 Adding a plugin is easy. Simply place it in the `plugins` directory and export a
 single function as the `exports`. See existing plugins as examples. The plugin
-will be called according to its configuration in `config.json`. Specify either
+will be called according to its configuration in `config.yml`. Specify either
 `AT` with a specific time (or 'start'), `EVERY` to be called at that many minutes
 interval.
 
 For example to run `delays.js` every 15 minutes:
 
+```yml
+plugins:
+  - FILE_NAME: delays.js
+    EVERY: 15
 ```
-"plugins": [
-  { "ENABLED": true, "FILE_NAME": "delays.js", "EVERY": 15 }
-]
-```
+
+> Add "ENABLED": false to disable a listed pugin
 
 Any plugin can be supplied with arguments at runtime specified in the
 configuration by adding the `ARGS` property as the object to provide at
@@ -31,17 +33,26 @@ invocation in the `plugins` item.
 
 For example, a list of scheduled requests to update LED lights:
 
-```
-"plugins": [
-  { "ENABLED": true, "FILE_NAME": "visuals-scheduler.js", "EVERY": 1,
-    "ARGS": {
-      "EVENTS": [
-        { "NAME": "Morning", "ON": "07:30", "OFF": "08:00", "COLOR": [128, 128, 128] },
-        { "NAME": "Nightlight", "ON": "17:30", "OFF": "00:00", "COLOR": [25, 25, 25] },
-      ]
-    }
-  }
-]
+```yml
+plugins:
+- FILE_NAME: visuals-scheduler.js
+  EVERY: 1
+  ARGS:
+    EVENTS:
+      - NAME: Morning
+        'ON': '07:30'
+        'OFF': '08:00'
+        COLOR:
+          - 128
+          - 128
+          - 128
+      - NAME: Nightlight
+        'ON': '17:30'
+        'OFF': '00:00'
+        COLOR:
+          - 25
+          - 25
+          - 25
 ```
 
 ```js

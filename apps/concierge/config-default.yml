@@ -1,0 +1,7 @@
+OPTIONS:
+  ENSURED_WEBHOOKS:
+    - url: /spotifyCallback
+CONDUIT:
+  HOST: localhost
+SERVER:
+  PORT: 4665

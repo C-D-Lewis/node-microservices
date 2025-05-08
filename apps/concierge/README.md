@@ -54,9 +54,9 @@ will be forwarded as a `conduit` message. For example, to turn on a light via
 
 ## Setup
 
-1. `npm ci && npm start` to create `config.json`.
+1. `npm ci && npm start` to create `config.yml`.
 
-2. Optionally add a list of `ENSURED_WEBHOOKS` in `config.json` that should
+2. Optionally add a list of `ENSURED_WEBHOOKS` in `config.yml` that should
    always exist.
 
 4. Start the service again to apply the new configuration.

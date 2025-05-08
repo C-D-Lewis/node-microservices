@@ -87,7 +87,7 @@ git clone https://github.com/c-d-lewis/node-microservices
 ```
 > install node-common and apps/* dependencies
 
-> setup config.json for apps/*
+> setup config.yml for apps/*
 
 
 # Startup apps with launch-config

@@ -2,6 +2,7 @@
 
 const { execSync } = require('child_process');
 const fs = require('fs');
+const yaml = require('yaml');
 const schema = require('./schema');
 require('colors');
 
@@ -13,9 +14,9 @@ require('colors');
 const getInstallPath = () => execSync('pwd').toString().trim();
 
 /** Path of the example config */
-const DEFAULT_PATH = `${getInstallPath()}/config-default.json`;
+const DEFAULT_PATH = `${getInstallPath()}/config-default.yml`;
 /** Path of the actual config */
-const CONFIG_PATH = `${getInstallPath()}/config.json`;
+const CONFIG_PATH = `${getInstallPath()}/config.yml`;
 
 let config = {};
 const configSchema = { properties: {} };
@@ -61,20 +62,20 @@ const deepCompareKeys = (spec, data, parents = []) => {
  */
 const ensureConfigFile = () => {
   if (fs.existsSync(CONFIG_PATH)) {
-    config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
-    console.log('Loaded config.json');
+    config = yaml.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+    console.log('Loaded config.yml');
     return;
   }
 
   // Create from default.
   if (!fs.existsSync(DEFAULT_PATH)) {
-    console.log('No config-default.json available!');
+    console.log('No config-default.yml available!');
     return;
   }
 
-  const defaultConfig = JSON.parse(fs.readFileSync(DEFAULT_PATH, 'utf8'));
-  fs.writeFileSync(CONFIG_PATH, JSON.stringify(defaultConfig, null, 2), 'utf8');
-  console.log('Set up new config.json from config-default.json - may require additional configuration.');
+  const defaultConfig = yaml.parse(fs.readFileSync(DEFAULT_PATH, 'utf8'));
+  fs.writeFileSync(CONFIG_PATH, yaml.stringify(defaultConfig, null, 2), 'utf8');
+  console.log('Set up new config.yml from config-default.yml - may require additional configuration.');
   config = defaultConfig;
 };
 

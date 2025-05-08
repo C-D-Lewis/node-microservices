@@ -5,7 +5,7 @@ API service allowing discovery and control of TP-Link smart plugs.
 
 ## Setup
 
-Run `npm ci && npm start` to create `config.json` and start the service.
+Run `npm ci && npm start` to create `config.yml` and start the service.
 
 
 ## API

@@ -10,9 +10,9 @@ apps.
 > Note: this app must be started before any others, since they register on
 > each start.
 
-1. `npm ci && npm start` to create `config.json`.
+1. `npm ci && npm start` to create `config.yml`.
 
-3. Optionally configure features in `config.json`.
+3. Optionally configure features in `config.yml`.
 
 4. Start the service again to apply the new configuration.
 

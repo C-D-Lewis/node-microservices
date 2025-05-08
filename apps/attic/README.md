@@ -13,11 +13,11 @@ Data is stored on a per-app basis, so keys are unique within a given app.
 
 ## Setup
 
-1. `npm ci && npm start` to create `config.json`.
+1. `npm ci && npm start` to create `config.yml`.
 
-2. Choose the storage type with `STORAGE_MODE` in `config.json`.
+2. Choose the storage type with `STORAGE_MODE` in `config.yml`.
 
-3. Configure that storage mode with the appropriate section of `config.json`.
+3. Configure that storage mode with the appropriate section of `config.yml`.
 
 4. Start the service again to apply the new configuration.
 

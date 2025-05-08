@@ -12,7 +12,7 @@ playing in an authorized Spotify account.
 
 ## Setup
 
-1. Run `npm ci && npm start` to create `config.json`.
+1. Run `npm ci && npm start` to create `config.yml`.
 
 2. Configure `HARDWARE_TYPE` depending on the attached LED hardware.
 
@@ -39,7 +39,7 @@ The setup process:
    machine such as in AWS, or another hosting provider.
 
 2. Log into the Spotify developer dashboard and create an application in order
-   to get a client ID and secret. Put these into `config.json` in the `SPOTIFY`
+   to get a client ID and secret. Put these into `config.yml` in the `SPOTIFY`
    block.
 
 3. Add this host with `concierge` port and callback URL in the list of allowed
