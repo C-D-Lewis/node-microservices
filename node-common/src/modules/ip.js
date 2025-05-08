@@ -60,7 +60,7 @@ const getLocal = () => {
     || getInterfaceAddress('en0')             // Mac OS WLAN
     || getInterfaceAddress('enp0s3')          // Ubuntu VM Wired
     || getInterfaceAddress('eth0', true)      // Ethernet anyway
-    || getInterfaceAddress('lo', true)        // Loopback last resort
+    || getInterfaceAddress('lo', true);       // Loopback last resort
   if (!address) throw new Error('No interface available for ip.getLocal()');
 
   return address;
