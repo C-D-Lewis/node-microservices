@@ -180,7 +180,14 @@ const handlePacketRequest = async (req, res) => {
     delete response.from;
     delete response.to;
     delete response.auth;
-    log.debug(`<< (RES) ${response.status} ${to} ${topic} ${JSON.stringify(response.message)}`);
+
+    // Truncate logging all metric data
+    let finalMsg = JSON.stringify(response.message);
+    if (topic === 'getMetricToday') {
+      finalMsg = finalMsg.slice(0, 256);
+    }
+
+    log.debug(`<< (RES) ${response.status} ${to} ${topic} ${finalMsg}`);
     res.status(response.status || 200).json(response);
   } catch (e) {
     const error = `Error forwarding packet: ${e.stack}`;
