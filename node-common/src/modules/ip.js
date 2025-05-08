@@ -34,7 +34,7 @@ const getInterfaceAddress = (ifName, ignoreLocalCheck) => {
     return undefined;
   }
 
-  const v4 = iface.find((p) => p.family === 'IPv4');
+  const v4 = iface.find((p) => p.family === 'IPv4' || p.family === 4);
   if (!v4) {
     log.debug(`No IPv4 for ${ifName}`);
     return undefined;
