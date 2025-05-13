@@ -1,7 +1,8 @@
 const fetch = require('node-fetch');
-const fs = require('fs');
 const { updateMetrics } = require('../modules/metrics');
-const { log, ses, s3 } = require('../node-common')(['log', 'ses', 's3']);
+const {
+  log, ses, s3, csv,
+} = require('../node-common')(['log', 'ses', 's3', 'csv']);
 
 /** Available hotel codes */
 const HOTEL_CODES = {
@@ -22,31 +23,10 @@ const START_H = 18;
 const DAYS = [3, 4];
 /** Output file for CSV */
 const OUTPUT_FILE = `${__dirname}/../../z-hotel.csv`;
+/** CSV headings */
+const CSV_HEADINGS = ['timestamp', ...Object.keys(HOTEL_CODES)];
 
 let notified = false;
-
-/**
- * Write CSV file with headings and values.
- *
- * @param {string[]} headings - CSV headings
- * @param {string[]} values - CSV values
- */
-const writeCsvFile = (headings, values) => {
-  let stream;
-
-  // New file, add headers too
-  if (!fs.existsSync(OUTPUT_FILE)) {
-    stream = fs.createWriteStream(OUTPUT_FILE, { flags: 'w' });
-    stream.end(`${headings.map((h) => `"${h}"`).join(',')}\n`);
-    return;
-  }
-
-  // Write CSV file in append mode
-  stream = fs.createWriteStream(OUTPUT_FILE, { flags: 'a' });
-  stream.end(`${values.map((r) => `"${r}"`).join(',')}\n`);
-
-  log.debug(`Wrote CSV file: ${OUTPUT_FILE}`);
-};
 
 /**
  * Get data for this hotel's rooms.
@@ -180,7 +160,6 @@ module.exports = async () => {
     }
 
     // Write CSV file where column names are hotel names and each row is the latest lowest price
-    const headings = ['timestamp', ...Object.keys(HOTEL_CODES)];
     const values = [new Date().getTime(), ...hotels.map((h) => {
       const hotelCheapest = h.rooms.reduce((min, room) => {
         const price = parseFloat(room.price);
@@ -188,7 +167,7 @@ module.exports = async () => {
       }, Infinity);
       return hotelCheapest === Infinity ? 0 : hotelCheapest;
     })];
-    writeCsvFile(headings, values);
+    await csv.appendRow(OUTPUT_FILE, CSV_HEADINGS, values);
 
     log.info(`Lowest price: £${lowestPrice}`);
   } catch (e) {

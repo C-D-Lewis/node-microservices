@@ -7,6 +7,7 @@ require('./clacks.spec');
 
 // Specific order - in use
 require('./config.spec');
+require('./csv.spec');
 require('./db.spec');
 require('./enviro.spec');
 require('./extract.spec');
@@ -17,6 +18,7 @@ require('./leds.spec');
 require('./log.spec');
 require('./motePhat.spec');
 require('./requestAsync.spec');
+require('./s3.spec');
 require('./schema.spec');
 require('./server.spec');
 require('./ses.spec');
