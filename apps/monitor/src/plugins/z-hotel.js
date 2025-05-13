@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const fs = require('fs');
 const { updateMetrics } = require('../modules/metrics');
 const { log, ses, s3 } = require('../node-common')(['log', 'ses', 's3']);
 
@@ -19,8 +20,33 @@ const PRICE_THRESHOLD = 100;
 const START_H = 18;
 /** Days of the week to notify */
 const DAYS = [3, 4];
+/** Output file for CSV */
+const OUTPUT_FILE = `${__dirname}/../../z-hotel.csv`;
 
 let notified = false;
+
+/**
+ * Write CSV file with headings and values.
+ *
+ * @param {string[]} headings - CSV headings
+ * @param {string[]} values - CSV values
+ */
+const writeCsvFile = (headings, values) => {
+  let stream;
+
+  // New file, add headers too
+  if (!fs.existsSync(OUTPUT_FILE)) {
+    stream = fs.createWriteStream(OUTPUT_FILE, { flags: 'w' });
+    stream.end(`${headings.map((h) => `"${h}"`).join(',')}\n`);
+    return;
+  }
+
+  // Write CSV file in append mode
+  stream = fs.createWriteStream(OUTPUT_FILE, { flags: 'a' });
+  stream.end(`${values.map((r) => `"${r}"`).join(',')}\n`);
+
+  log.debug(`Wrote CSV file: ${OUTPUT_FILE}`);
+};
 
 /**
  * Get data for this hotel's rooms.
@@ -135,6 +161,7 @@ module.exports = async () => {
       }
     }
 
+    // Monitor metric
     const lowestPrice = hotels.reduce(
       (acc, hotel) => {
         const hotelCheapest = hotel.rooms.reduce((min, room) => {
@@ -145,13 +172,23 @@ module.exports = async () => {
       },
       Infinity,
     );
-
-    updateMetrics({ lowestPrice });
+    updateMetrics({ lowestPrice: lowestPrice === Infinity ? 0 : lowestPrice });
 
     // Upload data for website
     if (await s3.doesBucketExist('public-files.chrislewis.me.uk')) {
       await s3.putObject('public-files.chrislewis.me.uk', 'data/z-hotel.json', JSON.stringify(hotels, null, 2));
     }
+
+    // Write CSV file where column names are hotel names and each row is the latest lowest price
+    const headings = ['timestamp', ...Object.keys(HOTEL_CODES)];
+    const values = [new Date().getTime(), ...hotels.map((h) => {
+      const hotelCheapest = h.rooms.reduce((min, room) => {
+        const price = parseFloat(room.price);
+        return price < min ? price : min;
+      }, Infinity);
+      return hotelCheapest === Infinity ? 0 : hotelCheapest;
+    })];
+    writeCsvFile(headings, values);
 
     log.info(`Lowest price: £${lowestPrice}`);
   } catch (e) {
