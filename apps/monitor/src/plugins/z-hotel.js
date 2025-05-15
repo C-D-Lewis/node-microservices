@@ -109,9 +109,41 @@ const getHotelRooms = async (name, hotelCode) => {
 };
 
 /**
+ * Test if a room is under the price threshold.
+ *
+ * @param {object} r - Room object.
+ * @param {string} r.price - Room price.
+ * @returns {boolean} - True if the room price is under the threshold.
+ */
+const isUnderThreshold = (r) => parseFloat(r.price) < PRICE_THRESHOLD;
+
+/**
+ * Get the cheapest room price for a hotel.
+ *
+ * @param {object} hotel - Hotel object.
+ * @returns {number} - Cheapest room price or Infinity if no rooms available.
+ */
+const getHotelCheapestPrice = (hotel) => hotel
+  .rooms
+  .reduce((acc, room) => {
+    const price = parseFloat(room.price);
+    return price < acc ? price : acc;
+  }, Infinity);
+
+/**
  * Log metrics for lowest hotel price.
  */
 module.exports = async () => {
+  // Don't spam site always
+  const d = new Date();
+  const hours = d.getHours();
+  const day = d.getDay();
+  if (hours < START_H || !DAYS.includes(day)) {
+    log.debug(`z-hotel.js: Skipping ${hours}h on day ${day}`);
+    updateMetrics({ lowestPrice: 0 });
+    return;
+  }
+
   try {
     const hotels = await Promise.all(
       Object.entries(HOTEL_CODES).map(([k, v]) => getHotelRooms(k, v)),
@@ -119,58 +151,47 @@ module.exports = async () => {
     log.debug(JSON.stringify(hotels, null, 2));
 
     // Reset after midnight
-    const hours = new Date().getHours();
     if (hours < 1 && notified) {
       notified = false;
     }
 
     // Notify if rooms available at acceptable price
-    if (!notified && hours >= START_H && DAYS.includes(new Date().getDay())) {
+    const candidates = hotels.filter((h) => h.rooms.some(isUnderThreshold));
+    if (!notified && candidates.length > 0) {
       let msg = `Rooms available at less than £${PRICE_THRESHOLD}:`;
-      const candidates = hotels.filter(
-        (h) => h.rooms.some((r) => parseFloat(r.price) < PRICE_THRESHOLD),
-      );
-      if (candidates.length > 0) {
-        candidates.forEach((h) => {
-          msg += `\n\n${h.name}:`;
-          const rooms = h.rooms.filter((r) => parseFloat(r.price) < PRICE_THRESHOLD);
-          rooms.forEach((room) => {
-            msg += `\n    ${room.name} - £${room.price} (${room.remaining} left)`;
-          });
+      candidates.forEach((h) => {
+        msg += `\n\n${h.name}:`;
+        h.rooms.filter(isUnderThreshold).forEach((r) => {
+          msg += `\n    ${r.name} - £${r.price} (${r.remaining} left)`;
         });
+      });
 
-        log.info(msg);
-        await ses.notify(msg);
-        notified = true;
-      }
+      log.info(msg);
+      await ses.notify(msg);
+      notified = true;
     }
 
     // Monitor metric
     const lowestPrice = hotels.reduce(
       (acc, hotel) => {
-        const hotelCheapest = hotel.rooms.reduce((min, room) => {
-          const price = parseFloat(room.price);
-          return price < min ? price : min;
-        }, Infinity);
-        return hotelCheapest < acc ? hotelCheapest : acc;
+        const price = getHotelCheapestPrice(hotel);
+        return price < acc ? price : acc;
       },
       Infinity,
     );
     updateMetrics({ lowestPrice: lowestPrice === Infinity ? 0 : lowestPrice });
 
     // Upload data for website
-    if (await s3.doesBucketExist('public-files.chrislewis.me.uk')) {
-      await s3.putObject('public-files.chrislewis.me.uk', 'data/z-hotel.json', JSON.stringify(hotels, null, 2));
-    }
+    await s3.putObject('public-files.chrislewis.me.uk', 'data/z-hotel.json', JSON.stringify(hotels, null, 2));
 
     // Write CSV file where column names are hotel names and each row is the latest lowest price
-    const values = [new Date().getTime(), ...hotels.map((h) => {
-      const hotelCheapest = h.rooms.reduce((min, room) => {
-        const price = parseFloat(room.price);
-        return price < min ? price : min;
-      }, Infinity);
-      return hotelCheapest === Infinity ? 0 : hotelCheapest;
-    })];
+    const values = [
+      d.getTime(),
+      ...hotels.map((h) => {
+        const price = getHotelCheapestPrice(h);
+        return price === Infinity ? 0 : price;
+      }),
+    ];
     await csv.appendRow(OUTPUT_FILE, CSV_HEADINGS, values);
 
     log.info(`Lowest price: £${lowestPrice}`);
