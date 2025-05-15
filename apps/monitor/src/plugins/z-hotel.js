@@ -6,7 +6,11 @@ const {
 
 /** Available hotel codes */
 const HOTEL_CODES = {
+  City: 105003,
   CoventGarden: 105004,
+  GloucesterPlace: 105006,
+  Shoreditch: 105014,
+  Soho: 105001,
   Holborn: 105007,
   Picadilly: 105009,
   Strand: 105010,
