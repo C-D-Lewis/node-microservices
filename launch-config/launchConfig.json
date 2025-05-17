@@ -14,10 +14,7 @@
       { "nms": "monitor"   },
       { "dir": "code/node-microservices/dashboard", "start": "npm run build && cd dist && http-server -p 54449 &" },
       { "dir": "code/microdiary",                   "start": "http-server -p 34279 &" },
-      {
-        "dir": "code/discord-bot-norren",
-        "start": "npm run build && node dist/src/index.js &"
-      }
+      { "dir": "code/discord-bot-norren",           "start": "npm run build && node dist/src/index.js &" }
     ],
     "rack-internal": [
       { "nms": "conduit" },
@@ -30,7 +27,7 @@
       { "nms": "conduit" },
       { "nms": "attic"   },
       { "nms": "monitor" },
-      { "dir": "code/node-microservices/tools/cirroc_oled", "start": "python3 main.py &"}
+      { "dir": "code/node-microservices/tools/cirroc_oled", "start": "python3 main.py &" }
     ],
     "rack-minecraft": [
       { "nms": "conduit" },
