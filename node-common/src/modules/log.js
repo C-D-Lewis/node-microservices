@@ -107,7 +107,11 @@ const log = (level, msg) => {
 
   // Write to all outputs
   const logLine = `${buildPrefix(level)} ${finalMsg}`;
-  writeToFile(logLine);
+  try {
+    writeToFile(logLine);
+  } catch (e) {
+    console.error('Error writing to log file:', e);
+  }
 
   console.log(logLine[LEVEL_COLOR_MAP[level]]);
 

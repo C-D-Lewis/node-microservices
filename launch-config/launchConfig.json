@@ -59,18 +59,15 @@
       }
     ],
     "e-paper-home": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "nms": "conduit" },
       {
         "location": "code/e-paper-dashboard",
         "start": "pip3 install spotipy termcolor && python3 main.py >> /home/pi/e-paper-dashboard.log 2>&1 &"
       }
     ],
-    "peter-pi": [
-      { "location": "code/node-microservices/apps/clacks", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
-      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
+    "eddie": [
+      { "nms": "conduit" },
+      { "nms": "attic" }
     ]
   }
 }

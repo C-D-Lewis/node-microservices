@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 
+# All available options per host:
+#   location: path to the directory to run 'start'
+#   update: command to update the task if 'location' exists
+#   start: command to start the task
+#   nms: Use nms CLI to start an app
+
 set -eu
 
 # HOME is platform and user dependent
 HOME=$1
-CONFIG_PATH="$HOME/code/node-microservices/launch-config/launchConfig.json"
-WAIT_S=5
+NMS_HOME="$HOME/code/node-microservices"
+CONFIG_PATH="$NMS_HOME/launch-config/launchConfig.json"
+WAIT_S=10
 
 # Wait for network access
 echo "Waiting for network..."
@@ -15,58 +22,58 @@ echo ""
 # HACK - allow access to gpiomem on Raspberry Pi
 sudo chmod a+rwX /dev/gpiomem || true
 
-# Repo update - assume ~/code/ dir
-cd "$HOME/code/node-microservices"
+# Main repo update - assume ~/code/ dir
+cd $NMS_HOME
 git pull origin master
 echo ""
 
-# Fetch the launch config and extract for this host
 HOSTNAME=$(hostname)
 printf ">> Hostname: $HOSTNAME\n"
+
+# Fetch the launch config and extract for this host
 HOST_CONFIG=$(cat $CONFIG_PATH | jq -r ".hosts[\"$HOSTNAME\"]")
 if [[ $HOST_CONFIG =~ null ]]; then
   printf "No launch config for $HOSTNAME\n"
   exit 1
 fi
 
-# All paths relative to home directory
+# All paths are relative to home directory
 cd $HOME
 echo $HOST_CONFIG | jq -c '.[]' | while read i; do
   echo ""
 
-  # Get commands for this task
+  # Get parameters for this task
   LOCATION=$(echo $i | jq -r '.location')
-  INSTALL=$(echo $i | jq -r '.install')
   START=$(echo $i | jq -r '.start')
   UPDATE=$(echo $i | jq -r '.update')
+  NMS=$(echo $i | jq -r '.nms')
 
-  # Check LOCATION dir exists, INSTALL if it doesn't
+  # Go to location
   if [[ ! $LOCATION =~ null ]]; then
     if [ ! -d "$LOCATION" ]; then
-      printf ">> Installing: $INSTALL\n"
-      eval "$INSTALL"
+      printf ">> Location: $LOCATION does not exist\n"
+      exit 1
     fi
+
+    cd $LOCATION
+    printf ">> Location: $LOCATION\n"
   fi
 
-  # Go to LOCATION
-  cd $LOCATION
-  printf ">> Location: $LOCATION\n"
-
-  # Do any UPDATE
+  # Do any update command
   if [[ ! $UPDATE =~ null ]]; then
     printf ">> Update: $UPDATE\n"
+    eval "$UPDATE"
+  fi
 
-    # Built-in git pull
-    if [[ $UPDATE =~ '$git-pull' ]]; then
-      git pull origin master
-    else
-      eval "$UPDATE"
-    fi
+  # Start nms app
+  if [[ ! $NMS =~ null ]]; then
+    printf ">> nms launch: $NMS\n"
+    cd $NMS_HOME/apps/$NMS && npm run start &
   fi
 
   # START task
-  printf ">> Start: $START\n"
   if [[ ! $START =~ null ]]; then
+    printf ">> Start: $START\n"
     eval "$START"
   fi
 
