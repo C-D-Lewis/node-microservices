@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # All available options per host:
-#   location: path to the directory to run 'start'
-#   update: command to update the task if 'location' exists
+#   dir: path to the directory to run 'start'
+#   update: command to update the task if 'dir' exists
 #   start: command to start the task
 #   nms: Use nms CLI to start an app
 
@@ -43,20 +43,20 @@ echo $HOST_CONFIG | jq -c '.[]' | while read i; do
   echo ""
 
   # Get parameters for this task
-  LOCATION=$(echo $i | jq -r '.location')
+  DIR=$(echo $i | jq -r '.dir')
   START=$(echo $i | jq -r '.start')
   UPDATE=$(echo $i | jq -r '.update')
   NMS=$(echo $i | jq -r '.nms')
 
-  # Go to location
-  if [[ ! $LOCATION =~ null ]]; then
-    if [ ! -d "$LOCATION" ]; then
-      printf ">> Location: $LOCATION does not exist\n"
+  # Go to dir
+  if [[ ! $DIR =~ null ]]; then
+    if [ ! -d "$DIR" ]; then
+      printf ">> Location: $DIR does not exist\n"
       exit 1
     fi
 
-    cd $LOCATION
-    printf ">> Location: $LOCATION\n"
+    cd $DIR
+    printf ">> Location: $DIR\n"
   fi
 
   # Do any update command

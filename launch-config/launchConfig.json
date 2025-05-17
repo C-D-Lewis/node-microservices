@@ -6,68 +6,67 @@
   ],
   "hosts": {
     "rack-gateway": [
-      { "location": "code/node-microservices/apps/clacks",    "start": "npm start &" },
-      { "location": "code/node-microservices/apps/conduit",   "start": "npm start &" },
-      { "location": "code/node-microservices/apps/attic",     "start": "npm start &" },
-      { "location": "code/node-microservices/apps/concierge", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/visuals",   "start": "npm start &" },
-      { "location": "code/node-microservices/apps/monitor",   "start": "npm start &" },
-      { "location": "code/node-microservices/dashboard",      "start": "npm run build && cd dist && http-server -p 54449 &" },
-      { "location": "code/microdiary",                        "start": "http-server -p 34279 &" },
+      { "nms": "clacks"    },
+      { "nms": "conduit"   },
+      { "nms": "attic"     },
+      { "nms": "concierge" },
+      { "nms": "visuals"   },
+      { "nms": "monitor"   },
+      { "dir": "code/node-microservices/dashboard", "start": "npm run build && cd dist && http-server -p 54449 &" },
+      { "dir": "code/microdiary",                   "start": "http-server -p 34279 &" },
       {
-        "location": "code/discord-bot-norren",
-        "start": "/home/pi/.nvm/versions/node/v16.20.0/bin/npm run build && /home/pi/.nvm/versions/node/v16.20.0/bin/node dist/src/index.js &",
-        "_note": "Must be node 16+"
+        "dir": "code/discord-bot-norren",
+        "start": "npm run build && node dist/src/index.js &"
       }
     ],
     "rack-internal": [
-      { "location": "code/node-microservices/apps/conduit",             "start": "npm start &" },
-      { "location": "code/node-microservices/apps/attic",               "start": "npm start &" },
-      { "location": "code/node-microservices/apps/visuals",             "start": "npm start &" },
-      { "location": "code/node-microservices/apps/monitor",             "start": "npm start &" },
-      { "location": "code/pebble-dev/watchapps/news-headlines/backend", "start": "npm start &" }
+      { "nms": "conduit" },
+      { "nms": "attic"   },
+      { "nms": "visuals" },
+      { "nms": "monitor" },
+      { "dir": "code/pebble-dev/watchapps/news-headlines/backend", "start": "npm start &" }
     ],
     "rack-nas": [
-      { "location": "code/node-microservices/apps/conduit",      "start": "npm start &" },
-      { "location": "code/node-microservices/apps/attic",        "start": "npm start &" },
-      { "location": "code/node-microservices/apps/monitor",      "start": "npm start &" },
-      { "location": "code/node-microservices/tools/cirroc_oled", "start": "python3 main.py &"}
+      { "nms": "conduit" },
+      { "nms": "attic"   },
+      { "nms": "monitor" },
+      { "dir": "code/node-microservices/tools/cirroc_oled", "start": "python3 main.py &"}
     ],
     "rack-minecraft": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
-      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
+      { "nms": "conduit" },
+      { "nms": "attic"   },
+      { "nms": "visuals" },
+      { "nms": "monitor" }
     ],
     "bedroom-pi": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
-      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
+      { "nms": "conduit" },
+      { "nms": "attic"   },
+      { "nms": "visuals" },
+      { "nms": "monitor" }
     ],
     "desk-mote-pi": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/attic",   "start": "npm start &" },
-      { "location": "code/node-microservices/apps/visuals", "start": "npm start &" },
-      { "location": "code/node-microservices/apps/monitor", "start": "npm start &" }
+      { "nms": "conduit" },
+      { "nms": "attic"   },
+      { "nms": "visuals" },
+      { "nms": "monitor" }
     ],
     "e-paper-witham": [
-      { "location": "code/node-microservices/apps/conduit", "start": "npm start &" },
+      { "nms": "conduit" },
       {
-        "location": "code/e-paper-dashboard",
+        "dir": "code/e-paper-dashboard",
         "start": "pip3 install spotipy termcolor && python3 main.py >> /home/pi/e-paper-dashboard.log 2>&1 &"
       }
     ],
     "e-paper-home": [
       { "nms": "conduit" },
       {
-        "location": "code/e-paper-dashboard",
+        "dir": "code/e-paper-dashboard",
         "start": "pip3 install spotipy termcolor && python3 main.py >> /home/pi/e-paper-dashboard.log 2>&1 &"
       }
     ],
     "eddie": [
       { "nms": "conduit" },
-      { "nms": "attic" }
+      { "nms": "attic"   }
     ]
   }
 }
