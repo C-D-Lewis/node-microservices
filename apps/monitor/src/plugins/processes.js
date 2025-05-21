@@ -48,6 +48,7 @@ module.exports = async (args) => {
     // Reset if recovers
     if (!shouldNotify && notified) {
       log.debug('Processes recovered');
+      await ses.notifiedy(`Recovered: ${msg}`);
       notified = false;
     }
   } catch (e) {
