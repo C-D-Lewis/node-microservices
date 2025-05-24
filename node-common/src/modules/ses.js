@@ -52,17 +52,28 @@ const SUBJECT = 'nms notification';
 const sesApi = new AWS.SES({ apiVersion: '2010-12-01' });
 
 /**
+ * Make a more readable date time string.
+ *
+ * @returns {string} - Formatted date time string.
+ */
+const simlpeDateTime = () => {
+  const date = new Date();
+  return date.toISOString().replace('T', ' ').replace('Z', '');
+};
+
+/**
  * Send a notification email.
  *
  * @param {string} msg - Message content.
  * @param {string} extaSubject - Extra subject line.
  */
 const notify = async (msg, extaSubject) => {
-  const finalMsg = `--------------------------------
-from ${os.hostname()} at ${new Date().toISOString()}
---------------------------------
-${msg}
---------------------------------
+  const finalMsg = `${msg}
+
+
+------------------------------------------------
+${simlpeDateTime()} (${os.hostname()})
+------------------------------------------------
 `;
 
   const res = await sesApi.sendEmail({
