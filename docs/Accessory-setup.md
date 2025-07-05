@@ -82,6 +82,7 @@ sudo raspi-config
 > enable I2C interface
 ```
 sudo reboot
+sudo apt-get install -y i2c-tools
 sudo i2cdetect -y 1
 ```
 

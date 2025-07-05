@@ -80,6 +80,41 @@ sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/http-server" "/usr/local/b
 sudo ln -s /usr/local/bin/http-server /usr/bin/http-server
 ```
 
+# Docker?
+
+```
+curl -sSL https://get.docker.com | sh
+```
+
+Add user:
+
+```
+sudo usermod -aG docker $USER
+```
+
+# Increase swapfile size?
+
+```
+sudo dphys-swapfile swapoff
+sudo nano /etc/dphys-swapfile
+```
+
+Set `CONF_SWAPSIZE=1024` or other MB value
+
+```
+sudo dphys-swapfile setup
+sudo dphys-swapfile swapon
+sudo reboot
+```
+
+# AWS CLI?
+
+```
+curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+```
+
 # Apps
 ```
 cd code

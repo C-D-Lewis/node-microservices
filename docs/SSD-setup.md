@@ -33,7 +33,7 @@ sudo e2label /dev/sda1 raid1
 
 # Prepare mount point
 ```
-sudo mkdir -p /mnt/usb/raid1
+sudo mkdir -p /mnt/ssd
 ```
 
 ## Get UUID and TYPE
@@ -47,19 +47,22 @@ sudo nano /etc/fstab
 ```
 
 ```
-UUID= /mnt/usb/raid1 ext4 defaults,auto,users,rw,nofail,exec 0 0
+UUID= /mnt/ssd ext4 defaults,auto,users,rw,nofail,exec 0 0
 ```
+
+Note the UUID before opening fstab:
+
 
 # First mount
 ```
-sudo mount -t ext4 /dev/sda1 /mnt/usb/raid1
+sudo mount -t ext4 /dev/sda1 /mnt/ssd
 ```
 
 # Permissions
 
 ```
-sudo chown pi -R /mnt/usb/raid1
-sudo chmod a+rwx /mnt/usb/raid1
+sudo chown pi -R /mnt/ssd
+sudo chmod a+rwx /mnt/ssd
 ```
 
 # Reboot
