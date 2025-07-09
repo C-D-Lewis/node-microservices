@@ -115,6 +115,14 @@ unzip awscliv2.zip
 sudo ./aws/install
 ```
 
+# Disable WiFi?
+
+In `/boot/firmware/config.txt`:
+
+```
+dtoverlay=disable-wifi
+```
+
 # Apps
 ```
 cd code
