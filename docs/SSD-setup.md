@@ -14,15 +14,16 @@ umount /dev/sda1
 ```
 sudo parted /dev/sda
 ```
-  ```
-  mklabel gpt
-  mkpart
-  raid1
-  ext4
-  0%
-  100%
-  quit
-  ```
+
+```
+mklabel gpt
+mkpart
+raid1
+ext4
+0%
+100%
+quit
+```
 > `raid1` is the drive name, here and after
 
 Possibly need to reboot here?
