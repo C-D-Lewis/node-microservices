@@ -1,11 +1,13 @@
+# SMB Setup
+
 > Assuming SSD-setup.md is completed
 
-# Setup Sambda
+## Setup Sambda
 ```
 sudo apt install -y samba samba-common
 ```
 
-# Setup share
+## Setup share
 ```
 sudo nano /etc/samba/smb.conf
 ```
@@ -19,12 +21,12 @@ directory mask = 0775
 public=no
 ```
 
-# Add pi password
+## Add pi password
 ```
 sudo smbpasswd -a pi
 ```
 
-# Reboot Sambda
+## Reboot Sambda
 ```
 sudo systemctl restart smbd
 ```

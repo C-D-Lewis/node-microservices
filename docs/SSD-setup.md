@@ -1,14 +1,16 @@
-# See drives
+# SSD Setup
+
+## See drives
 ```
 sudo fdisk -l
 ```
 
-# Unmount
+## Unmount
 ```
 umount /dev/sda1
 ```
 
-# Erase and add new partition
+## Erase and add new partition
 ```
 sudo parted /dev/sda
 ```
@@ -25,13 +27,13 @@ sudo parted /dev/sda
 
 Possibly need to reboot here?
 
-# Make partition (1 on sda as example)
+## Make partition (1 on sda as example)
 ```
 sudo mkfs.ext4 /dev/sda1
 sudo e2label /dev/sda1 raid1
 ```
 
-# Prepare mount point
+## Prepare mount point
 ```
 sudo mkdir -p /mnt/ssd
 ```
@@ -53,24 +55,24 @@ UUID= /mnt/ssd ext4 defaults,auto,users,rw,nofail,exec 0 0
 Note the UUID before opening fstab:
 
 
-# First mount
+## First mount
 ```
 sudo mount -t ext4 /dev/sda1 /mnt/ssd
 ```
 
-# Permissions
+## Permissions
 
 ```
 sudo chown pi -R /mnt/ssd
 sudo chmod a+rwx /mnt/ssd
 ```
 
-# Reboot
+## Reboot
 ```
-sudo shutdown -r now
+sudo reboot
 ```
 
-# If issues with USB/SATA disconnecting (in dmesg)
+## If issues with USB/SATA disconnecting (in dmesg)
 
 Enable quirks mode (seems to help) over using UAS mode:
 

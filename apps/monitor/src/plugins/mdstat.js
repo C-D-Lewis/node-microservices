@@ -44,5 +44,6 @@ module.exports = async () => {
     console.log(e);
 
     await ses.notify(`Failed to query RAID status: ${e.stack}`);
+    notified = true;
   }
 };
