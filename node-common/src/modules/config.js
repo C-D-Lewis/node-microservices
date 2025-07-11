@@ -14,12 +14,22 @@ require('colors');
 const getInstallPath = () => execSync('pwd').toString().trim();
 
 /** Path of the example config */
-const DEFAULT_PATH = `${getInstallPath()}/config-default.yml`;
+const DEFAULT_PATH = `${__dirname}/../../../config-default.yml`;
 /** Path of the actual config */
-const CONFIG_PATH = `${getInstallPath()}/config.yml`;
+const CONFIG_PATH = `${__dirname}/../../../config.yml`;
 
 let config = {};
 const configSchema = { properties: {} };
+
+const getAppName = () => {
+  const line = process.argv.find((p) => p.includes('/apps/'));
+  const parts = line.split('/');
+
+  // Before /src/main.js
+  return parts[parts.length - 3];
+};
+
+const appName = getAppName();
 
 /**
  * Compare expected keys with those present.
@@ -124,7 +134,11 @@ const addFragment = (partial, parentSpec, parentKey) => {
  * @param {object} partial - Partial schema to add, from top-level perspective.
  * @returns {void}
  */
-const addPartialSchema = (partial) => addFragment(partial, configSchema);
+const addPartialSchema = (partial) => {
+  if (!appName) throw new Error('appName is required to add a partial schema.');
+
+  addFragment(partial, configSchema[appName]);
+};
 
 /**
  * Validate all schema assemnbled in require phase and return requested.
@@ -133,9 +147,12 @@ const addPartialSchema = (partial) => addFragment(partial, configSchema);
  * @returns {object} Object of requested config.
  */
 const get = (names) => names.reduce((acc, name) => {
-  if (!config[name]) throw new Error(`Unknown config name: ${name}`);
+  const appConfig = configSchema[appName];
+  if (!appConfig) throw new Error(`No config schema for app: ${appName}`);
 
-  return { ...acc, [name]: config[name] };
+  if (!appConfig[name]) throw new Error(`Unknown config name: ${name} (looking for ${names.join(', ')})`);
+
+  return { ...acc, [name]: appConfig[name] };
 }, {});
 
 /**
@@ -147,13 +164,24 @@ const get = (names) => names.reduce((acc, name) => {
  * @throws {Error} if validation fails.
  */
 const validate = ({ verbose } = {}) => {
+  if (!appName) throw new Error('appName is required for validation.');
+
   // Schema valid?
-  if (!schema(config, configSchema)) throw new Error('Schema failed validation.');
+  if (!schema(config[appName], configSchema[appName])) throw new Error('Schema failed validation.');
 
   // Redundant keys?
   deepCompareKeys(configSchema, config);
 
   if (verbose) console.log(JSON.stringify(configSchema, null, 2));
+};
+
+/**
+ * Set the app's name for config reading.
+ *
+ * @param {string} name - Name of the app.
+ */
+const setAppName = (name) => {
+  appName = name;
 };
 
 ensureConfigFile();
@@ -163,4 +191,5 @@ module.exports = {
   addPartialSchema,
   get,
   validate,
+  setAppName,
 };
