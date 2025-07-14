@@ -39,25 +39,9 @@ ADD apps/monitor/ /code/apps/monitor/
 ADD node-common/ /code/node-common/
 
 # Config cleanup
-RUN rm /code/apps/**/config.yml || exit 0
-RUN rm /code/node-common/config.yml || exit 0
+ADD config-default.yml /code/config-default.yml
 RUN git config --global user.email "test@example.com" \
   && git config --global user.name "Test Name"
-
-# Set test data
-COPY <<EOF /code/apps/conduit/config.yml
-OPTIONS:
-  FLEET:
-    HOST: localhost
-    DEVICE_TYPE: ''
-  AUTH_ENABLED: true
-CONDUIT:
-  TOKEN: ''
-SERVER:
-  PORT: 5959
-CLACKS:
-  SERVER: localhost
-EOF
 
 COPY <<EOF /code/apps/attic/db.json
 {

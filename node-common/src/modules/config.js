@@ -19,17 +19,24 @@ const DEFAULT_PATH = `${__dirname}/../../../config-default.yml`;
 const CONFIG_PATH = `${__dirname}/../../../config.yml`;
 
 let config = {};
-const configSchema = { properties: {} };
+const fullSchema = { properties: {} };
 
+/**
+ * Get the app name from the process arguments.
+ *
+ * @returns {string} The name of the app.
+ */
 const getAppName = () => {
   const line = process.argv.find((p) => p.includes('/apps/'));
   const parts = line.split('/');
+  const appsIndex = parts.indexOf('apps');
 
   // Before /src/main.js
-  return parts[parts.length - 3];
+  return parts[appsIndex + 1];
 };
 
-const appName = getAppName();
+// Tests should pre-set the app name.
+const appName = process.env.TEST_APP_NAME || getAppName();
 
 /**
  * Compare expected keys with those present.
@@ -79,8 +86,7 @@ const ensureConfigFile = () => {
 
   // Create from default.
   if (!fs.existsSync(DEFAULT_PATH)) {
-    console.log('No config-default.yml available!');
-    return;
+    throw new Error('No config-default.yml available!');
   }
 
   const defaultConfig = yaml.parse(fs.readFileSync(DEFAULT_PATH, 'utf8'));
@@ -137,18 +143,36 @@ const addFragment = (partial, parentSpec, parentKey) => {
 const addPartialSchema = (partial) => {
   if (!appName) throw new Error('appName is required to add a partial schema.');
 
-  addFragment(partial, configSchema[appName]);
+  // First time seeing this app?
+  if (!fullSchema[appName]) {
+    fullSchema[appName] = { properties: {} };
+  }
+
+  addFragment(partial, fullSchema[appName]);
 };
 
 /**
- * Validate all schema assemnbled in require phase and return requested.
+ * Get the app's config schema.
  *
- * @param {Array<string>} names - Top-level config names.
+ * @returns {object} The app's config schema.
+ */
+const getAppConfig = () => {
+  if (!appName) throw new Error('appName is required to get app config.');
+
+  const appConfig = config[appName];
+  if (!appConfig) throw new Error(`No config schema for app: ${appName}`);
+
+  return appConfig;
+};
+
+/**
+ * Get a config object for the app based on a key or keys.
+ *
+ * @param {Array<string>} names - App-level config names.
  * @returns {object} Object of requested config.
  */
 const get = (names) => names.reduce((acc, name) => {
-  const appConfig = configSchema[appName];
-  if (!appConfig) throw new Error(`No config schema for app: ${appName}`);
+  const appConfig = getAppConfig();
 
   if (!appConfig[name]) throw new Error(`Unknown config name: ${name} (looking for ${names.join(', ')})`);
 
@@ -164,24 +188,16 @@ const get = (names) => names.reduce((acc, name) => {
  * @throws {Error} if validation fails.
  */
 const validate = ({ verbose } = {}) => {
-  if (!appName) throw new Error('appName is required for validation.');
+  const appConfig = getAppConfig();
+  const appSchema = fullSchema[appName];
 
   // Schema valid?
-  if (!schema(config[appName], configSchema[appName])) throw new Error('Schema failed validation.');
+  if (!schema(appConfig, appSchema)) throw new Error('Schema failed validation.');
 
   // Redundant keys?
-  deepCompareKeys(configSchema, config);
+  deepCompareKeys(appSchema, appConfig);
 
-  if (verbose) console.log(JSON.stringify(configSchema, null, 2));
-};
-
-/**
- * Set the app's name for config reading.
- *
- * @param {string} name - Name of the app.
- */
-const setAppName = (name) => {
-  appName = name;
+  if (verbose) console.log(JSON.stringify(fullSchema, null, 2));
 };
 
 ensureConfigFile();
@@ -191,5 +207,4 @@ module.exports = {
   addPartialSchema,
   get,
   validate,
-  setAppName,
 };
