@@ -96,7 +96,8 @@ const { log, conduit } = require('../node-common')(['log', 'conduit']);
 
 ## Configuration
 
-Each app has a `config-default.yml` that is created if no `config.yml` exists,
+Each app has a configuration section by name in `config.yml`, which can be
+created manually using `config-default.yml` or fetched from elsewhere,
 and in most cases the app will function normally. However, apps that require
 special keys (Spotify, API keys etc.) will not. Each module uses
 `config.addPartialSchema()` to declare a partial schema that must exist in the

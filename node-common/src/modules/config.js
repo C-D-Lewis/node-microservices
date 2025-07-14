@@ -28,6 +28,10 @@ const fullSchema = { properties: {} };
  */
 const getAppName = () => {
   const line = process.argv.find((p) => p.includes('/apps/'));
+  if (!line) {
+    throw new Error('Could not determine app name from process arguments. Ensure you are running an app from the /apps directory.');
+  }
+
   const parts = line.split('/');
   const appsIndex = parts.indexOf('apps');
 

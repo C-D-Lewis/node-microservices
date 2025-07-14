@@ -1,5 +1,8 @@
 // TODO: Some test modules do not exit
 
+// Tests for node-common modules pretend to be an app
+process.env.TEST_APP_NAME = 'testApp';
+
 // App-specific
 require('./conduit.spec');
 require('./attic.spec');

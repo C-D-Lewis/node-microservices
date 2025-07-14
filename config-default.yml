@@ -1,7 +1,7 @@
 attic:
   STORAGE_MODE: db
   GIST_SYNC:
-    URL: ""
+    URL: ''
     DIR: gist
     SYNC_INTERVAL_M: 10
   DB:
@@ -11,7 +11,7 @@ attic:
 
 clacks:
   CONDUIT:
-  HOST: localhost
+    HOST: localhost
 
 concierge:
   OPTIONS:
@@ -25,15 +25,15 @@ concierge:
 conduit:
   OPTIONS:
     FLEET:
-      HOST: ""
-      DEVICE_TYPE: ""
+      HOST: "localhost"
+      DEVICE_TYPE: ''
     AUTH_ENABLED: false
   SERVER:
     PORT: 5959
   CONDUIT:
-    TOKEN: ""
+    TOKEN: ''
   CLACKS:
-    SERVER: ""
+    SERVER: localhost
 
 monitor:
   PLUGINS:
@@ -49,11 +49,11 @@ monitor:
   CONDUIT:
     HOST: localhost
   SES:
-    TO_ADDRESS: ""
-    SENDER_ADDRESS: ""
+    TO_ADDRESS: ''
+    SENDER_ADDRESS: ''
   AWS:
-    ACCESS_KEY_ID: ""
-    SECRET_ACCESS_KEY: ""
+    ACCESS_KEY_ID: ''
+    SECRET_ACCESS_KEY: ''
 
 visuals:
   LEDS:
@@ -67,10 +67,39 @@ visuals:
     USE_HARDWARE: false
     HARDWARE_TYPE: pioled
   AUTH_ATTIC:
-    HOST: ""
+    HOST: ''
     KEY: /spotifyCallback
   SPOTIFY:
-    CLIENT_ID: ""
-    CLIENT_SECRET: ""
-    CONCIERGE_IP: ""
+    CLIENT_ID: ''
+    CLIENT_SECRET: ''
+    CONCIERGE_IP: ''
     CONCIERGE_PORT: 4665
+
+# Used only for node-common tests that call config.get()
+testApp:
+  DB:
+    FILE: ./db.json
+  CONDUIT:
+    HOST: localhost
+  GIST_SYNC:
+    URL: https://gist.github.com/C-D-Lewis/b01d24df220ae0a8ece6f8c7ebc46d2b
+    DIR: gist
+    SYNC_INTERVAL_M: 5
+  LEDS:
+    ATTENUATION_FACTOR: 0.1
+    BRIGHTNESS: 0.1
+    USE_HARDWARE: false
+    HARDWARE_TYPE: blinkt
+  SERVER:
+    PORT: 8989
+  TEXT_DISPLAY:
+    USE_HARDWARE: false
+    HARDWARE_TYPE: pioled
+  CLACKS:
+    SERVER: localhost
+  SES:
+    TO_ADDRESS: ""
+    SENDER_ADDRESS: ""
+  AWS:
+    ACCESS_KEY_ID: ""
+    SECRET_ACCESS_KEY: ""
