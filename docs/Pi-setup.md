@@ -96,7 +96,7 @@ unzip awscliv2.zip
 sudo ./aws/install
 ```
 
-Then setup credentials with `aws setup`.
+Then setup credentials with `aws configure`.
 
 ## Disable WiFi?
 
