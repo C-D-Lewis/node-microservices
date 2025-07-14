@@ -91,7 +91,9 @@ Dependencies:
 ```
 sudo apt install -y python3-dev python3-smbus i2c-tools python3-pil python3-pip python3-setuptools python3-rpi.gpio libgpiod-dev python3-libgpiod python3-RPi.GPIO
 pip3 install --upgrade adafruit-blinka adafruit-circuitpython-ssd1306 [--break-system-packages]
+```
 
+```
 sudo raspi-config nonint do_i2c 0
 sudo raspi-config nonint do_spi 0
 sudo raspi-config nonint do_serial_hw 0

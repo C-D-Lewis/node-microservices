@@ -4,11 +4,16 @@ set -eu
 
 export HOME=/home/pi
 
+if [ "$(whoami)" != "root" ]; then
+  echo "This script must be run as root."
+  exit 1
+fi
+
 # Upgrade
 echo ""
 echo ">>> Full upgrade"
 sudo apt-get update && sudo apt-get upgrade -y
-sudo apt full-upgrade
+sudo apt -y full-upgrade
 
 # Aliases
 echo ""
@@ -66,7 +71,7 @@ npm i
 cd ../tools/cli
 npm i
 npm i -g .
-cd ../apps/conduit
+cd ../../apps/conduit
 npm i
 cd ../attic
 npm i
