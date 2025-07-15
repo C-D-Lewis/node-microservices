@@ -43,7 +43,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 ```
 > Use tools/node/install-node-*.sh for armv6l (Pi Zero)
 
-## npm not found?
+## sudo npm not found?
 > or if not found as sudo in crontab (after nvm installation and nvm alias default)
 > which npm/node
 ```
@@ -59,6 +59,14 @@ sudo ln -s /usr/local/bin/npm /usr/bin/npm
 npm i -g http-server
 sudo ln -s "$NVM_DIR/versions/node/$(nvm version)/bin/http-server" "/usr/local/bin/http-server"
 sudo ln -s /usr/local/bin/http-server /usr/bin/http-server
+```
+
+## AWS CLI
+
+```
+curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
 ```
 
 ## Docker?
@@ -86,14 +94,6 @@ Set `CONF_SWAPSIZE=1024` or other MB value
 sudo dphys-swapfile setup
 sudo dphys-swapfile swapon
 sudo reboot
-```
-
-## AWS CLI?
-
-```
-curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
 ```
 
 Then setup credentials with `aws configure`.
