@@ -98,8 +98,8 @@ testApp:
   CLACKS:
     SERVER: localhost
   SES:
-    TO_ADDRESS: ""
-    SENDER_ADDRESS: ""
+    TO_ADDRESS: ''
+    SENDER_ADDRESS: ''
   AWS:
-    ACCESS_KEY_ID: ""
-    SECRET_ACCESS_KEY: ""
+    ACCESS_KEY_ID: ''
+    SECRET_ACCESS_KEY: ''

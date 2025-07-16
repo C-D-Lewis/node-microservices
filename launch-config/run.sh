@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 # All available options per host:
-#   dir: path to the directory to run 'start'
-#   update: command to update the task if 'dir' exists
-#   start: command to start the task
-#   nms: Use nms CLI to start an app
+#   dir:    Path to the directory to run 'cmd'
+#   update: Command to update the task if 'dir' exists
+#   cmd:    Command to start the task
+#   nms:    Start an NMS app
 
 set -eu
 
@@ -44,7 +44,7 @@ echo $HOST_CONFIG | jq -c '.[]' | while read i; do
 
   # Get parameters for this task
   DIR=$(echo $i | jq -r '.dir')
-  START=$(echo $i | jq -r '.start')
+  CMD=$(echo $i | jq -r '.cmd')
   UPDATE=$(echo $i | jq -r '.update')
   NMS=$(echo $i | jq -r '.nms')
 
@@ -71,14 +71,14 @@ echo $HOST_CONFIG | jq -c '.[]' | while read i; do
     cd $NMS_HOME/apps/$NMS && npm run start &
   fi
 
-  # START task
-  if [[ ! $START =~ null ]]; then
-    printf ">> Start: $START\n"
-    eval "$START"
+  # Start task in background
+  if [[ ! $CMD =~ null ]]; then
+    printf ">> Start: $CMD\n"
+    eval "$CMD &"
   fi
 
   # Prepare for next
-  printf ">> Sleep $WAIT_S s\n"
+  printf ">> Waiting $WAIT_S s\n"
   sleep $WAIT_S
   cd ~
 done
