@@ -1,4 +1,5 @@
 #!/bin/bash
 
-docker build -t node-microservices .
+docker build -f Dockerfile.test -t node-microservices .
+
 docker run --rm -t node-microservices

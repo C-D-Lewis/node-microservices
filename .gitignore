@@ -9,4 +9,5 @@ apps.txt
 dist
 *.log
 render.png
+.terraform
 
