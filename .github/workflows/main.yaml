@@ -5,5 +5,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: DOCKER_BUILDKIT=1 docker build -t node-microservices .  # Support heredoc
+      - run: DOCKER_BUILDKIT=1 docker build -f Dockerfile.test -t node-microservices .  # Support heredoc
       - run: docker run -t node-microservices
