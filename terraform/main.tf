@@ -26,8 +26,6 @@ module "infrastructure" {
   service_name        = "node-microservices"
   container_cpu       = 512
   container_memory    = 1024
-  ecr_name            = "node-microservices-ecr"
-  cluster_name        = "node-microservices-cluster"
   port                = 5959
   vpc_id              = "vpc-c3b70bb9"
   certificate_arn     = "arn:aws:acm:us-east-1:617929423658:certificate/a69e6906-579e-431d-9e4c-707877d325b7"
@@ -37,4 +35,12 @@ module "infrastructure" {
 
 output "dns_address" {
   value = module.infrastructure.service_dns
+}
+
+output "ecr_name" {
+  value       = module.infrastructure.ecr_name
+}
+
+output "ecr_uri" {
+  value       = module.infrastructure.ecr_uri
 }
