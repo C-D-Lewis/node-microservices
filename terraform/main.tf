@@ -34,3 +34,7 @@ module "infrastructure" {
   route53_zone_id  = "Z05682866H59A0KFT8S"
   route53_domain_name = "chrislewis.me.uk"
 }
+
+output "dns_address" {
+  value = module.infrastructure.service_dns
+}

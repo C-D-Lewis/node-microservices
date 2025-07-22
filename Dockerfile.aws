@@ -5,6 +5,7 @@ WORKDIR /code
 # Add files
 COPY apps /code/apps
 COPY node-common /code/node-common
+RUN rm -rf /code/apps/**/node_modules
 
 # NMS CLI
 COPY tools/cli /code/tools/cli
