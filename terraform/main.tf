@@ -10,7 +10,7 @@ terraform {
 
   backend "s3" {
     bucket = "chrislewis-tfstate"
-    key    = "terraform-ecs-fargate-service-test"
+    key    = "node-microservices"
     region = "us-east-1"
   }
 }
