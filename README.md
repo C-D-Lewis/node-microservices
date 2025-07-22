@@ -10,8 +10,7 @@ reuable, extensible, and configurable architecture built 'from scratch' as
 possible. Therefore elements like common modules, logging, configuration,
 inter-app communication are of an original design.
 
-* [Installation](#installation)
-* [Launching Apps](#launching-apps)
+* [Setup](#setup)
 * [App List](#app-list)
 * [Dashboard List](#dashboard-list)
 * [Common Modules](#common-modules)
@@ -20,7 +19,7 @@ inter-app communication are of an original design.
 * [Authentication](#authentication)
 
 
-## Installation
+## Setup
 
 For each app in `apps` or dashboard in `dashboards`, install dependencies and
 perform initial startup:
@@ -34,15 +33,6 @@ Lastly, setup the `node-common` module, shared by all apps:
 1. `cd node-common`
 
 2. `npm ci`
-
-
-## Launching Apps
-
-Use `tools/runner.js` to launch a full set of apps:
-
-```bash
-node runner.js conduit attic visuals monitor
-```
 
 
 ## App List
@@ -59,8 +49,6 @@ node runner.js conduit attic visuals monitor
 * [`monitor`](apps/monitor) - The oldest service, runs plugins and scripts on a
   timed basis to perform generic tasks, including checking weather, train
   delays, uptime status of other services, and updating LED lights on schedule.
-* [`plug-server`](apps/plug-server) - API service to control local smart
-  devices, such as TP-Link Smart Plugs.
 * [`visuals`](apps/visuals) - API service that provides an API between
   other services and the local LED lights hardware. Also provides animations and
   Spotify album art color integration.
@@ -73,9 +61,6 @@ node runner.js conduit attic visuals monitor
 * [`service-dashboard`](apps/service-dashboard) - React application that shows
   the status of all local apps running through `conduit`, and provides a GUI for
   their APIs. For example, setting colors for `visuals`.
-* [`lighting-dashboard`](apps/service-dashboard) - React application showing an
-  easy to use card of colors and shortcuts for `visuals` APIS, such as Spotify
-  mode.
 
 
 ## Common Modules
@@ -248,6 +233,7 @@ Such an example request simply uses the token as the `auth` parameter:
 }
 ```
 
+
 ## Run tests
 
 Run all app and common module tests in Docker:
@@ -256,6 +242,37 @@ Run all app and common module tests in Docker:
 ./tools/docker-test.sh
 ```
 
+
+## Cloud Deplopyment
+
+> You will need to set your own AWS-related values in `terraform/main.tf`.
+
+Prepare an ECR repo called `node-microservices-ecr` and an empty ECS cluster
+called `node-microservices-cluster`.
+
+Create the app infrastructure in AWS using Terraform:
+
+```
+cd terraform
+
+terraform init
+terraform apply
+```
+
+Then push an image to ECR:
+
+```
+./tools/aws/push-image.sh
+```
+
+Open the ECS dashboard to see the running ECS service, and test the exposed
+HTTPS endpoint provided as the sole Terraform output:
+
+```
+curl -X POST https://node-microservices-api.chrislewis.me.uk/conduit \
+  -H 'Content-Type:application/json' \
+  -d '{"to":"attic", "topic": "listApps"}
+```
 
 ## History
 
