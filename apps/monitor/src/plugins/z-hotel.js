@@ -19,12 +19,6 @@ const HOTEL_CODES = {
   Victoria: 105013,
 };
 
-/** Price threshold for alerting */
-const PRICE_THRESHOLD = 100;
-/** Hour to start notifying from */
-const START_H = 12;
-/** Days of the week to notify */
-const DAYS = [3, 4];
 /** Output file for CSV */
 const OUTPUT_FILE = `${__dirname}/../../z-hotel.csv`;
 /** CSV headings */
@@ -111,11 +105,10 @@ const getHotelRooms = async (name, hotelCode) => {
 /**
  * Test if a room is under the price threshold.
  *
- * @param {object} r - Room object.
- * @param {string} r.price - Room price.
- * @returns {boolean} - True if the room price is under the threshold.
+ * @param {number} threshold - Price threshold.
+ * @returns {function(object): boolean} - Function to test if a room's price is under the threshold.
  */
-const isUnderThreshold = (r) => parseFloat(r.price) < PRICE_THRESHOLD;
+const isUnderThreshold = (threshold) => (r) => parseFloat(r.price) < threshold;
 
 /**
  * Get the cheapest room price for a hotel.
@@ -132,8 +125,19 @@ const getHotelCheapestPrice = (hotel) => hotel
 
 /**
  * Log metrics for lowest hotel price.
+ *
+ * @param {object} args - Arguments for the hotel plugin.
+ * @param {number} args.START_H - Hour to start notifying from.
+ * @param {Array<number>} args.DAYS - Days of the week to notify.
+ * @param {number} args.PRICE_THRESHOLD - Price threshold for notifying.
  */
-module.exports = async () => {
+module.exports = async (args = {}) => {
+  const {
+    START_H = 12,
+    DAYS = [3, 4],
+    PRICE_THRESHOLD = 100,
+  } = args;
+
   // Don't spam site always
   const d = new Date();
   const hours = d.getHours();
@@ -156,12 +160,12 @@ module.exports = async () => {
     }
 
     // Notify if rooms available at acceptable price
-    const candidates = hotels.filter((h) => h.rooms.some(isUnderThreshold));
+    const candidates = hotels.filter((h) => h.rooms.some(isUnderThreshold(PRICE_THRESHOLD)));
     if (!notified && candidates.length > 0) {
       let msg = `Rooms available at less than £${PRICE_THRESHOLD}:`;
       candidates.forEach((h) => {
         msg += `\n\n${h.name}:`;
-        h.rooms.filter(isUnderThreshold).forEach((r) => {
+        h.rooms.filter(isUnderThreshold(PRICE_THRESHOLD)).forEach((r) => {
           msg += `\n    ${r.name} - £${r.price} (${r.remaining} left)`;
         });
       });
@@ -182,7 +186,11 @@ module.exports = async () => {
     updateMetrics({ lowestPrice: lowestPrice === Infinity ? 0 : lowestPrice });
 
     // Upload data for website
-    await s3.putObject('public-files.chrislewis.me.uk', 'data/z-hotel.json', JSON.stringify(hotels, null, 2));
+    const s3Data = {
+      hotels,
+      updatedAt: d.toISOString(),
+    };
+    await s3.putObject('public-files.chrislewis.me.uk', 'data/z-hotel.json', JSON.stringify(s3Data, null, 2));
 
     // Write CSV file where column names are hotel names and each row is the latest lowest price
     const values = [

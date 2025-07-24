@@ -30,11 +30,11 @@ module.exports = async (args = {}) => {
 
       return !lowDisk;
     },
-    (result) => {
+    (success) => {
       const {
         label, path, usePerc, size,
       } = lowDisk || {};
-      const msg = result
+      const msg = success
         ? 'Disk usage is below threshold'
         : `Low disk space - ${label} (${path}) has used ${usePerc}% of ${size}`;
 

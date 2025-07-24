@@ -1,12 +1,13 @@
 const { execSync } = require('child_process');
-const { log, ses } = require('../node-common')(['log', 'ses']);
+const { log } = require('../node-common')(['log']);
 const { updateMetrics } = require('../modules/metrics');
+const { createAlert } = require('../modules/alert');
 
 /** Grace period before starting alerting */
 const GRACE_PERIOD_MS = 1000 * 60 * 10;
 
 const start = Date.now();
-let notified = false;
+let alert;
 
 /**
  * Check running processes.
@@ -18,43 +19,42 @@ module.exports = async (args) => {
   if (!FILTER.length) throw new Error('No processes filter to monitor');
   if (EXPECTED <= 0) throw new Error('Expected processes must be > 0');
 
-  const now = Date.now();
-
-  if (now - start < GRACE_PERIOD_MS) {
-    log.debug('Within processes.js GRACE_PERIOD_MS');
+  if (alert) {
+    await alert.test();
     return;
   }
 
-  let processCount = 0;
-  try {
-    // Get processes that meet this filter and count them
-    try {
-      processCount = execSync(`ps -e | grep ${FILTER}`).toString().split('\n').filter((p) => p.length).length;
-    } catch (e) {
-      /* Failed exit code */
-    }
+  alert = createAlert(
+    'processes',
+    async () => {
+      const now = Date.now();
+      if (now - start < GRACE_PERIOD_MS) {
+        log.debug('Within processes.js GRACE_PERIOD_MS');
+        return true;
+      }
 
-    const msg = `Processes matching ${FILTER} running: ${processCount} / ${EXPECTED}`;
-    log.debug(msg);
-    updateMetrics({ processCount });
+      // Get processes that meet this filter and count them
+      let processCount = 0;
+      try {
+        processCount = execSync(`ps -e | grep ${FILTER}`).toString().split('\n').filter((p) => p.length).length;
+      } catch (e) {
+        /* Failed exit code */
+      }
 
-    // Send notification once
-    const shouldNotify = processCount < EXPECTED;
-    if (shouldNotify && !notified) {
-      await ses.notify(msg);
-      notified = true;
-    }
+      const msg = `Processes matching ${FILTER} running: ${processCount} / ${EXPECTED}`;
+      log.debug(msg);
+      updateMetrics({ processCount });
 
-    // Reset if recovers
-    if (!shouldNotify && notified) {
-      log.debug('Processes recovered');
-      await ses.notify(`Recovered: ${msg}`);
-      notified = false;
-    }
-  } catch (e) {
-    log.error('Failed to check running processes');
-    console.log(e);
+      return processCount >= EXPECTED;
+    },
+    (success) => {
+      const msg = success
+        ? `Processes matching "${FILTER}" are running as expected`
+        : `Processes matching "${FILTER}" are not running as expected`;
 
-    await ses.notify(`Failed to check running processes: ${e.stack}`);
-  }
+      return msg;
+    },
+  );
+
+  await alert.test();
 };
