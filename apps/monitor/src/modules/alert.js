@@ -24,8 +24,8 @@ const createAlert = (name, testCb, messageCb) => {
       log.error(`Alert "${name}" test failed: ${msg}`);
       return ses.notifyError(msg);
     }
-    
-    const finalMsg = `Alert "${name}" ${isSuccess ? 'closed' : 'open'}: ${msg}`
+
+    const finalMsg = `Alert "${name}" ${isSuccess ? 'closed' : 'open'}: ${msg}`;
     log.info(finalMsg);
     return ses.notify(finalMsg);
   };
@@ -42,21 +42,23 @@ const createAlert = (name, testCb, messageCb) => {
         if (result) {
           // Still good
           if (!notified) return;
-            
+
           // Now recovered
           notified = false;
-          return notify(messageCb(result), true);
+          await notify(messageCb(result), true);
+          return;
         }
 
         // Now failed
         if (!notified) {
           notified = true;
-          return notify(messageCb(result));
+          await notify(messageCb(result));
+          return;
         }
       } catch (e) {
         console.log(e);
 
-        return notify(e.stack || e.message, false, true);
+        await notify(e.stack || e.message, false, true);
       }
     },
   };

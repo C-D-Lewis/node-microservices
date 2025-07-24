@@ -70,7 +70,7 @@ const handleAt = async (pluginName, plugin, pluginFunc) => {
 const handleEvery = async (pluginName, plugin, pluginFunc) => {
   // Regular runs
   setInterval(async () => {
-    log.info(`Running ${pluginName}`);
+    log.info(`Running plugin "${pluginName}"`);
     try {
       await pluginFunc(plugin.ARGS);
     } catch (e) {

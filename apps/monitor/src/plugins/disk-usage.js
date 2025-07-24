@@ -1,37 +1,46 @@
-const { log, ses, os } = require('../node-common')(['log', 'ses', 'os']);
+const { createAlert } = require('../modules/alert');
 
-/** Threshold to notify */
-const THRESHOLD = 90;
+const { os } = require('../node-common')(['os']);
 
-let notified = false;
+let alert;
+let lowDisk;
 
 /**
  * Check disk state of local disks in the GB range.
+ *
+ * @param {object} args - Arguments for the disk usage check.
+ * @param {number} args.THRESHOLD - Percentage threshold for low disk usage (default is 80).
+ * @returns {Promise<void>} - Resolves when the alert is created and tested.
  */
-module.exports = async () => {
-  try {
-    const disks = os.getDiskUsage();
+module.exports = async (args = {}) => {
+  const {
+    THRESHOLD = 80,
+  } = args;
 
-    const lowDisk = disks.find((p) => p.usePerc > THRESHOLD);
+  if (alert) {
+    await alert.test();
+    return;
+  }
 
-    // Send notification once
-    if (lowDisk && !notified) {
+  alert = createAlert(
+    'disk-usage',
+    async () => {
+      const disks = os.getDiskUsage();
+      lowDisk = disks.find((p) => p.usePerc > THRESHOLD);
+
+      return !lowDisk;
+    },
+    (result) => {
       const {
         label, path, usePerc, size,
-      } = lowDisk;
-      await ses.notify(`Low disk space - ${label} (${path}) has used ${usePerc}% of ${size}`);
-      notified = true;
-    }
+      } = lowDisk || {};
+      const msg = result
+        ? 'Disk usage is below threshold'
+        : `Low disk space - ${label} (${path}) has used ${usePerc}% of ${size}`;
 
-    // Reset if recovers
-    if (!lowDisk && notified) {
-      notified = false;
-    }
-  } catch (e) {
-    const msg = `Failed to check disk usage: ${e.stack}`;
-    log.error(msg);
-    console.log(e);
+      return msg;
+    },
+  );
 
-    await ses.notify(msg);
-  }
+  await alert.test();
 };

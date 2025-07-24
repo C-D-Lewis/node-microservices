@@ -1,63 +1,22 @@
 const { execSync } = require('child_process');
-const { log, ses } = require('../node-common')(['log', 'ses']);
+const { createAlert } = require('../modules/alert');
+const { log } = require('../node-common')(['log']);
 
 /** Command to execute */
 const CMD = 'cat /proc/mdstat';
 
-/**
- * Function to check a condition and notify once if it fails.
- *
- * @param {string} name - Name of the notifiable condition.
- * @param {Function} testCb - Callback to test the condition.
- * @param {Function} messageCb - Callback to generate the notification message.
- * @returns {object} - An object with a check method to perform the test.
- */
-const Notifiable = (name, testCb, messageCb) => {
-  let notified = false;
-
-  return {
-    /**
-     * Check the condition and notify if necessary.
-     *
-     * @returns {Promise<void>}
-     */
-    check: async () => {
-      try {
-        const success = await testCb();
-        if (success) {
-          notified = false;
-          return;
-        }
-
-        if (!notified) {
-          const msg = messageCb(success);
-          log.debug(`Notifiable sent: ${msg}`);
-          await ses.notify(msg);
-          notified = true;
-        }
-      } catch (e) {
-        const err = `Notifiable failed: ${e.message}`;
-        log.error(err);
-        console.log(e);
-
-        await ses.notify(err);
-        notified = true;
-      }
-    },
-  };
-};
-
-let notifiable;
+let alert;
 
 /**
  * Check disk state of RAID device (assume just 1)
  */
 module.exports = async () => {
-  if (notifiable) {
-    return notifiable.check();
+  if (alert) {
+    await alert.test();
+    return;
   }
 
-  notifiable = Notifiable(
+  alert = createAlert(
     'mdstat',
     async () => {
       const [, nameLine, blocksLine, line3] = execSync(CMD).toString().split('\n');
@@ -80,8 +39,10 @@ module.exports = async () => {
 
       return !degraded;
     },
-    () => 'RAID array is in degraded state!',
+    (result) => (result
+      ? 'RAID array is healthy'
+      : 'RAID array is in degraded state!'),
   );
 
-  return notifiable.check();
+  await alert.test();
 };
