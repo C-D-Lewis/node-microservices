@@ -2,28 +2,27 @@ FROM node:20-alpine
 
 WORKDIR /code
 
-# Add files
-COPY apps /code/apps
-COPY node-common /code/node-common
-RUN rm -rf /code/apps/**/node_modules
-
 # NMS CLI
 COPY tools/cli /code/tools/cli
 RUN cd tools/cli && npm ci && npm i -g .
 RUN nms apps
 
-# Add AWS-specific config.yml
-COPY tools/aws/config.yml /code/config.yml
-
 # Install dependencies
+COPY node-common /code/node-common
 RUN cd node-common && npm ci
+
+# Add files
+COPY apps /code/apps
+RUN rm -rf /code/apps/**/node_modules
 
 # Example set of apps - TODO parameterize this
 RUN cd apps/conduit && npm ci
 RUN cd apps/attic && npm ci
 RUN cd apps/monitor && npm ci
 
+# Add AWS-specific config.yml and tools
 COPY tools/aws /code/tools/aws
+COPY tools/aws/config.yml /code/config.yml
 
 # Run the apps
 CMD ["sh", "/code/tools/aws/run-apps.sh"]

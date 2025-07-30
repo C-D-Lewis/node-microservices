@@ -1,0 +1,78 @@
+attic:
+  STORAGE_MODE: db
+  GIST_SYNC:
+    URL: ''
+    DIR: gist
+    SYNC_INTERVAL_M: 10
+  DB:
+    FILE: ./db.json
+  CONDUIT:
+    HOST: localhost
+
+clacks:
+  CONDUIT:
+    HOST: localhost
+
+concierge:
+  OPTIONS:
+    ENSURED_WEBHOOKS:
+      - url: /spotifyCallback
+  CONDUIT:
+    HOST: localhost
+  SERVER:
+    PORT: 4665
+
+conduit:
+  OPTIONS:
+    FLEET:
+      HOST: localhost
+      DEVICE_TYPE: pc
+    AUTH_ENABLED: false
+  SERVER:
+    PORT: 5959
+  CONDUIT:
+    TOKEN: ''
+  CLACKS:
+    SERVER: localhost
+
+monitor:
+  PLUGINS:
+    - FILE_NAME: system-metrics.js
+      EVERY: 1
+    - FILE_NAME: disk-usage.js
+      EVERY: 10
+      ARGS:
+        THRESHOLD: 80
+    - FILE_NAME: z-hotel.js
+      ARGS:
+        START_H: 11
+        DAYS: [3, 4]
+        PRICE_THRESHOLD: 100
+  CONDUIT:
+    HOST: localhost
+  SES:
+    TO_ADDRESS: ''
+    SENDER_ADDRESS: ''
+  AWS:
+    ACCESS_KEY_ID: ''
+    SECRET_ACCESS_KEY: ''
+
+visuals:
+  LEDS:
+    ATTENUATION_FACTOR: 1
+    BRIGHTNESS: 1
+    USE_HARDWARE: false
+    HARDWARE_TYPE: mote
+  CONDUIT:
+    HOST: localhost
+  TEXT_DISPLAY:
+    USE_HARDWARE: false
+    HARDWARE_TYPE: pioled
+  AUTH_ATTIC:
+    HOST: ''
+    KEY: /spotifyCallback
+  SPOTIFY:
+    CLIENT_ID: ''
+    CLIENT_SECRET: ''
+    CONCIERGE_IP: ''
+    CONCIERGE_PORT: 4665

@@ -28,6 +28,9 @@ const setup = async () => {
   app.post('/conduit', bodyParser.json(), require('../api/conduit'));
   app.post('/port', bodyParser.json(), require('../api/port'));
   app.post('/kill', require('../api/kill'));
+
+  // Used for AWS TG health checks
+  app.get('/', (_, res) => res.status(200).send('OK'));
 };
 
 module.exports = {
