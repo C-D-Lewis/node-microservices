@@ -38,9 +38,9 @@ output "dns_address" {
 }
 
 output "ecr_name" {
-  value       = module.infrastructure.ecr_name
+  value = module.infrastructure.ecr_name
 }
 
 output "ecr_uri" {
-  value       = module.infrastructure.ecr_uri
+  value = module.infrastructure.ecr_uri
 }
