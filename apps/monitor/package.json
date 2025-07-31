@@ -8,7 +8,7 @@
     "test": "mocha tests/tests.js"
   },
   "devDependencies": {
-    "@chris-lewis/eslint-config": "^1.0.3",
+    "@chris-lewis/eslint-config": "1.0.4",
     "chai": "^4.1.2",
     "mocha": "^10.2.0"
   },
