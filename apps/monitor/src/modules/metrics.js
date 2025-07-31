@@ -85,9 +85,10 @@ const updateMetrics = (metrics) => {
  * Get metric history so far today.
  *
  * @param {string} name - Metric to fetch.
+ * @param {string} [date] - Date to fetch data for, in YYYY-MM-DD format.
  * @returns {Array<MetricPoint>} Metric data so far today.
  */
-const getMetricHistoryToday = (name) => {
+const getMetricHistory = (name, date) => {
   const metricDb = load();
 
   // Does not exist
@@ -96,13 +97,19 @@ const getMetricHistoryToday = (name) => {
     return [];
   }
 
-  // Only from start of today
-  const todayStart = new Date();
-  todayStart.setHours(0);
-  todayStart.setMinutes(0);
-  todayStart.setSeconds(0);
-  todayStart.setMilliseconds(0);
-  return metricDb[name].filter(([timestamp]) => timestamp > todayStart.getTime());
+  // Only from specified day
+  const dayStart = new Date(date);
+  dayStart.setHours(0);
+  dayStart.setMinutes(0);
+  dayStart.setSeconds(0);
+  dayStart.setMilliseconds(0);
+  const dayEnd = new Date(date);
+  dayEnd.setHours(23);
+  dayEnd.setMinutes(59);
+  dayEnd.setSeconds(59);
+  dayEnd.setMilliseconds(999);
+  return metricDb[name]
+    .filter(([timestamp]) => timestamp > dayStart.getTime() && timestamp < dayEnd.getTime());
 };
 
 /**
@@ -114,6 +121,6 @@ const getMetricNames = () => Object.keys(load());
 
 module.exports = {
   updateMetrics,
-  getMetricHistoryToday,
+  getMetricHistory,
   getMetricNames,
 };

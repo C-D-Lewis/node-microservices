@@ -1,10 +1,11 @@
 const { conduit } = require('../node-common')(['conduit']);
 
-/** Schema for messages getting metric data today */
-const GET_METRIC_TODAY_MESSAGE_SCHEMA = {
+/** Schema for messages getting metric data on a given day */
+const GET_METRIC_HISTORY_MESSAGE_SCHEMA = {
   required: ['name'],
   properties: {
     name: { type: 'string' },
+    date: { type: 'string', format: 'date' },
   },
 };
 
@@ -32,7 +33,7 @@ const NULL_SCHEMA = {};
 const setup = async () => {
   await conduit.register({ appName: 'monitor' });
 
-  conduit.on('getMetricToday', require('../api/getMetricToday'), GET_METRIC_TODAY_MESSAGE_SCHEMA);
+  conduit.on('getMetricHistory', require('../api/getMetricHistory'), GET_METRIC_HISTORY_MESSAGE_SCHEMA);
   conduit.on('updateMetrics', require('../api/updateMetrics'), UPDATE_METRICS_MESSAGE_SCHEMA);
   conduit.on('getMetricNames', require('../api/getMetricNames'), NULL_SCHEMA);
   conduit.on('getPlugins', require('../api/getPlugins'), NULL_SCHEMA);

@@ -19,7 +19,7 @@ describe('API', () => {
     });
 
     it('should return metric data', async () => {
-      const result = await testing.sendConduitPacket({ to: 'monitor', topic: 'getMetricToday', message: { name: 'temp' } });
+      const result = await testing.sendConduitPacket({ to: 'monitor', topic: 'getMetricHistory', message: { name: 'temp' } });
 
       expect(result.status).to.equal(200);
       expect(result.message).to.be.an('array');

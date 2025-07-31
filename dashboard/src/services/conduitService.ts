@@ -163,7 +163,7 @@ export const fetchMetric = async (state: AppState, name: string) => {
     state,
     {
       to: 'monitor',
-      topic: 'getMetricToday',
+      topic: 'getMetricHistory',
       message: { name },
     },
   );

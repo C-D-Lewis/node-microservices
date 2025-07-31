@@ -183,7 +183,7 @@ const handlePacketRequest = async (req, res) => {
 
     // Truncate logging all metric data
     let finalMsg = JSON.stringify(response.message);
-    if (topic === 'getMetricToday') {
+    if (topic === 'getMetricHistory') {
       finalMsg = finalMsg.slice(0, 256);
     }
 

@@ -2,14 +2,14 @@ const { getMetricNames } = require('../modules/metrics');
 const { conduit } = require('../node-common')(['conduit']);
 
 /**
- * Handle a 'getMetricToday' topic packet.
+ * Handle a 'getMetricNames' topic packet.
  *
  * @param {object} packet - The conduit packet request.
  * @param {object} res - Express response object.
  */
-const handleGetMetricTodayPacket = async (packet, res) => conduit.respond(
+const handleGetMetricNamesPacket = async (packet, res) => conduit.respond(
   res,
   { status: 200, message: getMetricNames() },
 );
 
-module.exports = handleGetMetricTodayPacket;
+module.exports = handleGetMetricNamesPacket;
