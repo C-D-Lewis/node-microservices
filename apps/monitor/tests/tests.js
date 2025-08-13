@@ -29,6 +29,17 @@ describe('API', () => {
       expect(value).to.equal(23);
     });
 
+    it('should return metric data for a specific date', async () => {
+      const date = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+      const result = await testing.sendConduitPacket({ to: 'monitor', topic: 'getMetricHistory', message: { name: 'temp', date } });
+
+      expect(result.status).to.equal(200);
+      expect(result.message).to.be.an('array');
+      const [timestamp, value] = result.message.pop();
+      expect(timestamp).to.be.a('number');
+      expect(value).to.equal(23);
+    });
+
     it('should return metric names', async () => {
       const result = await testing.sendConduitPacket({ to: 'monitor', topic: 'getMetricNames' });
 

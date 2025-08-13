@@ -19,11 +19,12 @@ const METRICS_DIR = `${__dirname}/../../metrics`;
 /**
  * Get metric file path - file per month.
  *
+ * @param {string} [date] - Date to get file for, in YYYY-MM-DD format.
  * @returns {string} File path.
  */
-const getFilePath = () => {
-  const now = new Date();
-  return `${METRICS_DIR}/metrics-${now.getMonth() + 1}-${now.getFullYear()}.json`;
+const getFilePath = (date) => {
+  const selected = date ? new Date(date) : new Date();
+  return `${METRICS_DIR}/metrics-${selected.getMonth() + 1}-${selected.getFullYear()}.json`;
 };
 
 /**
@@ -39,10 +40,11 @@ const save = (metricDb) => {
 /**
  * Load the metrics file.
  *
+ * @param {string} date - Date to load data for, in YYYY-MM-DD format.
  * @returns {object} Metric file data.
  */
-const load = () => {
-  const filePath = getFilePath();
+const load = (date) => {
+  const filePath = getFilePath(date);
 
   // No existing metrics data
   if (!existsSync(filePath)) save({});
@@ -85,11 +87,11 @@ const updateMetrics = (metrics) => {
  * Get metric history so far today.
  *
  * @param {string} name - Metric to fetch.
- * @param {string} [date] - Date to fetch data for, in YYYY-MM-DD format.
+ * @param {string} date - Date to fetch data for, in YYYY-MM-DD format.
  * @returns {Array<MetricPoint>} Metric data so far today.
  */
 const getMetricHistory = (name, date) => {
-  const metricDb = load();
+  const metricDb = load(date);
 
   // Does not exist
   if (!metricDb[name]) {
