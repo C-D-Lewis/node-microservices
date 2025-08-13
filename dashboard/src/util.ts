@@ -109,3 +109,10 @@ export const shortDateTime = (timestamp: string) => {
   const shortTime = time.split(':').slice(0, 2).join(':');
   return `${shortTime}`;
 };
+
+/**
+ * Get today's date as a string in YYYY-MM-DD format.
+ *
+ * @returns {string} Today's date string.
+ */
+export const getTodayDateString = () => new Date().toISOString().split('T')[0];

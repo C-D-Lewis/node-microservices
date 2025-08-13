@@ -79,6 +79,7 @@ export type AppState = {
   selectedDevice: Device | null,
   consoleOpen: boolean;
   consoleLogs: string[];
+  metricDate: string;
 };
 
 /** Request states */

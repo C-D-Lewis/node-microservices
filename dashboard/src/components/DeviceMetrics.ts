@@ -6,6 +6,7 @@ import Theme from '../theme.ts';
 import { BUCKET_SIZE } from '../constants.ts';
 import { fetchMetric, fetchMetricNames } from '../services/conduitService.ts';
 import { AppAreaContainer, AppAreaContainerTitle } from './AppAreaContainer.ts';
+import { getTodayDateString } from '../util.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -201,12 +202,21 @@ const MetricContainer = ({ name } : { name: string }) => fabricate('Column')
  */
 const GraphGroup = () => fabricate('Row')
   .setStyles({ flexWrap: 'wrap' })
-  .onCreate(async (el, state) => fetchMetricNames(state))
   .onUpdate(async (el, state, keys) => {
     const { selectedDevice, metricNames } = state;
 
     if (!selectedDevice) {
       el.setChildren([NoMetricsLabel()]);
+      return;
+    }
+
+    if (keys.includes(fabricate.StateKeys.Created)) {
+      fetchMetricNames(state);
+      return;
+    }
+
+    if (keys.includes('metricDate')) {
+      fetchMetricNames(state);
       return;
     }
 
@@ -217,7 +227,37 @@ const GraphGroup = () => fabricate('Row')
           .map((name) => MetricContainer({ name })),
       );
     }
-  }, [fabricate.StateKeys.Created, 'selectedDevice', 'metricNames']);
+  }, [fabricate.StateKeys.Created, 'selectedDevice', 'metricNames', 'metricDate']);
+
+/**
+ * DateSelection component.
+ *
+ * @returns {FabricateComponent} DateSelection component.
+ */
+const DateSelection = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const max = `${year}-${month}-${day}`;
+
+  return fabricate('input')
+    .setAttributes({
+      type: 'date',
+      max,
+    })
+    .onCreate((el, state) => {
+      const { metricDate } = state;
+      el.setAttributes({ value: metricDate || getTodayDateString() });
+    })
+    .onEvent('change', (el, state, e) => {
+      const dateEl = e.target as HTMLInputElement;
+      const date = new Date(dateEl.value);
+      const metricDate = date.toISOString().split('T')[0];
+
+      fabricate.update({ metricDate });
+    });
+};
 
 /**
  * DeviceMetrics component.
@@ -226,8 +266,10 @@ const GraphGroup = () => fabricate('Row')
  */
 const DeviceMetrics = () => AppAreaContainer()
   .setChildren([
-    AppAreaContainerTitle()
-      .setText('Device Metrics'),
+    AppAreaContainerTitle({ title: 'Device Metrics' })
+      .addChildren([
+        DateSelection(),
+      ]),
     GraphGroup(),
   ]);
 

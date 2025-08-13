@@ -84,8 +84,7 @@ const ColorPalette = () => fabricate('Row')
  */
 const VisualsPalette = () => AppAreaContainer()
   .setChildren([
-    AppAreaContainerTitle()
-      .setText('Lighting Palette'),
+    AppAreaContainerTitle({ title: 'Lighting Palette' }),
     ColorPalette(),
   ]);
 

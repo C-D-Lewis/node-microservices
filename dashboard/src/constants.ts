@@ -1,4 +1,5 @@
 import { AppState } from './types.ts';
+import { getTodayDateString } from './util.ts';
 
 /** Fleet host URL */
 export const FLEET_HOST = 'polaris.chrislewis.me.uk';
@@ -23,6 +24,7 @@ export const INITIAL_STATE: AppState = {
   selectedDevice: null,
   consoleOpen: false,
   consoleLogs: [],
+  metricDate: getTodayDateString(),
 };
 
 /** Icon type names */

@@ -8,6 +8,13 @@ const { log } = require('../node-common')(['log']);
 const METRICS_DIR = `${__dirname}/../../metrics`;
 
 /**
+ * Get today's date in YYYY-MM-DD format.
+ *
+ * @returns {string} - Today's date as a string.
+ */
+const getTodayDateString = () => new Date().toISOString().split('T')[0];
+
+/**
  * @typedef {object} MetricPoint
  * @property {number} timestamp - Timestamp.
  * @property {string} dateTime - Simplified datetime.
@@ -22,8 +29,8 @@ const METRICS_DIR = `${__dirname}/../../metrics`;
  * @param {string} [date] - Date to get file for, in YYYY-MM-DD format.
  * @returns {string} File path.
  */
-const getFilePath = (date) => {
-  const selected = date ? new Date(date) : new Date();
+const getFilePath = (date = getTodayDateString()) => {
+  const selected = new Date(date);
   return `${METRICS_DIR}/metrics-${selected.getMonth() + 1}-${selected.getFullYear()}.json`;
 };
 
@@ -40,11 +47,12 @@ const save = (metricDb) => {
 /**
  * Load the metrics file.
  *
- * @param {string} date - Date to load data for, in YYYY-MM-DD format.
+ * @param {string} [date] - Date to load data for, in YYYY-MM-DD format.
  * @returns {object} Metric file data.
  */
-const load = (date) => {
+const load = (date = getTodayDateString()) => {
   const filePath = getFilePath(date);
+  console.log(`Loading metrics from ${filePath}`);
 
   // No existing metrics data
   if (!existsSync(filePath)) save({});
@@ -125,4 +133,5 @@ module.exports = {
   updateMetrics,
   getMetricHistory,
   getMetricNames,
+  getTodayDateString,
 };

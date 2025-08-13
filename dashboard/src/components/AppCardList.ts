@@ -24,8 +24,7 @@ const CardList = () => fabricate('Row')
  */
 const AppCardList = () => AppAreaContainer()
   .setChildren([
-    AppAreaContainerTitle()
-      .setText('Device Apps'),
+    AppAreaContainerTitle({ title: 'Device Apps' }),
     CardList(),
   ]);
 

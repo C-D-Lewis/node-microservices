@@ -1,4 +1,4 @@
-const { getMetricHistory } = require('../modules/metrics');
+const { getMetricHistory, getTodayDateString } = require('../modules/metrics');
 const { conduit } = require('../node-common')(['conduit']);
 
 /**
@@ -8,7 +8,7 @@ const { conduit } = require('../node-common')(['conduit']);
  * @param {object} res - Express response object.
  */
 const handleGetMetricHistoryPacket = async (packet, res) => {
-  const today = new Date().toISOString().split('T')[0];
+  const today = getTodayDateString();
   const { name, date = today } = packet.message;
   const data = getMetricHistory(name, date);
 

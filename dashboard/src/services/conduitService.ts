@@ -147,24 +147,15 @@ export const fetchDeviceApps = async (state: AppState, device: Device) => {
  * @param {string} name - Metric name.
  */
 export const fetchMetric = async (state: AppState, name: string) => {
+  const { metricDate: date } = state;
   const dataKey = fabricate.buildKey('metricData', name);
-  // fabricate.update(
-  //   dataKey,
-  //   {
-  //     buckets: [],
-  //     minTime: 0,
-  //     maxTime: 0,
-  //     minValue: 0,
-  //     maxValue: 0,
-  //   },
-  // );
 
   const res = await sendConduitPacket(
     state,
     {
       to: 'monitor',
       topic: 'getMetricHistory',
-      message: { name },
+      message: { name, date },
     },
   );
   const { message: newHistory } = res;

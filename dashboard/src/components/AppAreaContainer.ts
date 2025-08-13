@@ -22,16 +22,28 @@ export const AppAreaContainer = () => fabricate('Column')
 /**
  * AppAreaContainer title.
  *
+ * @param {object} props - Component props.
+ * @param {string} props.title - Title text to display.
  * @returns {FabricateComponent} AppAreaContainerTitle component.
  */
-export const AppAreaContainerTitle = () => fabricate('Text')
-  .setStyles(({ palette, fonts }) => ({
-    color: 'white',
-    fontSize: '0.9rem',
-    fontFamily: fonts.body,
-    fontWeight: 'bold',
-    padding: '5px',
-    margin: '0px',
-    borderBottom: `solid 1px ${palette.grey6}`,
-  }))
-  .setText('Device Metrics');
+export const AppAreaContainerTitle = ({ title }: { title: string }) => {
+  const titleEl = fabricate('Text')
+    .setStyles(({ fonts }) => ({
+      color: 'white',
+      fontSize: '0.9rem',
+      fontFamily: fonts.body,
+      fontWeight: 'bold',
+      padding: '5px',
+      margin: '0px',
+      marginRight: '10px',
+    }))
+    .setText(title);
+
+  return fabricate('Row')
+    .setStyles(({ palette }) => ({
+      borderBottom: `solid 1px ${palette.grey6}`,
+      padding: '5px',
+      alignItems: 'center',
+    }))
+    .setChildren([titleEl]);
+};
