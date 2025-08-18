@@ -154,8 +154,8 @@ module.exports = async (args = {}) => {
     );
     log.debug(JSON.stringify(hotels, null, 2));
 
-    // Reset after midnight
-    if (hours < 1 && notified) {
+    // Reset at 6am in any case
+    if (hours === 6 && notified) {
       notified = false;
     }
 
