@@ -138,10 +138,18 @@ module.exports = async (args = {}) => {
     PRICE_THRESHOLD = 100,
   } = args;
 
-  // Don't spam site always
   const d = new Date();
   const hours = d.getHours();
   const day = d.getDay();
+
+  // Reset at 6am in any case
+  log.debug(`notified: ${notified}`);
+  if (hours === 6 && notified) {
+    log.debug('z-hotel.js: Resetting notified status at 6am');
+    notified = false;
+  }
+
+  // Don't spam site always
   if (hours < START_H || !DAYS.includes(day)) {
     log.debug(`z-hotel.js: Skipping ${hours}h on day ${day}`);
     updateMetrics({ lowestPrice: 0 });
@@ -153,11 +161,6 @@ module.exports = async (args = {}) => {
       Object.entries(HOTEL_CODES).map(([k, v]) => getHotelRooms(k, v)),
     );
     log.debug(JSON.stringify(hotels, null, 2));
-
-    // Reset at 6am in any case
-    if (hours === 6 && notified) {
-      notified = false;
-    }
 
     // Notify if rooms available at acceptable price
     const candidates = hotels.filter((h) => h.rooms.some(isUnderThreshold(PRICE_THRESHOLD)));
