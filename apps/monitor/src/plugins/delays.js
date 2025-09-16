@@ -1,59 +1,12 @@
 const {
   fetch, log, extract,
 } = require('../node-common')(['fetch', 'config', 'log', 'extract']);
-const visuals = require('../modules/visuals');
+const { createAlert } = require('../modules/alert');
 
-/** LED state for OK */
-const LED_STATE_OK = [0, 255, 0];
-/** LED state for DOWN */
-const LED_STATE_DOWN = [255, 0, 0];
-/** Map of standard state strings */
-const STATES = {
-  GOOD_SERVICE: 'Good service',
-  MINOR_DELAYS: 'Minor delays',
-  SEVERE_DELAYS: 'Severe delays',
-  SPECIAL_SERVICE: 'Special service',
-};
-/** Greater Anglia line name */
-const GREATER_ANGLIA = 'Greater Anglia';
-/** TfL Rail line name */
-const TFL_RAIL = 'TfL Rail';
+/** TfL API modes to query */
+const MODES = ['tube', 'elizabeth-line'];
 
-const lastStates = {
-  [GREATER_ANGLIA]: STATES.GOOD_SERVICE,
-  [TFL_RAIL]: STATES.GOOD_SERVICE,
-};
-
-/**
- * Check the reaons for delays.
- *
- * @param {string} lineName - Line name to check.
- * @returns {string} Found reasons, if any.
- */
-const checkReasons = async (lineName) => {
-  const url = 'http://www.nationalrail.co.uk/service_disruptions/indicator.aspx';
-  let { body } = await fetch(url);
-
-  // Get line section
-  const begin = body.indexOf(lineName);
-  body = body.substring(begin, body.indexOf('</tbody>', begin));
-
-  // Get reasons
-  const reasons = [];
-  while (body.includes('<td class="left">')) {
-    const startIndex = body.indexOf('<td class="left">') + '<td class="left">'.length;
-    const endIndex = body.indexOf('<a href', startIndex); // Follow this disruption...
-    const extracted = body.substring(startIndex, endIndex);
-    log.debug(`Found reason: ${extracted}`);
-
-    if (!extracted.includes('Follow us')) reasons.push(extracted);
-    body = body.substring(endIndex);
-  }
-
-  const results = (reasons.length >= 1) ? reasons.join('\n') : 'None found';
-  log.info(`Reasons: ${results}`);
-  return results;
-};
+const lastStates = {};
 
 /**
  * Check for delays on a line.
@@ -61,40 +14,40 @@ const checkReasons = async (lineName) => {
  * @param {string} lineName - Line name to check.
  * @returns {boolean} true if the line is OK.
  */
-const checkDelays = async (lineName) => {
-  const url = 'http://www.nationalrail.co.uk/service_disruptions/indicator.aspx';
+const checkNationalRail = async (lineName) => {
+  const url = 'https://www.nationalrail.co.uk/status-and-disruptions/?mode=train-operator-status';
   const { body } = await fetch(url);
-  const stateNow = extract(body, [`${lineName}</td>`, '<td>'], '</td>').trim();
-  log.info(`${lineName}: '${stateNow}'`);
+  const disruptions = extract(
+    body,
+    ['Disruptions on these operators'],
+    'Good service for all other operators',
+  ).trim();
 
-  // If it's changed, and not OK
-  if ((stateNow !== lastStates[lineName]) && (stateNow !== STATES.GOOD_SERVICE)) {
-    const reasons = await checkReasons(lineName);
-    const message = `${stateNow.toUpperCase()}:\n${lineName}.\nReason: ${reasons || ''}`;
-    log.debug({ reasons, message });
-    lastStates[lineName] = stateNow;
-  }
+  return disruptions.includes(lineName);
+};
 
-  return stateNow.includes(STATES.GOOD_SERVICE) || stateNow.includes(STATES.SPECIAL_SERVICE);
+const checkTflStatus = async (lineId) => {
+  const url = `https://api.tfl.gov.uk/line/mode/${MODES.join(',')}/status`;
+  const { data } = await fetch(url);
+
+  const line = data.find(p => p.id === lineId);
+  return !line?.lineStatuses[0]?.statusSeverityDescription.includes('Good');
 };
 
 /**
- * Check TfL Rail and Greater Anglia for delays.
+ * Check fail services for delays.
  *
  * @param {object} args - plugin ARGS object.
  */
 module.exports = async (args) => {
   // TODO: Configurable service line names in ARGS
   try {
-    // const gaOk = await checkDelays(GREATER_ANGLIA);
-    const tflOk = await checkDelays(TFL_RAIL);
-    visuals.setLed(
-      args.LED,
-      (/* gaOk && */tflOk) ? LED_STATE_OK : LED_STATE_DOWN,
-    );
+    const greaterAngliaDelayed = await checkNationalRail('Greater Anglia');
+    const jubileeDelayed = await checkTflStatus('jubilee');
+    console.log({ greaterAngliaDelayed, jubileeDelayed });
+
+    // Alarm, only during right hours (mon-fri)
   } catch (e) {
     log.error(e);
-
-    visuals.setLed(args.LED, LED_STATE_DOWN);
   }
 };
