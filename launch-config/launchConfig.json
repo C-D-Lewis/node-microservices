@@ -19,8 +19,7 @@
       { "nms": "conduit" },
       { "nms": "attic"   },
       { "nms": "visuals" },
-      { "nms": "monitor" },
-      { "dir": "code/pebble-dev/watchapps/news-headlines/backend", "cmd": "npm start" }
+      { "nms": "monitor" }
     ],
     "rack-nas": [
       { "nms": "conduit" },
@@ -32,7 +31,8 @@
       { "nms": "conduit" },
       { "nms": "attic"   },
       { "nms": "visuals" },
-      { "nms": "monitor" }
+      { "nms": "monitor" },
+      { "dir": "/mnt/ssd/docker-minecraft_hom", "cmd": "sleep 180 && ./scripts/start-docker.sh hom"}
     ],
     "bedroom-pi": [
       { "nms": "conduit" },
