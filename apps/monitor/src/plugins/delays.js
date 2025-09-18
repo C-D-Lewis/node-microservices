@@ -97,6 +97,14 @@ module.exports = async () => {
   alert = createAlert(
     'delays',
     async () => {
+      // If not during hours, skip
+      const hour = new Date().getHours();
+      const [start, end] = HOURS;
+      if (hour < start || hour > end) {
+        log.debug(`Not in active hours, skipping: ${hour}`);
+        return true;
+      }
+
       // Fetch each only once
       const nationalrailList = await fetchNationalRailList();
       const tflList = await fetchTflList();
