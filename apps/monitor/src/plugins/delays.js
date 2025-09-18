@@ -77,6 +77,7 @@ module.exports = async () => {
         .filter((p) => !!p);
       log.debug({ rail, tfl });
 
+      latestText = '';
       if (rail.length) {
         latestText += `Rail:
 ${rail.join('\n')}
