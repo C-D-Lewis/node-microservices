@@ -50,6 +50,7 @@ const listClients = async () => {
     const { topic, data } = JSON.parse(buffer.toString());
     if (topic !== TOPIC_GLOBAL_GET_HOSTNAMES_RESPONSE) return;
 
+    console.log(`Heard from ${JSON.stringify(data)}`);
     clients.push(data);
   });
   socket.send(JSON.stringify({ topic: TOPIC_GLOBAL_GET_HOSTNAMES, data: {} }));

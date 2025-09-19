@@ -118,10 +118,10 @@ git clone https://github.com/c-d-lewis/node-microservices
 Remember to set up any accessory libraries required for attached hardware.
 
 
-## Startup apps with launch-config
+## Startup apps with run-tasks.sh
 ```
 sudo crontab -e
 ```
   ```
-  @reboot /home/pi/code/node-microservices/launch-config/run.sh /home/pi > /home/pi/crontab.log 2>&1
+  @reboot /home/pi/code/node-microservices/tools/run-tasks.sh /home/pi > /home/pi/crontab.log 2>&1
   ```

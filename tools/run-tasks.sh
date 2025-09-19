@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Script to run all tasks for this hostname as defined in tasks.json
+#
 # All available options per host:
 #   dir:    Path to the directory to run 'cmd'
 #   update: Command to update the task if 'dir' exists
@@ -11,7 +13,7 @@ set -eu
 # HOME is platform and user dependent
 HOME=$1
 NMS_HOME="$HOME/code/node-microservices"
-CONFIG_PATH="$NMS_HOME/launch-config/launchConfig.json"
+CONFIG_PATH="$NMS_HOME/tasks.json"
 WAIT_S=10
 
 # Wait for network access
@@ -30,10 +32,10 @@ echo ""
 HOSTNAME=$(hostname)
 printf ">> Hostname: $HOSTNAME\n"
 
-# Fetch the launch config and extract for this host
+# Fetch the tasks and extract for this host
 HOST_CONFIG=$(cat $CONFIG_PATH | jq -r ".hosts[\"$HOSTNAME\"]")
 if [[ $HOST_CONFIG =~ null ]]; then
-  printf "No launch config for $HOSTNAME\n"
+  printf "No tasks for $HOSTNAME\n"
   exit 1
 fi
 
