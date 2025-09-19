@@ -6,9 +6,9 @@ const { createAlert } = require('../modules/alert');
 /** TfL API modes to query */
 const TFL_MODES = ['tube', 'elizabeth-line'];
 /** National Rail operators to check */
-const OPERATORS = ['Greater Anglia'];
+const NR_OPERATORS = ['Greater Anglia'];
 /** TfL lines to check */
-const TUBE_LINES = ['jubilee'];
+const TFL_LINES = ['jubilee'];
 /** Hours to alert */
 const HOURS = [7, 19];
 /** String to ignore */
@@ -20,9 +20,8 @@ const FETCH_OPTS = {
   },
 };
 
-let alert;
+let nrAlert, tflAlert;
 let latestText = '';
-let latestCount = 0;
 
 /**
  * Fetch rought <li> list of distruptions from National Rail.
@@ -32,31 +31,29 @@ let latestCount = 0;
 const fetchNationalRailList = async () => {
   const url = 'https://www.nationalrail.co.uk/status-and-disruptions/?mode=train-operator-status';
   const { body } = await fetch(url, FETCH_OPTS);
-
   return extract(body, ['Disruptions on these'], 'Good service for all').split('<li>');
 };
 
 /**
- * Fetch TfL APi data.
+ * Fetch TfL API data.
  *
  * @returns {object[]} List of API objects.
  */
 const fetchTflList = async () => {
   const url = `https://api.tfl.gov.uk/line/mode/${TFL_MODES.join(',')}/status`;
   const { data } = await fetch(url);
-
   return data;
 };
 
 /**
  * Check for delays on a line.
  *
- * @param {string[]} list - List of <li> from the page.
- * @param {string} lineName - Line name to check.
+ * @param {string[]} data - List of <li> from the page.
+ * @param {string} operatorName - Line name to check.
  * @returns {boolean} true if the line is OK.
  */
-const checkNationalRailLine = (list, lineName) => {
-  const found = list.find((p) => p.includes(lineName));
+const checkNationalRailLine = (data, operatorName) => {
+  const found = data.find((p) => p.includes(operatorName));
   if (!found) return undefined;
 
   // Get the first label which seems to contain the description
@@ -69,18 +66,18 @@ const checkNationalRailLine = (list, lineName) => {
   }
 
   // If mentioned at all, probably of interest
-  return found ? (description || lineName) : undefined;
+  return found ? (description || operatorName) : undefined;
 };
 
 /**
  * Check a TfL line.
  *
- * @param {object[]} lines - API lines objects.
+ * @param {object[]} data - API lines objects.
  * @param {string} lineId - ID of the line to check.
  * @returns {string|undefined} Incident notice for this line if found.
  */
-const checkTflLine = (lines, lineId) => {
-  const line = lines.find((p) => p.id === lineId);
+const checkTflLine = (data, lineId) => {
+  const line = data.find((p) => p.id === lineId);
   const disrupted = !line?.lineStatuses[0]?.statusSeverityDescription.includes('Good');
   return disrupted ? line?.lineStatuses[0].reason : undefined;
 };
@@ -89,49 +86,64 @@ const checkTflLine = (lines, lineId) => {
  * Check rail services for delays.
  */
 module.exports = async () => {
-  if (alert) {
-    await alert.test();
+  if (nrAlert && tflAlert) {
+    await nrAlert.test();
+    await tflAlert.test();
     return;
   }
 
-  alert = createAlert(
+  // If not during hours, skip
+  const hour = new Date().getHours();
+  const [start, end] = HOURS;
+  if (hour < start || hour > end) {
+    log.debug(`Not in active hours, skipping: ${hour}`);
+    return;
+  }
+
+  nrAlert = createAlert(
     'delays',
     async () => {
-      // If not during hours, skip
-      const hour = new Date().getHours();
-      const [start, end] = HOURS;
-      if (hour < start || hour > end) {
-        log.debug(`Not in active hours, skipping: ${hour}`);
-        return true;
-      }
+      const data = await fetchNationalRailList();
 
-      // Fetch each only once
-      const nationalrailList = await fetchNationalRailList();
-      const tflList = await fetchTflList();
-
-      const railIncidents = OPERATORS
-        .map((p) => checkNationalRailLine(nationalrailList, p))
+      const incidents = NR_OPERATORS
+        .map((p) => checkNationalRailLine(data, p))
         .filter((p) => !!p);
-      const tflIncidents = TUBE_LINES
-        .map((p) => checkTflLine(tflList, p))
-        .filter((p) => !!p);
-      log.debug(JSON.stringify({ railIncidents, tflIncidents }, null, 2));
+      log.debug(JSON.stringify({ incidents }, null, 2));
 
       latestText = '';
-      if (railIncidents.length) {
-        latestText += `Rail:\n${railIncidents.join('\n')}\n`;
-      }
-      if (tflIncidents.length) {
-        latestText += `TfL:\n${tflIncidents.join('\n')}\n`;
+      if (incidents.length) {
+        latestText += `Rail:\n${incidents.join('\n')}\n`;
       }
 
-      latestCount = railIncidents.length + tflIncidents.length;
-      return latestCount === 0;
+      return incidents.length === 0;
     },
     (success) => (success
       ? 'No configured lines have incidents reported.'
-      : `Rail incidents!\n\n${latestText}`),
+      : `National Rail incidents!\n\n${latestText}`),
   );
 
-  await alert.test();
+  tflAlert = createAlert(
+    'delays',
+    async () => {
+      const data = await fetchTflList();
+
+      const incidents = TFL_LINES
+        .map((p) => checkTflLine(data, p))
+        .filter((p) => !!p);
+      log.debug(JSON.stringify({ incidents }, null, 2));
+
+      latestText = '';
+      if (incidents.length) {
+        latestText += `TfL:\n${incidents.join('\n')}\n`;
+      }
+
+      return incidents.length === 0;
+    },
+    (success) => (success
+      ? 'No configured lines have incidents reported.'
+      : `TfL incidents!\n\n${latestText}`),
+  );
+
+  await nrAlert.test();
+  await tflAlert.test();
 };
