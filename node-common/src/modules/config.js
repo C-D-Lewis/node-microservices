@@ -29,7 +29,8 @@ const fullSchema = { properties: {} };
 const getAppName = () => {
   const line = process.argv.find((p) => p.includes('/apps/'));
   if (!line) {
-    throw new Error('Could not determine app name from process arguments. Ensure you are running an app from the /apps directory.');
+    console.log('Could not determine app name from process arguments. Ensure you are running an app from the /apps directory.');
+    return 'unknown';
   }
 
   const parts = line.split('/');
