@@ -22,7 +22,7 @@ const createAlert = (name, testCb, messageCb) => {
   const notify = (msg, isSuccess, isError) => {
     if (isError) {
       log.error(`Alert "${name}" test failed: ${msg}`);
-      return ses.notifyError(msg);
+      return ses.notify(msg);
     }
 
     const finalMsg = `Alert "${name}" ${isSuccess ? 'closed' : 'open'}: ${msg}`;
