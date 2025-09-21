@@ -2,9 +2,6 @@ const { execSync } = require('child_process');
 const { createAlert } = require('../modules/alert');
 const { log } = require('../node-common')(['log']);
 
-/** Command to execute */
-const CMD = "dmesg | grep -E 'error|Error|fail'";
-
 /**
  * @typedef {object} DmesgError
  * @property {string} time - The timestamp of the error.
@@ -45,8 +42,10 @@ module.exports = async () => {
   alert = createAlert(
     'dmesg',
     async () => {
-      const lines = execSync(CMD).toString().split('\n');
+      const lines = execSync('dmesg').toString().split('\n');
       newErrors = getErrors(lines)
+        .filter((p) => !!p.message)
+        .filter((p) => ['error', 'fail'].some((q) => p.message.includes(q)))
         .filter((p) => !seenErrors.find((e) => e.time === p.time));
 
       // Remember new errors that were not already seen
