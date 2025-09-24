@@ -5,6 +5,7 @@ const { log, ses } = require('../node-common')(['log', 'ses']);
  *
  * @param {string} name - Name of the notifiable condition.
  * @param {Function} testCb - Callback to test the condition.
+ *                            Return data if there is a problem, undefined otherwise.
  * @param {Function} messageCb - Callback to generate the notification message.
  * @returns {object} - An object with a check method to perform the test.
  */
@@ -38,21 +39,21 @@ const createAlert = (name, testCb, messageCb) => {
      */
     test: async () => {
       try {
-        const result = await testCb();
-        if (result) {
+        const data = await testCb();
+        if (!data) {
           // Still good
           if (!notified) return;
 
           // Now recovered
           notified = false;
-          await notify(messageCb(result), true);
+          await notify(messageCb(data), true);
           return;
         }
 
         // Now failed
         if (!notified) {
           notified = true;
-          await notify(messageCb(result));
+          await notify(messageCb(data));
           return;
         }
       } catch (e) {

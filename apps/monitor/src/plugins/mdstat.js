@@ -37,11 +37,11 @@ module.exports = async () => {
         arrayName, desired, current, degraded, recoveryPercent,
       });
 
-      return !degraded;
+      return degraded;
     },
-    (success) => (success
-      ? 'RAID array is healthy'
-      : 'RAID array is in degraded state!'),
+    (degraded) => (degraded
+      ? 'RAID array is in degraded state!'
+      : 'RAID array is healthy'),
   );
 
   await alert.test();

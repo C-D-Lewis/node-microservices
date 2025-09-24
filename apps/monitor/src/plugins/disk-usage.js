@@ -3,7 +3,6 @@ const { createAlert } = require('../modules/alert');
 const { os } = require('../node-common')(['os']);
 
 let alert;
-let lowDisk;
 
 /**
  * Check disk state of local disks in the GB range.
@@ -26,19 +25,15 @@ module.exports = async (args = {}) => {
     'disk-usage',
     async () => {
       const disks = os.getDiskUsage();
-      lowDisk = disks.find((p) => p.usePerc > THRESHOLD);
-
-      return !lowDisk;
+      return disks.find((p) => p.usePerc > THRESHOLD);
     },
-    (success) => {
+    (lowDisk) => {
       const {
         label, path, usePerc, size,
       } = lowDisk || {};
-      const msg = success
-        ? 'Disk usage is below threshold'
-        : `Low disk space - ${label} (${path}) has used ${usePerc}% of ${size}`;
-
-      return msg;
+      return lowDisk
+        ? `Low disk space - ${label} (${path}) has used ${usePerc}% of ${size}`
+        : 'Disk usage is below threshold';
     },
   );
 

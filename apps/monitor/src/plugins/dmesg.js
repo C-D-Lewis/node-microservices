@@ -10,7 +10,6 @@ const { log } = require('../node-common')(['log']);
  */
 
 let alert;
-let newErrors = [];
 const seenErrors = [];
 
 /**
@@ -43,7 +42,7 @@ module.exports = async () => {
     'dmesg',
     async () => {
       const lines = execSync('dmesg').toString().split('\n');
-      newErrors = getErrors(lines)
+      const newErrors = getErrors(lines)
         .filter((p) => !!p.message)
         .filter((p) => ['error', 'fail'].some((q) => p.message.includes(q)))
         .filter((p) => !seenErrors.find((e) => e.time === p.time));
@@ -52,11 +51,11 @@ module.exports = async () => {
       newErrors.forEach((p) => seenErrors.push(p));
 
       log.debug(`new dmesg errors found: ${newErrors.length}`);
-      return !newErrors.length;
+      return newErrors.length ? newErrors : undefined;
     },
-    (success) => (success
-      ? 'No dmesg errors found.'
-      : `dmesg errors found!\n\n${newErrors.map((p) => p.line).join('\n')}`),
+    (newErrors) => (newErrors
+      ? `dmesg errors found!\n\n${newErrors.map((p) => p.line).join('\n')}`
+      : 'No dmesg errors found.'),
   );
 
   await alert.test();

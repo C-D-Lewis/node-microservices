@@ -20,8 +20,8 @@ const FETCH_OPTS = {
   },
 };
 
-let nrAlert, tflAlert;
-let latestText = '';
+let nrAlert;
+let tflAlert;
 
 /**
  * Fetch rought <li> list of distruptions from National Rail.
@@ -110,16 +110,16 @@ module.exports = async () => {
         .filter((p) => !!p);
       log.debug(JSON.stringify({ incidents }, null, 2));
 
-      latestText = '';
+      let text = '';
       if (incidents.length) {
-        latestText += `Rail:\n${incidents.join('\n')}\n`;
+        text += `Rail:\n${incidents.join('\n')}\n`;
       }
 
-      return incidents.length === 0;
+      return incidents.length !== 0 ? text : undefined;
     },
-    (success) => (success
-      ? 'No configured lines have incidents reported.'
-      : `National Rail incidents!\n\n${latestText}`),
+    (text) => (text
+      ? `National Rail incidents!\n\n${text}`
+      : 'No configured lines have incidents reported.'),
   );
 
   tflAlert = createAlert(
@@ -132,16 +132,16 @@ module.exports = async () => {
         .filter((p) => !!p);
       log.debug(JSON.stringify({ incidents }, null, 2));
 
-      latestText = '';
+      let text = '';
       if (incidents.length) {
-        latestText += `TfL:\n${incidents.join('\n')}\n`;
+        text += `TfL:\n${incidents.join('\n')}\n`;
       }
 
-      return incidents.length === 0;
+      return incidents.length === 0 ? text : undefined;
     },
-    (success) => (success
-      ? 'No configured lines have incidents reported.'
-      : `TfL incidents!\n\n${latestText}`),
+    (text) => (text
+      ? `TfL incidents!\n\n${text}`
+      : 'No configured lines have incidents reported.'),
   );
 
   await nrAlert.test();

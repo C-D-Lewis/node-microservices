@@ -30,13 +30,17 @@ module.exports = async (args) => {
       const now = Date.now();
       if (now - start < GRACE_PERIOD_MS) {
         log.debug('Within processes.js GRACE_PERIOD_MS');
-        return true;
+        return false;
       }
 
       // Get processes that meet this filter and count them
       let processCount = 0;
       try {
-        processCount = execSync(`ps -e | grep ${FILTER}`).toString().split('\n').filter((p) => p.length).length;
+        processCount = execSync(`ps -e | grep ${FILTER}`)
+          .toString()
+          .split('\n')
+          .filter((p) => p.length)
+          .length;
       } catch (e) {
         /* Failed exit code */
       }
@@ -45,15 +49,11 @@ module.exports = async (args) => {
       log.debug(msg);
       updateMetrics({ processCount });
 
-      return processCount >= EXPECTED;
+      return processCount !== EXPECTED ? String(processCount) : undefined;
     },
-    (success) => {
-      const msg = success
-        ? `Processes matching "${FILTER}" are running as expected`
-        : `Processes matching "${FILTER}" are not running as expected`;
-
-      return msg;
-    },
+    (processCount) => (processCount
+      ? `Processes matching "${FILTER}" are not running as expected: ${processCount}/${EXPECTED}`
+      : `Processes matching "${FILTER}" are running as expected`),
   );
 
   await alert.test();
