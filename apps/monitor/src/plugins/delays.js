@@ -12,7 +12,9 @@ const TFL_LINES = ['jubilee'];
 /** Hours to alert */
 const HOURS = [7, 22];
 /** String to ignore */
-const IGNORE = ['Ely', 'Cambridge', 'Manningtree', 'Chingford', 'Seven Sisters', 'Tottenham Hale'];
+const IGNORE = [
+  'Ely', 'Cambridge', 'Manningtree', 'Chingford', 'Seven Sisters', 'Tottenham Hale', 'resume',
+];
 /** Fetch fixed options */
 const FETCH_OPTS = {
   headers: {
@@ -79,24 +81,32 @@ const checkNationalRailLine = (data, operatorName) => {
 const checkTflLine = (data, lineId) => {
   const line = data.find((p) => p.id === lineId);
   const disrupted = !line?.lineStatuses[0]?.statusSeverityDescription.includes('Good');
-  return disrupted ? line?.lineStatuses[0].reason : undefined;
+  const reason = line?.lineStatuses[0].reason;
+
+  // Check for things we don't care about
+  if (reason && IGNORE.some((p) => reason.includes(p))) {
+    log.debug(`Found some ignore text, skipping: ${reason}`);
+    return undefined;
+  }
+
+  return disrupted ? reason : undefined;
 };
 
 /**
  * Check rail services for delays.
  */
 module.exports = async () => {
-  if (nrAlert && tflAlert) {
-    await nrAlert.test();
-    await tflAlert.test();
-    return;
-  }
-
   // If not during hours, skip
   const hour = new Date().getHours();
   const [start, end] = HOURS;
   if (hour < start || hour > end) {
     log.debug(`Not in active hours, skipping: ${hour}`);
+    return;
+  }
+
+  if (nrAlert && tflAlert) {
+    await nrAlert.test();
+    await tflAlert.test();
     return;
   }
 
