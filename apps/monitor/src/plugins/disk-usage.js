@@ -21,13 +21,13 @@ module.exports = async (args = {}) => {
     return;
   }
 
-  alert = createAlert(
-    'disk-usage',
-    async () => {
+  alert = createAlert({
+    name: 'disk-usage',
+    testCb: async () => {
       const disks = os.getDiskUsage();
       return disks.find((p) => p.usePerc > THRESHOLD);
     },
-    (lowDisk) => {
+    messageCb: (lowDisk) => {
       const {
         label, path, usePerc, size,
       } = lowDisk || {};
@@ -35,7 +35,7 @@ module.exports = async (args = {}) => {
         ? `Low disk space - ${label} (${path}) has used ${usePerc}% of ${size}`
         : 'Disk usage is below threshold';
     },
-  );
+  });
 
   await alert.test();
 };

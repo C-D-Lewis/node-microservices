@@ -111,9 +111,10 @@ module.exports = async () => {
     return;
   }
 
-  nrAlert = createAlert(
-    'delays',
-    async () => {
+  nrAlert = createAlert({
+    name: 'delays',
+    notifyOnRecover: false,
+    testCb: async () => {
       const data = await fetchNationalRailList();
 
       const incidents = NR_OPERATORS
@@ -128,14 +129,15 @@ module.exports = async () => {
 
       return incidents.length !== 0 ? text : undefined;
     },
-    (text) => (text
+    messageCb: (text) => (text
       ? `National Rail incidents!\n\n${text}`
       : 'No configured lines have incidents reported.'),
-  );
+  });
 
-  tflAlert = createAlert(
-    'delays',
-    async () => {
+  tflAlert = createAlert({
+    name: 'delays',
+    notifyOnRecover: false,
+    testCb: async () => {
       const data = await fetchTflList();
 
       const incidents = TFL_LINES
@@ -150,10 +152,10 @@ module.exports = async () => {
 
       return incidents.length === 0 ? text : undefined;
     },
-    (text) => (text
+    messageCb: (text) => (text
       ? `TfL incidents!\n\n${text}`
       : 'No configured lines have incidents reported.'),
-  );
+  });
 
   await nrAlert.test();
   await tflAlert.test();

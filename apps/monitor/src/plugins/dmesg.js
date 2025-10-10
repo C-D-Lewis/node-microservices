@@ -38,9 +38,9 @@ module.exports = async () => {
     return;
   }
 
-  alert = createAlert(
-    'dmesg',
-    async () => {
+  alert = createAlert({
+    name: 'dmesg',
+    testCb: async () => {
       const lines = execSync('dmesg').toString().split('\n');
       const newErrors = getErrors(lines)
         .filter((p) => !!p.message)
@@ -53,10 +53,10 @@ module.exports = async () => {
       log.debug(`new dmesg errors found: ${newErrors.length}`);
       return newErrors.length ? newErrors : undefined;
     },
-    (newErrors) => (newErrors
+    messageCb: (newErrors) => (newErrors
       ? `dmesg errors found!\n\n${newErrors.map((p) => p.line).join('\n')}`
       : 'No dmesg errors found.'),
-  );
+  });
 
   await alert.test();
 };

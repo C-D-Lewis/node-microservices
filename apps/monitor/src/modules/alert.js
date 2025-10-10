@@ -9,7 +9,12 @@ const { log, ses } = require('../node-common')(['log', 'ses']);
  * @param {Function} messageCb - Callback to generate the notification message.
  * @returns {object} - An object with a check method to perform the test.
  */
-const createAlert = (name, testCb, messageCb) => {
+const createAlert = ({
+  name,
+  testCb,
+  messageCb,
+  notifyOnRecover = true,
+}) => {
   let notified = false;
 
   /**
@@ -46,7 +51,7 @@ const createAlert = (name, testCb, messageCb) => {
 
           // Now recovered
           notified = false;
-          await notify(messageCb(data), true);
+          if (notifyOnRecover) await notify(messageCb(data), true);
           return;
         }
 

@@ -24,9 +24,9 @@ module.exports = async (args) => {
     return;
   }
 
-  alert = createAlert(
-    'processes',
-    async () => {
+  alert = createAlert({
+    name: 'processes',
+    testCb: async () => {
       const now = Date.now();
       if (now - start < GRACE_PERIOD_MS) {
         log.debug('Within processes.js GRACE_PERIOD_MS');
@@ -51,10 +51,10 @@ module.exports = async (args) => {
 
       return processCount !== EXPECTED ? String(processCount) : undefined;
     },
-    (processCount) => (processCount
+    messageCb: (processCount) => (processCount
       ? `Processes matching "${FILTER}" are not running as expected: ${processCount}/${EXPECTED}`
       : `Processes matching "${FILTER}" are running as expected`),
-  );
+  });
 
   await alert.test();
 };

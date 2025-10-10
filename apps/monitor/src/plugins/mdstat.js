@@ -16,9 +16,9 @@ module.exports = async () => {
     return;
   }
 
-  alert = createAlert(
-    'mdstat',
-    async () => {
+  alert = createAlert({
+    name: 'mdstat',
+    testCb: async () => {
       const [, nameLine, blocksLine, line3] = execSync(CMD).toString().split('\n');
       const [arrayName] = nameLine.split(' ');
       const [, diskState] = blocksLine.split('[');
@@ -39,10 +39,10 @@ module.exports = async () => {
 
       return degraded;
     },
-    (degraded) => (degraded
+    messageCb: (degraded) => (degraded
       ? 'RAID array is in degraded state!'
       : 'RAID array is healthy'),
-  );
+  });
 
   await alert.test();
 };
