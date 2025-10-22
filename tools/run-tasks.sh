@@ -49,6 +49,13 @@ echo $HOST_CONFIG | jq -c '.[]' | while read i; do
   CMD=$(echo $i | jq -r '.cmd')
   UPDATE=$(echo $i | jq -r '.update')
   NMS=$(echo $i | jq -r '.nms')
+  DISABLED=$(echo $i | jq -r '.disabled')
+
+  # If disabled, skip
+  if [[ ! -z "$DISABLED" ]] && [[ "$DISABLED" != "null" ]]; then
+    printf ">> Skipping disabled task: $CMD or nms: $NMS\n"
+    continue
+  fi
 
   # Go to dir
   if [[ ! $DIR =~ null ]]; then

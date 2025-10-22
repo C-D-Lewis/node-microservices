@@ -33,7 +33,8 @@
       { "nms": "visuals" },
       { "nms": "monitor" },
       { "dir": "/mnt/ssd/docker-minecraft_dengie", "cmd": "./scripts/start-docker.sh dengie" },
-      { "dir": "/mnt/ssd/docker-minecraft_hom",    "cmd": "sleep 120 && ./scripts/start-docker.sh hom" }
+      { "dir": "/mnt/ssd/docker-minecraft_hom",    "cmd": "sleep 120 && ./scripts/start-docker.sh hom" },
+      { "dir": "/mnt/ssd/docker-minecraft_create", "cmd": "sleep 240 && ./scripts/start-docker.sh create", "disabled": 1 }
     ],
     "bedroom-pi": [
       { "nms": "conduit" },
@@ -61,13 +62,8 @@
         "cmd": "pip3 install spotipy termcolor && python3 main.py >> /home/pi/e-paper-dashboard.log 2>&1"
       }
     ],
-    "eddie": [
-      { "nms": "conduit" },
-      { "nms": "attic"   }
-    ],
     "mint-choc-chip": [
-      { "nms": "conduit" },
-      { "nms": "attic"   }
+      { "nms": "conduit" }
     ]
   }
 }
