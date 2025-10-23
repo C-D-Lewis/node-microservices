@@ -8,6 +8,7 @@ const DECOR_WIDTH = 80; // process.stdout.columns;
 const TAGS = {
   info: 'I',
   debug: 'D',
+  warn: 'W',
   error: 'E',
   fatal: 'F',
 };
@@ -19,6 +20,7 @@ const MAX_SIZE_MB = 1;
 const LEVEL_COLOR_MAP = {
   info: 'white',
   debug: 'gray',
+  warn: 'yellow',
   error: 'red',
   fatal: 'magenta',
 };
@@ -136,6 +138,14 @@ const info = (msg) => log('info', msg);
 const debug = (msg) => log('debug', msg);
 
 /**
+ * Helper for warn level.
+ *
+ * @param {*} msg - Log content.
+ * @returns {void}
+ */
+const warn = (msg) => log('warn', msg);
+
+/**
  * Helper for error level.
  *
  * @param {*} msg - Log content.
@@ -229,6 +239,7 @@ module.exports = {
   begin,
   info,
   debug,
+  warn,
   error,
   fatal,
   assert,
