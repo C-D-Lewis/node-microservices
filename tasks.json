@@ -34,7 +34,7 @@
       { "nms": "monitor" },
       { "dir": "/mnt/ssd/docker-minecraft_dengie", "cmd": "./scripts/start-docker.sh dengie" },
       { "dir": "/mnt/ssd/docker-minecraft_hom",    "cmd": "sleep 120 && ./scripts/start-docker.sh hom" },
-      { "dir": "/mnt/ssd/docker-minecraft_create", "cmd": "sleep 240 && ./scripts/start-docker.sh create", "disabled": 1 }
+      { "dir": "/mnt/ssd/docker-minecraft_create", "cmd": "sleep 240 && ./scripts/start-docker.sh create" }
     ],
     "bedroom-pi": [
       { "nms": "conduit" },
