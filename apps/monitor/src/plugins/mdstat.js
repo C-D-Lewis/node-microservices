@@ -19,14 +19,14 @@ module.exports = async () => {
   alarm = createAlarm({
     name: 'mdstat',
     testCb: async () => {
-      const stdout = execSync(CMD).toString().split('\n');
+      const stdout = execSync(CMD).toString();
       if (!stdout.includes('active')) {
         // Error because if this plugin is running there should be a RAID array
         log.error('No active RAID arrays found');
         return true;
       }
 
-      const [, nameLine, blocksLine, line3] = stdout;
+      const [, nameLine, blocksLine, line3] = stdout.split('\n');
       const [arrayName] = nameLine.split(' ');
       const [, diskState] = blocksLine.split('[');
 
