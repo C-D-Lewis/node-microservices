@@ -129,7 +129,12 @@ const monitorSystemMetrics = async () => {
 const createDiskUsageAlarm = () => {
   diskAlarm = createAlarm({
     name: 'disk-usage',
-    testCb: async () => os.getDiskUsage().find((p) => p.usePerc > DISK_THRESHOLD),
+    testCb: async () => {
+      
+      const lowDisk = os.getDiskUsage().find((p) => p.usePerc > DISK_THRESHOLD);
+      log.info(`Disk usage check - low disk? ${lowDisk ? JSON.stringify(lowDisk) : false}`);
+      return lowDisk || undefined;
+    },
     messageCb: (lowDisk) => {
       const {
         label, path, usePerc, size,
