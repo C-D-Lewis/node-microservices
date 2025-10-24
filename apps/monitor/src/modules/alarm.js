@@ -1,4 +1,28 @@
-const { log, ses } = require('../node-common')(['log', 'ses']);
+const { log, ses, attic } = require('../node-common')(['log', 'ses', 'attic']);
+
+/** Attic key for alarms state data */
+const ATTIC_KEY_ALARMS = 'alarms';
+
+/**
+ * Store alarm state for reporting in the dashboard.
+ *
+ * @param {string} name - Name of the alarm.
+ * @param {string} status - Current status of the alarm ('open', 'closed', 'updated').
+ * @param {string} lastMessage - Last message associated with the alarm.
+ * @returns {Promise<void>}
+ */
+const updateAlarmState = async (name, status, lastMessage) => {
+  log.debug(`Updating alarm state: ${JSON.stringify({ name, status, lastMessage })}`);
+  if (!await attic.exists(ATTIC_KEY_ALARMS)) await attic.set(ATTIC_KEY_ALARMS, {});
+
+  const alarms = await attic.get(ATTIC_KEY_ALARMS);
+  alarms[name] = {
+    status,
+    lastMessage,
+    lastUpdated: new Date().toISOString(),
+  };
+  await attic.set(ATTIC_KEY_ALARMS, alarms);
+};
 
 /**
  * Function to check a condition and notify once if it fails.
@@ -10,17 +34,21 @@ const { log, ses } = require('../node-common')(['log', 'ses']);
  * @param {Function} opts.messageCb - Callback to generate the notification message.
  * @param {boolean} [opts.notifyOnRecover=true] - Whether to notify when the condition recovers.
  * @param {boolean} [opts.notifyUpdates=false] - Whether to send updates when data changes.
+ * @param {boolean} [opts.sendEmails=true] - Whether to send email notifications.
  * @returns {object} - An object with a check method to perform the test.
  */
-const createAlert = ({
+const createAlarm = ({
   name,
   testCb,
   messageCb,
   notifyOnRecover = true,
   notifyUpdates = false,
+  sendEmails = process.env.ALARMS_DISABLED !== 'true',
 }) => {
   let notified = false;
   let lastData = null;
+  let lastMessage = '';
+  let lastStatus = 'closed';
 
   /**
    * Log and send the notification message.
@@ -33,7 +61,7 @@ const createAlert = ({
    */
   const notify = (msg, isSuccess, isError, isUpdate) => {
     if (isError) {
-      log.error(`Alert "${name}" test failed: ${msg}`);
+      log.error(`Alarm "${name}" test failed: ${msg}`);
       return ses.notify(msg);
     }
 
@@ -41,9 +69,11 @@ const createAlert = ({
     if (isSuccess) state = 'closed';
     if (isUpdate) state = 'updated';
 
-    const finalMsg = `Alert "${name}" ${state}: ${msg}`;
+    lastMessage = msg;
+    lastStatus = state;
+    const finalMsg = `Alarm "${name}" ${state}: ${msg}`;
     log.warn(finalMsg);
-    return ses.notify(finalMsg);
+    return sendEmails ? ses.notify(finalMsg) : Promise.resolve();
   };
 
   /**
@@ -51,8 +81,10 @@ const createAlert = ({
    *
    * @param {any} data - The data to store.
    */
-  const updateLastData = (data) => {
+  const updateData = async (data) => {
     lastData = data ? JSON.parse(JSON.stringify(data)) : null;
+
+    await updateAlarmState(name, lastStatus, lastMessage);
   };
 
   return {
@@ -68,14 +100,14 @@ const createAlert = ({
         if (!data) {
           // Still good
           if (!notified) {
-            updateLastData(data);
+            await updateData(data);
             return;
           }
 
           // Now recovered
           notified = false;
           if (notifyOnRecover) await notify(messageCb(data), true);
-          updateLastData(data);
+          await updateData(data);
           return;
         }
 
@@ -83,18 +115,20 @@ const createAlert = ({
         if (!notified) {
           notified = true;
           await notify(messageCb(data));
-          updateLastData(data);
+          await updateData(data);
           return;
         }
 
         if (notifyUpdates && JSON.stringify(data) !== JSON.stringify(lastData)) {
           // An update?
           await notify(messageCb(data), false, false, true);
-          updateLastData(data);
+          await updateData(data);
         }
       } catch (e) {
         console.log(e);
 
+        // Set notified so we don't keep spamming on errors
+        notified = true;
         await notify(e.stack || e.message, false, true);
       }
     },
@@ -102,5 +136,5 @@ const createAlert = ({
 };
 
 module.exports = {
-  createAlert,
+  createAlarm,
 };

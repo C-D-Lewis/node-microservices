@@ -1,13 +1,13 @@
 const { execSync } = require('child_process');
 const { log } = require('../node-common')(['log']);
 const { updateMetrics } = require('../modules/metrics');
-const { createAlert } = require('../modules/alert');
+const { createAlarm } = require('../modules/alarm');
 
 /** Grace period before starting alerting */
 const GRACE_PERIOD_MS = 1000 * 60 * 10;
 
 const start = Date.now();
-let alert;
+let alarm;
 
 /**
  * Check running processes.
@@ -16,15 +16,15 @@ let alert;
  */
 module.exports = async (args) => {
   const { FILTER = '', EXPECTED = 0 } = args;
-  if (!FILTER.length) throw new Error('No processes filter to monitor');
+  if (!FILTER.length) throw new Error('No filter for processes to monitor');
   if (EXPECTED <= 0) throw new Error('Expected processes must be > 0');
 
-  if (alert) {
-    await alert.test();
+  if (alarm) {
+    await alarm.test();
     return;
   }
 
-  alert = createAlert({
+  alarm = createAlarm({
     name: 'processes',
     testCb: async () => {
       const now = Date.now();
@@ -56,5 +56,5 @@ module.exports = async (args) => {
       : `Processes matching "${FILTER}" are running as expected`),
   });
 
-  await alert.test();
+  await alarm.test();
 };

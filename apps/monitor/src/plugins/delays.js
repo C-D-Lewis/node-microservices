@@ -1,7 +1,7 @@
 const {
   fetch, log, extract,
 } = require('../node-common')(['fetch', 'config', 'log', 'extract']);
-const { createAlert } = require('../modules/alert');
+const { createAlarm } = require('../modules/alarm');
 
 /** TfL API modes to query */
 const TFL_MODES = ['tube', 'elizabeth-line'];
@@ -9,7 +9,7 @@ const TFL_MODES = ['tube', 'elizabeth-line'];
 const NR_OPERATORS = ['Greater Anglia'];
 /** TfL lines to check */
 const TFL_LINES = ['jubilee'];
-/** Hours to alert */
+/** Hours to alarm */
 const HOURS = [7, 22];
 /** String to ignore */
 const IGNORE = [
@@ -23,8 +23,8 @@ const FETCH_OPTS = {
   },
 };
 
-let nrAlert;
-let tflAlert;
+let nrAlarm;
+let tflAlarm;
 
 /**
  * Fetch rought <li> list of distruptions from National Rail.
@@ -105,13 +105,13 @@ module.exports = async () => {
     return;
   }
 
-  if (nrAlert && tflAlert) {
-    await nrAlert.test();
-    await tflAlert.test();
+  if (nrAlarm && tflAlarm) {
+    await nrAlarm.test();
+    await tflAlarm.test();
     return;
   }
 
-  nrAlert = createAlert({
+  nrAlarm = createAlarm({
     name: 'delays',
     notifyOnRecover: false,
     testCb: async () => {
@@ -134,7 +134,7 @@ module.exports = async () => {
       : 'No configured lines have incidents reported.'),
   });
 
-  tflAlert = createAlert({
+  tflAlarm = createAlarm({
     name: 'delays',
     notifyOnRecover: false,
     testCb: async () => {
@@ -157,6 +157,6 @@ module.exports = async () => {
       : 'No configured lines have incidents reported.'),
   });
 
-  await nrAlert.test();
-  await tflAlert.test();
+  await nrAlarm.test();
+  await tflAlarm.test();
 };

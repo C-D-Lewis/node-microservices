@@ -1,39 +1,40 @@
-const { createAlert } = require('../modules/alert');
+const { createAlarm } = require('../modules/alarm');
 const { log } = require('../node-common')(['log']);
 
-let alert;
+let alarm;
 
 /**
  * Plugin to test the notification system.
  */
 module.exports = async () => {
-  if (alert) {
-    await alert.test();
+  if (alarm) {
+    await alarm.test();
     return;
   }
 
-  alert = createAlert({
+  alarm = createAlarm({
     name: 'notify-test',
     /**
-     * Test callback that randomly triggers an alert.
+     * Test callback that randomly triggers an alarm.
      *
-     * @returns {Promise<{value: number}|undefined>} Test value if alert condition met.
+     * @returns {Promise<{value: number}|undefined>} Test value if alarm condition met.
      */
     testCb: async () => {
       const value = Math.round(Math.random() * 10);
-      log.debug(`Test alert generated value: ${value.toFixed(2)}`);
+      log.debug(`Test alarm generated value: ${value.toFixed(2)}`);
       return value > 3 ? { value } : undefined;
     },
     /**
-     * Message callback to format the alert message.
+     * Message callback to format the alarm message.
      *
      * @param {{value: number}|undefined} data - The data from the test callback.
-     * @returns {string} The alert message.
+     * @returns {string} The alarm message.
      */
-    messageCb: (data) => (data ? `Test alert value: ${data.value.toFixed(2)}` : 'Test alert cleared.'),
+    messageCb: (data) => (data ? `Test alarm value: ${data.value.toFixed(2)}` : 'Test alarm cleared.'),
     notifyOnRecover: true,
     notifyUpdates: true,
+    sendEmails: false,
   });
 
-  await alert.test();
+  await alarm.test();
 };

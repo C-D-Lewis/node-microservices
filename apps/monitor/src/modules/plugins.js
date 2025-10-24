@@ -9,122 +9,91 @@ config.addPartialSchema({
 
 const { PLUGINS } = config.get(['PLUGINS']);
 
-/** Interval between checks for handleAt() */
-const HANDLE_AT_INTERVAL_MS = 1000;
+/**
+ * @typedef {object} PluginConfig
+ * @property {string} [FILE_NAME] - Filename of the plugin to load from ./plugins.
+ * @property {string} [USE] - Module name of the plugin to load from ./plugins.
+ * @property {number} [EVERY] - If set, run the plugin every N minutes.
+ * @property {string} [AT] - If set, run the plugin at the specified time (HH:MM).
+ * @property {boolean} [ENABLED] - Whether the plugin is enabled (default: true).
+ * @property {object} [ARGS] - Arguments to pass to the plugin function.
+ */
+
+/**
+ * Array of loaded plugins.
+ * @type {Array<{name: string, func: Function, data: PluginConfig}>}
+ */
+const plugins = [];
 
 /**
  * Run a plugin now.
  *
- * @param {string} pluginName - Name of the plugin.
- * @param {object} plugin - The plugin object.
- * @param {Function} pluginFunc - Function to call to call the plugin's code.
  */
-const runPlugin = async (pluginName, plugin, pluginFunc) => {
-  log.info(`Running ${pluginName}`);
+const runPlugin = async (plugin) => {
+  const { name, func, data } = plugin;
+
+  log.info(`Running ${name}`);
   try {
-    await pluginFunc(plugin.ARGS);
+    await func(data.ARGS);
   } catch (e) {
-    log.error(`Failed to run plugin function: ${pluginName}`);
+    log.error(`Failed to run plugin function: ${name}`);
     log.error(e);
   }
-};
-
-/**
- * Handle a plugin specifying an AT time scheme.
- *
- * @param {string} pluginName - Name of the plugin.
- * @param {object} plugin - The plugin object.
- * @param {Function} pluginFunc - Function to call to call the plugin's code.
- */
-const handleAt = async (pluginName, plugin, pluginFunc) => {
-  // Now?
-  if (plugin.AT === 'start') {
-    await runPlugin(pluginName, plugin, pluginFunc);
-    return;
-  }
-
-  // A certain time in the future
-  setInterval(async () => {
-    const now = new Date();
-    const [whenHours, whenMins] = plugin.AT.split(':');
-    if (
-      now.getHours() !== parseInt(whenHours, 10)
-      || now.getMinutes() !== parseInt(whenMins, 10)
-      || now.getSeconds() !== 0
-    ) {
-      return;
-    }
-
-    await runPlugin(pluginName, plugin, pluginFunc);
-  }, HANDLE_AT_INTERVAL_MS);
-  log.info(`AT ${plugin.AT}: ${JSON.stringify(plugin)}`);
-};
-
-/**
- * Handle a plugin specifying an EVERY time scheme.
- *
- * @param {string} pluginName - Name of the plugin.
- * @param {object} plugin - The plugin object.
- * @param {Function} pluginFunc - Function to call to call the plugin's code.
- */
-const handleEvery = async (pluginName, plugin, pluginFunc) => {
-  // Regular runs
-  setInterval(async () => {
-    log.info(`Running plugin "${pluginName}"`);
-    try {
-      await pluginFunc(plugin.ARGS);
-    } catch (e) {
-      log.error(`Failed to run plugin function: ${pluginName}`);
-      log.error(e);
-    }
-  }, plugin.EVERY * 60 * 1000);
-
-  // First interval is now
-  // TODO: DRY
-  try {
-    await pluginFunc(plugin.ARGS);
-  } catch (e) {
-    log.error(`Failed to run plugin function: ${pluginName}`);
-    log.error(e);
-  }
-
-  log.info(`EVERY ${plugin.EVERY}: ${JSON.stringify(plugin)}`);
 };
 
 /**
  * Load all plugins in config.
  */
 const loadAll = () => {
-  PLUGINS.forEach(async (plugin) => {
+  PLUGINS.forEach(async (item) => {
+    const {
+      EVERY, AT, FILE_NAME, USE, ENABLED, ARGS,
+    } = item;
+
     // Verify plugin config
-    log.assert(!(plugin.EVERY && plugin.AT), 'Plugin must have only EVERY or AT, not both', true);
-    log.assert(!(plugin.FILE_NAME && plugin.USE), 'Plugin must have only FILE_NAME or USE, not both', true);
+    log.assert(!(EVERY && AT), 'Plugin must have only EVERY or AT, not both', true);
+    log.assert(!(FILE_NAME && USE), 'Plugin must have only FILE_NAME or USE, not both', true);
 
     // Enabled is 'true' by default if included in PLUGINS list
-    if (plugin.ENABLED === false) return;
-
-    // Load plugins and register timers
-    const pluginFunc = (plugin.FILE_NAME)
-      ? require(`../plugins/${plugin.FILE_NAME}`)
-      : require(`../plugins/${plugin.USE}`);
-    const pluginName = plugin.FILE_NAME ? plugin.FILE_NAME : plugin.USE;
-
-    // Run every X minutes
-    if (plugin.EVERY) {
-      handleEvery(pluginName, plugin, pluginFunc);
+    if (ENABLED === false) {
+      log.info(`Plugin disabled, skipping: ${JSON.stringify(item)}`);
       return;
     }
 
-    // Run at a certain time
-    if (plugin.AT) {
-      await handleAt(pluginName, plugin, pluginFunc);
-      return;
-    }
+    // Load plugins and store
+    const func = (FILE_NAME)
+      ? require(`../plugins/${FILE_NAME}`)
+      : require(`../plugins/${USE}`);
+    const name = FILE_NAME ? FILE_NAME : USE;
+    plugins.push({ name, func, data: item });
 
-    // Run immediately
-    log.info(`Running plugin once: ${JSON.stringify(plugin)}`);
-    await pluginFunc(plugin.ARGS);
+    // Announce schedule or run immediately
+    if (item.EVERY) {
+      log.info(`EVERY ${EVERY}: ${JSON.stringify(item)}`);
+    } else if (item.AT) {
+      log.info(`AT ${AT}: ${JSON.stringify(item)}`);
+    } else {
+      // Run immediately
+      log.info(`ONCE: ${JSON.stringify(item)}`);
+      await func(ARGS);
+    }
   });
+
+  // Use one timer to iterate all plugins every minute, sequentially
+  setInterval(async () => {
+    const now = new Date();
+    const [hours, mins] = [now.getHours(), now.getMinutes()];
+  
+    for (const p of plugins) {
+      const { data } = p;
+      if (data.EVERY && (mins % data.EVERY === 0)) await runPlugin(p);
+      
+      if (data.AT && now.getSeconds() === 0) {
+        const [atHours, atMins] = data.AT.split(':').map((x) => parseInt(x, 10));
+        if (atHours === hours && atMins === mins) await runPlugin(p);
+      }
+    }
+  }, 60 * 1000);
 };
 
 module.exports = { loadAll };
