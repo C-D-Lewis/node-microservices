@@ -59,6 +59,13 @@ export type MonitorPlugin = {
   ENABLED?: boolean;
 };
 
+/** Monitor alarm type */
+export type MonitorAlarm = {
+  status: 'closed' | 'open' | 'unknown';
+  lastMessage: string;
+  lastUpdated: string;
+};
+
 /** App state type */
 export type AppState = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,6 +81,7 @@ export type AppState = {
   devices: Device[];
   metricNames: string[];
   monitorPlugins: MonitorPlugin[];
+  alarms: { [key: string]: MonitorAlarm };
 
   // State
   selectedDevice: Device | null,

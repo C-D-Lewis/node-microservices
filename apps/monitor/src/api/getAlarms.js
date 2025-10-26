@@ -7,7 +7,7 @@ const { conduit, attic } = require('../node-common')(['conduit', 'attic']);
  * @param {object} res - Express response object.
  */
 const handleGetAlarmsPacket = async (packet, res) => {
-  const alarms = await attic.get('alarms') || [];
+  const alarms = await attic.get('alarms') || {};
   
   return conduit.respond(
     res,

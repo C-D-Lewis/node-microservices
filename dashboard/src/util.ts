@@ -46,7 +46,7 @@ export const getTimeAgoStr = (time: number) => {
     return `${Math.round(minsAgo / 60)} hours`;
   }
 
-  return `${minsAgo} mins`;
+  return `${minsAgo} min${minsAgo < 2 ? '' : 's'}`;
 };
 
 /**
