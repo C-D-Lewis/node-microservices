@@ -112,7 +112,7 @@ module.exports = async () => {
   }
 
   nrAlarm = createAlarm({
-    name: 'delays',
+    name: 'delaysNr',
     notifyOnRecover: false,
     testCb: async () => {
       const data = await fetchNationalRailList();
@@ -135,7 +135,7 @@ module.exports = async () => {
   });
 
   tflAlarm = createAlarm({
-    name: 'delays',
+    name: 'delaysTfl',
     notifyOnRecover: false,
     testCb: async () => {
       const data = await fetchTflList();
