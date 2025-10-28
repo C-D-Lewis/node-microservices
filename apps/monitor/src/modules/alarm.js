@@ -52,28 +52,21 @@ const createAlarm = ({
 
   /**
    * Log and send the notification message.
+   * It should not modify alarm state.
    *
-   * @param {string} msg - The message to notify.
-   * @param {boolean} isSuccess - Whether the notification is a success message.
-   * @param {boolean} isError - Whether the notification is an error in testing.
-   * @param {boolean} isUpdate - Whether the notification is an update.
+   * @param {boolean} [isError=false] - Whether this is an error notification.
    * @returns {Promise<void>}
    */
-  const notify = (msg, isSuccess, isError, isUpdate) => {
+  const notify = async (isError) => {
     if (isError) {
-      log.error(`Alarm "${name}" test failed: ${msg}`);
-      return ses.notify(msg);
+      const failStr = `Alarm "${name}" test failed: ${lastMessage}`;
+      log.error(failStr);
+      return ses.notify(failStr);
     }
 
-    let state = 'open';
-    if (isSuccess) state = 'closed';
-    if (isUpdate) state = 'updated';
-
-    lastMessage = msg;
-    lastStatus = state;
-    const finalMsg = `Alarm "${name}" ${state}: ${msg}`;
-    log.warn(finalMsg);
-    return sendEmails ? ses.notify(finalMsg) : Promise.resolve();
+    const emailStr = `Alarm "${name}" ${lastStatus}: ${lastMessage}`;
+    log.warn(emailStr);
+    return sendEmails ? ses.notify(emailStr) : Promise.resolve();
   };
 
   /**
@@ -81,7 +74,8 @@ const createAlarm = ({
    *
    * @param {any} data - The data to store.
    */
-  const updateData = async (data) => {
+  const updateAlarm = async (data) => {
+    // This must be done after any update comparison
     lastData = data ? JSON.parse(JSON.stringify(data)) : null;
 
     await updateAlarmState(name, lastStatus, lastMessage);
@@ -100,36 +94,47 @@ const createAlarm = ({
         if (!data) {
           // Still good
           if (!notified) {
-            await updateData(data);
+            lastStatus = 'closed';
+            lastMessage = '';
+            await updateAlarm(data);
             return;
           }
 
           // Now recovered
           notified = false;
-          if (notifyOnRecover) await notify(messageCb(data), true);
-          await updateData(data);
+          lastStatus = 'closed';
+          lastMessage = messageCb(data);
+          if (notifyOnRecover) await notify();
+          await updateAlarm(data);
           return;
         }
 
         // Now failed
         if (!notified) {
           notified = true;
-          await notify(messageCb(data));
-          await updateData(data);
+          lastStatus = 'open';
+          lastMessage = messageCb(data);
+          await notify();
+          await updateAlarm(data);
           return;
         }
 
-        if (notifyUpdates && JSON.stringify(data) !== JSON.stringify(lastData)) {
+        if (JSON.stringify(data) !== JSON.stringify(lastData)) {
           // An update?
-          await notify(messageCb(data), false, false, true);
-          await updateData(data);
+          lastStatus = 'open';
+          lastMessage = messageCb(data);
+          if (notifyUpdates) await notify();
+          await updateAlarm(data);
         }
       } catch (e) {
         console.log(e);
 
         // Set notified so we don't keep spamming on errors
         notified = true;
-        await notify(e.stack || e.message, false, true);
+        lastStatus = 'open';
+        lastMessage = e.stack || e.message || String(e);
+        await notify(true);
+        await updateAlarm();
       }
     },
   };

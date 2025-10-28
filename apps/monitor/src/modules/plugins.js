@@ -21,6 +21,7 @@ const { PLUGINS } = config.get(['PLUGINS']);
 
 /**
  * Array of loaded plugins.
+ *
  * @type {Array<{name: string, func: Function, data: PluginConfig}>}
  */
 const plugins = [];
@@ -28,6 +29,7 @@ const plugins = [];
 /**
  * Run a plugin now.
  *
+ * @param {object} plugin - The plugin object.
  */
 const runPlugin = async (plugin) => {
   const { name, func, data } = plugin;
@@ -56,7 +58,7 @@ const loadAll = () => {
 
     // Enabled is 'true' by default if included in PLUGINS list
     if (ENABLED === false) {
-      log.info(`Plugin disabled, skipping: ${JSON.stringify(item)}`);
+      log.info(`DISABLED: ${JSON.stringify(item)}`);
       return;
     }
 
@@ -64,7 +66,7 @@ const loadAll = () => {
     const func = (FILE_NAME)
       ? require(`../plugins/${FILE_NAME}`)
       : require(`../plugins/${USE}`);
-    const name = FILE_NAME ? FILE_NAME : USE;
+    const name = FILE_NAME || USE;
     plugins.push({ name, func, data: item });
 
     // Announce schedule or run immediately
@@ -83,11 +85,12 @@ const loadAll = () => {
   setInterval(async () => {
     const now = new Date();
     const [hours, mins] = [now.getHours(), now.getMinutes()];
-  
+
+    // eslint-disable-next-line no-restricted-syntax
     for (const p of plugins) {
       const { data } = p;
       if (data.EVERY && (mins % data.EVERY === 0)) await runPlugin(p);
-      
+
       if (data.AT && now.getSeconds() === 0) {
         const [atHours, atMins] = data.AT.split(':').map((x) => parseInt(x, 10));
         if (atHours === hours && atMins === mins) await runPlugin(p);

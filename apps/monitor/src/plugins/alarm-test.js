@@ -1,6 +1,9 @@
 const { createAlarm } = require('../modules/alarm');
 const { log } = require('../node-common')(['log']);
 
+/** Test alarm threshold */
+const THRESHOLD = 3;
+
 let alarm;
 
 /**
@@ -13,7 +16,7 @@ module.exports = async () => {
   }
 
   alarm = createAlarm({
-    name: 'notify-test',
+    name: 'alarm-test',
     /**
      * Test callback that randomly triggers an alarm.
      *
@@ -21,16 +24,16 @@ module.exports = async () => {
      */
     testCb: async () => {
       const value = Math.round(Math.random() * 10);
-      log.debug(`Test alarm generated value: ${value.toFixed(2)}`);
-      return value > 3 ? { value } : undefined;
+      log.debug(`Test alarm value: ${value} / ${THRESHOLD}`);
+      return value > THRESHOLD ? value : undefined;
     },
     /**
      * Message callback to format the alarm message.
      *
-     * @param {{value: number}|undefined} data - The data from the test callback.
+     * @param {number|undefined} data - The data from the test callback.
      * @returns {string} The alarm message.
      */
-    messageCb: (data) => (data ? `Test alarm value: ${data.value.toFixed(2)}` : 'Test alarm cleared.'),
+    messageCb: (data) => (data ? `Test alarm value: ${data}` : 'Test alarm cleared.'),
     notifyOnRecover: true,
     notifyUpdates: true,
     sendEmails: false,
