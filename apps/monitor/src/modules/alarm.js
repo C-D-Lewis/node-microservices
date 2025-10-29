@@ -43,7 +43,7 @@ const createAlarm = ({
   messageCb,
   notifyOnRecover = true,
   notifyUpdates = false,
-  sendEmails = process.env.ALARMS_DISABLED !== 'true',
+  sendEmails = process.env.DISABLE_EMAILS !== 'true',
 }) => {
   let notified = false;
   let lastData = null;

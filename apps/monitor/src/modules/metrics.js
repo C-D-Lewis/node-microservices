@@ -7,6 +7,9 @@ const { log } = require('../node-common')(['log']);
 /** Metrics directory */
 const METRICS_DIR = `${__dirname}/../../metrics`;
 
+/** Gamble on not being up for too many months */
+const metricMonths = {};
+
 /**
  * Get today's date in YYYY-MM-DD format.
  *
@@ -35,13 +38,13 @@ const getFilePath = (date = getTodayDateString()) => {
 };
 
 /**
- * Save the metrics file.
- *
- * @param {object} metricDb - Data to save.
+ * Save the metrics file. Always not.
  */
-const save = (metricDb) => {
+const save = () => {
+  const now = new Date();
+  const month = now.getMonth() + 1;
   execSync(`mkdir -p ${METRICS_DIR}`);
-  writeFileSync(getFilePath(), JSON.stringify(metricDb, null, 2), 'utf-8');
+  writeFileSync(getFilePath(now.toISOString()), JSON.stringify(metricMonths[month]), 'utf-8');
 };
 
 /**
@@ -52,32 +55,39 @@ const save = (metricDb) => {
  */
 const load = (date = getTodayDateString()) => {
   const filePath = getFilePath(date);
-  console.log(`Loading metrics from ${filePath}`);
 
   // No existing metrics data
   if (!existsSync(filePath)) save({});
 
-  return JSON.parse(readFileSync(filePath, 'utf-8'));
+  const selected = new Date(date);
+  const month = selected.getMonth() + 1;
+
+  // Already loaded this month
+  if (metricMonths[month]) return metricMonths[month];
+
+  log.debug(`Loading metrics from ${filePath}`);
+  metricMonths[month] = JSON.parse(readFileSync(filePath, 'utf-8'));
+  return metricMonths[month];
 };
 
 /**
  * Update a metric's value.
  *
- * @param {object} metricDb - All metric data.
+ * @param {object} db - All metric data.
  * @param {string} name - Metric name.
  * @param {*} value - New metric value.
  */
-const updateMetric = (metricDb, name, value) => {
+const updateMetric = (db, name, value) => {
   // First point for this metric
-  if (!metricDb[name]) {
-    metricDb[name] = [];
+  if (!db[name]) {
+    db[name] = [];
   }
 
   // Add new data point, minimal size
   const now = new Date();
   const point = [now.getTime(), value];
   log.debug(`metric ${name}=${value}`);
-  metricDb[name].push(point);
+  db[name].push(point);
 };
 
 /**
@@ -86,9 +96,9 @@ const updateMetric = (metricDb, name, value) => {
  * @param {object} metrics - Key-value object of new metric data.
  */
 const updateMetrics = (metrics) => {
-  const metricDb = load();
-  Object.entries(metrics).forEach(([k, v]) => updateMetric(metricDb, k, v));
-  save(metricDb);
+  const db = load();
+  Object.entries(metrics).forEach(([k, v]) => updateMetric(db, k, v));
+  save(db);
 };
 
 /**
@@ -99,10 +109,10 @@ const updateMetrics = (metrics) => {
  * @returns {Array<MetricPoint>} Metric data so far today.
  */
 const getMetricHistory = (name, date) => {
-  const metricDb = load(date);
+  const db = load(date);
 
   // Does not exist
-  if (!metricDb[name]) {
+  if (!db[name]) {
     log.debug(`No metric data for ${name}`);
     return [];
   }
@@ -118,12 +128,13 @@ const getMetricHistory = (name, date) => {
   dayEnd.setMinutes(59);
   dayEnd.setSeconds(59);
   dayEnd.setMilliseconds(999);
-  return metricDb[name]
+  return db[name]
     .filter(([timestamp]) => timestamp > dayStart.getTime() && timestamp < dayEnd.getTime());
 };
 
 /**
  * Get all known metric names.
+ * Dashboard assumes this set never changes month-to-month...
  *
  * @returns {Array<string>} Metric names.
  */

@@ -1,9 +1,9 @@
+const { execSync } = require('child_process');
+const { loadavg, freemem, totalmem } = require('os');
 const { createAlarm } = require('../modules/alarm');
 const {
   log, conduit, os, temperature,
 } = require('../node-common')(['log', 'conduit', 'os', 'temperature']);
-const { execSync } = require('child_process');
-const { loadavg, freemem, totalmem } = require('os');
 const { updateMetrics } = require('../modules/metrics');
 
 /** Tolerable disk usage threshold */
@@ -15,6 +15,13 @@ const seenDmesgErrors = [];
 let diskAlarm;
 let servicesAlarm;
 let dmesgAlarm;
+
+/**
+ * @typedef DmesgError
+ * @property {string} time - Time string.
+ * @property {string} message - Error message.
+ * @property {string} line - Full dmesg line.
+ */
 
 /**
  * Returns a list of errors with { time, message } objects.
@@ -129,12 +136,18 @@ const monitorSystemMetrics = async () => {
 const createDiskUsageAlarm = () => {
   diskAlarm = createAlarm({
     name: 'disk-usage',
+    /**
+     * Test callback.
+     */
     testCb: async () => {
-      
       const lowDisk = os.getDiskUsage().find((p) => p.usePerc > DISK_THRESHOLD);
       log.info(`Disk usage check - low disk? ${lowDisk ? JSON.stringify(lowDisk) : false}`);
       return lowDisk || undefined;
     },
+    /**
+     *
+     * @param lowDisk
+     */
     messageCb: (lowDisk) => {
       const {
         label, path, usePerc, size,
@@ -152,6 +165,9 @@ const createDiskUsageAlarm = () => {
 const createServicesAlarm = () => {
   servicesAlarm = createAlarm({
     name: 'services',
+    /**
+     * Test callback.
+     */
     testCb: async () => {
       const { message: apps } = await conduit.send({ to: 'conduit', topic: 'getApps' });
 
@@ -170,11 +186,13 @@ const createServicesAlarm = () => {
 
       return !allOk ? downApps : undefined;
     },
-    messageCb: (downApps) => {
-      return downApps && downApps.length > 0
-        ? `The following services are down: ${downApps.join(', ')}`
-        : 'All NMS services are operational';
-    },
+    /**
+     *
+     * @param downApps
+     */
+    messageCb: (downApps) => (downApps && downApps.length > 0
+      ? `The following services are down: ${downApps.join(', ')}`
+      : 'All NMS services are operational'),
   });
 };
 
@@ -184,6 +202,9 @@ const createServicesAlarm = () => {
 const createDmesgAlarm = () => {
   dmesgAlarm = createAlarm({
     name: 'dmesg',
+    /**
+     * Test callback.
+     */
     testCb: async () => {
       const lines = execSync('dmesg').toString().split('\n');
       const newErrors = getDmesgErrors(lines)
@@ -195,8 +216,14 @@ const createDmesgAlarm = () => {
       newErrors.forEach((p) => seenDmesgErrors.push(p));
 
       log.info(`new dmesg errors found: ${newErrors.length}`);
+
+      // Close if no new ones are found, the email from last time is sufficient
       return newErrors.length ? newErrors : undefined;
     },
+    /**
+     *
+     * @param newErrors
+     */
     messageCb: (newErrors) => (newErrors
       ? `dmesg errors found!\n\n${newErrors.map((p) => p.line).join('\n')}`
       : 'No dmesg errors found.'),

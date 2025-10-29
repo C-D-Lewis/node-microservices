@@ -114,6 +114,9 @@ module.exports = async () => {
   nrAlarm = createAlarm({
     name: 'delaysNr',
     notifyOnRecover: false,
+    /**
+     * Test callback.
+     */
     testCb: async () => {
       const data = await fetchNationalRailList();
 
@@ -129,6 +132,12 @@ module.exports = async () => {
 
       return incidents.length !== 0 ? text : undefined;
     },
+    /**
+     * Message callback.
+     *
+     * @param {string} text - Text, if any.
+     * @returns {string} Message.
+     */
     messageCb: (text) => (text
       ? `National Rail incidents!\n\n${text}`
       : 'No configured lines have incidents reported.'),
@@ -137,6 +146,9 @@ module.exports = async () => {
   tflAlarm = createAlarm({
     name: 'delaysTfl',
     notifyOnRecover: false,
+    /**
+     * Test callback.
+     */
     testCb: async () => {
       const data = await fetchTflList();
 
@@ -152,6 +164,12 @@ module.exports = async () => {
 
       return incidents.length === 0 ? text : undefined;
     },
+    /**
+     * Message callback.
+     *
+     * @param {string} text - Text, if any.
+     * @returns {string} Message.
+     */
     messageCb: (text) => (text
       ? `TfL incidents!\n\n${text}`
       : 'No configured lines have incidents reported.'),
