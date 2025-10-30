@@ -37,13 +37,9 @@ conduit:
 
 monitor:
   PLUGINS:
-    - FILE_NAME: system-metrics.js
+    - FILE_NAME: system.js
       EVERY: 1
-    - FILE_NAME: disk-usage.js
-      EVERY: 10
     - FILE_NAME: email-report.js
-    - FILE_NAME: services.js
-      EVERY: 10
       ARGS:
         HOST: localhost
   CONDUIT:

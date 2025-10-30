@@ -37,17 +37,8 @@ conduit:
 
 monitor:
   PLUGINS:
-    - FILE_NAME: system-metrics.js
+    - FILE_NAME: system.js
       EVERY: 1
-    - FILE_NAME: disk-usage.js
-      EVERY: 10
-      ARGS:
-        THRESHOLD: 80
-    - FILE_NAME: z-hotel.js
-      ARGS:
-        START_H: 11
-        DAYS: [3, 4]
-        PRICE_THRESHOLD: 100
   CONDUIT:
     HOST: localhost
   SES:
