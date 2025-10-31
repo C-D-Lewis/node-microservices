@@ -1,8 +1,8 @@
 const fetch = require('node-fetch');
 const { updateMetrics } = require('../modules/metrics');
 const {
-  log, ses, s3, csv,
-} = require('../node-common')(['log', 'ses', 's3', 'csv']);
+  log, ses, s3, csv, wait,
+} = require('../node-common')(['log', 'ses', 's3', 'csv', 'wait']);
 
 /** Available hotel codes */
 const HOTEL_CODES = {
@@ -18,11 +18,12 @@ const HOTEL_CODES = {
   Trafalgar: 105012,
   Victoria: 105013,
 };
-
 /** Output file for CSV */
 const OUTPUT_FILE = `${__dirname}/../../z-hotel.csv`;
 /** CSV headings */
 const CSV_HEADINGS = ['timestamp', ...Object.keys(HOTEL_CODES)];
+/** Wait range in milliseconds */
+const WAIT_RANGE_MS = 1.5 * 60 * 1000; // assumes EVERY: 2
 
 let notified = false;
 
@@ -155,6 +156,11 @@ module.exports = async (args = {}) => {
     updateMetrics({ lowestPrice: 0 });
     return;
   }
+
+  // Wait a random amount
+  const waitMs = Math.floor(Math.random() * WAIT_RANGE_MS);
+  log.debug(`z-hotel.js: Waiting ${waitMs}ms`);
+  await wait(waitMs);
 
   try {
     const hotels = await Promise.all(
