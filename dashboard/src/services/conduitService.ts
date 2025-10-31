@@ -1,6 +1,7 @@
 import { Fabricate } from 'fabricate.js';
 import {
   AppState, DataPoint, Device, DeviceApp,
+  MetricPoint,
   Packet,
 } from '../types.ts';
 import { BUCKET_SIZE, CONDUIT_PORT, FLEET_HOST } from '../constants.ts';
@@ -10,6 +11,8 @@ declare const fabricate: Fabricate<AppState>;
 
 /** Extra Y for visibility */
 const Y_EXTRA = 1.1;
+/** Minimum value initial */
+const MIN_VALUE_INITIAL = 9999999;
 
 /**
  * Send a conduit packet.
@@ -172,21 +175,24 @@ export const fetchMetric = async (state: AppState, name: string) => {
   if (type === 'number') {
     // Aggregate values
     minValue = name.includes('Perc')
-      ? 0
+      ? 0 // For display purposes, start at 0%
       : newHistory.reduce(
-        // @ts-expect-error handled with 'type'
-        (acc: number, [, value]: MetricPoint) => (value < acc ? value : acc),
-        9999999,
+        (acc: number, [, value]: MetricPoint) => ((value < acc && value > 0) ? value : acc),
+        MIN_VALUE_INITIAL,
       );
     maxValue = name.includes('Perc')
       ? Math.round(100 * Y_EXTRA)
       : Math.round(
         newHistory.reduce(
-          // @ts-expect-error handled with 'type'
           (acc: number, [, value]: MetricPoint) => (value > acc ? value : acc),
           0,
         ) * Y_EXTRA,
       );
+
+    // If all zeros, use sensible minValue
+    if (minValue === MIN_VALUE_INITIAL) {
+      minValue = 0;
+    }
   } else {
     throw new Error('Unexpected metric data type');
   }

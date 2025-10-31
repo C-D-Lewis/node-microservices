@@ -140,7 +140,7 @@ const MetricGraph = ({ name } : { name: string }) => {
     // Label min/max/recent
     ctx.font = '14px Arial';
     ctx.fillStyle = '#ddd';
-    const label = `${minPoint.value.toFixed(1)} / ${maxPoint.value.toFixed(1)} / ${lastPoint.value.toFixed(1)}`;
+    const label = `${minValue.toFixed(1)} / ${maxValue.toFixed(1)} / ${lastPoint.value.toFixed(1)}`;
     ctx.fillText(label, 5, 15);
   };
 

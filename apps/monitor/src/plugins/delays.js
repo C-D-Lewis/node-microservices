@@ -14,7 +14,7 @@ const HOURS = [7, 22];
 /** String to ignore */
 const IGNORE = [
   'Ely', 'Cambridge', 'Manningtree', 'Chingford', 'Seven Sisters', 'Tottenham Hale', 'resume',
-  'Lowestoft', 'Diss', 'Stanstead', 'Hackney', 'Southminster', 'Wickford',
+  'Lowestoft', 'Diss', 'Stanstead', 'Hackney', 'Southminster', 'Wickford', 'Sudbury',
 ];
 /** Fetch fixed options */
 const FETCH_OPTS = {
