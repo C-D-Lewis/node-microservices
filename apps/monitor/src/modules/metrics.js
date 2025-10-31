@@ -43,8 +43,15 @@ const getFilePath = (date = getTodayDateString()) => {
 const save = () => {
   const now = new Date();
   const month = now.getMonth() + 1;
+
+  // Check current month file exists for first time launch
+  if (!metricMonths[month]) {
+    metricMonths[month] = {};
+  }
+
+  const filePath = getFilePath(now.toISOString());
   execSync(`mkdir -p ${METRICS_DIR}`);
-  writeFileSync(getFilePath(now.toISOString()), JSON.stringify(metricMonths[month]), 'utf-8');
+  writeFileSync(filePath, JSON.stringify(metricMonths[month]), 'utf-8');
 };
 
 /**
@@ -54,16 +61,14 @@ const save = () => {
  * @returns {object} Metric file data.
  */
 const load = (date = getTodayDateString()) => {
-  const filePath = getFilePath(date);
-
-  // No existing metrics data
-  if (!existsSync(filePath)) save({});
-
   const selected = new Date(date);
   const month = selected.getMonth() + 1;
 
   // Already loaded this month
   if (metricMonths[month]) return metricMonths[month];
+
+  const filePath = getFilePath(date);
+  if (!existsSync(filePath)) save();
 
   log.debug(`Loading metrics from ${filePath}`);
   metricMonths[month] = JSON.parse(readFileSync(filePath, 'utf-8'));
@@ -98,7 +103,7 @@ const updateMetric = (db, name, value) => {
 const updateMetrics = (metrics) => {
   const db = load();
   Object.entries(metrics).forEach(([k, v]) => updateMetric(db, k, v));
-  save(db);
+  save();
 };
 
 /**
