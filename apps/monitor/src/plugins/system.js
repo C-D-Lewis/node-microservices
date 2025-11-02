@@ -103,6 +103,25 @@ const getFanSpeed = () => {
 };
 
 /**
+ * Get percentage of swap used.
+ *
+ * @returns {number} Swap usage percentage.
+ */
+const getSwapUsagePerc = () => {
+  const stdout = execSync('free -m').toString();
+  const lines = stdout.split('\n');
+  const swapLine = lines.find((p) => p.toLowerCase().startsWith('swap'));
+  if (!swapLine) return 0;
+
+  const parts = swapLine.split(/\s+/);
+  const total = parseInt(parts[1], 10);
+  const used = parseInt(parts[2], 10);
+  if (total === 0) return 0;
+
+  return Math.round((used * 100) / total);
+}
+
+/**
  * Monitor system metrics.
  */
 const monitorSystemMetrics = async () => {
@@ -116,6 +135,7 @@ const monitorSystemMetrics = async () => {
   const tempRaw = temperature.get();
   const freqPerc = getFrequencyPerc();
   const fanSpeed = getFanSpeed();
+  const swapPerc = getSwapUsagePerc();
 
   // Metrics with 'Perc' in the name are treated as a 0-100% range in the dashboard
   updateMetrics({
@@ -127,6 +147,7 @@ const monitorSystemMetrics = async () => {
     tempRaw,
     freqPerc,
     fanSpeed,
+    swapPerc,
   });
 };
 
