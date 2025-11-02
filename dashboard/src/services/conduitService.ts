@@ -9,8 +9,6 @@ import { shortDateTime, sortAppByName } from '../util.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
-/** Extra Y for visibility */
-const Y_EXTRA = 1.1;
 /** Minimum value initial */
 const MIN_VALUE_INITIAL = 9999999;
 
@@ -173,20 +171,20 @@ export const fetchMetric = async (state: AppState, name: string) => {
   let maxValue = 0;
 
   if (type === 'number') {
-    // Aggregate values
+    // Aggregate values - no fudging number here
     minValue = name.includes('Perc')
-      ? 0 // For display purposes, start at 0%
+      ? 0
       : newHistory.reduce(
         (acc: number, [, value]: MetricPoint) => ((value < acc && value > 0) ? value : acc),
         MIN_VALUE_INITIAL,
       );
     maxValue = name.includes('Perc')
-      ? Math.round(100 * Y_EXTRA)
+      ? 100
       : Math.round(
         newHistory.reduce(
           (acc: number, [, value]: MetricPoint) => (value > acc ? value : acc),
           0,
-        ) * Y_EXTRA,
+        ),
       );
 
     // If all zeros, use sensible minValue

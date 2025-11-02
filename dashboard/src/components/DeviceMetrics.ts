@@ -70,6 +70,7 @@ const MetricGraph = ({ name } : { name: string }) => {
     const { width, height } = canvas;
     const { buckets, minValue, maxValue } = state[dataKey] as MetricData;
     const range = maxValue - minValue;
+    const rangeMin = name.includes('Perc') ? 0 : minValue;
 
     const ctx = canvas.getContext('2d')!;
     ctx.imageSmoothingEnabled = false;
@@ -104,7 +105,7 @@ const MetricGraph = ({ name } : { name: string }) => {
     ctx.beginPath();
     points.forEach((p: DataPoint, i: number, arr) => {
       const { value } = p;
-      const pHeight = ((value - minValue) * height) / (!range ? 1 : range);
+      const pHeight = ((value - rangeMin) * height) / (range || 1);
       const x = i * xInterval;
 
       // Interval lines (every 12 x 5m buckets roughly one hour scale)
