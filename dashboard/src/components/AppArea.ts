@@ -4,7 +4,6 @@ import StatRow from './StatRow.ts';
 import AppLoader from './AppLoader.ts';
 import DeviceMetrics from './DeviceMetrics.ts';
 import { fetchMetricNames } from '../services/conduitService.ts';
-import VisualsPalette from './VisualsPalette.ts';
 import AppCardList from './AppCardList.ts';
 
 declare const fabricate: Fabricate<AppState>;
@@ -84,7 +83,6 @@ const AppArea = () => {
         fabricate.conditional((s) => !areAppsLoaded(s), AppLoader),
         fabricate.conditional(areAppsLoaded, RefreshProgressBar),
         fabricate.conditional(areAppsLoaded, DeviceMetrics),
-        fabricate.conditional(areAppsLoaded, VisualsPalette),
         fabricate.conditional(areAppsLoaded, AppCardList),
       ]);
     }, [fabricate.StateKeys.Created, 'selectedDevice']);

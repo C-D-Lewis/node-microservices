@@ -74,7 +74,9 @@ const App = () => fabricate('Column')
   ])
   .onUpdate(async (el, state, keys) => {
     if (keys.includes(fabricate.StateKeys.Created)) {
-      parseParams();
+      // This is a fabricate 3.5.1 -> 3.8.1 bug workaround where onUpdate in the root
+      // component is called too early?
+      setTimeout(parseParams, 100);
       return;
     }
 
@@ -90,5 +92,8 @@ const App = () => fabricate('Column')
 fabricate.app(
   App,
   INITIAL_STATE,
-  { theme: Theme },
+  {
+    theme: Theme,
+    // debug: true,
+  },
 );

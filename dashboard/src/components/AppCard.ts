@@ -1,6 +1,7 @@
 import { Fabricate } from 'fabricate.js';
 import { AppState, DeviceApp } from '../types.ts';
 import MonitorControls from './controls/MonitorControls.ts';
+import VisualsControls from './controls/VisualsControls.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -14,6 +15,7 @@ declare const fabricate: Fabricate<AppState>;
 const AppControls = ({ app }: { app: DeviceApp }) => fabricate('Column')
   .setChildren([
     fabricate.conditional(() => app.app === 'monitor', MonitorControls),
+    fabricate.conditional(() => app.app === 'visuals', VisualsControls),
   ]);
 
 /**
@@ -78,7 +80,7 @@ const AppStatusRow = ({ app }: { app: DeviceApp }) => fabricate('Row')
  * @returns {HTMLElement} Fabricate component.
  */
 const AppCard = ({ app }: { app: DeviceApp }) => {
-  const hasControls = ['monitor'].includes(app.app!);
+  const hasControls = ['monitor', 'visuals'].includes(app.app!);
 
   return fabricate('Column')
     .setStyles(({ palette }) => ({

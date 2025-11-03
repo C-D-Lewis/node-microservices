@@ -1,9 +1,9 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
-import { AppState } from '../types.ts';
-import { sendConduitPacket } from '../services/conduitService.ts';
-import { AppAreaContainer, AppAreaContainerTitle } from './AppAreaContainer.ts';
+import { AppState } from '../../types.ts';
+import { sendConduitPacket } from '../../services/conduitService.ts';
 
 declare const fabricate: Fabricate<AppState>;
+declare const fab: Fabricate<AppState>;
 
 /** Colors for demo */
 const DEMO_COLORS = [
@@ -57,7 +57,6 @@ const SwatchButton = ({ color }: { color: number[] }) => {
  */
 const ColorPalette = () => fabricate('Row')
   .setStyles({ flexWrap: 'wrap' })
-  .setNarrowStyles({ width: '100%' })
   .onCreate(async (el, state) => {
     const { message } = await sendConduitPacket(state, { to: 'visuals', topic: 'hasLights' });
 
@@ -72,20 +71,20 @@ const ColorPalette = () => fabricate('Row')
             margin: '10px auto',
             cursor: 'default',
           }))
-          .setText('No lights available'),
+          .setText('No lights configured'),
       ]);
     }
   });
 
 /**
- * VisualsPalette component.
+ * VisualsControls component.
  *
- * @returns {FabricateComponent} VisualsPalette.
+ * @returns {FabricateComponent} VisualsControls.
  */
-const VisualsPalette = () => AppAreaContainer()
-  .setChildren([
-    AppAreaContainerTitle({ title: 'Lighting Palette' }),
-    ColorPalette(),
-  ]);
+const VisualsControls = () => fab('Column', {
+  padding: '5px',
+}, [
+  ColorPalette(),
+]);
 
-export default VisualsPalette;
+export default VisualsControls;
