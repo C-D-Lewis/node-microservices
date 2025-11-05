@@ -49,8 +49,8 @@ const PACKET_SCHEMA = {
 };
 /** Default response when the recipient does not provide one. */
 const NO_RESPONSE_PACKET = { status: 204, message: { content: 'No content forwarded' } };
-/** Shutdown/reboot deleay time */
-const DELAY_MS = 10000;
+/** Command delay time */
+const DELAY_MS = 3000;
 
 /**
  * Handle a topic meant for this conduit.
@@ -68,19 +68,32 @@ const handleTopic = async (req, res, packet) => {
     setTimeout(() => execSync('sudo shutdown -h now'), DELAY_MS);
     log.info('Shutdown command received');
 
-    res.status(200).json({ content: `Shutting down in ${DELAY_MS / 1000} seconds` });
-    return;
+    res.status(200).json({ content: 'Shutting down now' });
   }
 
   if (topic === 'reboot') {
     setTimeout(() => execSync('sudo reboot'), DELAY_MS);
     log.info('Reboot command received');
 
-    res.status(200).json({ content: `Restarting in ${DELAY_MS / 1000} seconds` });
+    res.status(200).json({ content: 'Restarting now' });
   }
 
   if (topic === 'getApps') {
     await respondWithApps(req, res);
+  }
+
+  if (topic === 'upgrade') {
+    setTimeout(() => execSync('sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'), DELAY_MS);
+    log.info('Upgrade command received');
+
+    res.status(200).json({ content: 'Upgrading now' });
+  }
+
+  if (topic === 'getIsUpgrading') {
+    const stdout = execSync('sudo lsof /var/lib/dpkg/lock').toString();
+    const isUpgrading = stdout.includes('PROCESS');
+
+    res.status(200).json({ content: isUpgrading });
   }
 };
 
