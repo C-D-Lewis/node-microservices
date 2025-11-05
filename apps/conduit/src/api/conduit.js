@@ -83,17 +83,29 @@ const handleTopic = async (req, res, packet) => {
   }
 
   if (topic === 'upgrade') {
-    setTimeout(() => execSync('sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'), DELAY_MS);
+    setTimeout(() => execSync('sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y &'), DELAY_MS);
     log.info('Upgrade command received');
 
     res.status(200).json({ content: 'Upgrading now' });
   }
 
   if (topic === 'getIsUpgrading') {
-    const stdout = execSync('sudo lsof /var/lib/dpkg/lock').toString();
-    const isUpgrading = stdout.includes('PROCESS');
+    let output;
+    try {
+      log.debug('Checking for upgrade lock...');
+      // Seems to pause
+      // output = execSync('sudo lsof /var/lib/dpkg/lock').toString();
+      output = execSync('ps -e | grep apt').toString();
+      log.debug(output || 'no output');
+    } catch (e) {
+      const stdout = e.stdout ? e.stdout.toString() : '';
+      const stderr = e.stderr ? e.stderr.toString() : '';
+      output = stdout || stderr || 'no output';
+      log.debug(output);
+    }
+    log.debug(output);
 
-    res.status(200).json({ content: isUpgrading });
+    res.status(200).json({ content: output.includes('PROCESS') });
   }
 };
 
