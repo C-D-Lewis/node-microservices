@@ -1,8 +1,9 @@
-import { Fabricate } from 'fabricate.js';
+import { Fabricate, FabricateComponent } from 'fabricate.js';
 import { AppState, Device } from '../types.ts';
 import { commandDevice, getTimeAgoStr } from '../util.ts';
 import Theme from '../theme.ts';
 import IconButton from './IconButton.ts';
+import { sendConduitPacket } from '../services/conduitService.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -19,6 +20,46 @@ const ToolbarButton = ({ src }: { src: string }) => IconButton({ src })
     height: '24px',
     marginRight: '10px',
     transition: '0.5s',
+  });
+
+/**
+ * Schedule an upgrade in progress check.
+ *
+ * @param {FabricateComponent} el - Element.
+ * @param {AppState} state - App state.
+ */
+const scheduleUpgradeCheck = (el: FabricateComponent<AppState>, state: AppState) => {
+  el.setStyles({ backgroundColor: 'darkorange' });
+  setTimeout(async () => {
+    // Get status
+    const packet = { to: 'conduit', topic: 'getIsUpgrading' };
+    const { upgrading } = await sendConduitPacket(state, packet);
+
+    // If done, stop checking
+    if (!upgrading) {
+      el.setStyles({ backgroundColor: '#0003' });
+      return;
+    }
+
+    // Else schedule another check
+    scheduleUpgradeCheck(el, state);
+  }, 5000);
+};
+
+/**
+ * UpgradeButton component.
+ *
+ * @param {object} props - Component props.
+ * @param {object} props.device - Device.
+ * @returns {HTMLElement} Fabricate component.
+ */
+const UpgradeButton = ({ device }: { device: Device }) => ToolbarButton({
+  src: 'assets/images/upgrade.png',
+})
+  .onClick(async (el, state) => {
+    const r = await commandDevice(el, state, device, 'upgrade', false);
+
+    if (r) scheduleUpgradeCheck(el, state);
   });
 
 /**
@@ -61,6 +102,7 @@ const Toolbar = ({ device }: { device: Device }) => fabricate('Row')
     padding: '8px',
   })
   .setChildren([
+    UpgradeButton({ device }),
     RebootButton({ device }),
     ShutdownButton({ device }),
   ]);

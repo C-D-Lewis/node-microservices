@@ -1,4 +1,4 @@
-const { execSync } = require('child_process');
+const { execSync, spawn } = require('child_process');
 const {
   config, log, fetch, schema,
 } = require('../node-common')(['config', 'log', 'fetch', 'schema']);
@@ -65,15 +65,15 @@ const handleTopic = async (req, res, packet) => {
 
   // Special command packets
   if (topic === 'shutdown') {
-    setTimeout(() => execSync('sudo shutdown -h now'), DELAY_MS);
     log.info('Shutdown command received');
+    setTimeout(() => execSync('sudo shutdown -h now'), DELAY_MS);
 
     res.status(200).json({ content: 'Shutting down now' });
   }
 
   if (topic === 'reboot') {
-    setTimeout(() => execSync('sudo reboot'), DELAY_MS);
     log.info('Reboot command received');
+    setTimeout(() => execSync('sudo reboot'), DELAY_MS);
 
     res.status(200).json({ content: 'Restarting now' });
   }
@@ -83,29 +83,31 @@ const handleTopic = async (req, res, packet) => {
   }
 
   if (topic === 'upgrade') {
-    setTimeout(() => execSync('sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y &'), DELAY_MS);
     log.info('Upgrade command received');
+    setTimeout(() => {
+      const proc = spawn('sudo', ['sh', '-c', 'apt update && apt upgrade -y && apt autoremove -y']);
+      proc.stderr.on('data', (data) => log.warn(`upgrade stderr: ${data}`));
+    }, DELAY_MS);
 
     res.status(200).json({ content: 'Upgrading now' });
   }
 
   if (topic === 'getIsUpgrading') {
+    log.debug('Get is upgrading command received');
+
     let output;
     try {
-      log.debug('Checking for upgrade lock...');
-      // Seems to pause
-      // output = execSync('sudo lsof /var/lib/dpkg/lock').toString();
-      output = execSync('ps -e | grep apt').toString();
-      log.debug(output || 'no output');
+      output = execSync('ps -e | grep apt').toString() || 'no output';
+      log.debug(output);
     } catch (e) {
+      log.error(e);
       const stdout = e.stdout ? e.stdout.toString() : '';
       const stderr = e.stderr ? e.stderr.toString() : '';
       output = stdout || stderr || 'no output';
-      log.debug(output);
+      log.error(output);
     }
-    log.debug(output);
 
-    res.status(200).json({ content: output.includes('PROCESS') });
+    res.status(200).json({ upgrading: output.includes('apt') });
   }
 };
 

@@ -56,12 +56,15 @@ export const getTimeAgoStr = (time: number) => {
  * @param {object} state - Current state.
  * @param {object} device - Device to command.
  * @param {string} topic - Command topic, either 'reboot' or 'shutdown'.
+ * @param {boolean} [resetColor] - Whether to reset the color after pressing.
+ * @returns {Promise<boolean>} true if the command was sent.
  */
 export const commandDevice = async (
   el: FabricateComponent<AppState>,
   state: AppState,
   device: Device,
   topic: string,
+  resetColor: boolean = true,
 ) => {
   const { deviceName } = device;
   const stateKey = fabricate.buildKey('command', topic);
@@ -69,13 +72,16 @@ export const commandDevice = async (
 
   // Reset color regardless
   setTimeout(() => {
-    el.setStyles(({ palette }) => ({ backgroundColor: palette.grey3 }));
+    if (resetColor) {
+      el.setStyles(({ palette }) => ({ backgroundColor: palette.grey3 }));
+    }
+
     fabricate.update(stateKey, false);
   }, 2000);
 
   el.setStyles({ backgroundColor: !pressed ? 'red' : '#0003' });
   fabricate.update(stateKey, !pressed);
-  if (!pressed) return;
+  if (!pressed) return false;
 
   try {
     const { error } = await sendConduitPacket(state, { to: 'conduit', topic }, deviceName);
@@ -83,9 +89,12 @@ export const commandDevice = async (
 
     console.log(`Device ${deviceName} sent ${topic} command`);
     el.setStyles(({ palette }) => ({ backgroundColor: palette.statusOk }));
+
+    return true;
   } catch (e) {
     alert(e);
     console.log(e);
+    return false;
   }
 };
 
