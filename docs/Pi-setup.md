@@ -69,6 +69,8 @@ unzip awscliv2.zip
 sudo ./aws/install
 ```
 
+Then setup credentials with `aws configure`.
+
 ## Docker?
 
 ```
@@ -76,12 +78,15 @@ curl -sSL https://get.docker.com | sh
 ```
 
 Add user:
-
 ```
 sudo usermod -aG docker $USER
 ```
 
 ## Increase swapfile size?
+
+```
+sudo apt install -y dphys-swapfile
+```
 
 ```
 sudo dphys-swapfile swapoff
@@ -95,8 +100,6 @@ sudo dphys-swapfile setup
 sudo dphys-swapfile swapon
 sudo reboot
 ```
-
-Then setup credentials with `aws configure`.
 
 ## Disable WiFi?
 

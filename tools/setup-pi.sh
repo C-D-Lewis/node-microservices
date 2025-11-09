@@ -4,6 +4,9 @@ set -eu
 
 export HOME=/home/pi
 
+echo "Script seems to not make node etc available to user, check it"
+exit 1
+
 if [ "$(whoami)" != "root" ]; then
   echo "This script must be run as root."
   exit 1
