@@ -163,6 +163,7 @@ module.exports = async (args = {}) => {
   await wait(waitMs);
 
   try {
+    // Get all the data
     const hotels = await Promise.all(
       Object.entries(HOTEL_CODES).map(([k, v]) => getHotelRooms(k, v)),
     );
@@ -195,10 +196,7 @@ module.exports = async (args = {}) => {
     updateMetrics({ lowestPrice: lowestPrice === Infinity ? 0 : lowestPrice });
 
     // Upload data for website
-    const s3Data = {
-      hotels,
-      updatedAt: d.toISOString(),
-    };
+    const s3Data = { hotels, updatedAt: d.toISOString() };
     await s3.putObject('public-files.chrislewis.me.uk', 'data/z-hotel.json', JSON.stringify(s3Data, null, 2));
 
     // Write CSV file where column names are hotel names and each row is the latest lowest price
