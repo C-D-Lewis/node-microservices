@@ -10,6 +10,12 @@ const { updateMetrics } = require('../modules/metrics');
 const DISK_THRESHOLD = 80;
 /** Main disk to check usage of */
 const DISK_MOUNT = '/';
+/** Acceptable entries in dmesg log */
+const DMESG_IGNORE = [
+  // USB SSD power-save features
+  'Enable of device-initiated U1 failed',
+  'Enable of device-initiated U2 failed',
+];
 
 const seenDmesgErrors = [];
 let diskAlarm;
@@ -119,7 +125,7 @@ const getSwapUsagePerc = () => {
   if (total === 0) return 0;
 
   return Math.round((used * 100) / total);
-}
+};
 
 /**
  * Monitor system metrics.
@@ -231,6 +237,7 @@ const createDmesgAlarm = () => {
       const newErrors = getDmesgErrors(lines)
         .filter((p) => !!p.message)
         .filter((p) => ['error', 'fail'].some((q) => p.message.includes(q)))
+        .filter((p) => !DMESG_IGNORE.find((q) => p.message.includes(q)))
         .filter((p) => !seenDmesgErrors.find((e) => e.time === p.time));
 
       // Remember new errors that were not already seen

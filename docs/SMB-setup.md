@@ -13,8 +13,8 @@ sudo nano /etc/samba/smb.conf
 ```
 
 ```
-[raid1]
-path = /mnt/raid1/
+[ssd]
+path = /mnt/ssd/
 writeable = yes
 create mask = 0775
 directory mask = 0775
