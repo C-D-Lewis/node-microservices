@@ -135,7 +135,7 @@ const getHotelCheapestPrice = (hotel) => hotel
 module.exports = async (args = {}) => {
   const {
     START_H = 12,
-    DAYS = [3, 4],
+    DAYS = [1, 2, 3, 4, 5],
     PRICE_THRESHOLD = 100,
   } = args;
 
