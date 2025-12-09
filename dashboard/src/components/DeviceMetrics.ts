@@ -21,7 +21,7 @@ const METRIC_NAME_MAP: Record<string, string> = {
   diskPerc: 'Disk (%)',
   tempRaw: 'Temperature',
   freqPerc: 'CPU Frequency (%)',
-  fanSpeed: 'Fan Speed (RPM)',
+  // fanSpeed: 'Fan Speed (RPM)',
   swapPerc: 'Swap Usage (%)',
 };
 

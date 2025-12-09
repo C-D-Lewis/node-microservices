@@ -152,7 +152,7 @@ const monitorSystemMetrics = async () => {
     diskPerc,
     tempRaw,
     freqPerc,
-    fanSpeed,
+    // fanSpeed,
     swapPerc,
   });
 };
