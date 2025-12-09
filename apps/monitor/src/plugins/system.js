@@ -94,19 +94,19 @@ const getFrequencyPerc = () => {
  *
  * @returns {number} Fan speed in RPM.
  */
-const getFanSpeed = () => {
-  try {
-    const speed = parseInt(
-      execSync('cat /sys/devices/platform/cooling_fan/hwmon/*/fan1_input').toString(),
-      10,
-    );
+// const getFanSpeed = () => {
+//   try {
+//     const speed = parseInt(
+//       execSync('cat /sys/devices/platform/cooling_fan/hwmon/*/fan1_input').toString(),
+//       10,
+//     );
 
-    return speed || 0;
-  } catch (e) {
-    log.error(e);
-    return 0;
-  }
-};
+//     return speed || 0;
+//   } catch (e) {
+//     log.error(e);
+//     return 0;
+//   }
+// };
 
 /**
  * Get percentage of swap used.
@@ -140,7 +140,6 @@ const monitorSystemMetrics = async () => {
   const { diskGb, diskPerc } = getDiskUsage(DISK_MOUNT);
   const tempRaw = temperature.get();
   const freqPerc = getFrequencyPerc();
-  const fanSpeed = getFanSpeed();
   const swapPerc = getSwapUsagePerc();
 
   // Metrics with 'Perc' in the name are treated as a 0-100% range in the dashboard
