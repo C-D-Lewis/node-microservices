@@ -5,6 +5,7 @@ import { sendConduitPacket } from '../services/conduitService.ts';
 import { AppState, RealtimeMetricData } from '../types.ts';
 
 declare const fabricate: Fabricate<AppState>;
+declare const fab: Fabricate<AppState>;
 
 /**
  * Schedule an update in realtime metrics.
@@ -37,22 +38,67 @@ const EnableButton = () => ToolbarButton({
     scheduleUpdate(el, state, true);
   });
 
-const RealtimeData = () => fab('Column', {
-
-})
+/**
+ * TemperatureRow component.
+ *
+ * @returns {HTMLElement} Fabricate component.
+ */
+const TemperatureRow = () => fabricate('Row')
   .setChildren([
-    // Temp row
+    fabricate('Image', { src: 'assets/images/thermometer.png' })
+      .setStyles({ width: '26px', height: '26px' }),
     fabricate('Text')
       .setStyles(({ palette }) => ({
         color: palette.text,
-        margin: 'auto',
+        margin: '2px',
         cursor: 'default',
       }))
       .onUpdate((el, state) => {
-        el.setText(`Temperature: ${state.realtimeMetrics?.temperature}`);
-      }, ['realtimeMetrics']),
+        el.setText(`${state.realtimeMetrics?.temperature}°C`);
+      }, [fabricate.StateKeys.Created, 'realtimeMetrics']),
+  ]);
 
-    // Procs rows
+/**
+ * ProcRow component.
+ *
+ * @returns {HTMLElement} Fabricate component.
+ */
+const ProcRow = () => fabricate('Row')
+  .setChildren([
+    fabricate('Image', { src: 'assets/images/code.png' })
+      .setStyles({ width: '26px', height: '26px' }),
+    fabricate('Text')
+      .setStyles(({ palette }) => ({
+        color: palette.text,
+        margin: '2px',
+        cursor: 'default',
+      }))
+      .onUpdate((el, state) => {
+        const { realtimeMetrics } = state;
+        if (!realtimeMetrics) return;
+
+        el.setChildren([
+          ...realtimeMetrics.procs.map((p) => fabricate('Text')
+            .setStyles(({ fonts }) => ({
+              fontFamily: fonts.code,
+              margin: '0px',
+            }))
+            .setText(`${p.cpu} ${p.mem} ${p.pid} ${p.cmd}`)),
+        ]);
+      }, [fabricate.StateKeys.Created, 'realtimeMetrics']),
+  ]);
+
+/**
+ * RealtimeData component.
+ *
+ * @returns {HTMLElement} Fabricate component.
+ */
+const RealtimeData = () => fab('Column', {
+  padding: '2px',
+})
+  .setChildren([
+    TemperatureRow(),
+    ProcRow(),
   ]);
 
 /**
@@ -66,7 +112,7 @@ const DeviceMetrics = () => AppAreaContainer()
       .addChildren([
         EnableButton(),
       ]),
-    RealtimeData(),
+    fabricate.conditional((state) => !!state.realtimeMetrics, RealtimeData),
   ]);
 
 export default DeviceMetrics;

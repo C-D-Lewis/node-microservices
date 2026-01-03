@@ -12,6 +12,7 @@ const handleGetRealtimePacket = async (packet, res) => {
     .toString()
     .split('\n')
     .slice(1)
+    .filter((p) => !!p.length)
     .map((line) => {
       const parts = line.trim().split(/\s+/);
       const [pid, cpu, mem] = parts;

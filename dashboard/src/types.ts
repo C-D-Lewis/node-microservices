@@ -66,16 +66,20 @@ export type MonitorAlarm = {
   lastUpdated: string;
 };
 
+/** Realtime process */
+export type RealtimeProc = {
+  pid: string;
+  cpu: string;
+  mem: string;
+  cmd: string;
+};
+
+/** Realtime metric data */
 export type RealtimeMetricData = {
   timestamp: number;
   temperature: number;
-  procs: {
-    pid: string;
-    cpu: string;
-    mem: string;
-    cmd: string;
-  }[];
-}
+  procs: RealtimeProc[];
+};
 
 /** App state type */
 export type AppState = {
