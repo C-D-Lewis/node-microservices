@@ -26,6 +26,7 @@ export const INITIAL_STATE: AppState = {
   consoleOpen: false,
   consoleLogs: [],
   metricDate: getTodayDateString(),
+  realtimeMetrics: null,
 };
 
 /** Icon type names */

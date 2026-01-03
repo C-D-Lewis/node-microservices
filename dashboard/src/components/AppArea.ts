@@ -3,6 +3,7 @@ import { AppState } from '../types.ts';
 import StatRow from './StatRow.ts';
 import AppLoader from './AppLoader.ts';
 import DeviceMetrics from './DeviceMetrics.ts';
+import RealtimeMetrics from './RealtimeMetrics.ts';
 import { fetchMetricNames } from '../services/conduitService.ts';
 import AppCardList from './AppCardList.ts';
 
@@ -83,6 +84,7 @@ const AppArea = () => {
         fabricate.conditional((s) => !areAppsLoaded(s), AppLoader),
         fabricate.conditional(areAppsLoaded, RefreshProgressBar),
         fabricate.conditional(areAppsLoaded, DeviceMetrics),
+        fabricate.conditional(areAppsLoaded, RealtimeMetrics),
         fabricate.conditional(areAppsLoaded, AppCardList),
       ]);
     }, [fabricate.StateKeys.Created, 'selectedDevice']);

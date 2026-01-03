@@ -66,6 +66,17 @@ export type MonitorAlarm = {
   lastUpdated: string;
 };
 
+export type RealtimeMetricData = {
+  timestamp: number;
+  temperature: number;
+  procs: {
+    pid: string;
+    cpu: string;
+    mem: string;
+    cmd: string;
+  }[];
+}
+
 /** App state type */
 export type AppState = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,6 +99,7 @@ export type AppState = {
   consoleOpen: boolean;
   consoleLogs: string[];
   metricDate: string;
+  realtimeMetrics: RealtimeMetricData | null;
 };
 
 /** Request states */

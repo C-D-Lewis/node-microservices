@@ -39,6 +39,7 @@ const setup = async () => {
   conduit.on('getPlugins', require('../api/getPlugins'), NULL_SCHEMA);
   conduit.on('notify', require('../api/notify'), NOTIFY_MESSAGE_SCHEMA);
   conduit.on('getAlarms', require('../api/getAlarms'), NULL_SCHEMA);
+  conduit.on('getRealtime', require('../api/getRealtime'), NULL_SCHEMA);
 };
 
 module.exports = {

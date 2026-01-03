@@ -2,25 +2,10 @@ import { Fabricate, FabricateComponent } from 'fabricate.js';
 import { AppState, Device } from '../types.ts';
 import { commandDevice, getTimeAgoStr } from '../util.ts';
 import Theme from '../theme.ts';
-import IconButton from './IconButton.ts';
+import ToolbarButton from './ToolbarButton.ts';
 import { sendConduitPacket } from '../services/conduitService.ts';
 
 declare const fabricate: Fabricate<AppState>;
-
-/**
- * ToolbarButton component.
- *
- * @param {object} props - Component props.
- * @param {string} props.src - Image src.
- * @returns {HTMLElement} Fabricate component.
- */
-const ToolbarButton = ({ src }: { src: string }) => IconButton({ src })
-  .setStyles({
-    width: '24px',
-    height: '24px',
-    marginRight: '10px',
-    transition: '0.5s',
-  });
 
 /**
  * Schedule an upgrade in progress check.
