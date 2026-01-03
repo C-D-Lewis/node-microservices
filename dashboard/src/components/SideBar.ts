@@ -91,7 +91,7 @@ const DeviceRow = ({ device }: { device: Device }) => {
     })
     .onClick((el, state) => {
       // Select this device
-      fabricate.update({ selectedDevice: device });
+      fabricate.update({ selectedDevice: device, realtimeMetrics: null });
 
       // Load the app details
       fetchDeviceApps(state, device);

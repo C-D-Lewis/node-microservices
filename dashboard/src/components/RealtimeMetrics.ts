@@ -3,9 +3,15 @@ import { AppAreaContainer, AppAreaContainerTitle } from './AppAreaContainer.ts';
 import ToolbarButton from './ToolbarButton.ts';
 import { sendConduitPacket } from '../services/conduitService.ts';
 import { AppState, RealtimeMetricData } from '../types.ts';
+import Theme from '../theme.ts';
 
 declare const fabricate: Fabricate<AppState>;
 declare const fab: Fabricate<AppState>;
+
+/** Data update interval */
+const UPDATE_INTERVAL = 5000;
+
+let dataHandle: NodeJS.Timeout;
 
 /**
  * Schedule an update in realtime metrics.
@@ -15,14 +21,14 @@ declare const fab: Fabricate<AppState>;
  * @param {boolean} [now] - Do update now.
  */
 const scheduleUpdate = (el: FabricateComponent<AppState>, state: AppState, now?: boolean) => {
-  setTimeout(async () => {
+  dataHandle = setTimeout(async () => {
     // Get data
     const res = await sendConduitPacket(state, { to: 'monitor', topic: 'getRealtime' });
     const realtimeMetrics = res.message as RealtimeMetricData;
 
     fabricate.update({ realtimeMetrics });
     scheduleUpdate(el, state);
-  }, now ? 110 : 5000);
+  }, now ? 110 : UPDATE_INTERVAL);
 };
 
 /**
@@ -77,6 +83,13 @@ const ProcRow = () => fabricate('Row')
         const { realtimeMetrics } = state;
         if (!realtimeMetrics) return;
 
+        // Show refresh by making all child elements grey
+        setTimeout(() => {
+          Array.from(el.children).forEach((child: Element) => {
+            (child as HTMLElement).style.color = Theme.palette.grey6;
+          });
+        }, UPDATE_INTERVAL);
+
         el.setChildren([
           ...realtimeMetrics.procs.map((p) => fabricate('Text')
             .setStyles(({ fonts }) => ({
@@ -97,7 +110,10 @@ const RealtimeData = () => fab('Column', { padding: '2px' })
   .setChildren([
     TemperatureRow(),
     ProcRow(),
-  ]);
+  ])
+  .onDestroy(() => {
+    clearTimeout(dataHandle);
+  });
 
 /**
  * DeviceMetrics component.
