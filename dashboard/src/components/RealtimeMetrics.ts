@@ -93,9 +93,7 @@ const ProcRow = () => fabricate('Row')
  *
  * @returns {HTMLElement} Fabricate component.
  */
-const RealtimeData = () => fab('Column', {
-  padding: '2px',
-})
+const RealtimeData = () => fab('Column', { padding: '2px' })
   .setChildren([
     TemperatureRow(),
     ProcRow(),
@@ -109,9 +107,7 @@ const RealtimeData = () => fab('Column', {
 const DeviceMetrics = () => AppAreaContainer()
   .setChildren([
     AppAreaContainerTitle({ title: 'Realtime Metrics' })
-      .addChildren([
-        EnableButton(),
-      ]),
+      .addChildren([EnableButton()]),
     fabricate.conditional((state) => !!state.realtimeMetrics, RealtimeData),
   ]);
 

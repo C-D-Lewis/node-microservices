@@ -8,7 +8,7 @@ const { conduit, temperature } = require('../node-common')(['conduit', 'temperat
  * @param {object} res - Express response object.
  */
 const handleGetRealtimePacket = async (packet, res) => {
-  const procs = execSync('ps -eo pid,%cpu,%mem,comm --sort=-%cpu | head -n 6')
+  const procs = execSync('ps -eo pid,%cpu,%mem,cmd --sort=-%cpu | head -n 6')
     .toString()
     .split('\n')
     .slice(1)
