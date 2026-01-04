@@ -1,4 +1,4 @@
-const { execSync } = require('child_process');
+const si = require('systeminformation');
 const { conduit, temperature } = require('../node-common')(['conduit', 'temperature']);
 
 /**
@@ -8,19 +8,16 @@ const { conduit, temperature } = require('../node-common')(['conduit', 'temperat
  * @param {object} res - Express response object.
  */
 const handleGetRealtimePacket = async (packet, res) => {
-  const procs = execSync('ps -eo pid,%cpu,%mem,cmd --sort=-%cpu | head -n 6')
-    .toString()
-    .split('\n')
-    .slice(1)
-    .filter((p) => !!p.length)
-    .map((line) => {
-      const parts = line.trim().split(/\s+/);
-      const [pid, cpu, mem] = parts;
-      const cmd = parts.slice(3).join(' ');
-      return {
-        pid, cpu, mem, cmd,
-      };
-    });
+  const siRes = await si.processes();
+  const procs = siRes.list
+    .sort((a, b) => b.cpu - a.cpu)
+    .slice(0, 5)
+    .map((p) => ({
+      pid: p.pid,
+      cpu: p.cpu.toFixed(2),
+      mem: p.mem.toFixed(2),
+      cmd: `${p.command} ${p.params}`,
+    }));
 
   const data = {
     timestamp: Date.now(),
