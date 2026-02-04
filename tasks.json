@@ -24,8 +24,7 @@
     "rack-nas": [
       { "nms": "conduit" },
       { "nms": "attic"   },
-      { "nms": "monitor" },
-      { "dir": "code/node-microservices/tools/cirroc_oled", "cmd": "python3 main.py" }
+      { "nms": "monitor" }
     ],
     "rack-minecraft": [
       { "nms": "conduit" },
@@ -35,12 +34,6 @@
       { "dir": "/mnt/ssd/docker-minecraft_dengie", "cmd": "./scripts/start-docker.sh dengie" },
       { "dir": "/mnt/ssd/docker-minecraft_hom",    "cmd": "sleep 120 && ./scripts/start-docker.sh hom" },
       { "dir": "/mnt/ssd/docker-minecraft_create", "cmd": "sleep 240 && ./scripts/start-docker.sh create", "disabled": true }
-    ],
-    "bedroom-pi": [
-      { "nms": "conduit" },
-      { "nms": "attic"   },
-      { "nms": "visuals" },
-      { "nms": "monitor" }
     ],
     "desk-mote-pi": [
       { "nms": "conduit" },
@@ -61,9 +54,6 @@
         "dir": "code/e-paper-dashboard",
         "cmd": "pip3 install spotipy termcolor && python3 main.py >> /home/pi/e-paper-dashboard.log 2>&1"
       }
-    ],
-    "mint-choc-chip": [
-      { "nms": "conduit" }
     ]
   }
 }
