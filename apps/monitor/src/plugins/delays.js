@@ -1,6 +1,6 @@
 const {
-  fetch, log, extract,
-} = require('../node-common')(['fetch', 'config', 'log', 'extract']);
+  fetch, log, extract, s3,
+} = require('../node-common')(['fetch', 'log', 'extract', 's3']);
 const { createAlarm } = require('../modules/alarm');
 
 /** TfL API modes to query */
@@ -10,7 +10,7 @@ const NR_OPERATORS = ['Greater Anglia'];
 /** TfL lines to check */
 const TFL_LINES = ['jubilee'];
 /** Hours to alarm */
-const HOURS = [7, 22];
+const HOURS = [7, 23];
 /** String to ignore */
 const IGNORE = [
   'Ely', 'Cambridge', 'Manningtree', 'Chingford', 'Seven Sisters', 'Tottenham Hale', 'resume',
@@ -131,7 +131,14 @@ module.exports = async () => {
         text += `Rail:\n${incidents.join('\n')}\n`;
       }
 
-      return incidents.length !== 0 ? text : undefined;
+      try {
+        await s3.putObject('public-files.chrislewis.me.uk', 'data/delaysNr.json', JSON.stringify({ incidents }, null, 2));
+      } catch (e) {
+        console.log('Error putting s3 for delaysNr');
+        console.log(e);
+      }
+
+      return incidents.length > 0 ? text : undefined;
     },
     /**
      * Message callback.
@@ -163,7 +170,14 @@ module.exports = async () => {
         text += `TfL:\n${incidents.join('\n')}\n`;
       }
 
-      return incidents.length === 0 ? text : undefined;
+      try {
+        await s3.putObject('public-files.chrislewis.me.uk', 'data/delaysTfl.json', JSON.stringify({ incidents }, null, 2));
+      } catch (e) {
+        console.log('Error putting s3 for delaysTfl');
+        console.log(e);
+      }
+
+      return incidents.length > 0 ? text : undefined;
     },
     /**
      * Message callback.
