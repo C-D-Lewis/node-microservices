@@ -48,6 +48,7 @@ const createAlarm = ({
   let notified = false;
   let lastData = null;
   let lastMessage = '';
+  let lastErrorMessage = '';
   let lastStatus = 'closed';
 
   /**
@@ -61,6 +62,14 @@ const createAlarm = ({
     if (isError) {
       const failStr = `Alarm "${name}" test failed: ${lastMessage}`;
       log.error(failStr);
+
+      // Only email once for the same error
+      if (lastMessage === lastErrorMessage) {
+        // Already notified of this error, don't email again
+        return Promise.resolve();
+      }
+
+      lastErrorMessage = lastMessage;
       return ses.notify(failStr);
     }
 
@@ -96,6 +105,7 @@ const createAlarm = ({
           if (!notified) {
             lastStatus = 'closed';
             lastMessage = '';
+            lastErrorMessage = '';
             await updateAlarm(data);
             return;
           }
@@ -104,6 +114,7 @@ const createAlarm = ({
           notified = false;
           lastStatus = 'closed';
           lastMessage = messageCb(data);
+          lastErrorMessage = '';
           if (notifyOnRecover) await notify();
           await updateAlarm(data);
           return;
