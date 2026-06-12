@@ -71,7 +71,12 @@ const load = (date = getTodayDateString()) => {
   if (!existsSync(filePath)) save();
 
   log.debug(`Loading metrics from ${filePath}`);
-  metricMonths[month] = JSON.parse(readFileSync(filePath, 'utf-8'));
+  try {
+    metricMonths[month] = JSON.parse(readFileSync(filePath, 'utf-8'));
+  } catch (err) {
+    log.error(`Error loading metrics file ${filePath}: ${err.message} - resetting file`);
+    metricMonths[month] = {};
+  }
   return metricMonths[month];
 };
 
