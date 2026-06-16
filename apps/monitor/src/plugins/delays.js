@@ -15,7 +15,7 @@ const HOURS = [7, 23];
 const IGNORE = [
   'Ely', 'Cambridge', 'Manningtree', 'Chingford', 'Seven Sisters', 'Tottenham Hale', 'resume',
   'Lowestoft', 'Diss', 'Stanstead', 'Hackney', 'Southminster', 'Wickford', 'Sudbury', 'Felixstowe',
-  'Brimsdown',
+  'Brimsdown', 'Cheshunt', 'Broxbourne',
 ];
 /** Fetch fixed options */
 const FETCH_OPTS = {
