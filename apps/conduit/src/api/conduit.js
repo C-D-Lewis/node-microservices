@@ -165,7 +165,7 @@ const handleTopic = async (req, res, packet) => {
   }
 
   log.warn(`Unknown topic for conduit: ${topic}`);
-  res.status(400).json({ error: `Unknown topic for conduit: ${topic}` });
+  return res.status(400).json({ error: `Unknown topic for conduit: ${topic}` });
 };
 
 /**

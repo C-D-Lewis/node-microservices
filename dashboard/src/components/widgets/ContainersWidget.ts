@@ -6,11 +6,20 @@ import { fetchRunningContainers } from '../../services/conduitService.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
-const ContainerView = ({ name, status }) => fabricate('Row')
+/**
+ * ContainersList component.
+ *
+ * @param {object} props - Component props.
+ * @param {string} props.name - Container name.
+ * @param {string} props.status - Container status string.
+ * @returns {FabricateComponent} Fabricate component.
+ */
+const ContainerView = ({ name, status }: { name: string, status: string }) => fabricate('Row')
   .setStyles({
     backgroundColor: '#1D63ED',
     padding: '6px',
     borderRadius: '4px',
+    margin: '0px 8px',
   })
   .setChildren([
     fabricate('Image', { src: 'assets/images/docker.png' })
