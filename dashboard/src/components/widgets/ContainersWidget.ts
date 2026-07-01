@@ -19,7 +19,7 @@ const ContainerView = ({ name, status }: { name: string, status: string }) => fa
     backgroundColor: '#1D63ED',
     padding: '6px',
     borderRadius: '4px',
-    margin: '0px 8px',
+    marginRight: '8px',
   })
   .setChildren([
     fabricate('Image', { src: 'assets/images/docker.png' })
