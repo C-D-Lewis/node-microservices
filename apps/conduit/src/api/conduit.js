@@ -53,6 +53,22 @@ const NO_RESPONSE_PACKET = { status: 204, message: { content: 'No content forwar
 const DELAY_MS = 3000;
 
 /**
+ * Get running container names.
+ *
+ * @returns {{name, status}} List of running containers.
+ */
+const getRunningContainers = () => {
+  const output = execSync('docker ps --format \'{"name": "{{.Names}}", "status": "{{.Status}}"}\'').toString().trim();
+
+  // No output if no containers
+  if (!output.length) return [];
+
+  const containers = output.split('\n').map((line) => JSON.parse(line));
+  log.debug(`Running containers: ${JSON.stringify(containers)}`);
+  return containers;
+};
+
+/**
  * Handle a topic meant for this conduit.
  *
  * @param {object} req - Express request object.
@@ -68,18 +84,18 @@ const handleTopic = async (req, res, packet) => {
     log.info('Shutdown command received');
     setTimeout(() => execSync('sudo shutdown -h now'), DELAY_MS);
 
-    res.status(200).json({ content: 'Shutting down now' });
+    return res.status(200).json({ content: 'Shutting down now' });
   }
 
   if (topic === 'reboot') {
     log.info('Reboot command received');
     setTimeout(() => execSync('sudo reboot'), DELAY_MS);
 
-    res.status(200).json({ content: 'Restarting now' });
+    return res.status(200).json({ content: 'Restarting now' });
   }
 
   if (topic === 'getApps') {
-    await respondWithApps(req, res);
+    return respondWithApps(req, res);
   }
 
   if (topic === 'upgrade') {
@@ -89,7 +105,7 @@ const handleTopic = async (req, res, packet) => {
       proc.stderr.on('data', (data) => log.warn(`upgrade stderr: ${data}`));
     }, DELAY_MS);
 
-    res.status(200).json({ content: 'Upgrading now' });
+    return res.status(200).json({ content: 'Upgrading now' });
   }
 
   if (topic === 'getIsUpgrading') {
@@ -107,8 +123,49 @@ const handleTopic = async (req, res, packet) => {
       log.error(output);
     }
 
-    res.status(200).json({ upgrading: output.includes('apt') });
+    return res.status(200).json({ upgrading: output.includes('apt') });
   }
+
+  if (topic === 'getRunningContainers') {
+    log.debug('Get running docker command received');
+
+    let containers = [];
+    try {
+      containers = getRunningContainers();
+    } catch (e) {
+      const error = `getRunningContainers() failed: ${e.message}`;
+      log.error(error);
+      return res.status(500).json({ error });
+    }
+
+    return res.status(200).json({ containers });
+  }
+
+  if (topic === 'stopAllContainers') {
+    let containers = [];
+    try {
+      containers = getRunningContainers();
+    } catch (e) {
+      const error = `getRunningContainers() failed: ${e.message}`;
+      log.error(error);
+      return res.status(500).json({ error });
+    }
+
+    if (!containers.length) return res.status(200).json({ message: 'No running containers' });
+
+    try {
+      execSync(`docker stop ${containers.map((p) => p.name).join(' ')}`);
+    } catch (e) {
+      const error = `docker stop failed: ${e.message}`;
+      log.error(error);
+      return res.status(500).json({ error });
+    }
+
+    return res.status(200).json({ success: true });
+  }
+
+  log.warn(`Unknown topic for conduit: ${topic}`);
+  res.status(400).json({ error: `Unknown topic for conduit: ${topic}` });
 };
 
 /**

@@ -28,24 +28,6 @@ describe('API', () => {
     });
   });
 
-  describe('topic: getApps', () => {
-    it('should respond with known apps, including itself', async () => {
-      const { data } = await fetch({
-        url: `http://localhost:${SERVER.PORT}/conduit`,
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ to: 'conduit', topic: 'getApps' }),
-      });
-
-      expect(data.status).to.equal(200);
-      expect(data.message).to.be.an('array');
-      expect(data.message.length).to.be.gte(2);
-
-      const found = data.message.find(({ app }) => app === 'conduit');
-      expect(found.port).to.be.a('number');
-    });
-  });
-
   describe('/ping', () => {
     it('should return 200 / pong', async () => {
       const res = await fetch({
@@ -134,6 +116,53 @@ describe('API', () => {
 
       expect(res.data.status).to.equal(401);
       expect(res.data.error).to.equal('Not Authorized: Authorization check failed: User does not exist');
+    });
+
+    describe('topic: getApps', () => {
+      it('should respond with known apps, including itself', async () => {
+        const { data } = await fetch({
+          url: `http://localhost:${SERVER.PORT}/conduit`,
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ to: 'conduit', topic: 'getApps' }),
+        });
+
+        expect(data.status).to.equal(200);
+        expect(data.message).to.be.an('array');
+        expect(data.message.length).to.be.gte(2);
+
+        const found = data.message.find(({ app }) => app === 'conduit');
+        expect(found.port).to.be.a('number');
+      });
+    });
+
+    describe('topic: getRunningContainers', () => {
+      it('should respond with no containers running', async () => {
+        const { status, data } = await fetch({
+          url: `http://localhost:${SERVER.PORT}/conduit`,
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ to: 'conduit', topic: 'getRunningContainers' }),
+        });
+
+        expect(status).to.equal(200);
+        expect(data.containers).to.be.an('array');
+        expect(data.containers.length).to.be.gte(0);
+      });
+    });
+
+    describe('topic: stopAllContainers', () => {
+      it('should respond with no containers running', async () => {
+        const { status, data } = await fetch({
+          url: `http://localhost:${SERVER.PORT}/conduit`,
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ to: 'conduit', topic: 'stopAllContainers' }),
+        });
+
+        expect(status).to.equal(200);
+        expect(data.message).to.equal('No running containers');
+      });
     });
   });
 });

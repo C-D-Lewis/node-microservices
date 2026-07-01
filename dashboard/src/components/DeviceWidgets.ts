@@ -2,25 +2,14 @@ import { Fabricate, FabricateComponent } from 'fabricate.js';
 import { AppState } from '../types.ts';
 import StatRow from './StatRow.ts';
 import AppLoader from './AppLoader.ts';
-import DeviceMetrics from './DeviceMetrics.ts';
-import RealtimeMetrics from './RealtimeMetrics.ts';
+import DeviceMetricsWidget from './widgets/DeviceMetricsWidget.ts';
+import RealtimeMetricsWidget from './widgets/RealtimeMetricsWidget.ts';
 import { fetchMetricNames } from '../services/conduitService.ts';
-import AppCardList from './AppCardList.ts';
+import AppListWidget from './widgets/AppListWidget.ts';
+import { NoThingsLabel } from './NoThingsLabel.ts';
+import ContainersWidget from './widgets/ContainersWidget.ts';
 
 declare const fabricate: Fabricate<AppState>;
-
-/**
- * NoDeviceLabel component.
- *
- * @returns {HTMLElement} Fabricate component.
- */
-const NoDeviceLabel = () => fabricate('Text')
-  .setStyles(({ palette }) => ({
-    color: palette.grey5,
-    margin: 'auto',
-    cursor: 'default',
-  }))
-  .setText('No device selected');
 
 /**
  * RefreshProgressBar component.
@@ -28,6 +17,7 @@ const NoDeviceLabel = () => fabricate('Text')
  * @returns {FabricateComponent} RefreshProgressBar component.
  */
 const RefreshProgressBar = () => {
+  // @ts-expect-error NodeJS type
   let handle: NodeJS.Timer;
   let progress = 100;
 
@@ -55,11 +45,11 @@ const RefreshProgressBar = () => {
 };
 
 /**
- * AppArea component.
+ * DeviceWidgets component.
  *
  * @returns {HTMLElement} Fabricate component.
  */
-const AppArea = () => {
+const DeviceWidgets = () => {
   /**
    * Determine if this device's apps are loaded.
    *
@@ -74,7 +64,7 @@ const AppArea = () => {
       const { selectedDevice } = state;
 
       if (!selectedDevice) {
-        el.setChildren([NoDeviceLabel()]);
+        el.setChildren([NoThingsLabel().setText('No device selected')]);
         return;
       }
 
@@ -83,11 +73,12 @@ const AppArea = () => {
         StatRow({ device: selectedDevice }),
         fabricate.conditional((s) => !areAppsLoaded(s), AppLoader),
         fabricate.conditional(areAppsLoaded, RefreshProgressBar),
-        fabricate.conditional(areAppsLoaded, DeviceMetrics),
-        fabricate.conditional(areAppsLoaded, RealtimeMetrics),
-        fabricate.conditional(areAppsLoaded, AppCardList),
+        fabricate.conditional(areAppsLoaded, DeviceMetricsWidget),
+        fabricate.conditional(areAppsLoaded, RealtimeMetricsWidget),
+        fabricate.conditional(areAppsLoaded, AppListWidget),
+        fabricate.conditional(areAppsLoaded, ContainersWidget),
       ]);
     }, [fabricate.StateKeys.Created, 'selectedDevice']);
 };
 
-export default AppArea;
+export default DeviceWidgets;

@@ -1,12 +1,13 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
 import {
   AppState, DataPoint, MetricData,
-} from '../types.ts';
-import Theme from '../theme.ts';
-import { BUCKET_SIZE } from '../constants.ts';
-import { fetchMetric, fetchMetricNames } from '../services/conduitService.ts';
-import { AppAreaContainer, AppAreaContainerTitle } from './AppAreaContainer.ts';
-import { getTodayDateString } from '../util.ts';
+} from '../../types.ts';
+import Theme from '../../theme.ts';
+import { BUCKET_SIZE } from '../../constants.ts';
+import { fetchMetric, fetchMetricNames } from '../../services/conduitService.ts';
+import { WidgetsContainer, WidgetsContainerTitle } from '../WidgetsContainer.ts';
+import { getTodayDateString } from '../../util.ts';
+import { NoThingsLabel } from '../NoThingsLabel.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -24,24 +25,6 @@ const METRIC_NAME_MAP: Record<string, string> = {
   // fanSpeed: 'Fan Speed (RPM)',
   swapPerc: 'Swap Usage (%)',
 };
-
-/**
- * NoDeviceLabel component.
- *
- * @returns {HTMLElement} Fabricate component.
- */
-const NoMetricsLabel = () => fabricate('Text')
-  .setStyles(({ palette }) => ({
-    color: palette.grey5,
-    cursor: 'default',
-    height: '100px',
-    backgroundColor: palette.grey2,
-    width: '100%',
-    textAlign: 'center',
-    alignContent: 'center',
-  }))
-  .setNarrowStyles({ margin: '0px' })
-  .setText('No metrics to show');
 
 /** Chart plot point */
 type PlotPoint = {
@@ -208,7 +191,7 @@ const GraphGroup = () => fabricate('Row')
     const { selectedDevice, metricNames } = state;
 
     if (!selectedDevice) {
-      el.setChildren([NoMetricsLabel()]);
+      el.setChildren([NoThingsLabel().setText('No metrics to show')]);
       return;
     }
 
@@ -262,17 +245,17 @@ const DateSelection = () => {
 };
 
 /**
- * DeviceMetrics component.
+ * DeviceMetricsWidget component.
  *
  * @returns {HTMLElement} Fabricate component.
  */
-const DeviceMetrics = () => AppAreaContainer()
+const DeviceMetricsWidget = () => WidgetsContainer()
   .setChildren([
-    AppAreaContainerTitle({ title: 'Device Metrics' })
+    WidgetsContainerTitle({ title: 'Device Metrics' })
       .addChildren([
         DateSelection(),
       ]),
     GraphGroup(),
   ]);
 
-export default DeviceMetrics;
+export default DeviceMetricsWidget;

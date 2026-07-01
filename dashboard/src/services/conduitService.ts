@@ -231,3 +231,26 @@ export const fetchMetricNames = async (state: AppState) => {
   } = await sendConduitPacket(state, { to: 'monitor', topic: 'getMetricNames' });
   fabricate.update({ metricNames });
 };
+
+/**
+ * Fetch running Docker containers.
+ *
+ * @param {AppState} state - App state.
+ */
+export const fetchRunningContainers = async (state: AppState) => {
+  try {
+    const { containers } = await sendConduitPacket(
+      state,
+      { to: 'conduit', topic: 'getRunningContainers' },
+    );
+
+    if (typeof containers === 'undefined') {
+      throw new Error('Bad response from getRunningContainers');
+    }
+
+    fabricate.update({ runningContainers: containers });
+  } catch (err) {
+    console.error(err);
+    fabricate.update({ runningContainers: [] });
+  }
+};

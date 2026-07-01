@@ -27,6 +27,7 @@ export const INITIAL_STATE: AppState = {
   consoleLogs: [],
   metricDate: getTodayDateString(),
   realtimeMetrics: null,
+  runningContainers: [],
 };
 
 /** Icon type names */

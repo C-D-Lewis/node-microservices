@@ -4,33 +4,32 @@ import { AppState } from '../types.ts';
 declare const fabricate: Fabricate<AppState>;
 
 /**
- * AppArea item container.
+ * DeviceWidgets item container.
  *
- * @returns {FabricateComponent} AppAreaContainer component.
+ * @returns {FabricateComponent} WidgetsContainer component.
  */
-export const AppAreaContainer = () => fabricate('Column')
+export const WidgetsContainer = () => fabricate('Column')
   .setStyles(({ palette }) => ({
     backgroundColor: palette.grey2,
     border: `solid 2px ${palette.grey6}`,
     margin: '30px 30px 0px 30px',
-    width: 'fit-content',
-    minWidth: '250px',
+    minWidth: '90%',
     minHeight: '64px',
   }))
   .setNarrowStyles({ margin: '15px' });
 
 /**
- * AppAreaContainer title.
+ * WidgetsContainer title.
  *
  * @param {object} props - Component props.
  * @param {string} props.title - Title text to display.
- * @returns {FabricateComponent} AppAreaContainerTitle component.
+ * @returns {FabricateComponent} WidgetsContainerTitle component.
  */
-export const AppAreaContainerTitle = ({ title }: { title: string }) => {
+export const WidgetsContainerTitle = ({ title }: { title: string }) => {
   const titleEl = fabricate('Text')
     .setStyles(({ fonts }) => ({
       color: 'white',
-      fontSize: '0.9rem',
+      fontSize: '1.1rem',
       fontFamily: fonts.body,
       fontWeight: 'bold',
       padding: '5px',

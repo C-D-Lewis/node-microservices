@@ -1,9 +1,10 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
-import { AppAreaContainer, AppAreaContainerTitle } from './AppAreaContainer.ts';
-import ToolbarButton from './ToolbarButton.ts';
-import { sendConduitPacket } from '../services/conduitService.ts';
-import { AppState, RealtimeMetricData } from '../types.ts';
-import Theme from '../theme.ts';
+import { WidgetsContainer, WidgetsContainerTitle } from '../WidgetsContainer.ts';
+import ToolbarButton from '../ToolbarButton.ts';
+import { sendConduitPacket } from '../../services/conduitService.ts';
+import { AppState, RealtimeMetricData } from '../../types.ts';
+import Theme from '../../theme.ts';
+import { NoThingsLabel } from '../NoThingsLabel.ts';
 
 declare const fabricate: Fabricate<AppState>;
 declare const fab: Fabricate<AppState>;
@@ -11,6 +12,7 @@ declare const fab: Fabricate<AppState>;
 /** Data update interval */
 const UPDATE_INTERVAL = 5000;
 
+// @ts-expect-error NodeJS import
 let dataHandle: NodeJS.Timeout;
 
 /**
@@ -116,15 +118,19 @@ const RealtimeData = () => fab('Column', { padding: '2px' })
   });
 
 /**
- * DeviceMetrics component.
+ * DeviceMetricsWidget component.
  *
  * @returns {HTMLElement} Fabricate component.
  */
-const DeviceMetrics = () => AppAreaContainer()
+const DeviceMetricsWidget = () => WidgetsContainer()
   .setChildren([
-    AppAreaContainerTitle({ title: 'Realtime Metrics' })
+    WidgetsContainerTitle({ title: 'Realtime Metrics' })
       .addChildren([EnableButton()]),
     fabricate.conditional((state) => !!state.realtimeMetrics, RealtimeData),
+    fabricate.conditional(
+      (state) => !state.realtimeMetrics,
+      () => NoThingsLabel().setText('Realtime metrics disabled'),
+    ),
   ]);
 
-export default DeviceMetrics;
+export default DeviceMetricsWidget;

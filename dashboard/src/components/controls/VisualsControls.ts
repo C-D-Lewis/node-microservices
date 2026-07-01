@@ -1,6 +1,7 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
 import { AppState } from '../../types.ts';
 import { sendConduitPacket } from '../../services/conduitService.ts';
+import { NoThingsLabel } from '../NoThingsLabel.ts';
 
 declare const fabricate: Fabricate<AppState>;
 declare const fab: Fabricate<AppState>;
@@ -64,14 +65,7 @@ const ColorPalette = () => fabricate('Row')
       el.setChildren(DEMO_COLORS.map((color) => SwatchButton({ color })));
     } else {
       el.setChildren([
-        fabricate('Text')
-          .setStyles(({ fonts, palette }) => ({
-            fontFamily: fonts.body,
-            color: palette.grey5,
-            margin: '10px auto',
-            cursor: 'default',
-          }))
-          .setText('No lights configured'),
+        NoThingsLabel().setText('No lights configured'),
       ]);
     }
   });

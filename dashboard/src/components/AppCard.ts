@@ -69,7 +69,6 @@ const AppStatusRow = ({ app }: { app: DeviceApp }) => fabricate('Row')
       }))
       .setText(app.app!),
     StatusText({ app }),
-    // Port
   ]);
 
 /**
@@ -93,8 +92,6 @@ const AppCard = ({ app }: { app: DeviceApp }) => {
     .setNarrowStyles({ width: '100%' })
     .setChildren([
       AppStatusRow({ app }),
-
-      // TODO More elegant way of doing this
       fabricate.conditional(() => hasControls, () => AppControls({ app })),
     ]);
 };

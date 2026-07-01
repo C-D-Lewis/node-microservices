@@ -81,6 +81,12 @@ export type RealtimeMetricData = {
   procs: RealtimeProc[];
 };
 
+/** Running container data */
+export type ContainerItem = {
+  name: string;
+  status: string;
+};
+
 /** App state type */
 export type AppState = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -104,6 +110,7 @@ export type AppState = {
   consoleLogs: string[];
   metricDate: string;
   realtimeMetrics: RealtimeMetricData | null;
+  runningContainers: ContainerItem[];
 };
 
 /** Request states */

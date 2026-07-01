@@ -1,7 +1,7 @@
 import { Fabricate, FabricateComponent } from 'fabricate.js';
-import { AppState } from '../types.ts';
-import AppCard from './AppCard.ts';
-import { AppAreaContainer, AppAreaContainerTitle } from './AppAreaContainer.ts';
+import { AppState } from '../../types.ts';
+import AppCard from '../AppCard.ts';
+import { WidgetsContainer, WidgetsContainerTitle } from '../WidgetsContainer.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -20,12 +20,12 @@ const CardList = () => fabricate('Row')
 /**
  * App card list in container.
  *
- * @returns {FabricateComponent} AppCardList component.
+ * @returns {FabricateComponent} AppListWidget component.
  */
-const AppCardList = () => AppAreaContainer()
+const AppListWidget = () => WidgetsContainer()
   .setChildren([
-    AppAreaContainerTitle({ title: 'Device Apps' }),
+    WidgetsContainerTitle({ title: 'Device Apps' }),
     CardList(),
   ]);
 
-export default AppCardList;
+export default AppListWidget;

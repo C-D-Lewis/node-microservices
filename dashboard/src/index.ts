@@ -4,7 +4,7 @@ import Theme from './theme.ts';
 import { INITIAL_STATE } from './constants.ts';
 import { parseParams } from './util.ts';
 import SideBar from './components/SideBar.ts';
-import AppArea from './components/AppArea.ts';
+import DeviceWidgets from './components/DeviceWidgets.ts';
 import { fetchFleetList } from './services/conduitService.ts';
 import ConsoleView from './components/ConsolePane.ts';
 
@@ -68,7 +68,7 @@ const App = () => fabricate('Column')
       .setNarrowStyles({ flexWrap: 'wrap' })
       .setChildren([
         SideBar(),
-        AppArea(),
+        DeviceWidgets(),
         ConsoleView(),
       ]),
   ])
