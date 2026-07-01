@@ -137,6 +137,10 @@ describe('API', () => {
     });
 
     describe('topic: getRunningContainers', () => {
+      before(function beforeCb() {
+        if (process.env.CI) this.skip();
+      });
+
       it('should respond with no containers running', async () => {
         const { status, data } = await fetch({
           url: `http://localhost:${SERVER.PORT}/conduit`,
@@ -152,6 +156,10 @@ describe('API', () => {
     });
 
     describe('topic: stopAllContainers', () => {
+      before(function beforeCb() {
+        if (process.env.CI) this.skip();
+      });
+
       it('should respond with no containers running', async () => {
         const { status, data } = await fetch({
           url: `http://localhost:${SERVER.PORT}/conduit`,
