@@ -3,6 +3,9 @@ import { WidgetsContainer, WidgetsContainerTitle } from '../WidgetsContainer.ts'
 import { AppState } from '../../types.ts';
 import { NoThingsLabel } from '../NoThingsLabel.ts';
 import { fetchRunningContainers } from '../../services/conduitService.ts';
+import IconButton from '../IconButton.ts';
+import { commandDevice } from '../../util.ts';
+import ToolbarButton from '../ToolbarButton.ts';
 
 declare const fabricate: Fabricate<AppState>;
 
@@ -54,7 +57,14 @@ const ContainersList = () => fabricate('Row')
  */
 const ContainersWidget = () => WidgetsContainer()
   .setChildren([
-    WidgetsContainerTitle({ title: 'Docker Containers' }),
+    WidgetsContainerTitle({ title: 'Docker Containers' })
+      .addChildren([
+        ToolbarButton({ src: 'assets/images/shutdown.png' })
+          .onClick(async (el, state) => {
+            const r = await commandDevice(el, state, state.selectedDevice!, 'stopAllContainers');
+            if (r) fabricate.update({ runningContainers: [] });
+          }),
+      ]),
     fabricate.conditional((state) => !!state.runningContainers.length, ContainersList),
     fabricate.conditional(
       (state) => !state.runningContainers.length,
