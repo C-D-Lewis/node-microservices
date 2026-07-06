@@ -23,10 +23,15 @@ const ContainerView = ({ name, status }: { name: string, status: string }) => fa
     padding: '6px',
     borderRadius: '4px',
     margin: '4px',
+    alignItems: 'center',
   })
   .setChildren([
-    fabricate('Image', { src: 'assets/images/docker.png' })
-      .setStyles({ width: '24px', height: '24px' }),
+    fabricate('Image', { src: 'assets/images/container.png' })
+      .setStyles({
+        width: '24px',
+        height: '24px',
+        margin: '0px 3px',
+      }),
     fabricate('Text')
       .setStyles(({ palette, fonts }) => ({
         fontSize: '0.9rem',
