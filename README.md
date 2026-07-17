@@ -11,12 +11,11 @@ possible. Therefore elements like common modules, logging, configuration,
 inter-app communication are of an original design.
 
 * [Setup](#setup)
-* [App List](#app-list)
-* [Dashboard List](#dashboard-list)
-* [Common Modules](#common-modules)
-* [Configuration](#configuration)
-* [Communication](#communication)
-* [Authentication](#authentication)
+* [Apps](#apps)
+* [Dashboard](#dashboard)
+* [Run in Docker](#run-in-docker)
+* [About](#about)
+* [Cloud Deployment](#cloud-deplopyment)
 
 
 ## Setup
@@ -35,7 +34,7 @@ Lastly, setup the `node-common` module, shared by all apps:
 2. `npm ci`
 
 
-## App List
+## Apps
 
 * [`attic`](apps/attic) - Data storage service that allows other apps to
   POST/GET app-specific data items, stored locally in a variety of formats
@@ -56,14 +55,35 @@ Lastly, setup the `node-common` module, shared by all apps:
   connections from apps, dashboards, webapps etc over WS protocol.
 
 
-## Dashboard List
+## Run in Docker
 
-* [`service-dashboard`](apps/service-dashboard) - React application that shows
-  the status of all local apps running through `conduit`, and provides a GUI for
-  their APIs. For example, setting colors for `visuals`.
+Build an image for a given app, such as `conduit`:
+
+```
+docker build -t nms-conduit --build-arg APP=conduit -f Dockerfile.app .
+```
+
+Run a detatched container, including any expected ports:
+
+```
+docker run --rm --name conduit -p 5959:5959 --detach -t nms-conduit
+```
+
+> TODO: Handle mounting a volume for persisted data, like `db.json`.
 
 
-## Common Modules
+## Dashboard
+
+[`dashboard`](apps/dashboard) - React application that shows the status of all
+local apps running through `conduit`, and provides a GUI for their APIs. For
+example, setting colors for `visuals`.
+
+TODO: List dashboard features (metrics, plugins, containers, alarms etc.)
+
+
+## About
+
+### Common Modules
 
 The [`node-common`](node-common) project contains a set of modules that are
 commonly used across all of these apps for purposes such as API requests, data
@@ -79,7 +99,7 @@ const { log, conduit } = require('../node-common')(['log', 'conduit']);
 ```
 
 
-## Configuration
+### Configuration
 
 Each app has a configuration section by name in `config.yml`, which can be
 created manually using `config-default.yml` or fetched from elsewhere,
@@ -108,7 +128,7 @@ Apps must then use `validate()` during startup to validate the whole and to
 discover unused keys.
 
 
-## Communication
+### Communication
 
 The common `conduit` module provides easy access to the locally (or even
 remotely) running instance of the `conduit` app, which assigns apps random ports
@@ -141,7 +161,7 @@ module.exports = (packet, res) => {
 };
 ```
 
-### Testing Communication
+#### Testing Communication
 
 The `tools/conduit.sh` script can be used to easily send such a message to an
 app. For example:
@@ -192,7 +212,7 @@ curl -X POST http://48.192.67.201:5959/conduit \
 ```
 
 
-## Authentication
+### Authentication
 
 For all requests that do not originate from `localhost`, each packet received
 by `conduit` must include the `auth` field with a token. Where applicable
