@@ -63,7 +63,7 @@ const loadAll = () => {
     }
 
     // Load plugins and store
-    const func = (FILE_NAME)
+    const func = FILE_NAME
       ? require(`../plugins/${FILE_NAME}`)
       : require(`../plugins/${USE}`);
     const name = FILE_NAME || USE;

@@ -23,6 +23,13 @@ const NOTIFY_MESSAGE_SCHEMA = {
     content: { type: 'string' },
   },
 };
+/** Schema for runPlugin */
+const RUN_PLUGIN_MESSAGE_SCHEMAA = {
+  required: ['fileName'],
+  properties: {
+    fileName: { type: 'string' },
+  },
+};
 
 /** Schema for messages with no inputs */
 const NULL_SCHEMA = {};
@@ -40,6 +47,7 @@ const setup = async () => {
   conduit.on('notify', require('../api/notify'), NOTIFY_MESSAGE_SCHEMA);
   conduit.on('getAlarms', require('../api/getAlarms'), NULL_SCHEMA);
   conduit.on('getRealtime', require('../api/getRealtime'), NULL_SCHEMA);
+  conduit.on('runPlugin', require('../api/runPlugin'), RUN_PLUGIN_MESSAGE_SCHEMAA);
 };
 
 module.exports = {
