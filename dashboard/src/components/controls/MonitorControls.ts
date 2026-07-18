@@ -30,6 +30,38 @@ const PluginView = ({ plugin }: { plugin: MonitorPlugin }) => {
   const { FILE_NAME, ENABLED } = plugin;
   const disabled = ENABLED === false;
 
+  const runPluginButton = fabricate('Image', { src: 'assets/images/play.png' })
+    .setStyles({
+      width: '24px',
+      height: '24px',
+      filter: `brightness(${disabled ? '0.4' : '1'})`,
+      marginLeft: 'auto',
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      transition: '0.3s',
+      padding: '2px',
+      borderRadius: '4px',
+    })
+    .onClick(async (el, state) => {
+      if (disabled) return;
+
+      // TODO: await response - will sendConduitPacket throw?
+      el.setStyles(({ palette }) => ({
+        backgroundColor: palette.statusPending,
+      }));
+      await sendConduitPacket(
+        state,
+        { to: 'monitor', topic: 'runPlugin', message: { fileName: plugin.FILE_NAME } },
+      );
+      el.setStyles(({ palette }) => ({
+        backgroundColor: palette.statusOk,
+      }));
+      setTimeout(() => {
+        el.setStyles({
+          backgroundColor: 'transparent',
+        });
+      }, 1000);
+    });
+
   return fabricate('Row')
     .setStyles(({ palette }) => ({
       cursor: 'default',
@@ -53,6 +85,7 @@ const PluginView = ({ plugin }: { plugin: MonitorPlugin }) => {
           color: disabled ? palette.grey5 : 'white',
         }))
         .setText(`${FILE_NAME.replace('.js', '')}${getSchedule(plugin)}`),
+      runPluginButton,
     ]);
 };
 
