@@ -6,7 +6,6 @@ const COMMAND_LIST = [
   require('../commands/attic'),
   require('../commands/clacks'),
   require('../commands/conduit'),
-  require('../commands/guestlist'),
   require('../commands/fleet'),
   require('../commands/visuals'),
 ];

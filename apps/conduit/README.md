@@ -64,6 +64,28 @@ Content-Type: application/json
 }
 ```
 
+#### Special Topics
+
+Conduit has some special topics it will handle instead of passing them to the
+downstream app. These fall under the remit of device and process management.
+
+* `shutdown` - Shutdown the device.
+* `reboot` - Restart the device.
+* `getApps` - Get running apps.
+* `upgrade` - Run apt upgrade.
+* `getIsUpgrading` - Get if apt upgrade is ongoing.
+* `getRunningContainers` - Get running Docker containers.
+* `stopAllContainers` - Stop all running Docker containers.
+* `createUser` - Create a new user and return the token once.
+
+Example of creating a new user with the `tools/cli`:
+
+```
+nms conduit send conduit createUser \
+  '{"name":"admin","apps":"all","topics":"all","adminPassword":"adminPassword"}'
+```
+
+
 ### `GET /port`
 
 As an app, request which port should be listened to on the app's internal server

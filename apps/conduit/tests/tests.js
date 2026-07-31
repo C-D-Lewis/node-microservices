@@ -118,6 +118,28 @@ describe('API', () => {
       expect(res.data.error).to.equal('Not Authorized: Authorization check failed: User does not exist');
     });
 
+    it('should not require auth for allowed topics', async () => {
+      const res = await fetch({
+        url: `http://localhost:${SERVER.PORT}/conduit`,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: 'attic',
+          topic: 'get',
+          device: 'test',
+          message: {
+            app: 'conduit',
+            key: 'fleetList',
+          },
+          forceAuthCheck: true,
+        }),
+      });
+
+      // Auth passed, but key isn't set yet, this is okay
+      expect(res.data.status).to.equal(404);
+      expect(res.data.error).to.equal('app conduit or key fleetList not found');
+    });
+
     describe('topic: getApps', () => {
       it('should respond with known apps, including itself', async () => {
         const { data } = await fetch({
@@ -166,5 +188,7 @@ describe('API', () => {
     //     expect(data.message).to.equal('No running containers');
     //   });
     // });
+
+    // describe('createUser');
   });
 });

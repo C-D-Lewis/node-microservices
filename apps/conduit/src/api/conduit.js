@@ -1,4 +1,3 @@
-const { execSync, spawn } = require('child_process');
 const {
   config, log, fetch, schema,
 } = require('../node-common')(['config', 'log', 'fetch', 'schema']);
@@ -8,6 +7,11 @@ const {
 } = require('../modules/util');
 const respondWithApps = require('../modules/apps');
 const { checkAuth } = require('../modules/auth');
+const { handleShutdown } = require('./topics/shutdown');
+const { handleReboot } = require('./topics/reboot');
+const { handleUpgrade, handleGetIsUpgrading } = require('./topics/upgrade');
+const { handleGetRunningContainers, handleStopAllContainers } = require('./topics/containers');
+const { handleCreateUser } = require('./topics/users');
 
 config.addPartialSchema({
   required: ['SERVER'],
@@ -49,24 +53,6 @@ const PACKET_SCHEMA = {
 };
 /** Default response when the recipient does not provide one. */
 const NO_RESPONSE_PACKET = { status: 204, message: { content: 'No content forwarded' } };
-/** Command delay time */
-const DELAY_MS = 3000;
-
-/**
- * Get running container names.
- *
- * @returns {{name, status}} List of running containers.
- */
-const getRunningContainers = () => {
-  const output = execSync('docker ps --format \'{"name": "{{.Names}}", "status": "{{.Status}}"}\'').toString().trim();
-
-  // No output if no containers
-  if (!output.length) return [];
-
-  const containers = output.split('\n').map((line) => JSON.parse(line));
-  log.debug(`Running containers: ${JSON.stringify(containers)}`);
-  return containers;
-};
 
 /**
  * Handle a topic meant for this conduit.
@@ -77,92 +63,17 @@ const getRunningContainers = () => {
  * @returns {Promise<void>}
  */
 const handleTopic = async (req, res, packet) => {
-  const { topic } = packet;
+  const { topic, message } = packet;
 
   // Special command packets
-  if (topic === 'shutdown') {
-    log.info('Shutdown command received');
-    setTimeout(() => execSync('sudo shutdown -h now'), DELAY_MS);
-
-    return res.status(200).json({ content: 'Shutting down now' });
-  }
-
-  if (topic === 'reboot') {
-    log.info('Reboot command received');
-    setTimeout(() => execSync('sudo reboot'), DELAY_MS);
-
-    return res.status(200).json({ content: 'Restarting now' });
-  }
-
-  if (topic === 'getApps') {
-    return respondWithApps(req, res);
-  }
-
-  if (topic === 'upgrade') {
-    log.info('Upgrade command received');
-    setTimeout(() => {
-      const proc = spawn('sudo', ['sh', '-c', 'apt update && apt upgrade -y && apt autoremove -y']);
-      proc.stderr.on('data', (data) => log.warn(`upgrade stderr: ${data}`));
-    }, DELAY_MS);
-
-    return res.status(200).json({ content: 'Upgrading now' });
-  }
-
-  if (topic === 'getIsUpgrading') {
-    log.debug('Get is upgrading command received');
-
-    let output;
-    try {
-      output = execSync('ps -e | grep apt').toString() || 'no output';
-      log.debug(output);
-    } catch (e) {
-      log.error(e);
-      const stdout = e.stdout ? e.stdout.toString() : '';
-      const stderr = e.stderr ? e.stderr.toString() : '';
-      output = stdout || stderr || 'no output';
-      log.error(output);
-    }
-
-    return res.status(200).json({ upgrading: output.includes('apt') });
-  }
-
-  if (topic === 'getRunningContainers') {
-    log.debug('Get running docker command received');
-
-    let containers = [];
-    try {
-      containers = getRunningContainers();
-    } catch (e) {
-      const error = `getRunningContainers() failed: ${e.message}`;
-      log.error(error);
-      return res.status(500).json({ error });
-    }
-
-    return res.status(200).json({ containers });
-  }
-
-  if (topic === 'stopAllContainers') {
-    let containers = [];
-    try {
-      containers = getRunningContainers();
-    } catch (e) {
-      const error = `getRunningContainers() failed: ${e.message}`;
-      log.error(error);
-      return res.status(500).json({ error });
-    }
-
-    if (!containers.length) return res.status(200).json({ message: 'No running containers' });
-
-    try {
-      execSync(`docker stop ${containers.map((p) => p.name).join(' ')}`);
-    } catch (e) {
-      const error = `docker stop failed: ${e.message}`;
-      log.error(error);
-      return res.status(500).json({ error });
-    }
-
-    return res.status(200).json({ success: true });
-  }
+  if (topic === 'getApps') return respondWithApps(req, res);
+  if (topic === 'shutdown') return handleShutdown(res);
+  if (topic === 'reboot') return handleReboot(res);
+  if (topic === 'upgrade') return handleUpgrade(res);
+  if (topic === 'getIsUpgrading') return handleGetIsUpgrading(res);
+  if (topic === 'getRunningContainers') return handleGetRunningContainers(res);
+  if (topic === 'stopAllContainers') return handleStopAllContainers(res);
+  if (topic === 'createUser') return handleCreateUser(res, message);
 
   log.warn(`Unknown topic for conduit: ${topic}`);
   return res.status(400).json({ error: `Unknown topic for conduit: ${topic}` });
@@ -202,8 +113,10 @@ const handlePacketRequest = async (req, res) => {
 
   // Enforce only localhost need not supply an auth token (or during test)
   const shouldCheckAuth = (OPTIONS.AUTH_ENABLED && (hostname && hostname !== 'localhost')) || forceAuthCheck;
-  const isAuthCheck = to === 'attic' && topic === 'get' && message && message.key === 'users';
-  if (shouldCheckAuth && !isAuthCheck) {
+  // Some specific requests do not require auth - should only be reads
+  const shouldBypass = to === 'attic' && topic === 'get'
+    && ['users', 'fleetList'].some((p) => message && message.key === p);
+  if (shouldCheckAuth && !shouldBypass) {
     log.debug(`Origin: ${hostname} requires auth check`);
 
     if (!auth) {
