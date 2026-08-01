@@ -1,5 +1,6 @@
 const { execSync } = require('child_process');
 const { hostname } = require('os');
+const { ATTIC_KEY_FLEETLIST } = require('../constants');
 const {
   config, attic, ip, log, os,
 } = require('../node-common')(['config', 'attic', 'ip', 'log', 'os']);
@@ -29,13 +30,8 @@ config.addPartialSchema({
 
 const { OPTIONS } = config.get(['OPTIONS']);
 
-/** Attic key for fleet list data */
-const FLEET_LIST_KEY = 'fleetList';
 /** Checking interval */
 const CHECKIN_INTERVAL_MS = 1000 * 60 * 10;
-
-attic.setAppName('conduit');
-attic.setHost(OPTIONS.FLEET.HOST);
 
 /**
  * Sort item by lastCheckIn timestamp.
@@ -69,7 +65,7 @@ const getUptimeDays = () => {
 const checkIn = async () => {
   try {
     // Create the remote list if it doesn't already exist
-    if (!(await attic.exists(FLEET_LIST_KEY))) await attic.set(FLEET_LIST_KEY, []);
+    if (!(await attic.exists(ATTIC_KEY_FLEETLIST))) await attic.set(ATTIC_KEY_FLEETLIST, []);
 
     const now = new Date();
     const commit = execSync('git rev-parse --short HEAD').toString().trim();
@@ -100,7 +96,7 @@ const checkIn = async () => {
       caseColor: OPTIONS.FLEET.CASE_COLOR || '#0000',
     };
 
-    const fleetList = await attic.get(FLEET_LIST_KEY);
+    const fleetList = await attic.get(ATTIC_KEY_FLEETLIST);
     const me = fleetList.find((p) => p.deviceName === hostname());
     if (!me) {
       // Add a new entry
@@ -110,7 +106,7 @@ const checkIn = async () => {
       Object.assign(me, updatePayload);
     }
 
-    await attic.set(FLEET_LIST_KEY, fleetList.sort(sortByLastCheckIn));
+    await attic.set(ATTIC_KEY_FLEETLIST, fleetList.sort(sortByLastCheckIn));
     log.info(`Fleet list updated: ${JSON.stringify(updatePayload)}`);
   } catch (e) {
     log.error(`Failed to check in: ${e.stack}`);

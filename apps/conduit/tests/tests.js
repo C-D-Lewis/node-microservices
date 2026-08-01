@@ -81,8 +81,8 @@ describe('API', () => {
     });
 
     it('should validate auth tokens', async () => {
-      // Set up in Dockerfile
-      const token = '32a77a47a43f67acd9b53f6b195842722bf3a2cb';
+      // Hash set up in Dockerfile, so this test only works with `tools/docker-test.sh`
+      const testUserToken = '32a77a47a43f67acd9b53f6b195842722bf3a2cb';
 
       const res = await fetch({
         url: `http://localhost:${SERVER.PORT}/conduit`,
@@ -91,7 +91,7 @@ describe('API', () => {
         body: JSON.stringify({
           to: 'attic',
           topic: 'status',
-          auth: token,
+          auth: testUserToken,
           device: 'test',
           forceAuthCheck: true,
         }),
@@ -116,6 +116,47 @@ describe('API', () => {
 
       expect(res.data.status).to.equal(401);
       expect(res.data.error).to.equal('Not Authorized: Authorization check failed: User does not exist');
+    });
+
+    it('should refuse when single device is wrong', async () => {
+      // Hash set in Dockerfile again
+      const onlyMarvinToken = '123e600f97663a68df3f735417820fc2';
+
+      const res = await fetch({
+        url: `http://localhost:${SERVER.PORT}/conduit`,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: 'attic',
+          topic: 'status',
+          device: 'NotMarvin',
+          auth: onlyMarvinToken,
+          forceAuthCheck: true,
+        }),
+      });
+
+      expect(res.data.status).to.equal(401);
+      expect(res.data.error).to.equal('Not Authorized: Authorization check failed: Invalid permissions for NotMarvin:attic:status');
+    });
+
+    it('should allow when single device is correct', async () => {
+      // Hash set in Dockerfile again
+      const onlyMarvinToken = '123e600f97663a68df3f735417820fc2';
+
+      const res = await fetch({
+        url: `http://localhost:${SERVER.PORT}/conduit`,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: 'attic',
+          topic: 'status',
+          device: 'Marvin',
+          auth: onlyMarvinToken,
+          forceAuthCheck: true,
+        }),
+      });
+
+      expect(res.data.status).to.equal(200);
     });
 
     it('should not require auth for allowed topics', async () => {

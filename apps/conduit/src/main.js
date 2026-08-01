@@ -6,12 +6,15 @@ const { scheduleCheckins } = require('./modules/fleet');
 /** Time to wait before updating the fleet registry */
 const FLEET_CHECKIN_DELAY_MS = 30000;
 
+const { OPTIONS } = config.get(['OPTIONS']);
+
 /**
  * The main function.
  */
 const main = async () => {
   log.begin({ appName: 'conduit' });
   attic.setAppName('conduit');
+  attic.setHost(OPTIONS.FLEET.HOST);
 
   await api.setup();
 

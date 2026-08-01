@@ -12,6 +12,7 @@ const { handleReboot } = require('./topics/reboot');
 const { handleUpgrade, handleGetIsUpgrading } = require('./topics/upgrade');
 const { handleGetRunningContainers, handleStopAllContainers } = require('./topics/containers');
 const { handleCreateUser } = require('./topics/users');
+const { ATTIC_KEY_USERS, ATTIC_KEY_FLEETLIST } = require('../constants');
 
 config.addPartialSchema({
   required: ['SERVER'],
@@ -115,7 +116,7 @@ const handlePacketRequest = async (req, res) => {
   const shouldCheckAuth = (OPTIONS.AUTH_ENABLED && (hostname && hostname !== 'localhost')) || forceAuthCheck;
   // Some specific requests do not require auth - should only be reads
   const shouldBypass = to === 'attic' && topic === 'get'
-    && ['users', 'fleetList'].some((p) => message && message.key === p);
+    && [ATTIC_KEY_USERS, ATTIC_KEY_FLEETLIST].some((p) => message && message.key === p);
   if (shouldCheckAuth && !shouldBypass) {
     log.debug(`Origin: ${hostname} requires auth check`);
 

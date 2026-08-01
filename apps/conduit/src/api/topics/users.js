@@ -1,9 +1,9 @@
 const crypto = require('crypto');
 const { readFileSync } = require('fs');
+const { ATTIC_KEY_USERS } = require('../../constants');
+const { getTokenHash, validatePermissions } = require('../../modules/auth');
 const { log, attic } = require('../../node-common')(['log', 'attic']);
 
-/** Key for list of users */
-const ATTIC_KEY_USERS = 'users';
 /** Reserved names for system roles */
 const RESERVED_NAMES = ['superadmin'];
 /** Length of IDs */
@@ -12,33 +12,24 @@ const ID_KEY_LENGTH = 16;
 const PASSWORD_FILE = `${__dirname}/../../../password`;
 
 /**
- * Get hash of the token.
- *
- * THIS SHOULD NOT CHANGE WITHOUT MIGRATING TOKENS
- *
- * @param {string} token - Token provided.
- * @returns {string} Hash of the token.
- */
-const getTokenHash = (token) => crypto.createHash('sha256').update(token).digest('hex');
-
-/**
  * Create a new user and insert it via attic.
  *
  * @param {object} message - Packet message.
  * @returns {object} Response data for caller.
  */
 const createUser = async (message) => {
-  const {
-    name, apps, topics, devices = [], adminPassword: inputPassword,
-  } = message;
+  const { name, permissions, adminPassword } = message;
 
   // Only the administrator can create users (for now)
   const password = readFileSync(PASSWORD_FILE, 'utf8').split('\n')[0].trim();
   if (!password.length) throw new Error('No password read');
   if (!password) throw new Error('Authorizing app not authorized');
-  if (!inputPassword || inputPassword !== password) throw new Error('Unauthorized');
+  if (!adminPassword || adminPassword !== password) throw new Error('Unauthorized');
   if (RESERVED_NAMES.includes(name)) throw new Error('Cannot use reserved name');
   if (name.includes(' ')) throw new Error('Name may not contain spaces');
+
+  // Additional validations
+  validatePermissions(permissions);
 
   // Fetch user list
   const list = (await attic.exists(ATTIC_KEY_USERS))
@@ -56,9 +47,7 @@ const createUser = async (message) => {
   const user = {
     id,
     name,
-    apps,
-    topics,
-    devices,
+    permissions,
     hash,
     createdAt: Date.now(),
   };

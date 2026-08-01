@@ -214,17 +214,11 @@ curl -X POST http://48.192.67.201:5959/conduit \
 
 ### Authentication
 
-For all requests that do not originate from `localhost`, each packet received
-by `conduit` must include the `auth` field with a token. Where applicable
-additional checks are done on the `apps` and `topics` permissions assigned to
-that user.
+For all requests that do not originate from `localhost`, each packet received by
+`conduit` must include the `auth` field with a token. Where applicable
+additional checks are done on the `permissions` assigned to that user.
 
-The `create-user.sh` tools script is used to add new users. For example,
-creating a user that can use some topics from the `visuals` app:
-
-```
-./tools/create-user.sh VisualsUser visuals set,off all
-```
+See `conduit`'s `README.md` for details on creating new users.
 
 The response will contain a one-time view of the token that may be given to the
 user for their requests:
@@ -234,9 +228,10 @@ user for their requests:
   "status": 201,
   "message": {
     "id": "165dacd16a253b28",
-    "name": "BacklightUser",
-    "apps": ["visuals"],
-    "topics": ["set","fadeAll","off"],
+    "name": "MarvinUser",
+    "permissions": [
+      "Marvin:visuals:setAll"
+    ],
     "token": "b6aacf6f46dbdd24659b537f7754506eb4aa5638",
     "createdAt": 1586599862140
   }

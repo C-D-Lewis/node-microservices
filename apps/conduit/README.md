@@ -81,8 +81,11 @@ downstream app. These fall under the remit of device and process management.
 Example of creating a new user with the `tools/cli`:
 
 ```
-nms conduit send conduit createUser \
-  '{"name":"admin","apps":"all","topics":"all","adminPassword":"adminPassword"}'
+nms conduit send conduit createUser '{
+  "name":"admin",
+  "permissions":["all:all:all"],
+  "adminPassword":"adminPassword"
+}'
 ```
 
 
