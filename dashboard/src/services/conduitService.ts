@@ -117,15 +117,21 @@ export const fetchDeviceApps = async (state: AppState, device: Device) => {
   fabricate.update({ selectedDeviceApps: [] });
 
   try {
-    const { message } = await sendConduitPacket(
+    const { message, error } = await sendConduitPacket(
       state,
       { to: 'conduit', topic: 'getApps' },
       deviceName,
     );
 
+    if (error) {
+      console.error(error);
+      alert(error);
+    }
+
     let selectedDeviceApps: DeviceApp[] = [];
     if (message && message.error) {
       console.error(message.error);
+      alert(message.error);
       selectedDeviceApps = [];
     } else if (!message) {
       console.error('No response in fetchApps');
@@ -138,6 +144,7 @@ export const fetchDeviceApps = async (state: AppState, device: Device) => {
   } catch (err: unknown) {
     console.error(err);
     fabricate.update({ selectedDeviceApps: [] });
+    alert(err);
   }
 };
 
