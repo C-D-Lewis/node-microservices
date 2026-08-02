@@ -68,19 +68,9 @@ module.exports = args => {
 
 The table below details the arguments available for each provided plugin.
 
-### `8hr-forecast.js`
+### `alarm-test.js`
 
-Show a forecast of one hour per LED on a Mote or Blinkt strip.
-
-| Name | Type | Description |
-|------|------|-------------|
-| `LED` | Number | Index of LED on connected Mote/Blinkt strip to use for error state. |
-| `DARKSKY_KEY` | String | Darksky API key. |
-| `LATITUDE` | Number | Device latitude. |
-| `LONGITUDE` | Number | Device longitude. |
-| `HOURS_AHEAD` | Number | Number of hours ahead to look. |
-| `TEMP_COLD` | Number | Minimum comfortable temperature. |
-| `TEMP_HOT` | Number | Maximum comfortable temperature. |
+Test alarms with a random success factor.
 
 ### `conduit.js`
 
@@ -90,92 +80,129 @@ For this plugin, the entire `ARGS` object is the packet to be sent.
 
 ### `delays.js`
 
-Show state of select National Rail lines on connected LEDs.
+Show state of select National Rail lines or TfL underground lines. Configuration
+is in the constants.
 
-| Name | Type | Description |
-|------|------|-------------|
-| `LED` | Number | Index of LED to use. |
+### `email-report.js`
 
-### `devices.js`
-
-Disused.
-
-### `enviro-datalogger.js`
-
-Datalog sensor values from Enviro HAT to file.
-
-This plugin has no `ARGS` required.
+Email the `crontab.log` from device boot after 30 seconds.
 
 ### `fan-control.js`
 
 Control connected 40mm fan based on CPU reported temperature.
 
-| Name | Type | Description |
-|------|------|-------------|
-| `GPIO_PIN` | Number | GPIO pin on which fan control is connected (FET base, for example). |
-| `THRESHOLD` | Number | Minimum temperature to turn on the fan. |
+| Arg Name    | Type   | Description                                                         |
+|-------------|--------|---------------------------------------------------------------------|
+| `GPIO_PIN`  | Number | GPIO pin on which fan control is connected (FET base, for example). |
+| `THRESHOLD` | Number | Minimum temperature to turn on the fan.                             |
+
+### `jinglejam-logger.js`
+
+Log over time the grand total raised during the Yogscast Jingle Jam to a CSV
+file.
+
+### `json-datalogger.js`
+
+Log a value from a JSON remote data source to a CSV file.
+
+| Arg Name      | Type   | Description                    |
+|---------------|--------|--------------------------------|
+| `URL`         | String | URl to fetch.                  |
+| `JSON_PATH`   | String | JSONPath to value of interest. |
+| `OUTPUT_FILE` | String | Path to output CSV file.       |
 
 ### `mdstat.js`
 
 Monitor status of one connected RAID disk array with `/proc/mdstat`.
 
-This plugin has no `ARGS` required.
+### `polaris.js`
+
+Implementation of the `polaris` microservice to monitor local public IP and
+keep a AWS Route53 record in sync.
+
+| Arg Name             | Type   | Description                      |
+|----------------------|--------|----------------------------------|
+| `HOSTED_ZONE_NAME`   | String | Hosted zone domain name.         |
+| `RECORD_NAME_PREFIX` | String | Prefix to use within the domain. |
 
 ### `post.js`
 
 Send a HTTP POST request on a schedule.
 
-| Name | Type | Description |
-|------|------|-------------|
-| `URL` | String | URL to send POST request to. |
-| `JSON` | Object | POST payload data. |
+| Arg Name | Type   | Description                  |
+|----------|--------|------------------------------|
+| `URL`    | String | URL to send POST request to. |
+| `JSON`   | Object | POST payload data.           |
 
-### `services.js`
+### `processes.js`
 
-Monitor state of local or remote `node-microservices` apps.
+Monitor named processes and alert if their number is too few.
 
-| Name | Type | Description |
-|------|------|-------------|
-| `HOST` | String | Host where apps are running. |
-| `LED` | Number | Index of LED to use for status display. |
+| Arg Name   | Type   | Description                  |
+|------------|--------|------------------------------|
+| `FILTER`   | String | `ps` filter, such as `java`. |
+| `EXPECTED` | Number | Number of expected results.  |
+
+### `rack-oled.js`
+
+If an OLED display is attached, display common stats from the device on it such
+as hostname, CPU, memory, etc.
+
+### `rss.js`
+
+Monitor an RSS feed for new entries and sent email when new items are available.
+
+| Arg Name   | Type   | Description                  |
+|------------|--------|------------------------------|
+| `FEED_URL` | String | URL of the feed to fetch.    |
 
 ### `visuals-scheduler.js`
 
 Schedule Visuals lights on and off.
 
-| Name | Type | Description |
-|------|------|-------------|
+| Arg Name | Type  | Description     |
+|----------|-------|-----------------|
 | `EVENTS` | Array | List of events. |
 
 Each event has the following structure:
 
-| Name | Type | Description |
-|------|------|-------------|
-| `NAME` | String | Name of the event, like 'wakeup glow'. |
-| `ON` | String | `HH:MM` on time. |
-| `OFF` | String | `HH:MM` off time. |
-| `COLOR` | Array | RGB numbers for the color to display. |
+| Arg Name | Type   | Description                            |
+|----------|--------|----------------------------------------|
+| `NAME`   | String | Name of the event, like 'wakeup glow'. |
+| `ON`     | String | `HH:MM` on time.                       |
+| `OFF`    | String | `HH:MM` off time.                      |
+| `COLOR`  | Array  | RGB numbers for the color to display.  |
 
 ### `weather.js`
 
 Show general weather conditions on a single LED, prioritising harsh conditions.
 
-| Name | Type | Description |
-|------|------|-------------|
-| `LED` | Number | Index of LED to show status on. |
-| `DARKSKY_KEY` | String | Darksky API key. |
-| `LATITUDE` | Number | Device latitude. |
-| `LONGITUDE` | Number | Device longitude. |
-| `TEMP_COLD` | Number | Minimum comfortable temperature. |
-| `TEMP_HOT` | Number | Maximum comfortable temperature. |
+| Arg Name      | Type   | Description                      |
+|---------------|--------|----------------------------------|
+| `LED`         | Number | Index of LED to show status on.  |
+| `DARKSKY_KEY` | String | Darksky API key.                 |
+| `LATITUDE`    | Number | Device latitude.                 |
+| `LONGITUDE`   | Number | Device longitude.                |
+| `TEMP_COLD`   | Number | Minimum comfortable temperature. |
+| `TEMP_HOT`    | Number | Maximum comfortable temperature. |
 
 ### `web-datalogger.js`
 
 Scrape and log value of a portion of a web page on a schedule.
 
-| Name | Type | Description |
-|------|------|-------------|
-| `URL` | String | URL to read. |
-| `BEFORES` | Array | Array of string portions to help locate start point. |
-| `AFTER` | String | String after end point. |
+| Arg Name    | Type   | Description                                            |
+|-------------|--------|--------------------------------------------------------|
+| `URL`       | String | URL to read.                                           |
+| `BEFORES`   | Array  | Array of string portions to help locate start point.   |
+| `AFTER`     | String | String after end point.                                |
 | `ATTIC_KEY` | String | Key if required to store values in Attic app instance. |
+
+### `z-hotel.js`
+
+Monitor Z Hotel for cheap prices.
+
+| Arg Name          | Type | Description |
+|-------------------|------|-------------|
+| `START_H`         | Number | Start hour in the day. |
+| `DAYS`            | Array | Days of the week to monitor. |
+| `PRICE_THRESHOLD` | Number | Price threshold to alert on. |

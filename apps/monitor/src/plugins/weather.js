@@ -41,6 +41,15 @@ const checkWeather = async (args) => {
  * @param {object} args - plugin ARGS object.
  */
 module.exports = async (args) => {
+  // Validate required args
+  if (!args || typeof args !== 'object') throw new Error('args must be an object');
+  if (typeof args.DARKSKY_KEY !== 'string') throw new Error('DARKSKY_KEY is required');
+  if (typeof args.LATITUDE !== 'number') throw new Error('LATITUDE is required');
+  if (typeof args.LONGITUDE !== 'number') throw new Error('LONGITUDE is required');
+  if (typeof args.TEMP_COLD !== 'number') throw new Error('TEMP_COLD is required');
+  if (typeof args.TEMP_HOT !== 'number') throw new Error('TEMP_HOT is required');
+  if (typeof args.LED === 'undefined') throw new Error('LED is required');
+
   try {
     const state = await checkWeather(args);
     visuals.setLed(args.LED, state);

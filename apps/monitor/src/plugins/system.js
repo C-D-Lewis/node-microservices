@@ -171,8 +171,10 @@ const createDiskUsageAlarm = () => {
       return lowDisk || undefined;
     },
     /**
+     * Message callback.
      *
-     * @param lowDisk
+     * @param {object} lowDisk - data to use.
+     * @returns {string} result string to use.
      */
     messageCb: (lowDisk) => {
       const {
@@ -213,8 +215,10 @@ const createServicesAlarm = () => {
       return !allOk ? downApps : undefined;
     },
     /**
+     * Message callback for services alarm.
      *
-     * @param downApps
+     * @param {Array<string>} downApps - List of service names that are down.
+     * @returns {string} Status message.
      */
     messageCb: (downApps) => (downApps && downApps.length > 0
       ? `The following services are down: ${downApps.join(', ')}`
@@ -248,8 +252,10 @@ const createDmesgAlarm = () => {
       return newErrors.length ? newErrors : undefined;
     },
     /**
+     * Message callback for dmesg alarm.
      *
-     * @param newErrors
+     * @param {Array<object>} newErrors - Array of newly detected dmesg errors.
+     * @returns {string} Status message.
      */
     messageCb: (newErrors) => (newErrors
       ? `dmesg errors found!\n\n${newErrors.map((p) => p.line).join('\n')}`

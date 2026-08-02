@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.1692.0",
+    "fast-xml-parser": "^5.10.1",
     "jsonpath": "^1.1.1",
     "node-fetch": "^2.7.0",
     "systeminformation": "^5.29.0"
