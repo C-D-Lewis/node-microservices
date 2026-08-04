@@ -4,8 +4,8 @@ const {
   fetch, log, ses, attic,
 } = require('../node-common')(['fetch', 'log', 'ses', 'attic']);
 
-/** attic key for already-seen guids */
-const DB_KEY_SAVED_PUBDATE = 'feedLastPubDate';
+/** attic key for already-seen items */
+const DB_KEY_SAVED_PUBDATE_STR = 'feedLastPubDate';
 
 const parser = new XMLParser();
 let failed;
@@ -37,26 +37,27 @@ module.exports = async (args = {}) => {
       const d = new Date(p.pubDate);
       return d > new Date(acc) ? p.pubDate : acc;
     }, items[0].pubDate);
-    const mostRecentDate = new Date(mostRecentDateStr);
 
     // Save now and skip
-    if (!await attic.exists(DB_KEY_SAVED_PUBDATE)) {
-      await attic.set(DB_KEY_SAVED_PUBDATE, mostRecentDate);
-      log.info(`Saved initial pubDate: ${mostRecentDate}`);
+    if (!await attic.exists(DB_KEY_SAVED_PUBDATE_STR)) {
+      await attic.set(DB_KEY_SAVED_PUBDATE_STR, mostRecentDateStr);
+      log.info(`Saved initial pubDate: ${mostRecentDateStr}`);
       return;
     }
 
     // Find any newer than the last saved pubDate
-    const savedPubDate = new Date(await attic.get(DB_KEY_SAVED_PUBDATE));
+    const savedPubDate = new Date(await attic.get(DB_KEY_SAVED_PUBDATE_STR));
     const newItems = items.filter((p) => {
       const d = new Date(p.pubDate);
       return d > savedPubDate;
     });
-    log.debug({ savedPubDate, items: items.length, newItems: newItems.length });
+    log.debug({
+      mostRecentDateStr, savedPubDate, items: items.length, newItems: newItems.length,
+    });
 
     // If any new ones, notify and update saved pubDate
     if (newItems.length) {
-      await attic.set(DB_KEY_SAVED_PUBDATE, newItems[0].pubDate);
+      await attic.set(DB_KEY_SAVED_PUBDATE_STR, mostRecentDateStr);
 
       const content = `New RSS feed items from ${FEED_URL}:
 =================================
