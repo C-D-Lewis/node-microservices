@@ -10,7 +10,7 @@ const NR_OPERATORS = ['Greater Anglia'];
 /** TfL lines to check */
 const TFL_LINES = ['jubilee'];
 /** Hours to alarm */
-const HOURS = [7, 23];
+const HOURS = [6, 23];
 /** String to ignore */
 const IGNORE = [
   'Ely', 'Cambridge', 'Manningtree', 'Chingford', 'Seven Sisters', 'Tottenham Hale', 'resume',

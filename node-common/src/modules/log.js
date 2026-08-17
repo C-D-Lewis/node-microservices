@@ -15,7 +15,7 @@ const TAGS = {
 /** Time between log size evaluations */
 const MONITOR_INTERVAL_MS = 60 * 60 * 1000;
 /** Max log size */
-const MAX_SIZE_MB = 1;
+const MAX_SIZE_MB = 10;
 /** Log level color map */
 const LEVEL_COLOR_MAP = {
   info: 'white',
