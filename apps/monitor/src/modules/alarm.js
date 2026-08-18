@@ -45,8 +45,8 @@ const createAlarm = ({
   notifyUpdates = false,
   sendEmails = process.env.DISABLE_EMAILS !== 'true',
 }) => {
-  let notified = false;
   let lastData = null;
+  let lastNotifiedDate = null;
   let lastMessage = '';
   let lastErrorMessage = '';
   let lastStatus = 'closed';
@@ -100,9 +100,11 @@ const createAlarm = ({
       try {
         const data = await testCb() || null;
 
+        const today = new Date().toISOString().split('T')[0];
+
         if (!data) {
-          // Still good
-          if (!notified) {
+          // Still good (do we need this?)
+          if (!lastNotifiedDate) {
             lastStatus = 'closed';
             lastMessage = '';
             lastErrorMessage = '';
@@ -111,7 +113,7 @@ const createAlarm = ({
           }
 
           // Now recovered
-          notified = false;
+          lastNotifiedDate = null;
           lastStatus = 'closed';
           lastMessage = messageCb(data);
           lastErrorMessage = '';
@@ -120,9 +122,9 @@ const createAlarm = ({
           return;
         }
 
-        // Now failed
-        if (!notified) {
-          notified = true;
+        // Now failed or new day during ongoing failure
+        if (lastNotifiedDate !== today) {
+          lastNotifiedDate = today;
           lastStatus = 'open';
           lastMessage = messageCb(data);
           await notify();
@@ -140,8 +142,8 @@ const createAlarm = ({
       } catch (e) {
         console.log(e);
 
-        // Set notified so we don't keep spamming on errors
-        notified = true;
+        // Set lastNotifiedDate so we don't keep spamming on errors today
+        [lastNotifiedDate] = new Date().toISOString().split('T');
         lastStatus = 'open';
         lastMessage = e.stack || e.message || String(e);
         await notify(true);
