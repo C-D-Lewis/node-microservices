@@ -9,7 +9,15 @@ const { server } = require('../node-common')(['server']);
  * @param {Function} next - Callback for next middleware.
  */
 const enablePreflight = (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  const { origin } = req.headers;
+
+  // Explicitly mirror the origin instead of using '*'
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin);
+  } else {
+    res.header('Access-Control-Allow-Origin', '*');
+  }
+
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 
