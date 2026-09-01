@@ -59,17 +59,9 @@ sudo ln -s /usr/local/bin/node /usr/bin/node
 sudo ln -s /usr/local/lib/node /usr/lib/node
 sudo ln -s /usr/local/bin/npm /usr/bin/npm
 
-# NMS
-echo ""
-echo ">>> Setting up node-microservices"
-cd $HOME
-mkdir -p code
-cd code
-git clone https://github.com/c-d-lewis/node-microservices
-
 echo ""
 echo ">>> Installing deps for conduit and attic"
-cd node-microservices/node-common
+cd /home/pi/code/node-microservices/node-common
 npm i
 cd ../tools/cli
 npm i
@@ -80,8 +72,7 @@ cd ../attic
 npm i
 
 echo "Setting ownership"
-cd $HOME
-sudo chown -R pi ./
+sudo chown -R pi ~
 
 echo ""
 echo ">>> All done!"

@@ -54,6 +54,12 @@
         "dir": "code/e-paper-dashboard",
         "cmd": "pip3 install spotipy termcolor && python3 main.py >> /home/pi/e-paper-dashboard.log 2>&1"
       }
+    ],
+    "peter-pi": [
+      { "nms": "conduit" },
+      { "nms": "attic"   },
+      { "nms": "visuals" },
+      { "nms": "monitor" }
     ]
   }
 }
