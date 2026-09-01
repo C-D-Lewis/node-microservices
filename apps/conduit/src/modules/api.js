@@ -13,6 +13,11 @@ const enablePreflight = (req, res, next) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 
+  // Needed by browsers that enforce Private Network Access
+  if (req.headers['access-control-request-private-network'] === 'true') {
+    res.header('Access-Control-Allow-Private-Network', 'true');
+  }
+
   if (req.method === 'OPTIONS') {
     return res.sendStatus(204);
   }
