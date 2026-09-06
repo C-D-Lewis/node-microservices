@@ -98,7 +98,7 @@ const handlePacketRequest = async (req, res) => {
   }
 
   const {
-    to, topic, message, host = HOST_LOCALHOST, auth, forceAuthCheck, device,
+    to, topic, message, host = HOST_LOCALHOST, auth, forceAuthCheck, device = hostname,
   } = packet;
 
   // Test endpoint used during tests
