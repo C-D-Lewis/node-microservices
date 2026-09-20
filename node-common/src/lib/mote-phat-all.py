@@ -8,8 +8,11 @@ import sys
 r = int(sys.argv[1])
 g = int(sys.argv[2])
 b = int(sys.argv[3])
+
+# Note: Pi 4 is aarch64, this needs a try catch below instead probably
 if 'arm' not in platform.machine():
   print('{} {} {}'.format(r, g, b))
+  print('Not running on a Pi, exiting')
   sys.exit(0)
 
 NUM_CHANNELS = 2

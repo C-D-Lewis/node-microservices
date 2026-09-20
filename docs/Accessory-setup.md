@@ -15,6 +15,12 @@ cd node-common && npm i node-blinkt
 curl https://get.pimoroni.com/motephat | bash
 ```
 
+Mayb require pre-installing:
+
+```
+sudo pip3 install motephat --break-system-packages
+```
+
 # PiOLED hat?
 ```
 sudo apt-get install -y python3-pip

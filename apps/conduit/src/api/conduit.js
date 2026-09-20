@@ -1,3 +1,4 @@
+const os = require('os');
 const {
   config, log, fetch, schema,
 } = require('../node-common')(['config', 'log', 'fetch', 'schema']);
@@ -98,7 +99,7 @@ const handlePacketRequest = async (req, res) => {
   }
 
   const {
-    to, topic, message, host = HOST_LOCALHOST, auth, forceAuthCheck, device = hostname,
+    to, topic, message, host = HOST_LOCALHOST, auth, forceAuthCheck, device = os.hostname(),
   } = packet;
 
   // Test endpoint used during tests

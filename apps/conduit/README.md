@@ -88,6 +88,19 @@ nms conduit send conduit createUser '{
 }'
 ```
 
+Testing authentication can be done as follows:
+
+```
+curl -X POST localhost:5959/conduit -H "Content-Type:application/json" \
+  -d '{
+  "to": "attic",
+  "topic": "get",
+  "message": { "app": "attic", "key": "foo" },
+  "forceAuthCheck": true,
+  "auth": "c6020ac3f4463452016e6b18c715a5ff"
+}'
+```
+
 
 ### `GET /port`
 
